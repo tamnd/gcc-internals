@@ -2,7 +2,7 @@
 
 A visual, hands on teardown of GCC 16, taught from zero, and specified precisely enough that you can write a working front end, a working back end and a working optimizer against the specifications alone.
 
-The plan is 96 lessons in eleven parts, 58 blueprints, and three capstone tracks. Nothing exists yet. This repository currently holds the plan, as thirteen milestones and eighteen open questions, and the first code lands with M0.
+The plan is 96 lessons in eleven parts, 58 blueprints, and three capstone tracks. One lesson exists so far, the pilot, and the rest of the repository is the toolkit those lessons are built on plus thirteen milestones and eighteen open questions saying what is still undecided.
 
 ## The idea
 
@@ -23,6 +23,64 @@ So the rules are:
 A specification nobody has implemented from is a wish. The three tracks exist to find out where the blueprints are wrong, and they exercise almost disjoint parts of the set: a real front end for a toy language, a real port for a synthetic RISC target, and six middle end passes checked against GCC and against an SMT solver.
 
 The headline number this project is trying to produce is not a lesson count. It is the number of blueprint bugs the implementations found.
+
+## The lessons
+
+Every lesson is a notebook with a Colab badge on it, so there is nothing to install and nothing to build. Part I runs entirely on the recorded dumps in `corpora/`, which are real output from a real GCC 16.2 and are committed, so a reader with a browser and no compiler gets the same output the lesson shows. Colab does have a GCC, but it is several years older than the pinned one, and a lesson that quietly showed you GCC 11's dumps while talking about GCC 16 would be worse than no lesson, so the setup cell picks a backend that matches and the banner says which one it picked and how stale it is, every time.
+
+Nothing in a lesson is typed in by hand. A claim about what GCC does has a cell under it that produces the output, a claim about GCC's own source carries a `path:line@tag` citation that `refcheck` resolves against the pinned tree, and every claim in the course is collected into [CLAIMS.md](lessons/CLAIMS.md) with the cell that proves it.
+
+Vocabulary works the same way. There is one definition per term in [GLOSSARY.md](GLOSSARY.md), and a lesson links into it rather than explaining a word it explained forty lessons ago or assuming you remember one. Each entry says what the word means, then says the thing people reliably get wrong about it, and where a definition rests on something in GCC's source rather than on the literature it carries a citation like everything else here.
+
+Lessons do not invent a fresh example each time either. There are three programs, they are fixed, and they live in `gxray.programs`. `L1` is a loop with an induction variable and an accumulator, eight lines, which is the smallest thing that makes SSA interesting and still small enough to read the whole dump. Meeting a new program and a new subsystem in the same lesson is two jobs, and the one most readers drop is the subsystem.
+
+<!-- nbbuild:begin index -->
+| | Lesson | What you come away with | Milestone | Run it |
+|---|---|---|---|---|
+| T05 | [SSA in one lesson](https://github.com/tamnd/gcc-internals/blob/main/lessons/t05-ssa-in-one-lesson/t05.ipynb) | Reading `s_1`, `s_3` and `s_8` as three versions of one variable rather than three variables, what a `PHI` is and where it has to go, what the `(D)` on `n_5(D)` is telling you, and watching SSA get taken apart again on the way to machine code | M0 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tamnd/gcc-internals/blob/main/lessons/t05-ssa-in-one-lesson/t05.ipynb) |
+
+1 of 96 written.
+<!-- nbbuild:end index -->
+
+This table is generated from the lessons, by the same command that builds them, so it cannot list a lesson that does not exist or miss one that does. T05 is the pilot and it is deliberately in the middle of Part I rather than at the start, because everything the course promises has to be true of a hard lesson before it is worth writing the easy ones.
+
+### How a lesson is put together
+
+A lesson is a directory with Python in it, and the notebook is a build artifact:
+
+```text
+lessons/t05-ssa-in-one-lesson/
+  build.py     the lesson itself, as prose cells and code cells
+  t05.ipynb    generated, committed, never edited by hand
+  diagram.py   the pictures that explain an idea rather than show a dump
+  diagrams/    the Excalidraw scenes it writes
+  grade.py     the boss fight, graded against a recorded dump
+```
+
+Nobody should have to edit a `.ipynb` by hand and nobody should have to review a diff of one, so `build.py` is ordinary Python that calls `lesson.md(...)` and `lesson.code(...)` in order. The generated notebook is committed as well, because a Colab badge has to point at a real file in the default branch, and CI fails when the two stop matching.
+
+Four things an author gets from the builder, and each of them is a rule rather than a convenience:
+
+- `lesson.cite("gcc/gimple.h:474@releases/gcc-16.2.0")` writes a link to that exact line in the pinned tree. One place in the repository knows the URL format, and `just refcheck` fails when the cited line moves.
+- `lesson.term("phi node")` links into the glossary and fails the build if the term is not defined there, which is what stops a lesson from redefining a word the course already owns.
+- `lesson.claim("...")` records a claim and requires the next cell to be code, before the next heading. A claim with no evidence under it cannot be committed. Three claims per lesson may be marked unobservable with a written reason, and the fourth is an error rather than a warning.
+- `lesson.code(..., differs="...")` marks a cell whose output depends on which GCC produced it, and `varies=` marks one that depends on the reader's own machine. Both print a note above the cell, because the alternative is a reader deciding their setup is broken.
+
+Outputs are never committed, so nothing in the repository proves a cell still runs. Running it is the proof:
+
+| | What it does |
+|---|---|
+| `just build-lessons` | rebuild every notebook from its `build.py` |
+| `just lessons` | fail if a committed notebook has drifted from its builder |
+| `just lesson-diagrams` | redraw every Excalidraw scene from its `diagram.py` |
+| `just build-claims` | rebuild the claim ledger |
+| `just run-lessons` | execute every lesson top to bottom in a real kernel |
+| `just run-lessons --show` | the same, and print what each cell actually printed |
+| `just grade t05-ssa-in-one-lesson` | the boss fight |
+
+The `--show` is not decoration. A cell that raises fails on its own, but a cell that prints an empty list where the prose promised four names passes quietly, and that has already happened once here. Reading the transcript is part of changing a lesson, not an optional extra.
+
+The pictures are generated too. Most of them come from `gxmanim` and are drawn from a real dump, so they cannot disagree with the text under them. The other kind is a diagram that explains why something has to be the way it is, where there is no dump to draw from and somebody has to decide what goes where. Those are written with `tools/exdraw` and come out as real `.excalidraw` files you can open and edit, generated rather than hand drawn because Excalidraw puts a random seed in every element and a hand drawn scene has an unreviewable diff.
 
 ## Looking at a compiler
 

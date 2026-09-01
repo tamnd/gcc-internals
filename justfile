@@ -15,7 +15,7 @@ setup:
     @echo "activate with: source .venv/bin/activate"
 
 # Everything CI runs on a push, in the order CI runs it.
-check: lint prose test
+check: lint prose lessons claims test
     @echo "all green"
 
 lint:
@@ -52,6 +52,12 @@ widgets:
 diagrams:
     {{py}} -m gxmanim draw --index --open
 
+# The hand composed Excalidraw scenes, the ones that explain an idea rather than show a dump.
+lesson-diagrams:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for f in lessons/*/diagram.py; do {{py}} "$f"; done
+
 # Regenerate the recorded dumps that Tier 0 falls back on when the network is gone.
 # -g and the lineno modifier are what put a source location on every statement, which is
 # the only thing joining GENERIC to GIMPLE to RTL to the assembly. The graph modifier writes
@@ -86,6 +92,10 @@ refcheck-update:
 setup-site:
     .venv/bin/pip install -qe ".[dev,site]"
 
+# Add a Jupyter kernel on top of the dev tools. Only needed for run-lessons.
+setup-lessons:
+    .venv/bin/pip install -qe ".[dev,lessons]"
+
 # Serve the book locally. Islands are rebuilt on every edit, which takes a second or two.
 serve:
     mkdocs serve -f site/mkdocs.yml
@@ -93,9 +103,31 @@ serve:
 build-site:
     mkdocs build --strict -f site/mkdocs.yml
 
-# Scaffold a lesson with all nine blocks, so the structure is never assembled by hand.
-new-lesson ID:
-    {{py}} tools/new_lesson.py {{ID}}
+# Rebuild every lesson notebook from its build.py, and the course index from the lessons.
+# The .ipynb files are generated, so this is the only thing that should ever write one.
+build-lessons:
+    {{py}} -m tools.nbbuild build
+
+# Fail if a committed notebook or the index has drifted from what generates it.
+lessons:
+    {{py}} -m tools.nbbuild check
+
+# Rebuild the claim ledger, which is every claim a lesson makes and the cell that proves it.
+build-claims:
+    {{py}} -m tools.nbbuild claims
+
+claims:
+    {{py}} -m tools.nbbuild verify
+
+# Rebuild GLOSSARY.md from gxray/glossary.py, which is where the definitions actually live.
+build-glossary:
+    {{py}} -m gxray.glossary
+
+# Run every lesson top to bottom in a real kernel. Needs the lessons extra.
+# `just run-lessons --show` prints what each cell printed, which is the only way to catch a
+# cell that succeeds and produces the wrong thing.
+run-lessons *ARGS:
+    {{py}} -m tools.nbbuild run {{ARGS}}
 
 # Grade your own attempt at a boss fight.
 grade ID:
