@@ -44,6 +44,10 @@ passes FILE="corpora/programs/l1.c" OPT="-O2":
 web NAME="s_1" FILE="corpora/programs/l1.c" OPT="-O2":
     {{py}} -m gxray web --name {{NAME}} --file {{FILE}} --gcc {{gcc}} {{OPT}}
 
+# A page with every widget on it, built from the recorded dumps. No compiler, no network.
+widgets:
+    {{py}} -m gxwidgets demo --open
+
 # Regenerate the recorded dumps that Tier 0 falls back on when the network is gone.
 corpus:
     {{py}} -m gxray record --program l1 --entry l1-O2 --dump tree-ssa --dump tree-optimized --gcc {{gcc}} -O2

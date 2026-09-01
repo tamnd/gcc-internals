@@ -193,8 +193,14 @@ def test_the_submodule_is_pinned_where_it_says_it_is():
 
 @needs_tree
 def test_every_citation_in_this_repository_resolves():
-    """The real check, run over the real tree, the same one CI runs."""
-    paths = [Path(p) for p in ["README.md", "docs", "gxray", "tools"] if Path(p).exists()]
+    """The real check, run over the real tree, on the same paths CI passes it.
+
+    The list comes from the command line tool rather than being typed again here, because a
+    second copy of it goes stale and then the suite stops checking a directory that CI does.
+    """
+    from tools.refcheck.__main__ import DEFAULT_PATHS
+
+    paths = [Path(p) for p in DEFAULT_PATHS if Path(p).exists()]
     assert refcheck.check(paths) == []
 
 
