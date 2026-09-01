@@ -39,6 +39,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
+from gxray.locs import Loc, strip_locs, take_loc
+
 # s_3, i_9, _6, and n_5(D) for a name with no definition in this function, which for a
 # parameter means the value it came in with.
 SSA_NAME = re.compile(r"\b(?P<base>[A-Za-z_][A-Za-z_0-9]*)?_(?P<version>\d+)(?P<default>\(D\))?")
@@ -75,7 +77,12 @@ def ssa_names(text: str) -> tuple[SsaName, ...]:
 
 @dataclass
 class Stmt:
-    """One GIMPLE statement."""
+    """One GIMPLE statement.
+
+    `loc` is where in the source it came from, and it is only there when the dump was asked
+    for with the `lineno` modifier. `text` never contains the location, so a statement
+    prints the same either way and a lesson can quote it without knowing how it was made.
+    """
 
     text: str
     block: int
@@ -83,10 +90,20 @@ class Stmt:
     lhs: SsaName | str | None = None
     rhs: str | None = None
     operands: tuple[SsaName, ...] = ()
+    loc: Loc | None = None
 
     @property
     def is_unparsed(self) -> bool:
         return False
+
+    @property
+    def is_debug(self) -> bool:
+        """A debug marker or a variable location note, which `-g` adds and nothing runs.
+
+        They are real lines in the dump, so the parser keeps them, but they are not code
+        and counting them as statements makes a function look twice the size it is.
+        """
+        return self.kind == "debug"
 
     def __str__(self) -> str:
         return self.text
@@ -117,6 +134,11 @@ class Phi:
     args: tuple[tuple[str, int], ...]
     text: str
     block: int
+    loc: Loc | None = None
+
+    @property
+    def is_debug(self) -> bool:
+        return False
 
     def __str__(self) -> str:
         inner = ", ".join(f"{v}({p})" for v, p in self.args)
@@ -165,7 +187,18 @@ class Function:
 
     @property
     def stmts(self) -> list[Stmt]:
+        """Every statement in the dump, debug markers included, because they are in it."""
         return [s for b in self.ordered_blocks for s in b.stmts]
+
+    @property
+    def code(self) -> list[Stmt]:
+        """The statements that do something. What a reader means by how big a function is.
+
+        Compiling with `-g` adds a `# DEBUG` line for every statement boundary and every
+        variable that moves, so `stmts` on a `-g` dump is roughly double `code` and the
+        difference is entirely bookkeeping for the debugger.
+        """
+        return [s for s in self.stmts if not s.is_debug]
 
     @property
     def ordered_blocks(self) -> list[Block]:
@@ -180,6 +213,10 @@ class Function:
 
         This is the data behind the SSAWeb widget. `def` is None for a name with no
         definition in this function, which for a parameter means the value it came in with.
+
+        Debug statements are not uses. `# DEBUG s => s_3` says where a debugger can find
+        `s`, it does not read the value, and listing it alongside the real uses would make
+        a name look busier than it is.
         """
         target = name.split("(")[0]
         definition: Stmt | Phi | None = None
@@ -192,6 +229,8 @@ class Function:
                 elif any(v.strip().split("(")[0] == target for v, _ in phi.args):
                     uses.append(phi)
             for stmt in block.stmts:
+                if stmt.is_debug:
+                    continue
                 if stmt.lhs is not None and str(stmt.lhs) == target:
                     definition = stmt
                 elif any(str(o).split("(")[0] == target for o in stmt.operands):
@@ -200,7 +239,7 @@ class Function:
         return {"name": target, "def": definition, "uses": uses}
 
     def __str__(self) -> str:
-        return f"{self.name} ({len(self.blocks)} blocks, {len(self.stmts)} statements)"
+        return f"{self.name} ({len(self.blocks)} blocks, {len(self.code)} statements)"
 
 
 @dataclass
@@ -225,23 +264,25 @@ class GimpleDump:
         return f"{self.name or 'dump'}: {', '.join(self.functions) or 'no functions'}"
 
 
-def _classify(body: str, block: int) -> Stmt:
+def _classify(body: str, block: int, loc: Loc | None = None) -> Stmt:
     """Work out what kind of statement this is. Anything unfamiliar comes back unparsed."""
     text = body.strip()
     ops = ssa_names(text)
 
     if text.startswith("# DEBUG"):
-        return Stmt(kind="debug", text=text, block=block, operands=ops)
+        return Stmt(kind="debug", text=text, block=block, loc=loc, operands=ops)
     if text.startswith("if ("):
-        return Stmt(kind="cond", text=text, block=block, rhs=text[3:].strip(), operands=ops)
+        return Stmt(
+            kind="cond", text=text, block=block, loc=loc, rhs=text[3:].strip(), operands=ops
+        )
     if text.startswith("else"):
-        return Stmt(kind="else", text=text, block=block)
+        return Stmt(kind="else", text=text, block=block, loc=loc)
     if text.startswith("goto "):
-        return Stmt(kind="goto", text=text, block=block, operands=ops)
+        return Stmt(kind="goto", text=text, block=block, loc=loc, operands=ops)
     if text.startswith("return"):
-        return Stmt(kind="return", text=text, block=block, operands=ops)
+        return Stmt(kind="return", text=text, block=block, loc=loc, operands=ops)
     if re.match(r"^<[\w.]+>:", text) or re.match(r"^[\w.]+:$", text):
-        return Stmt(kind="label", text=text, block=block)
+        return Stmt(kind="label", text=text, block=block, loc=loc)
 
     # An assignment, which is most of GIMPLE. The left hand side is everything before the
     # first `=` that is not part of `==`, `<=`, `>=` or `!=`.
@@ -252,12 +293,20 @@ def _classify(body: str, block: int) -> Stmt:
         lhs_names = ssa_names(lhs_text)
         lhs: SsaName | str = lhs_names[0] if lhs_names else lhs_text
         kind = "call" if re.search(r"\w+\s*\(", rhs) else "assign"
-        return Stmt(kind=kind, text=text, block=block, lhs=lhs, rhs=rhs, operands=ssa_names(rhs))
+        return Stmt(
+            kind=kind,
+            text=text,
+            block=block,
+            loc=loc,
+            lhs=lhs,
+            rhs=rhs,
+            operands=ssa_names(rhs),
+        )
 
     if re.match(r"^[\w.]+\s*\(.*\);?$", text):
-        return Stmt(kind="call", text=text, block=block, rhs=text, operands=ops)
+        return Stmt(kind="call", text=text, block=block, loc=loc, rhs=text, operands=ops)
 
-    return UnparsedStmt(text=text, block=block, operands=ops)
+    return UnparsedStmt(text=text, block=block, loc=loc, operands=ops)
 
 
 def parse(text: str, name: str = "") -> GimpleDump:
@@ -267,7 +316,12 @@ def parse(text: str, name: str = "") -> GimpleDump:
     block: Block | None = None
     in_body = False
 
-    for raw in text.splitlines():
+    for source_line in text.splitlines():
+        # A dump made with the `lineno` modifier prints where every statement came from,
+        # in front of it and sometimes in the middle of it. The location goes on the
+        # statement rather than into its text, so a statement reads the same whether or
+        # not the dump was made that way.
+        loc, raw = take_loc(source_line.rstrip())
         line = raw.rstrip()
 
         header = FUNCTION_HEADER.match(line)
@@ -316,7 +370,12 @@ def parse(text: str, name: str = "") -> GimpleDump:
             # block 5" lines the optimized dump prints. Not a statement, so not unparsed.
             continue
 
-        phi = PHI.match(line)
+        # A PHI carries a location on each argument rather than one for the whole node,
+        # since each incoming value was written somewhere different. Those go with the
+        # rest of the text, and the ladder reads them off the dump itself.
+        clean = strip_locs(line) if "[" in line else line.strip()
+
+        phi = PHI.match(clean)
         if phi:
             lhs = ssa_names(phi.group("lhs"))
             args = tuple(
@@ -327,12 +386,13 @@ def parse(text: str, name: str = "") -> GimpleDump:
                 Phi(
                     lhs=lhs[0] if lhs else SsaName(phi.group("lhs"), -1),
                     args=args,
-                    text=line.strip(),
+                    text=clean,
                     block=block.index,
+                    loc=loc,
                 )
             )
             continue
 
-        block.stmts.append(_classify(line, block.index))
+        block.stmts.append(_classify(clean, block.index, loc))
 
     return dump

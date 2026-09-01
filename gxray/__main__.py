@@ -111,8 +111,15 @@ def cmd_record(args: argparse.Namespace) -> int:
     if not backend.available:
         print(f"{backend.gcc} is not on PATH, and the corpus has to come from the pinned compiler")
         return 2
+    # The name the compiler sees ends up printed in front of every statement in a dump
+    # recorded with `-lineno`, so it is the program's own name rather than `input.c`.
     rec = corpus_store.record(
-        backend, args.entry, source_for(args), *args.flags, dumps=args.dump or ["tree-all"]
+        backend,
+        args.entry,
+        source_for(args),
+        *args.flags,
+        dumps=args.dump or ["tree-all"],
+        filename=f"{args.program}.c",
     )
     path = corpus_store.save(rec)
     print(f"wrote {path} ({len(rec.dump_texts)} dumps)")

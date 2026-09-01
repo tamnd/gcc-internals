@@ -85,9 +85,11 @@ def entries(root: Path | str | None = None) -> list[str]:
     return sorted(p.stem for p in d.glob("*.json")) if d.exists() else []
 
 
-def record(backend, entry: str, source: str, *args: str, dumps: list[str]) -> Record:
+def record(
+    backend, entry: str, source: str, *args: str, dumps: list[str], filename: str = "input.c"
+) -> Record:
     """Run a compilation on a local backend and keep the result."""
-    result = backend.compile(source, *args, dumps=dumps)
+    result = backend.compile(source, *args, dumps=dumps, filename=filename)
     if not result.ok:
         raise RuntimeError(f"cannot record {entry!r}, the compile failed:\n{result.stderr}")
     return Record(

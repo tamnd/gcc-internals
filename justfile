@@ -49,8 +49,13 @@ widgets:
     {{py}} -m gxwidgets demo --open
 
 # Regenerate the recorded dumps that Tier 0 falls back on when the network is gone.
+# -g and the lineno modifier are what put a source location on every statement, which is
+# the only thing joining GENERIC to GIMPLE to RTL to the assembly.
 corpus:
-    {{py}} -m gxray record --program l1 --entry l1-O2 --dump tree-ssa --dump tree-optimized --gcc {{gcc}} -O2
+    {{py}} -m gxray record --program l1 --entry l1-O2 --gcc {{gcc}} \
+        --dump tree-original-lineno --dump tree-ssa-lineno \
+        --dump tree-optimized-lineno --dump rtl-expand \
+        -O2 -g
 
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:

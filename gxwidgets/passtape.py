@@ -61,20 +61,33 @@ def fingerprint(f: Function) -> tuple[str, ...]:
 
     Statement text in block order. Not the dump text, which carries the pass name and a
     header full of things that differ between two dumps of an identical function.
+
+    Debug markers are left out. They move whenever a statement moves, so counting them
+    would mark almost every pass as having changed something and the tape would be a solid
+    block of colour saying nothing.
     """
     return tuple(
         line
         for b in f.ordered_blocks
-        for line in [f"<bb {b.index}>", *[str(p) for p in b.phis], *[s.text for s in b.stmts]]
+        for line in [
+            f"<bb {b.index}>",
+            *[str(p) for p in b.phis],
+            *[s.text for s in b.stmts if not s.is_debug],
+        ]
     )
 
 
+def code_in(f: Function) -> list:
+    return [s for b in f.ordered_blocks for s in b.stmts if not s.is_debug]
+
+
 def measure(f: Function) -> dict[str, int]:
-    names = {str(n) for b in f.ordered_blocks for s in b.stmts for n in s.operands}
-    names |= {str(s.lhs) for b in f.ordered_blocks for s in b.stmts if s.lhs is not None}
+    code = code_in(f)
+    names = {str(n) for s in code for n in s.operands}
+    names |= {str(s.lhs) for s in code if s.lhs is not None}
     names |= {str(p.lhs) for b in f.ordered_blocks for p in b.phis}
     return {
-        "statements": len(f.stmts),
+        "statements": len(code),
         "blocks": len(f.blocks),
         "names": len([n for n in names if "_" in n]),
     }
@@ -358,7 +371,7 @@ class PassTape(Widget):
         for b in f.ordered_blocks:
             lines.append(f"<bb {b.index}>" + (f"  [count {b.count}]" if b.count else ""))
             lines += [f"  {p}" for p in b.phis]
-            lines += [f"  {s.text}" for s in b.stmts]
+            lines += [f"  {s.text}" for s in b.stmts if not s.is_debug]
         return "\n".join(lines)
 
     def _noscript(self) -> str:
