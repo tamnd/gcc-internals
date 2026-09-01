@@ -31,15 +31,15 @@ The toolkit is `gxray`. It drives GCC, parses what comes back, and answers the s
 ```python
 import gxray
 
-gcc = gxray.local("gcc-16")        # a compiler on this machine
-gcc = gxray.ce("cg162")            # Compiler Explorer, works from a browser
-gcc = gxray.corpus("l1-O2")        # recorded dumps, no network needed
+gcc = gxray.local("gcc-16")  # a compiler on this machine
+gcc = gxray.ce("cg162")  # Compiler Explorer, works from a browser
+gcc = gxray.corpus("l1-O2")  # recorded dumps, no network needed
 
 r = gcc.compile(gxray.L1, "-O2", dumps=["tree-ssa"])
 f = r.dump("tree-ssa").only()
 
-f.blocks[4].phis                   # the PHI nodes in <bb 4>
-f.ssa_web("s_1")                   # where s_1 comes from and everywhere it goes
+f.blocks[4].phis  # the PHI nodes in <bb 4>
+f.ssa_web("s_1")  # where s_1 comes from and everywhere it goes
 ```
 
 The same thing from a terminal:
