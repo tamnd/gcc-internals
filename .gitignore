@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+.venv/
+.ruff_cache/
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+site/_build/
+.DS_Store
+
+# GCC leaves its dumps next to the input, and there are 153 of them per file
+*.c.[0-9][0-9][0-9]t.*
+*.c.[0-9][0-9][0-9]r.*
+*.c.[0-9][0-9][0-9]i.*
+*.o
+*.so
+*.s
+
+# generated, never committed
+corpora/dumps/**/*.gz
+tools/cecache/store/

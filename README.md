@@ -13,7 +13,7 @@ So the rules are:
 - **Observable first.** No claim about GCC's behaviour without a command the reader can run that shows it.
 - **Nothing installed.** Every lesson has an experiment that runs in a browser, against the Compiler Explorer API, with a recorded dump corpus as the offline fallback.
 - **Cited like a lawyer.** Every claim about the code points at a file, a line and a release tag, and CI fails when the cited line changes.
-- **Every lesson ends with a blueprint.** A normative spec of the thing you just read about, written so somebody can implement it without the lesson.
+- **Every lesson ends with a blueprint.** A normative spec of the thing you read about, written so somebody can implement it without ever seeing the lesson.
 - **Every part ends with you changing GCC and proving it.**
 
 ## Why blueprints, and why three capstones
