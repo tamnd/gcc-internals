@@ -215,6 +215,23 @@ SHAPES = Group(
             met="T03",
         ),
         Term(
+            name="three address form",
+            short="At most one operation per statement, and every operand already a value.",
+            long="The name is older than GCC and comes from the shape of the statement: a destination and two sources, three addresses. What it really means is that an operand may be a variable or a constant and may not be another expression, which is one predicate in the source and the entire reason the middle end is writable. A pass reads one operator and two operands and is finished, rather than recursing into a tree of unknown depth.",
+            cite="gcc/gimple-expr.cc:836@releases/gcc-16.2.0",
+            also=("`is_gimple_val`",),
+            see=("GIMPLE", "gimplification", "temporary"),
+            met="T03",
+        ),
+        Term(
+            name="temporary",
+            short="A variable gimplification invented to hold a value that had nowhere to go.",
+            long="Printed as `_1`, `_2` and so on in the dumps, and there is one for every interior node of an expression that had to be flattened. They are not in your source and they are not a sign that anything went wrong. The related name `D.4635` is a different thing: that is the slot a function returns through, made by the front end for every function rather than by gimplification for a particular expression.",
+            cite="gcc/gimplify.cc:683@releases/gcc-16.2.0",
+            see=("gimplification", "three address form", "SSA name"),
+            met="T03",
+        ),
+        Term(
             name="RTL",
             short="Register Transfer Language. Machine operations on unlimited virtual registers.",
             long="RTL is the back end's representation and it is a Lisp-like expression describing what an instruction does to registers and memory, not what the instruction is called. A target matches those expressions against its patterns to pick real instructions. The move from GIMPLE to RTL is the point where the compiler stops being about your program and starts being about a machine.",

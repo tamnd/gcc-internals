@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [out of SSA](#out-of-ssa) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [out of SSA](#out-of-ssa) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
 
 ## Driving the compiler
 
@@ -129,6 +129,22 @@ First met in T02. See also [GENERIC](#generic), [gimplification](#gimplification
 It walks the tree and, every time it finds an expression that is too complicated to be a statement on its own, it invents a temporary, assigns the sub-expression to it, and puts the assignment before. Everything else about GIMPLE follows from that one move. The function that does it is one of the largest switch statements in the compiler and it is worth looking at once.
 
 First met in T03. See also [GENERIC](#generic), [GIMPLE](#gimple). In the source: [`gcc/gimplify.cc:20296@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gimplify.cc#L20296).
+
+### three address form
+
+**At most one operation per statement, and every operand already a value.**
+
+The name is older than GCC and comes from the shape of the statement: a destination and two sources, three addresses. What it really means is that an operand may be a variable or a constant and may not be another expression, which is one predicate in the source and the entire reason the middle end is writable. A pass reads one operator and two operands and is finished, rather than recursing into a tree of unknown depth.
+
+Also written `is_gimple_val`. First met in T03. See also [GIMPLE](#gimple), [gimplification](#gimplification), [temporary](#temporary). In the source: [`gcc/gimple-expr.cc:836@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gimple-expr.cc#L836).
+
+### temporary
+
+**A variable gimplification invented to hold a value that had nowhere to go.**
+
+Printed as `_1`, `_2` and so on in the dumps, and there is one for every interior node of an expression that had to be flattened. They are not in your source and they are not a sign that anything went wrong. The related name `D.4635` is a different thing: that is the slot a function returns through, made by the front end for every function rather than by gimplification for a particular expression.
+
+First met in T03. See also [gimplification](#gimplification), [three address form](#three-address-form), [SSA name](#ssa-name). In the source: [`gcc/gimplify.cc:683@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gimplify.cc#L683).
 
 ### RTL
 

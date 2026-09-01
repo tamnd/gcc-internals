@@ -50,8 +50,28 @@ BLOCK_HEADER = re.compile(r"^\s*<bb (?P<index>\d+)>\s*(?P<attrs>\[[^\]]*\])?\s*:
 PHI = re.compile(r"^\s*#\s*(?P<lhs>\S+)\s*=\s*PHI\s*<(?P<args>.*)>\s*$")
 PHI_ARG = re.compile(r"(?P<value>[^,()]+)\((?P<pred>\d+)\)")
 LOCAL_COUNT = re.compile(r"local count:\s*(?P<count>\d+)")
-DECL = re.compile(r"^\s{2}(?P<type>[A-Za-z_][\w \[\]*<>:.]*?)\s+(?P<name>[\w.$]+);\s*$")
+DECL = re.compile(r"^\s{2,}(?P<type>[A-Za-z_][\w \[\]*<>:.]*?)\s+(?P<name>[\w.$]+);\s*$")
 SIGNATURE = re.compile(r"^(?P<sig>[A-Za-z_].*\(.*\))\s*$")
+
+# The gimplification dump has no `;; Function` banner in front of a function, so the
+# signature at column zero is the only thing announcing one. Recognised only when no
+# function is open, which is why it can never be confused with the signature line that
+# does follow a banner.
+HEADERLESS = re.compile(r"^(?P<sig>[A-Za-z_][\w \t*&:<>,.\[\]]*?\b(?P<name>[\w.$]+)\s*\(.*\))\s*$")
+
+# `return D.4633;` matches DECL, because "return" looks like a type and "D.4633" looks like
+# a name. In a dump with basic blocks that never comes up, since declarations are the only
+# thing before the first block. Without blocks it comes up immediately.
+NOT_A_DECL = re.compile(r"^\s*(return|goto|if|else|switch|case|default)\b")
+
+#: The block statements go in when the dump has none, because the CFG does not exist yet.
+PRE_CFG_BLOCK = 0
+
+# The operator in `_1 = a + b`. Spaces on both sides, which the dump always prints, so the
+# minus in `-1` and the star in `*p` cannot be mistaken for one. Longest first, or `<<` gets
+# read as `<`.
+BINARY_OP = re.compile(r" (<<|>>|<=|>=|==|!=|&&|\|\||[-+*/%&|^<>]) ")
+UNARY_OP = re.compile(r"^(-|~|!)\s*\S")
 
 
 @dataclass(frozen=True)
@@ -104,6 +124,22 @@ class Stmt:
         and counting them as statements makes a function look twice the size it is.
         """
         return self.kind == "debug"
+
+    @property
+    def operator(self) -> str | None:
+        """The one operator on the right hand side of an assignment, if it has one.
+
+        GIMPLE is three address form, so there is never more than one, which is what makes
+        this a property rather than a list. `None` for a copy, for a call, and for anything
+        that is not an assignment, all of which are statements with no operator in them.
+        """
+        if self.kind != "assign" or not self.rhs:
+            return None
+        binary = BINARY_OP.search(self.rhs)
+        if binary:
+            return binary.group(1)
+        unary = UNARY_OP.match(self.rhs.strip())
+        return unary.group(1) if unary else None
 
     def __str__(self) -> str:
         return self.text
@@ -185,6 +221,12 @@ class Function:
     decls: list[tuple[str, str]] = field(default_factory=list)
     blocks: dict[int, Block] = field(default_factory=dict)
 
+    #: True for a dump taken before the CFG was built, which is the gimplification dump and
+    #: nothing else. Such a function has one block holding everything, in dump order, and
+    #: its control flow is labels and gotos rather than edges. Worth knowing before drawing
+    #: a graph of it, because there is no graph to draw.
+    pre_cfg: bool = False
+
     @property
     def stmts(self) -> list[Stmt]:
         """Every statement in the dump, debug markers included, because they are in it."""
@@ -239,6 +281,8 @@ class Function:
         return {"name": target, "def": definition, "uses": uses}
 
     def __str__(self) -> str:
+        if self.pre_cfg:
+            return f"{self.name} ({len(self.code)} statements, no blocks yet)"
         return f"{self.name} ({len(self.blocks)} blocks, {len(self.code)} statements)"
 
 
@@ -310,11 +354,26 @@ def _classify(body: str, block: int, loc: Loc | None = None) -> Stmt:
 
 
 def parse(text: str, name: str = "") -> GimpleDump:
-    """Parse a GIMPLE dump. Never raises on unfamiliar content."""
+    """Parse a GIMPLE dump. Never raises on unfamiliar content.
+
+    Two shapes of dump go through here. Everything from `cfg` onwards has a `;; Function`
+    banner and `<bb N>` headers. The gimplification dump, which is the earliest one, has
+    neither, because at that point the function is a straight list of statements and the
+    CFG has not been built. Those come back as one function per signature with everything in
+    a single block, and `Function.pre_cfg` says which kind you are holding.
+    """
     dump = GimpleDump(text=text, name=name)
     current: Function | None = None
     block: Block | None = None
     in_body = False
+    # Only ever true inside a headerless function, where the declarations run from the
+    # opening brace to the first blank line and the statements start after it.
+    in_decls = False
+    pending = ""
+    # How many braces deep a headerless function is. The front end keeps the nested scopes
+    # the source had, and each one declares its own variables, so the braces have to be
+    # counted rather than treated as the start and end of the function.
+    depth = 0
 
     for source_line in text.splitlines():
         # A dump made with the `lineno` modifier prints where every statement came from,
@@ -329,17 +388,44 @@ def parse(text: str, name: str = "") -> GimpleDump:
             pretty = header.group("pretty")
             current = Function(name=pretty.split()[0], header=line)
             dump.functions[current.name] = current
-            block, in_body = None, False
+            block, in_body, in_decls, pending, depth = None, False, False, "", 0
             continue
 
-        if current is None or not line.strip():
+        if current is None:
+            # No function is open, so a signature at column zero may be one starting. It is
+            # remembered rather than acted on, because the brace on the next line is what
+            # says this really was a function and not a stray line somewhere in the dump.
+            if line.strip() == "{" and pending:
+                found = HEADERLESS.match(pending)
+                assert found is not None  # pending is only ever set from a match
+                current = Function(
+                    name=found.group("name"), signature=found.group("sig"), pre_cfg=True
+                )
+                dump.functions[current.name] = current
+                block, in_body, in_decls, pending, depth = None, True, True, "", 1
+            elif line.strip():
+                pending = line if HEADERLESS.match(line) else ""
+            continue
+
+        if not line.strip():
+            in_decls = False
             continue
 
         if line.strip() == "{":
             in_body = True
+            if current.pre_cfg:
+                # A nested scope from the source, with its own declarations in front of its
+                # own statements. Everything still goes in the one block, because a scope is
+                # not a basic block and the statements are already in the order they run.
+                depth, in_decls = depth + 1, True
             continue
         if line.strip() == "}":
-            in_body, block = False, None
+            if current.pre_cfg:
+                depth, in_decls = depth - 1, False
+                if depth == 0:
+                    current, block, in_body = None, None, False
+                continue
+            in_body, block, in_decls = False, None, False
             continue
 
         if not in_body:
@@ -361,11 +447,20 @@ def parse(text: str, name: str = "") -> GimpleDump:
             continue
 
         decl = DECL.match(raw)
-        if decl and block is None:
+        wants_decls = in_decls if current.pre_cfg else block is None
+        if decl and wants_decls and not NOT_A_DECL.match(raw):
             current.decls.append((decl.group("type").strip(), decl.group("name")))
             continue
 
-        if block is None:
+        if current.pre_cfg:
+            # The declarations are over, whatever the blank lines said, and there is no
+            # block header coming because there are no blocks. Everything from here to the
+            # closing brace is one run of statements in the order the front end emitted it.
+            in_decls = False
+            if block is None:
+                block = Block(index=PRE_CFG_BLOCK)
+                current.blocks[block.index] = block
+        elif block is None:
             # Noise between the header and the first block, such as the "Removing basic
             # block 5" lines the optimized dump prints. Not a statement, so not unparsed.
             continue
