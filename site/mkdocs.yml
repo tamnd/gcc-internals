@@ -51,10 +51,18 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
 
+# Builds the marimo islands the pages ask for. See tools/island.
+hooks:
+  - hooks.py
+
 extra_css:
   - assets/gxray.css
+
+extra_javascript:
+  - assets/island.js
 
 nav:
   - Start here: index.md
   - How this is built:
     - The pinned tree and citations: pinned-tree.md
+    - Can a browser compile C here: probe.md

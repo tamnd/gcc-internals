@@ -10,6 +10,9 @@ dependencies = []
 dev = ["pytest>=8", "ruff>=0.6"]
 # Only needed to show a widget live in a notebook. Everything else works without it.
 notebook = ["anywidget>=0.9"]
+# Only needed to build the book. Marimo is here because the pages build their islands from
+# real notebooks, so the site build runs them.
+site = ["mkdocs-material>=9.5", "marimo>=0.24"]
 
 [project.scripts]
 gxray = "gxray.__main__:main"
@@ -36,10 +39,17 @@ extend-exclude = ["vendor"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+[tool.ruff.lint.per-file-ignores]
+# A marimo cell shows a value by ending on a bare expression. That is the notebook format
+# rather than a mistake, and it is the only thing about these files that is not ordinary
+# Python.
+"site/notebooks/*.py" = ["B018"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 filterwarnings = ["error"]
 markers = [
   "needs_gcc: drives a real gcc-16 and is skipped when there is not one on PATH",
   "needs_network: talks to Compiler Explorer, never run in CI",
+  "needs_marimo: builds a real island and needs the site extra installed",
 ]

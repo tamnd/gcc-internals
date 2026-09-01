@@ -1,0 +1,57 @@
+name: site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# The site build runs the notebooks, because an island carries the output it was built with
+# and that output has to be real. Notebooks are written to notice they are not in a browser
+# and render their before state, so this job never touches a live API.
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and a push that lands while one is running wins.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build the book
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev,site]"
+
+      # The island tests only have something to test when marimo is here.
+      - run: python -m pytest -q tests/test_island.py
+
+      - run: python -m mkdocs build --strict -f site/mkdocs.yml
+
+      # A build that quietly stopped producing islands still looks like a good build, so
+      # say out loud that the one page that has to have one still does.
+      - name: the probe page really has an island in it
+        run: grep -q "marimo-island" site/_build/probe/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/_build
+
+  deploy:
+    name: publish to pages
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

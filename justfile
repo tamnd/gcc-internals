@@ -82,12 +82,16 @@ refcheck:
 refcheck-update:
     {{py}} -m tools.refcheck update
 
-# Serve the book locally.
+# Add the book build on top of the dev tools. Only needed for serve and build-site.
+setup-site:
+    .venv/bin/pip install -qe ".[dev,site]"
+
+# Serve the book locally. Islands are rebuilt on every edit, which takes a second or two.
 serve:
     mkdocs serve -f site/mkdocs.yml
 
 build-site:
-    mkdocs build -f site/mkdocs.yml
+    mkdocs build --strict -f site/mkdocs.yml
 
 # Scaffold a lesson with all nine blocks, so the structure is never assembled by hand.
 new-lesson ID:

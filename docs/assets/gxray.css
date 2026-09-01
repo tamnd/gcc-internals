@@ -1,0 +1,107 @@
+/* Site styles.
+ *
+ * Deliberately small. The theme is MkDocs Material and the drawings bring their own colours
+ * from gxmanim/palette.py, so the only thing left here is the frame around an island and a
+ * couple of things the theme has no opinion about.
+ */
+
+.island {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.2rem;
+  padding: 0.8rem 1rem;
+  margin: 1.2rem 0;
+}
+
+.island-start {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin: 0 0 0.8rem 0;
+}
+
+.island-start button {
+  font: inherit;
+  font-weight: 700;
+  color: var(--md-primary-bg-color);
+  background: var(--md-primary-fg-color);
+  border: 0;
+  border-radius: 0.2rem;
+  padding: 0.35rem 0.9rem;
+  cursor: pointer;
+}
+
+.island-start button:hover {
+  background: var(--md-accent-fg-color);
+}
+
+.island-note,
+.island-status {
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* The build time output, written into the page as plain HTML so the island says something
+ * before anything runs. Marimo's own prose classes are Tailwind and are not loaded yet, so
+ * the paragraphs need telling that they are paragraphs. */
+.island-static .paragraph {
+  display: block;
+  margin: 0.6em 0;
+}
+
+.island-static pre,
+.island-static code {
+  font-size: 0.72rem;
+}
+
+/* While Pyodide is on its way down, the recorded output is still on screen and still true.
+ * Fading it slightly says it is about to be replaced without hiding it. */
+.island.is-starting .island-cells {
+  opacity: 0.55;
+}
+
+/* Once the runtime is live the cells are the real thing, so the copies would be a second
+ * stale version of every paragraph on the page. The note about what pressing start does is
+ * stale too, because it has already been pressed. */
+.island.is-live .island-static,
+.island.is-live .island-start .island-note {
+  display: none;
+}
+
+/* Marimo hoists the static copy of a UI element out of the cell output when it hydrates
+ * and then renders a live one beside it, so a code editor arrives twice. The live one is
+ * always inside the output div it renders, and the leftover is always a bare child of the
+ * island, which is enough to tell them apart. */
+marimo-island > marimo-ui-element {
+  /* Marimo's own stylesheet says `display: contents` for these and loads after ours, so
+   * matching its specificity is not enough to win. */
+  display: none !important;
+}
+
+/* Marimo gives a code block a hard coded light background, so a dump renders as a white
+ * card in the middle of a dark page. The theme already has a colour for a code block and
+ * it follows the light and dark toggle, which marimo's does not. Naming the element is
+ * what wins here, because marimo's own rule is just as specific and loads later. */
+.island .markdown div.codehilite,
+.island .markdown div.codehilite pre {
+  background: var(--md-code-bg-color);
+}
+
+/* Marimo's own text colours come from its Tailwind build and are tuned for a marimo page,
+ * not for whatever theme the book is in. Prose reads better inheriting from the page. */
+.island .markdown,
+.island .markdown p,
+.island .paragraph {
+  color: inherit;
+}
+
+.island.is-live {
+  border-color: var(--md-primary-fg-color);
+}
+
+/* A diagram is drawn at its own size and should not be blown up to the column width. */
+.gx-figure img,
+.gx-figure svg {
+  max-width: 100%;
+  height: auto;
+}
