@@ -53,6 +53,18 @@ python -m gxray web --name s_1 -O2
 
 `just setup` puts the toolkit and the dev tools in a virtualenv, and `just check` runs everything CI runs.
 
+## Blueprints are compiled, not typed
+
+A blueprint has nine sections and no narrative, and the parts of it that are inventories are generated. GCC keeps the facts that have to stay consistent across fifty one targets and twelve front ends in machine readable form, so the list of GIMPLE statement codes comes out of `gcc/gimple.def` and the map from a statement code to the C++ class you may cast it to comes out of the `is_a_helper` specialisations in `gcc/gimple.h`. Nobody transcribes them.
+
+```console
+just blueprints        # rebuild every generated section from the pinned tree
+just blueprints-check  # fail if what is committed is not what the generator produces
+python -m tools.bpc coverage
+```
+
+The last one is the honest number. Every GIMPLE code is classified as covered, mentioned, or out of scope with a written reason, the inventory is read from the pinned tree rather than from the ledger, and a code that nothing classifies fails the build. Today it says 47 codes, 11 covered, 12 mentioned, 24 out of scope.
+
 ## Status
 
 M0 is underway. See the [milestones](https://github.com/tamnd/gcc-internals/milestones) for the plan and the [open questions](https://github.com/tamnd/gcc-internals/issues?q=is%3Aissue+label%3Akind%2Fopen-question) for what could still change it.

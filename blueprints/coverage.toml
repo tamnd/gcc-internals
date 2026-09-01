@@ -1,0 +1,110 @@
+# The coverage ledger.
+#
+# Every item in every inventory here is covered, mentioned, or out of scope with a reason.
+# `bpc coverage` reads the inventory out of the pinned GCC tree, not out of this file, so
+# a statement code added to GCC 17 turns the build red until somebody decides what the book
+# does about it. Rules match by shell glob and the first match wins, so put the specific
+# ones above the general ones.
+#
+# The honest summary this produces is the point. A course that implies it covers all of GCC
+# is not credible, and a published number turns an unfalsifiable claim into a fact.
+
+[inventory.gimple-codes]
+what = "GIMPLE statement codes"
+source = "gcc/gimple.def"
+macro = "DEFGSCODE"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_OMP_*"
+status = "out of scope"
+why = "OpenMP and OpenACC lowering is a subsystem of its own size, with its own pipeline and its own book to be written. The codes appear in the generated inventory so a reader can see how much of GIMPLE they are, which is a third of it."
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_TRANSACTION"
+status = "out of scope"
+why = "Transactional memory is off by default, has no active users the project can test against, and needs its own front end support to demonstrate."
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_ASSIGN"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_CALL"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_COND"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_PHI"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_RETURN"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_LABEL"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_GOTO"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_SWITCH"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_NOP"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_DEBUG"
+status = "covered"
+
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_PREDICT"
+status = "covered"
+
+# Everything left is named where it comes up and not explained. Exception handling and the
+# gimplifier's internal placeholders both deserve better than a mention and will get it in
+# their own blueprints, at which point these rules move up into the covered list.
+[[inventory.gimple-codes.rule]]
+match = "GIMPLE_*"
+status = "mentioned"
+
+[inventory.gimple-layouts]
+what = "GIMPLE layout structures"
+source = "gcc/gsstruct.def"
+macro = "DEFGSSTRUCT"
+
+[[inventory.gimple-layouts.rule]]
+match = "GSS_OMP*"
+status = "out of scope"
+why = "The layouts for the OpenMP codes, which are out of scope for the same reason the codes are."
+
+[[inventory.gimple-layouts.rule]]
+match = "GSS_BASE"
+status = "covered"
+
+[[inventory.gimple-layouts.rule]]
+match = "GSS_WITH_OPS"
+status = "covered"
+
+[[inventory.gimple-layouts.rule]]
+match = "GSS_WITH_MEM_OPS*"
+status = "covered"
+
+[[inventory.gimple-layouts.rule]]
+match = "GSS_CALL"
+status = "covered"
+
+[[inventory.gimple-layouts.rule]]
+match = "GSS_PHI"
+status = "covered"
+
+[[inventory.gimple-layouts.rule]]
+match = "GSS_*"
+status = "mentioned"
