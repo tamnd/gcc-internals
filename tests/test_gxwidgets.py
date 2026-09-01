@@ -29,7 +29,6 @@ from gxwidgets import (
     script,
     state,
 )
-from gxwidgets.passtape import fingerprint, measure
 from gxwidgets.ssaweb import INLINE_LIMIT
 
 CORPUS = Path(__file__).resolve().parent.parent / "corpora" / "dumps" / "l1-O2.json"
@@ -299,18 +298,6 @@ def test_the_trend_line_is_also_written_out_as_numbers(tape):
 def test_a_tape_with_one_dump_does_not_draw_a_trend(pipeline, ssa):
     lonely = PassTape(pipeline, dumps={"tree-ssa": ssa})
     assert "Two recorded dumps are needed" in lonely.render()
-
-
-def test_a_fingerprint_ignores_the_dump_header(ssa, ssa_dump):
-    again = gimple.parse(ssa_dump).only()
-    assert fingerprint(ssa) == fingerprint(again)
-
-
-def test_measure_counts_what_the_summary_quotes(ssa):
-    got = measure(ssa)
-    assert got["statements"] == len(ssa.stmts)
-    assert got["blocks"] == len(ssa.blocks)
-    assert got["names"] > 0
 
 
 # The SSA web

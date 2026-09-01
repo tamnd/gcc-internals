@@ -88,6 +88,39 @@ lad.rung(6).counts()  # {'generic': 5, 'gimple': 4, 'rtl': 6, 'asm': 6}
 
 That is the `for` header in `l1.c`, and it is most of the function at every level. Line 8, `return s;`, has one GENERIC statement, one GIMPLE statement and nothing below that at all, because the value was already in the return register and the epilogue got filed under the closing brace on line 9. Reading that off a picture takes a second, and reading it off four dump files takes an afternoon.
 
+## Nine shapes, and that is the whole vocabulary
+
+`gxmanim` is the drawing side. It has exactly nine primitives, and a reader who learns them in lesson one can read every diagram in all 96 lessons without a legend:
+
+| shape | what it means |
+| --- | --- |
+| card | one GIMPLE tuple or one RTL insn |
+| block | a basic block, with its index and count in a header strip |
+| edge | control flow, with the kind in the line style |
+| badge | an SSA name and its version, or a pseudo register |
+| thread | a definition to one of its uses |
+| cell | one pass in the pipeline |
+| rung | one IR level in the ladder |
+| node | an RTX, a GENERIC tree, or a pattern |
+| slot | a register, a stack frame, a vector lane, or a bit field |
+
+A visual language with thirty symbols is not a language, it is a lookup table, so adding a tenth means amending the specification in the same change.
+
+Above the shapes sit the mobjects. A mobject takes something `gxray` parsed and returns a `Scene`, which is a list of placed shapes, the links between them, and a sentence saying what the picture shows. It does not draw. The SVG renderer draws, the manim renderer will draw later, and because the meaning lives in the scene rather than in either of them the still in a lesson and the frame in a video cannot disagree.
+
+```python
+import gxray
+from gxmanim import mobjects, svg
+
+f = gxray.corpus("l1-O2").compile(gxray.L1, "-O2").dump("tree-optimized").only()
+scene = mobjects.ssa_web(f, "s_9")
+
+scene.describe()  # what the drawing says, in words
+open("web.svg", "w").write(svg.document(scene))
+```
+
+`just diagrams` rebuilds every diagram from the recorded dumps and opens a contact sheet with each one and its caption underneath. The renderer has no dependencies, so a diagram is a file CI can regenerate from the dump it came from, and when the pinned compiler moves the pictures move with it.
+
 ## Blueprints are compiled, not typed
 
 A blueprint has nine sections and no narrative, and the parts of it that are inventories are generated. GCC keeps the facts that have to stay consistent across fifty one targets and twelve front ends in machine readable form, so the list of GIMPLE statement codes comes out of `gcc/gimple.def` and the map from a statement code to the C++ class you may cast it to comes out of the `is_a_helper` specialisations in `gcc/gimple.h`. Nobody transcribes them.
