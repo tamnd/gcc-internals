@@ -9,7 +9,7 @@ dist/
 site/_build/
 .DS_Store
 
-# GCC leaves its dumps next to the input, and there are 153 of them per file
+# GCC leaves its dumps next to the input, and there are 236 of them per file at -O2
 *.c.[0-9][0-9][0-9]t.*
 *.c.[0-9][0-9][0-9]r.*
 *.c.[0-9][0-9][0-9]i.*

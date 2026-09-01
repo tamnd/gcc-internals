@@ -23,7 +23,7 @@ lint:
     ruff format --check .
 
 prose:
-    {{py}} -m tools.prosecheck README.md lessons blueprints
+    {{py}} -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md docs lessons blueprints corpora/programs
 
 test:
     {{py}} -m pytest -q
@@ -55,9 +55,17 @@ blueprints:
 blueprints-check:
     {{py}} -m tools.bpc check
 
+# The pinned GCC tree, about 1.3 GB shallow. Only refcheck needs it.
+gcc-src:
+    git submodule update --init --depth 1
+
 # Resolve every path:line@tag citation in the prose against the pinned tree.
 refcheck:
     {{py}} -m tools.refcheck check
+
+# Rebuild the citation lockfile after adding a citation. Commit what changes.
+refcheck-update:
+    {{py}} -m tools.refcheck update
 
 # Serve the book locally.
 serve:

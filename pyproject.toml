@@ -25,6 +25,8 @@ packages = ["gxray", "tools"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# The pinned GCC tree is somebody else's code, and parts of it are Python 2.
+extend-exclude = ["vendor"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

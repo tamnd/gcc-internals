@@ -22,7 +22,7 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - name: prose rules
-        run: python -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md lessons blueprints corpora/programs
+        run: python -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md docs lessons blueprints corpora/programs
 
   test:
     name: tests
@@ -34,6 +34,22 @@ jobs:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
       - run: python -m pytest -q
+
+  refcheck:
+    name: citations
+    runs-on: ubuntu-latest
+    steps:
+      # The pinned GCC tree is about 1.3 GB shallow. It is the price of being able to
+      # prove that every claim about the source still points where it did.
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: git -C vendor/gcc log --oneline -1
+      - run: python -m tools.refcheck check
 
   gcc:
     name: against a real gcc-16
