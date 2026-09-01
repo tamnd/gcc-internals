@@ -54,11 +54,13 @@ diagrams:
 
 # Regenerate the recorded dumps that Tier 0 falls back on when the network is gone.
 # -g and the lineno modifier are what put a source location on every statement, which is
-# the only thing joining GENERIC to GIMPLE to RTL to the assembly.
+# the only thing joining GENERIC to GIMPLE to RTL to the assembly. The graph modifier writes
+# a .dot beside the text dump, and that is the only place the real CFG edges exist.
 corpus:
     {{py}} -m gxray record --program l1 --entry l1-O2 --gcc {{gcc}} \
         --dump tree-original-lineno --dump tree-ssa-lineno \
         --dump tree-optimized-lineno --dump rtl-expand \
+        --dump tree-ssa-graph --dump tree-optimized-graph \
         -O2 -g
 
 # Rebuild the generated sections of every blueprint from GCC's own def files.

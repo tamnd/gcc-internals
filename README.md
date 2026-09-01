@@ -88,6 +88,27 @@ lad.rung(6).counts()  # {'generic': 5, 'gimple': 4, 'rtl': 6, 'asm': 6}
 
 That is the `for` header in `l1.c`, and it is most of the function at every level. Line 8, `return s;`, has one GENERIC statement, one GIMPLE statement and nothing below that at all, because the value was already in the return register and the epilogue got filed under the closing brace on line 9. Reading that off a picture takes a second, and reading it off four dump files takes an afternoon.
 
+## The control flow graph comes from GCC, not from the gotos
+
+A text dump prints the statements in each block and the jumps between them, and a block that falls into the next one has no jump to print. Build a graph by reading gotos and every fallthrough edge is missing, which in `l1.c` is enough to lose the loop. So `gxray.cfg` reads the other dump instead. Ask for `-graph` and GCC writes a `.dot` file beside the text one, straight out of `cfun`'s edge lists, with nothing left out:
+
+```python
+import gxray
+
+r = gxray.corpus("l1-O2").compile(gxray.L1, "-O2")
+g = r.cfg("tree-optimized")
+
+str(g)  # 'f (5 blocks, 6 edges, 1 loop)'
+g.successors(2)  # 2 -> 3 true [89%], 2 -> 4 false [11%]
+g.back_edges  # 3 -> 3, the latch
+g.dominators()  # {2: 0, 3: 2, 4: 2, 1: 4}
+g.loops  # {1: [3]}
+```
+
+Blocks 0 and 1 are ENTRY and EXIT, which is true of every function GCC compiles. Edge kinds, probabilities and the loop tree are all in the dot file already, because `gcc/graph.cc` writes the flags out as colours, line styles and nested clusters. Reading it back means reading that mapping backwards, and it is lossy in two places, so `Edge` keeps the weight GCC wrote and a `back` flag rather than pretending a colour is the whole story. The module docstring says exactly where and why.
+
+Drawing the same function at `tree-ssa` and at `tree-optimized` puts the loop rotation on screen. At SSA build time there are six blocks with a separate loop header, and by the end there are five with a single latch that jumps to itself.
+
 ## Nine shapes, and that is the whole vocabulary
 
 `gxmanim` is the drawing side. It has exactly nine primitives, and a reader who learns them in lesson one can read every diagram in all 96 lessons without a legend:

@@ -299,13 +299,53 @@ class Renderer:
         )
         return _tag("defs", head + double)
 
+    def _clear(self, edge: Edge, a: Box, b: Box) -> bool:
+        """Whether a straight line from `a` down to `b` misses everything else in the scene.
+
+        Only top level shapes are looked at, by id, since a card inside a block is already
+        covered by the block. The line is the segment between the two centre columns, so a
+        box counts as in the way when it sits between them vertically and overlaps that
+        column horizontally.
+        """
+        top, bottom = a.bottom, b.y
+        for other in self.scene.placed:
+            box = other.box
+            if getattr(other.shape, "id", "") in (edge.src, edge.dst):
+                continue
+            vertical = box.bottom > top and box.y < bottom
+            horizontal = box.x - 8 < max(a.cx, b.cx) and box.right + 8 > min(a.cx, b.cx)
+            if vertical and horizontal:
+                return False
+        return True
+
     def _edge(self, edge: Edge) -> str:
         a, b = self.boxes[edge.src], self.boxes[edge.dst]
         style = edge.style
         ink = ROLES["neutral"].light.ink
-        start, end = (a.foot, b.top) if a.cy <= b.cy else (a.rightward, b.rightward)
-        if a.cy <= b.cy:
+        loop = edge.src == edge.dst
+        start, end = (a.foot, b.top) if a.cy <= b.cy and not loop else (a.rightward, b.rightward)
+        if loop:
+            # A block that jumps to itself. Drawn as a loop off the right hand side, because
+            # the straight version is a line from the bottom of the box to the top of the
+            # same box, which goes through everything in it.
+            bow = a.right + 34
+            path = (
+                f"M{start.x:g},{start.y - 10:g} C{bow:g},{start.y - 24:g} "
+                f"{bow:g},{start.y + 24:g} {end.x:g},{end.y + 10:g}"
+            )
+        elif a.cy <= b.cy and self._clear(edge, a, b):
             path = f"M{start.x:g},{start.y:g} L{end.x:g},{end.y:g}"
+        elif a.cy <= b.cy:
+            # A forward edge that skips a layer. Straight down would run it through whatever
+            # sits in between, and an arrow crossing a block looks like it enters the block.
+            # It leaves and arrives on the left, since the right hand side is where the back
+            # edges go and two curves in the same channel are worse than none.
+            start, end = a.left, b.left
+            bow = max(min(a.x, b.x) - 30, 4)
+            path = (
+                f"M{start.x:g},{start.y:g} C{bow:g},{start.y:g} "
+                f"{bow:g},{end.y:g} {end.x:g},{end.y:g}"
+            )
         else:
             # A back edge leaves and re-enters on the right and bows out, so it never lies
             # on top of the forward edges between the same two blocks.

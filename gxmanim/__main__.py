@@ -22,7 +22,7 @@ from pathlib import Path
 
 from gxmanim import mobjects, svg
 from gxmanim.scene import Scene
-from gxray import corpus_store, gimple, locs, passes, tape
+from gxray import cfg, corpus_store, gimple, locs, passes, tape
 
 FIXTURE = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "l1-O2-passes.txt"
 
@@ -48,8 +48,12 @@ FIGURE = """<figure style="margin: 2rem 0;">
 def scenes(entry: str = "l1-O2") -> dict[str, Scene]:
     """Every drawing this project currently knows how to make, from one recorded build."""
     record = corpus_store.load(entry)
+    # Graph dumps are dot files sitting under a `tree-` key, so they are skipped here and
+    # picked up by name further down.
     dumps = {
-        k: gimple.parse(v).only() for k, v in record.dump_texts.items() if k.startswith("tree-")
+        k: gimple.parse(v).only()
+        for k, v in record.dump_texts.items()
+        if k.startswith("tree-") and not k.endswith("-graph")
     }
     f = dumps["tree-optimized"]
     pipeline = passes.parse(FIXTURE.read_text(encoding="utf-8"))
@@ -69,6 +73,14 @@ def scenes(entry: str = "l1-O2") -> dict[str, Scene]:
         "ssa-web": mobjects.ssa_web(f, name),
         "phi-node": mobjects.phi_node(f, phi),
     }
+    # Both graph dumps, because the pair is the lesson. The loop has a header block of its
+    # own when SSA is built and a single latch by the time the optimizers are done with it,
+    # and one drawing of either on its own does not say that.
+    for key, when in (("tree-ssa", "at ssa"), ("tree-optimized", "at optimized")):
+        if f"{key}-graph" in record.dump_texts:
+            graph = cfg.parse(record.dump_texts[f"{key}-graph"])[f.name]
+            out[f"cfg-{when.replace(' ', '-')}"] = mobjects.cfg_view(graph)
+            out[f"dom-tree-{when.replace(' ', '-')}"] = mobjects.dom_tree(graph)
     # One ladder per source line that anything reached, because which line is worth showing
     # depends on the lesson and the interesting one is rarely the first.
     for rung in ladder.rungs:

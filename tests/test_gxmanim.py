@@ -30,7 +30,7 @@ from gxmanim.primitives import (
     Thread,
 )
 from gxmanim.scene import Scene
-from gxray import gimple, locs, passes, tape
+from gxray import cfg, gimple, locs, passes, tape
 
 CORPUS = Path(__file__).resolve().parents[1] / "corpora" / "dumps" / "l1-O2.json"
 
@@ -43,6 +43,11 @@ def recorded():
 @pytest.fixture
 def fn(recorded):
     return gimple.parse(recorded["dumps"]["tree-optimized"]).only()
+
+
+@pytest.fixture
+def graph(recorded):
+    return cfg.parse(recorded["dumps"]["tree-optimized-graph"])["f"]
 
 
 @pytest.fixture
@@ -369,6 +374,72 @@ def test_a_constant_coming_into_a_phi_is_called_a_constant(fn):
     assert "a constant on this edge" in scene.describe()
 
 
+def test_every_kind_of_edge_gcc_can_draw_has_somewhere_to_go_in_the_palette(
+    graph, loops_graph, setjmp_graph
+):
+    """The two vocabularies have to line up, or a real dump renders as an exception.
+
+    `gxray.cfg` cannot import the palette, since the palette lives on the drawing side, so
+    nothing but this test is holding the two lists together.
+    """
+    graphs = [graph, cfg.parse(loops_graph)["g"], cfg.parse(setjmp_graph)["k"]]
+    kinds = {e.kind for g in graphs for e in g.edges}
+    assert kinds <= set(EDGES)
+    assert {"fallthrough", "true", "false", "back", "abnormal"} <= kinds
+
+
+def test_the_control_flow_view_draws_the_edges_the_dump_had(graph):
+    scene = mobjects.cfg_view(graph)
+    assert len(scene.links) == len(graph.edges)
+    assert scene.check() == []
+    assert "1 back" in scene.caption
+
+
+def test_a_block_in_a_loop_is_the_one_thing_the_view_marks(graph):
+    """`<bb 3>` is the loop, and in a control flow drawing that is the distinction worth
+    spending a role on."""
+    scene = mobjects.cfg_view(graph)
+    roles = {p.shape.id: p.shape.role for p in scene.placed}
+    assert roles["bb3"] == "focus"
+    assert roles["bb2"] == "neutral"
+
+
+def test_the_view_leaves_out_the_debug_markers_and_the_locations(graph):
+    """The corpus is recorded with `-g` and `-lineno`, so every statement arrives with a
+    marker in front of it and a location on it, and neither belongs in this picture."""
+    drawn = mobjects.cfg_view(graph).describe()
+    assert "# DEBUG" not in drawn
+    assert "l1.c:" not in drawn
+    assert "return s_10;" in drawn
+
+
+def test_a_block_further_down_the_page_is_further_along_the_flow(graph):
+    """ENTRY at the top, EXIT at the bottom, and a block below every block that reaches
+    it. Laid out by counting forward edges, so a loop does not push its own body down."""
+    scene = mobjects.cfg_view(graph)
+    boxes = scene.boxes()
+    assert boxes["bb0"].y < boxes["bb2"].y < boxes["bb3"].y < boxes["bb4"].y < boxes["bb1"].y
+
+
+def test_the_dominator_tree_hangs_each_block_off_the_last_one_it_had_to_pass(graph):
+    scene = mobjects.dom_tree(graph)
+    assert scene.check() == []
+    # ENTRY over <bb 2> over both <bb 3> and <bb 4>, and <bb 4> over EXIT.
+    assert scene.box("dom0").bottom < scene.box("dom2").y
+    assert scene.box("dom2").bottom < scene.box("dom3").y
+    assert scene.box("dom4").bottom < scene.box("dom1").y
+
+
+def test_the_dominator_tree_is_not_the_control_flow_graph(graph):
+    """Worth pinning down, because they look alike and the difference is the lesson.
+
+    Control goes from block 3 to block 4, and block 4 still hangs off block 2, because
+    control also gets to block 4 straight from block 2 without going through 3.
+    """
+    assert (3, 4) in [(e.src, e.dst) for e in graph.edges]
+    assert graph.dominators()[4] == 2
+
+
 def test_a_tree_puts_a_parent_over_its_children():
     root = Node("set", id="a", children=(Node("reg:SI 103", id="b"), Node("plus:SI", id="c")))
     scene = mobjects.tree(root)
@@ -383,7 +454,7 @@ def test_a_tree_node_without_an_id_cannot_be_linked_to():
         mobjects.tree(Node("set", id="a", children=(Node("reg:SI 103"),)))
 
 
-def test_every_mobject_draws(fn, ladder, passes_text):
+def test_every_mobject_draws(fn, graph, ladder, passes_text):
     """A scene that will not render is a bug in the layout and not in the renderer, and it
     is worth finding here rather than the first time a lesson tries to use one."""
     phi = next(p for b in fn.ordered_blocks for p in b.phis)
@@ -392,6 +463,8 @@ def test_every_mobject_draws(fn, ladder, passes_text):
         mobjects.ir_ladder(ladder, 6),
         mobjects.ssa_web(fn, "s_9"),
         mobjects.phi_node(fn, phi),
+        mobjects.cfg_view(graph),
+        mobjects.dom_tree(graph),
         mobjects.tree(Node("set", id="a", children=(Node("reg:SI 103", id="b"),))),
     ]
     for scene in scenes:

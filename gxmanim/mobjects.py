@@ -11,20 +11,23 @@ Four of them here:
     ir_ladder   one line of C at four levels, one lane each
     ssa_web     one SSA name from its definition to every use
     phi_node    one PHI, its incoming values, and where each came from
+    cfg_view    the control flow graph, with GCC's own edges
+    dom_tree    which block has to run before which
 
 `ssa_web` and `phi_node` deliberately draw data flow and not control flow. Blocks are laid
 out in index order down the page and the interesting lines are the threads between the
-statements. Control flow needs the real edges, including the fallthroughs that never appear
-in the dump text, and those come out of GCC's own graph dumps rather than out of guessing.
-`CFGView` and `DomTree` land with that.
+statements. `cfg_view` and `dom_tree` are the ones that draw control flow, and they take a
+`gxray.cfg.CFG` rather than a parsed text dump, because the text dump only shows the jumps
+and a graph built from it is missing every fallthrough.
 """
 
 from __future__ import annotations
 
 from gxmanim.primitives import GAP, Badge, Block, Card, Cell, Edge, Node, Rung, Thread
 from gxmanim.scene import Scene
+from gxray.cfg import CFG, ENTRY
 from gxray.gimple import Function, Phi, Stmt
-from gxray.locs import LEVEL_NAMES, LEVELS, Ladder
+from gxray.locs import LEVEL_NAMES, LEVELS, Ladder, strip_locs
 from gxray.tape import Cell as TapeCell
 
 # Where the first shape goes. The left margin has to leave room for a def-use thread, which
@@ -244,8 +247,131 @@ def _defining_statement(block, value: str) -> Stmt | None:
     return None
 
 
-# A tree, so the eighth primitive has a caller. Small on purpose: the real tree mobjects are
-# RTXTree and DomTree, and both of them want data nothing in the toolkit parses yet.
+# Control flow
+
+
+def _layers(graph: CFG) -> dict[int, int]:
+    """How far down the page each block goes, counted in forward edges from ENTRY.
+
+    Back edges are left out of the count on purpose. Including them makes the layer number
+    depend on how many times you are willing to go round the loop, which is not a number.
+    Reverse postorder guarantees every forward predecessor of a block is placed before the
+    block itself, so one pass is enough.
+    """
+    order = graph.reverse_postorder()
+    rank = {b: n for n, b in enumerate(order)}
+    layer: dict[int, int] = {}
+    for block in order:
+        back = [
+            e.src
+            for e in graph.predecessors(block)
+            if e.src in layer and rank.get(e.src, -1) < rank[block]
+        ]
+        layer[block] = max((layer[p] + 1 for p in back), default=0)
+    # Anything ENTRY cannot reach still has to go somewhere, and the bottom is honest about
+    # it: nothing above it points at it.
+    bottom = max(layer.values(), default=0) + 1
+    for block in sorted(graph.blocks):
+        layer.setdefault(block, bottom)
+    return layer
+
+
+def cfg_view(graph: CFG, focus: int | None = None, statements: bool = True) -> Scene:
+    """The control flow graph, laid out in layers, with the edge kinds GCC recorded.
+
+    These are GCC's own edges out of GCC's own graph dump, so the fallthroughs are here.
+    That matters more than it sounds: a block that ends without a `goto` still goes
+    somewhere, and a graph drawn by reading gotos out of the text dump would show the loop
+    body with no way back into it.
+
+    Blocks in a loop are drawn with the focus role, which is the one distinction worth
+    spending a colour on in a control flow drawing.
+    """
+    layer = _layers(graph)
+    rows: dict[int, list[int]] = {}
+    for index in graph.indices:
+        rows.setdefault(layer[index], []).append(index)
+
+    scene = Scene(
+        title=f"{graph.function}, {len(graph.blocks)} blocks and {len(graph.edges)} edges",
+        caption=_flow_caption(graph),
+    )
+    y = TOP
+    for depth in sorted(rows):
+        shapes = [_cfg_block(graph, i, focus, statements) for i in rows[depth]]
+        x = LEFT
+        for shape in shapes:
+            scene.add(shape, x, y)
+            x += shape.w + ACROSS
+        y += max(s.h for s in shapes) + DOWN
+
+    scene.link(
+        *[Edge(src=f"bb{e.src}", dst=f"bb{e.dst}", kind=e.kind, prob=e.prob) for e in graph.edges]
+    )
+    return scene
+
+
+def _cfg_block(graph: CFG, index: int, focus: int | None, statements: bool) -> Block:
+    block = graph.blocks[index]
+    role = "focus" if index == focus or (focus is None and block.loop) else "neutral"
+    # A corpus recorded with `-lineno` has a source location in front of every statement,
+    # and in a control flow drawing that is a column of noise in front of the thing the
+    # reader came for. The ladder is where locations belong.
+    cards = (
+        tuple(
+            Card(text=one_line(strip_locs(line), 44), role="neutral", id=f"bb{index}-{n}")
+            for n, line in enumerate(block.code)
+        )
+        if statements
+        else ()
+    )
+    return Block(index=index, cards=cards, count=block.count, role=role, id=f"bb{index}")
+
+
+def _flow_caption(graph: CFG) -> str:
+    kinds: dict[str, int] = {}
+    for e in graph.edges:
+        kinds[e.kind] = kinds.get(e.kind, 0) + 1
+    parts = [f"{n} {kind}" for kind, n in sorted(kinds.items())]
+    loops = len(graph.loops)
+    tail = f", in {loops} loop{'' if loops == 1 else 's'}" if loops else ""
+    return ", ".join(parts) + tail
+
+
+def dom_tree(graph: CFG) -> Scene:
+    """Which block has to have run before a block can run, as a tree.
+
+    A dominates B when every path from ENTRY to B goes through A, and the tree is every
+    block hanging off the nearest one that dominates it. It is the shape most of the middle
+    end thinks in, because it is the answer to whether a value computed in A is available
+    in B, and that is the question every code motion pass is really asking.
+    """
+    idom = graph.dominators()
+    children: dict[int, list[int]] = {}
+    for block, parent in sorted(idom.items()):
+        children[parent] = [*children.get(parent, []), block]
+
+    def build(index: int) -> Node:
+        block = graph.blocks[index]
+        return Node(
+            text=block.name,
+            role="focus" if block.loop else "neutral",
+            id=f"dom{index}",
+            children=tuple(build(c) for c in children.get(index, [])),
+        )
+
+    scene = tree(build(ENTRY))
+    deepest = max(graph.depth_of(i) for i in graph.blocks) if graph.blocks else 0
+    scene.title = f"{graph.function}, which block has to run before which"
+    scene.caption = (
+        f"{len(idom) + 1} blocks, {deepest + 1} levels deep. "
+        "A block hangs off the nearest block every path to it goes through."
+    )
+    return scene
+
+
+# A tree, so the eighth primitive has a caller. Small on purpose: the real tree mobject that
+# is still missing is RTXTree, which wants an RTL parser nothing in the toolkit has yet.
 
 
 def tree(root: Node, gap: int = 18) -> Scene:
@@ -298,4 +424,13 @@ def tree(root: Node, gap: int = 18) -> Scene:
     return scene
 
 
-__all__ = ["ir_ladder", "one_line", "pass_tape", "phi_node", "ssa_web", "tree"]
+__all__ = [
+    "cfg_view",
+    "dom_tree",
+    "ir_ladder",
+    "one_line",
+    "pass_tape",
+    "phi_node",
+    "ssa_web",
+    "tree",
+]

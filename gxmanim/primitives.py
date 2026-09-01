@@ -203,6 +203,10 @@ class Block:
     The strip carries what GCC calls the block, `<bb 4>`, and its profile count when the
     dump had one. Blocks are the unit a reader learns to count, so the header is always
     there even when the block is empty.
+
+    Block 0 and block 1 are ENTRY and EXIT in every GCC function, so they are labelled that
+    way. They are real basic blocks in `cfun` and they hold no statements, which is exactly
+    what an empty block with a name on it looks like.
     """
 
     index: int
@@ -218,7 +222,7 @@ class Block:
 
     @property
     def label(self) -> str:
-        return f"<bb {self.index}>"
+        return {0: "ENTRY", 1: "EXIT"}.get(self.index, f"<bb {self.index}>")
 
     @property
     def note(self) -> str:

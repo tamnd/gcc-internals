@@ -23,6 +23,11 @@ from gxmanim.primitives import Block, Box, Card, Edge, Placed, Point, Rung, Slot
 # Room around the whole drawing, so a box on the edge is not against the frame.
 MARGIN = 16
 
+# Extra room on the right for the links that bow out there: back edges, self edges, and
+# threads that run the other way. A renderer has to bow them somewhere and the alternative
+# is drawing them on top of the shapes, so the frame makes room instead of clipping them.
+BOW = 48
+
 
 @dataclass
 class Scene:
@@ -90,7 +95,7 @@ class Scene:
             return Box(0, 0, 2 * MARGIN, 2 * MARGIN)
         right = max(p.box.right for p in self.placed)
         bottom = max(p.box.bottom for p in self.placed)
-        return Box(0, 0, right + MARGIN, bottom + MARGIN)
+        return Box(0, 0, right + MARGIN + (BOW if self.links else 0), bottom + MARGIN)
 
     # What it says
 

@@ -1,0 +1,47 @@
+digraph "p4.c.273t.optimized" {
+overlap=false;
+subgraph "cluster_k" {
+	style="dashed";
+	color="black";
+	label="k ()";
+	fn_0_basic_block_0 [shape=Mdiamond,style=filled,fillcolor=white,label="ENTRY"];
+
+	fn_0_basic_block_1 [shape=Mdiamond,style=filled,fillcolor=white,label="EXIT"];
+
+	fn_0_basic_block_2 [shape=record,style=filled,fillcolor=lightgrey,label="{COUNT:1073741824\<bb\ 2\>:\l\
+|_7\ =\ setjmp\ (&b);\l\
+goto\ \<bb\ 4\>;\ [99.96%]\l\
+}"];
+
+	fn_0_basic_block_3 [shape=record,style=filled,fillcolor=lightgrey,label="{COUNT:849847\<bb\ 3\>:\l\
+|.ABNORMAL_DISPATCHER\ (0);\l\
+}"];
+
+	fn_0_basic_block_4 [shape=record,style=filled,fillcolor=lightgrey,label="{COUNT:1073312328\<bb\ 4\>:\l\
+|if\ (_7\ !=\ 0)\l\
+\ \ goto\ \<bb\ 6\>;\ [2.09%]\l\
+else\l\
+\ \ goto\ \<bb\ 5\>;\ [97.91%]\l\
+}"];
+
+	fn_0_basic_block_5 [shape=record,style=filled,fillcolor=lightgrey,label="{COUNT:1050880096\<bb\ 5\>:\l\
+|_9\ =\ work\ ();\l\
+}"];
+
+	fn_0_basic_block_6 [shape=record,style=filled,fillcolor=lightgrey,label="{COUNT:1072891977\<bb\ 6\>:\l\
+|#\ _1\ =\ PHI\ \<-1(4),\ _9(5)\>\l\
+|return\ _1;\l\
+}"];
+
+	fn_0_basic_block_0:s -> fn_0_basic_block_2:n [style="solid,bold",color=black,weight=100,constraint=true,label="[100%]"];
+	fn_0_basic_block_2:s -> fn_0_basic_block_4:n [style="solid,bold",color=black,weight=100,constraint=true,label="[99%]"];
+	fn_0_basic_block_2:s -> fn_0_basic_block_3:n [style="solid,bold",color=red,weight=10,constraint=true,label="[0%]"];
+	fn_0_basic_block_3:s -> fn_0_basic_block_2:n [style="dotted,bold",color=red,weight=10,constraint=false,label="[100%]"];
+	fn_0_basic_block_4:s -> fn_0_basic_block_6:n [style="solid,bold",color=forestgreen,weight=10,constraint=true,label="[2%]"];
+	fn_0_basic_block_4:s -> fn_0_basic_block_5:n [style="solid,bold",color=darkorange,weight=10,constraint=true,label="[97%]"];
+	fn_0_basic_block_5:s -> fn_0_basic_block_6:n [style="solid,bold",color=black,weight=100,constraint=true,label="[99%]"];
+	fn_0_basic_block_5:s -> fn_0_basic_block_3:n [style="solid,bold",color=red,weight=10,constraint=true,label="[0%]"];
+	fn_0_basic_block_6:s -> fn_0_basic_block_1:n [style="solid,bold",color=black,weight=10,constraint=true,label="[100%]"];
+	fn_0_basic_block_0:s -> fn_0_basic_block_1:n [style="invis",constraint=true];
+}
+}
