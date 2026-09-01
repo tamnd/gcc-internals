@@ -19,78 +19,14 @@ a third state, not a missing feature, and the legend names it.
 from __future__ import annotations
 
 from collections import Counter
-from dataclasses import dataclass
 
 from gxray.gimple import Function
 from gxray.passes import Pipeline
+from gxray.tape import Cell, cells
 from gxwidgets.base import Widget
 from gxwidgets.html import el, esc, join, role_legend, void
 
 CHANGED = {True: "1", False: "0", None: "?"}
-
-
-@dataclass
-class Cell:
-    """One pass, as the tape sees it."""
-
-    index: int
-    name: str
-    short: str
-    phase: str | None
-    depth: int
-    dump_key: str | None
-    changed: bool | None = None
-    stats: dict[str, int] | None = None
-
-    @property
-    def label(self) -> str:
-        counts = ""
-        if self.stats:
-            counts = ", {statements} statements, {blocks} blocks".format(**self.stats)
-        state = {
-            True: "changed the IR",
-            False: "left the IR alone",
-            None: "nothing recorded to compare",
-        }
-        phase = f"{self.phase} pass" if self.phase else "pass"
-        return f"{self.index + 1}. {self.name}, {phase}, {state[self.changed]}{counts}"
-
-
-def fingerprint(f: Function) -> tuple[str, ...]:
-    """What counts as the IR being the same, for the purpose of marking a cell.
-
-    Statement text in block order. Not the dump text, which carries the pass name and a
-    header full of things that differ between two dumps of an identical function.
-
-    Debug markers are left out. They move whenever a statement moves, so counting them
-    would mark almost every pass as having changed something and the tape would be a solid
-    block of colour saying nothing.
-    """
-    return tuple(
-        line
-        for b in f.ordered_blocks
-        for line in [
-            f"<bb {b.index}>",
-            *[str(p) for p in b.phis],
-            *[s.text for s in b.stmts if not s.is_debug],
-        ]
-    )
-
-
-def code_in(f: Function) -> list:
-    return [s for b in f.ordered_blocks for s in b.stmts if not s.is_debug]
-
-
-def measure(f: Function) -> dict[str, int]:
-    code = code_in(f)
-    names = {str(n) for s in code for n in s.operands}
-    names |= {str(s.lhs) for s in code if s.lhs is not None}
-    names |= {str(p.lhs) for b in f.ordered_blocks for p in b.phis}
-    return {
-        "statements": len(code),
-        "blocks": len(f.blocks),
-        "names": len([n for n in names if "_" in n]),
-    }
 
 
 class PassTape(Widget):
@@ -116,25 +52,7 @@ class PassTape(Widget):
             self.view["at"] = (self.marked or self.cells)[0].name
 
     def _cells(self) -> list[Cell]:
-        cells: list[Cell] = []
-        previous: tuple[str, ...] | None = None
-        for i, p in enumerate(self.pipeline.enabled):
-            cell = Cell(
-                index=i,
-                name=p.name,
-                short=p.short_name,
-                phase=p.phase,
-                depth=p.depth,
-                dump_key=p.dump_key,
-            )
-            f = self.dumps.get(p.dump_key or "")
-            if f is not None:
-                current = fingerprint(f)
-                cell.changed = None if previous is None else current != previous
-                cell.stats = measure(f)
-                previous = current
-            cells.append(cell)
-        return cells
+        return cells(self.pipeline, self.dumps)
 
     # What the reader is looking at
 

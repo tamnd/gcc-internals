@@ -48,6 +48,10 @@ web NAME="s_1" FILE="corpora/programs/l1.c" OPT="-O2":
 widgets:
     {{py}} -m gxwidgets demo --open
 
+# Every diagram, redrawn from the recorded dumps, plus a contact sheet to look at them on.
+diagrams:
+    {{py}} -m gxmanim draw --index --open
+
 # Regenerate the recorded dumps that Tier 0 falls back on when the network is gone.
 # -g and the lineno modifier are what put a source location on every statement, which is
 # the only thing joining GENERIC to GIMPLE to RTL to the assembly.
