@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
 
 from gxray import corpus_store, programs
 from gxray.build import banner
@@ -119,7 +120,7 @@ def cmd_record(args: argparse.Namespace) -> int:
         source_for(args),
         *args.flags,
         dumps=args.dump or ["tree-all"],
-        filename=f"{args.program}.c",
+        filename=Path(args.file).name if args.file else f"{args.program}.c",
     )
     path = corpus_store.save(rec)
     print(f"wrote {path} ({len(rec.dump_texts)} dumps)")

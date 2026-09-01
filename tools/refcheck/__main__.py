@@ -3,7 +3,7 @@
     refcheck check     resolve every citation and compare it with the lockfile
     refcheck update    rebuild the lockfile from the prose
     refcheck list      every citation and where it is written
-    refcheck show gcc/passes.cc:855@releases/gcc-16.2.0
+    refcheck show gcc/passes.cc:854@releases/gcc-16.2.0
 
 Run with no paths, it reads the places prose lives.
 """

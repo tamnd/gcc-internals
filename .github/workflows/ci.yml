@@ -35,6 +35,49 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: python -m pytest -q
 
+  lessons:
+    name: lessons
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # A notebook is a build artifact that happens to be committed, because a Colab badge
+      # has to point at a real file in the default branch. Everything here is about the two
+      # copies not drifting apart.
+      - run: pip install -e ".[dev,lessons]"
+
+      - name: every notebook matches its build.py
+        run: python -m tools.nbbuild check
+
+      - name: every claim still has a cell under it
+        run: python -m tools.nbbuild verify
+
+      - name: every Excalidraw scene matches its diagram.py
+        run: |
+          for f in lessons/*/diagram.py; do python "$f"; done
+          git diff --exit-code lessons
+
+      # The only evidence a lesson still works, since outputs are never committed. It is not
+      # evidence that a lesson is right, which is what reading `run --show` is for, but a
+      # cell that has started raising is caught here rather than by a reader in Colab.
+      - name: every lesson runs top to bottom
+        run: python -m tools.nbbuild run
+
+      # A boss fight nobody has watched fail is a boss fight that might be waving everything
+      # through, so both directions are checked.
+      - name: the boss fight grades a right answer and a wrong one
+        run: |
+          python lessons/t05-ssa-in-one-lesson/grade.py --phis 3 --most total --defaults yes
+          ! python lessons/t05-ssa-in-one-lesson/grade.py --phis 2 --most k --defaults no
+
+      - name: the glossary matches the module that generates it
+        run: |
+          python -m gxray.glossary
+          git diff --exit-code GLOSSARY.md
+
   refcheck:
     name: citations and blueprints
     runs-on: ubuntu-latest
