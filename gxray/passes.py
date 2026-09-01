@@ -62,12 +62,27 @@ class Pass:
 
     @property
     def short_name(self) -> str:
-        """The name without its phase prefix, which is what the dump file is called."""
-        return self.name.split("-", 1)[1] if self.phase else self.name
+        """The name without its phase prefix, which is what the dump file is called.
+
+        A pass name may carry a disambiguating prefix, a space, and then the dump name.
+        GCC keeps only the part after the space when it names the dump file, so `rtl pre`
+        is dumped as `rtl-pre` and not as `rtl-rtl pre`, and the same for `no-opt dfinit`.
+        See `gcc/passes.cc:855@releases/gcc-16.2.0`.
+        """
+        body = self.name.split("-", 1)[1] if self.phase else self.name
+        return body.split(" ", 1)[1] if " " in body else body
 
     @property
     def dump_key(self) -> str | None:
-        """How to ask for this pass's dump, or None if it does not have one."""
+        """How to ask for this pass's dump, or None if the pass has no dump at all.
+
+        This is the name of a dump, not a promise that a file exists. `-fdump-passes`
+        reports whether the gate is open, and a pass whose gate is open can still write
+        nothing for a given function. At `-O2` on `l1.c` there is a `tree-ch2` and no
+        `tree-ch1`, a `tree-fre1`, `fre3` and `fre5` and no `fre2` or `fre4`. Roughly
+        thirty enabled passes produce no file, which is a fact about GCC and not a gap
+        in this parser.
+        """
         return f"{self.phase}-{self.short_name}" if (self.has_dump and self.phase) else None
 
     def walk(self):

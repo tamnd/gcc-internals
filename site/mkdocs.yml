@@ -56,3 +56,5 @@ extra_css:
 
 nav:
   - Start here: index.md
+  - How this is built:
+    - The pinned tree and citations: pinned-tree.md
