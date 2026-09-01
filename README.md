@@ -53,6 +53,19 @@ python -m gxray web --name s_1 -O2
 
 `just setup` puts the toolkit and the dev tools in a virtualenv, and `just check` runs everything CI runs.
 
+## Widgets that work with the power off
+
+`gxwidgets` draws what `gxray` parsed. A widget builds its own markup in Python and the browser only attaches behaviour to it, so there is one renderer and the version you see with JavaScript blocked is the same drawing, not a placeholder.
+
+```python
+from gxwidgets import PassTape, PredictGate, SSAWeb
+
+SSAWeb(f, name="s_1")  # renders itself in a notebook
+SSAWeb(f, name="s_1").render()  # the same thing as standalone HTML
+```
+
+`PassTape` is one cell per pass at the chosen optimization level, 281 of them at `-O2`, with the handful that actually changed the IR marked. `SSAWeb` follows one name from its definition to every use. `PredictGate` makes the reader commit to an answer before it shows one. Every role carries a glyph and a border as well as a colour, every drawing says in words what it shows, and the colours come from `gxmanim/palette.py` so a still from an animation matches a live widget.
+
 ## Blueprints are compiled, not typed
 
 A blueprint has nine sections and no narrative, and the parts of it that are inventories are generated. GCC keeps the facts that have to stay consistent across fifty one targets and twelve front ends in machine readable form, so the list of GIMPLE statement codes comes out of `gcc/gimple.def` and the map from a statement code to the C++ class you may cast it to comes out of the `is_a_helper` specialisations in `gcc/gimple.h`. Nobody transcribes them.

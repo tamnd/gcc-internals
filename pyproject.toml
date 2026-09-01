@@ -8,6 +8,8 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]
+# Only needed to show a widget live in a notebook. Everything else works without it.
+notebook = ["anywidget>=0.9"]
 
 [project.scripts]
 gxray = "gxray.__main__:main"
@@ -20,7 +22,10 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["gxray", "tools"]
+packages = ["gxmanim", "gxray", "gxwidgets", "tools"]
+
+[tool.setuptools.package-data]
+gxwidgets = ["static/*.js"]
 
 [tool.ruff]
 line-length = 100
