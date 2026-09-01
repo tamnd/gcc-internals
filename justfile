@@ -32,17 +32,21 @@ test:
 banner:
     {{py}} -m gxray banner --gcc {{gcc}}
 
-# Dump everything GCC will tell you about one file. Writes into a temp dir and lists it.
+# Every dump one file produces, in the order the passes ran.
 dumps FILE="corpora/programs/l1.c" OPT="-O2":
-    {{py}} -m gxray dumps {{FILE}} {{OPT}} --gcc {{gcc}}
+    {{py}} -m gxray dumps --file {{FILE}} --gcc {{gcc}} {{OPT}}
 
-# The pass list that actually ran, which is not the same as the pass list in passes.def.
+# The pass list that actually ran, which is not the pass list in passes.def.
 passes FILE="corpora/programs/l1.c" OPT="-O2":
-    {{py}} -m gxray passes {{FILE}} {{OPT}} --gcc {{gcc}}
+    {{py}} -m gxray passes --file {{FILE}} --gcc {{gcc}} {{OPT}}
+
+# Where an SSA name comes from and everywhere it goes.
+web NAME="s_1" FILE="corpora/programs/l1.c" OPT="-O2":
+    {{py}} -m gxray web --name {{NAME}} --file {{FILE}} --gcc {{gcc}} {{OPT}}
 
 # Regenerate the recorded dumps that Tier 0 falls back on when the network is gone.
 corpus:
-    {{py}} -m gxray corpus build --gcc {{gcc}}
+    {{py}} -m gxray record --program l1 --entry l1-O2 --dump tree-ssa --dump tree-optimized --gcc {{gcc}} -O2
 
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
