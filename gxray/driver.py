@@ -32,7 +32,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from gxray import gimple, passes
-from gxray.dumps import DumpFile, dump_flags, find_dumps, split_stderr_dumps
+from gxray.dumps import DumpFile, dump_flags, find_dumps, split_spec, split_stderr_dumps
 from tools.cecache import Cache, request_key
 
 CE_URL = "https://godbolt.org/api/compiler/{compiler}/compile"
@@ -108,7 +108,12 @@ class Backend:
     name = "backend"
     capabilities: frozenset[str] = frozenset()
 
-    def compile(self, source: str, *args: str, dumps: list[str] | None = None) -> Result:
+    def compile(
+        self, source: str, *args: str, dumps: list[str] | None = None, filename: str = "input.c"
+    ) -> Result:
+        """`filename` is the name the compiler sees, and only a backend with files can
+        honour it. It matters because with `-lineno` that name is printed in front of every
+        statement in the dump, and `input.c` is a poor thing for a lesson to quote."""
         raise NotImplementedError
 
     def can(self, capability: str) -> bool:
@@ -148,20 +153,26 @@ class LocalBackend(Backend):
         )
         return out.stdout.strip() or "unknown"
 
-    def compile(self, source: str, *args: str, dumps: list[str] | None = None) -> Result:
+    def compile(
+        self, source: str, *args: str, dumps: list[str] | None = None, filename: str = "input.c"
+    ) -> Result:
         with tempfile.TemporaryDirectory(prefix="gxray-") as tmp:
             tmpdir = Path(tmp)
-            src = tmpdir / "input.c"
+            src = tmpdir / filename
             src.write_text(source, encoding="utf-8")
-            asm_path = tmpdir / "input.s"
+            asm_path = src.with_suffix(".s")
 
             # -o has to name the assembly file, because the dump base name follows -o.
             # Writing to /dev/null puts the dumps next to the input instead, which is a
             # trap that cost an afternoon once and is worth a comment.
-            cmd = [self.gcc, "-S", *args, *dump_flags(dumps or []), str(src), "-o", str(asm_path)]
+            #
+            # Both paths are relative and the run happens in the temporary directory, so
+            # what GCC prints as the file name is `l1.c` rather than a path under /var that
+            # is different on every run and belongs to nobody.
+            cmd = [self.gcc, "-S", *args, *dump_flags(dumps or []), src.name, "-o", asm_path.name]
             proc = subprocess.run(cmd, capture_output=True, text=True, check=False, cwd=tmpdir)
 
-            found = find_dumps(tmpdir, base="input.c")
+            found = find_dumps(tmpdir, base=filename)
             return Result(
                 source=source,
                 args=tuple(args),
@@ -220,9 +231,12 @@ class CEBackend(Backend):
         except urllib.error.URLError as exc:
             raise BackendError(f"Compiler Explorer request failed: {exc}") from exc
 
-    def compile(self, source: str, *args: str, dumps: list[str] | None = None) -> Result:
+    def compile(
+        self, source: str, *args: str, dumps: list[str] | None = None, filename: str = "input.c"
+    ) -> Result:
         dumps = list(dumps or [])
-        for spec in dumps:
+        keys = [split_spec(spec)[0] for spec in dumps]
+        for spec in keys:
             if spec.endswith("-all"):
                 raise BackendError(
                     f"{spec!r} is not usable through this backend. Dumps arrive on stderr with "
@@ -238,14 +252,14 @@ class CEBackend(Backend):
         asm = "\n".join(line.get("text", "") for line in response.get("asm", []))
 
         # One named dump means the whole of stderr is that dump, minus any real diagnostics.
-        dump_texts = {dumps[0]: stderr} if len(dumps) == 1 else {}
-        if len(dumps) > 1:
+        dump_texts = {keys[0]: stderr} if len(keys) == 1 else {}
+        if len(keys) > 1:
             chunks = split_stderr_dumps(stderr)
-            if len(chunks) == len(dumps):
-                dump_texts = dict(zip(dumps, chunks, strict=True))
+            if len(chunks) == len(keys):
+                dump_texts = dict(zip(keys, chunks, strict=True))
             else:
                 raise BackendError(
-                    f"asked for {len(dumps)} dumps and stderr split into {len(chunks)} chunks, "
+                    f"asked for {len(keys)} dumps and stderr split into {len(chunks)} chunks, "
                     "so they cannot be paired safely. Ask for one dump at a time."
                 )
 
@@ -278,11 +292,13 @@ class CorpusBackend(Backend):
         self.root = Path(root) if root else CORPUS_ROOT
         self.name = f"corpus:{entry}"
 
-    def compile(self, source: str, *args: str, dumps: list[str] | None = None) -> Result:
+    def compile(
+        self, source: str, *args: str, dumps: list[str] | None = None, filename: str = "input.c"
+    ) -> Result:
         from gxray.corpus import load
 
         record = load(self.entry, root=self.root)
-        wanted = list(dumps or record.dump_texts)
+        wanted = [split_spec(spec)[0] for spec in dumps] if dumps else list(record.dump_texts)
         missing = [d for d in wanted if d not in record.dump_texts and not d.endswith("-all")]
         if missing:
             raise BackendError(

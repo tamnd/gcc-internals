@@ -125,3 +125,24 @@ def dump_flags(specs: list[str] | tuple[str, ...], to_stderr: bool = False) -> l
     """Turn ["tree-ssa", "rtl-expand"] into the -fdump- flags that produce them."""
     suffix = "=stderr" if to_stderr else ""
     return [f"-fdump-{spec}{suffix}" for spec in specs]
+
+
+# What a caller can ask for on top of a dump, from `gcc/dumpfile.cc`. `lineno` is the one
+# this project needs, because a source location on every statement is what joins the four
+# levels of the IR ladder together.
+DUMP_OPTIONS = frozenset({"lineno", "blocks", "details", "slim", "raw", "vops", "uid", "all"})
+
+
+def split_spec(spec: str) -> tuple[str, tuple[str, ...]]:
+    """`tree-ssa-lineno` is the `tree-ssa` dump with `lineno` asked for on top of it.
+
+    The modifier changes what GCC prints, not which dump it is, so it belongs on the flag
+    and not in the key. Without this a dump asked for with `-lineno` would be filed under a
+    different name from the same dump asked for without it, and a lesson would have to know
+    which one the corpus happened to be recorded with.
+    """
+    parts = spec.split("-")
+    options: list[str] = []
+    while len(parts) > 2 and parts[-1] in DUMP_OPTIONS:
+        options.insert(0, parts.pop())
+    return "-".join(parts), tuple(options)

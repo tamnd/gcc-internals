@@ -110,3 +110,73 @@ def test_local_declarations_are_collected(ssa_dump):
     fn = gimple.parse(ssa_dump).only()
     assert ("int", "i") in fn.decls
     assert ("int", "_6") in fn.decls
+
+
+# Dumps made with the lineno modifier, which is what the recorded corpus now is.
+
+LINENO = """;; Function f (f, funcdef_no=0, decl_uid=4594, cgraph_uid=1, symbol_order=0)
+
+int f (int n)
+{
+  int i;
+  int s;
+
+  <bb 2> :
+  [l1.c:5:3] # DEBUG BEGIN_STMT
+  [l1.c:5:7] s_3 = 0;
+  [l1.c:5:7] # DEBUG s => s_3
+  [l1.c:6:12] i_4 = 0;
+
+  <bb 3> :
+  # s_1 = PHI <[l1.c:5:7] s_3(2), [l1.c:7:7] s_8(3)>
+  [l1.c:7:7] s_8 = s_1 + i_4;
+
+}
+"""
+
+
+def test_a_location_goes_on_the_statement_and_not_into_its_text():
+    """So a statement reads the same whether or not the dump was made with locations, and
+    a lesson can quote one without knowing how the corpus happened to be recorded."""
+    fn = gimple.parse(LINENO).only()
+    stmt = fn.blocks[2].stmts[1]
+    assert stmt.text == "s_3 = 0;"
+    assert (stmt.loc.line, stmt.loc.col) == (5, 7)
+
+
+def test_a_statement_from_a_dump_without_locations_has_none(ssa_dump):
+    assert all(s.loc is None for s in gimple.parse(ssa_dump).only().stmts)
+
+
+def test_a_location_inside_a_phi_argument_does_not_end_up_in_the_argument():
+    fn = gimple.parse(LINENO).only()
+    (phi,) = fn.blocks[3].phis
+    assert phi.args == (("s_3", 2), ("s_8", 3))
+    assert str(phi) == "# s_1 = PHI <s_3(2), s_8(3)>"
+
+
+def test_declarations_still_parse_when_the_statements_have_locations():
+    """Removing a location must keep the indentation, since a declaration is recognised by
+    being indented exactly two spaces and a statement is not."""
+    fn = gimple.parse(LINENO).only()
+    assert ("int", "i") in fn.decls
+    assert ("int", "s") in fn.decls
+
+
+def test_debug_statements_are_in_the_dump_but_are_not_code():
+    fn = gimple.parse(LINENO).only()
+    assert len(fn.stmts) == 5
+    assert len(fn.code) == 3
+    assert [s.text for s in fn.code] == ["s_3 = 0;", "i_4 = 0;", "s_8 = s_1 + i_4;"]
+
+
+def test_a_debug_statement_is_not_a_use():
+    """`# DEBUG s => s_3` mentions s_3, but it only says where a debugger can find `s`. The
+    PHI below it is a real use, and it is the only one."""
+    web = gimple.parse(LINENO).only().ssa_web("s_3")
+    assert str(web["def"]) == "s_3 = 0;"
+    assert [str(u) for u in web["uses"]] == ["# s_1 = PHI <s_3(2), s_8(3)>"]
+
+
+def test_how_big_a_function_is_means_the_code_in_it():
+    assert str(gimple.parse(LINENO).only()) == "f (2 blocks, 3 statements)"

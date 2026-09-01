@@ -16,8 +16,19 @@ from pathlib import Path
 
 import pytest
 
-from gxray import gimple, passes
-from gxwidgets import GateError, Option, PassTape, PredictGate, SSAWeb, Widget, html, script, state
+from gxray import gimple, locs, passes
+from gxwidgets import (
+    GateError,
+    IRLadder,
+    Option,
+    PassTape,
+    PredictGate,
+    SSAWeb,
+    Widget,
+    html,
+    script,
+    state,
+)
 from gxwidgets.passtape import fingerprint, measure
 from gxwidgets.ssaweb import INLINE_LIMIT
 
@@ -39,6 +50,29 @@ def both_ends():
     """The recorded dumps at the two ends of the pipeline, keyed by dump name."""
     data = json.loads(CORPUS.read_text(encoding="utf-8"))["dumps"]
     return {k: gimple.parse(data[k]).only() for k in ("tree-ssa", "tree-optimized")}
+
+
+@pytest.fixture
+def recorded():
+    return json.loads(CORPUS.read_text(encoding="utf-8"))
+
+
+@pytest.fixture
+def ladder(recorded):
+    """The real ladder, out of the recorded corpus, at all four levels."""
+    return locs.ladder(
+        recorded["source"],
+        generic=recorded["dumps"]["tree-original"],
+        gimple=recorded["dumps"]["tree-optimized"],
+        rtl=recorded["dumps"]["rtl-expand"],
+        asm=recorded["asm"],
+        function="f",
+    )
+
+
+@pytest.fixture
+def rungs(ladder):
+    return IRLadder(ladder)
 
 
 @pytest.fixture
@@ -350,9 +384,12 @@ def test_a_small_function_draws_every_name_up_front(ssa):
 
 
 def test_only_the_selected_panel_is_showing(ssa):
+    """Counted on the panels, not on the whole document, since the stylesheet says
+    `overflow: hidden` and a substring search over everything would find that too."""
     out = SSAWeb(ssa, "s_1").render()
     assert out.count('data-panel="s_1" hidden') == 0
-    assert out.count(" hidden") == len(SSAWeb(ssa).names) - 1
+    assert out.count('role="tabpanel" data-panel="') == len(SSAWeb(ssa).names)
+    assert out.count('role="tabpanel" data-panel="') - out.count('" hidden') == 1
 
 
 def test_a_big_function_draws_one_name_and_says_why(ssa, monkeypatch):
@@ -366,6 +403,63 @@ def test_there_is_a_text_version_of_the_web(ssa):
     out = SSAWeb(ssa, "s_1").render()
     assert "The same thing as text" in out
     assert "def: " in out and "use: " in out
+
+
+# The IR ladder
+
+
+def test_the_ladder_starts_on_the_first_line_that_has_anything_on_it(rungs, ladder):
+    assert rungs.view["line"] == str(ladder.rungs[0].line)
+
+
+def test_a_line_nobody_asked_about_falls_back_rather_than_rendering_nothing(ladder):
+    """A link can name a line that is a comment, or a line from a different file."""
+    assert IRLadder(ladder, line=999).view["line"] == str(ladder.rungs[0].line)
+
+
+def test_every_rung_gets_a_panel_and_only_one_is_open(rungs, ladder):
+    out = rungs.render()
+    assert out.count('role="tabpanel"') == len(ladder.rungs)
+    assert out.count('role="tabpanel" data-panel="') - out.count('" hidden') == 1
+
+
+def test_a_rung_says_in_words_what_its_bars_draw(rungs):
+    """The bars are the only thing on a rung that is a picture, so the sentence behind
+    them has to say the same thing or a reader with a screen reader gets less."""
+    label = rungs._rung_label(rungs.ladder.rung(7))
+    assert "Line 7" in label
+    assert "s += i;" in label
+    assert "1 GENERIC, 1 GIMPLE, 1 RTL, 1 assembly" in label
+
+
+def test_the_loop_header_has_the_most_on_it(rungs):
+    counts = {r.line: sum(r.counts().values()) for r in rungs.ladder.rungs}
+    assert max(counts, key=counts.get) == 6
+
+
+def test_a_level_with_nothing_on_it_says_so_rather_than_being_left_out(rungs):
+    """`return s;` has nothing at the bottom two levels, and that is the interesting part,
+    so the panel has to show the gap rather than quietly close it up."""
+    out = rungs.render()
+    assert "Nothing here." in out
+    assert rungs.ladder.rung(8).empty_levels == ["rtl", "asm"]
+
+
+def test_the_ladder_names_the_file_and_counts_every_level(rungs):
+    out = rungs.render()
+    assert "l1.c" in out
+    for name in ("GENERIC", "GIMPLE", "RTL", "assembly"):
+        assert name in out
+
+
+def test_the_ladder_selection_writes_to_its_own_view_key(rungs):
+    assert 'data-select="line"' in rungs.render()
+    assert rungs.fragment.startswith("irladder=line:")
+
+
+def test_a_ladder_with_nothing_in_it_says_so():
+    empty = IRLadder(locs.ladder("int main(void) { return 0; }"))
+    assert "No level in this build carried a location" in empty.render()
 
 
 # The prediction gate
@@ -453,8 +547,8 @@ def test_the_question_is_escaped():
 
 
 @pytest.fixture
-def every(tape, ssa, gate):
-    return [tape, SSAWeb(ssa, "s_1"), gate]
+def every(tape, ssa, gate, rungs):
+    return [tape, rungs, SSAWeb(ssa, "s_1"), gate]
 
 
 def test_every_widget_renders_standalone(every):

@@ -58,13 +58,35 @@ python -m gxray web --name s_1 -O2
 `gxwidgets` draws what `gxray` parsed. A widget builds its own markup in Python and the browser only attaches behaviour to it, so there is one renderer and the version you see with JavaScript blocked is the same drawing, not a placeholder.
 
 ```python
-from gxwidgets import PassTape, PredictGate, SSAWeb
+from gxwidgets import IRLadder, PassTape, PredictGate, SSAWeb
 
 SSAWeb(f, name="s_1")  # renders itself in a notebook
 SSAWeb(f, name="s_1").render()  # the same thing as standalone HTML
 ```
 
-`PassTape` is one cell per pass at the chosen optimization level, 281 of them at `-O2`, with the handful that actually changed the IR marked. `SSAWeb` follows one name from its definition to every use. `PredictGate` makes the reader commit to an answer before it shows one. Every role carries a glyph and a border as well as a colour, every drawing says in words what it shows, and the colours come from `gxmanim/palette.py` so a still from an animation matches a live widget.
+`PassTape` is one cell per pass at the chosen optimization level, 281 of them at `-O2`, with the handful that actually changed the IR marked. `IRLadder` takes one line of C and shows what it became at all four levels at once. `SSAWeb` follows one name from its definition to every use. `PredictGate` makes the reader commit to an answer before it shows one. Every role carries a glyph and a border as well as a colour, every drawing says in words what it shows, and the colours come from `gxmanim/palette.py` so a still from an animation matches a live widget.
+
+## One line of C, all the way down
+
+The only thing that survives from your source to the assembly is the source location, so that is what the levels are joined on. `gxray.locs` reads the three spellings GCC uses for it, one in the tree dumps, one in the RTL dumps and one in the `.loc` directives in the assembly, and lines them up per source line:
+
+```python
+import gxray
+from gxray import locs
+
+r = gxray.corpus("l1-O2").compile(gxray.L1, "-O2", "-g")
+lad = locs.ladder(
+    r.source,
+    generic=r.dump_text("tree-original"),
+    gimple=r.dump_text("tree-optimized"),
+    rtl=r.dump_text("rtl-expand"),
+    asm=r.asm,
+    function="f",
+)
+lad.rung(6).counts()  # {'generic': 5, 'gimple': 4, 'rtl': 6, 'asm': 6}
+```
+
+That is the `for` header in `l1.c`, and it is most of the function at every level. Line 8, `return s;`, has one GENERIC statement, one GIMPLE statement and nothing below that at all, because the value was already in the return register and the epilogue got filed under the closing brace on line 9. Reading that off a picture takes a second, and reading it off four dump files takes an afternoon.
 
 ## Blueprints are compiled, not typed
 

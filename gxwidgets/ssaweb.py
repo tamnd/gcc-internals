@@ -79,6 +79,8 @@ class SSAWeb(Widget):
             for p in b.phis:
                 out.append(str(p.lhs))
             for s in b.stmts:
+                if s.is_debug:
+                    continue
                 if s.lhs is not None and "_" in str(s.lhs):
                     out.append(str(s.lhs))
         return list(dict.fromkeys(out))
@@ -98,7 +100,9 @@ class SSAWeb(Widget):
         for b in self.function.ordered_blocks:
             rows.append(Row(f"<bb {b.index}>", "header", y))
             y += ROW
-            for item in [*b.phis, *b.stmts]:
+            # Debug markers are left out. The picture is about where a value comes from and
+            # where it goes, and a `# DEBUG s => s_3` is neither.
+            for item in [*b.phis, *[s for s in b.stmts if not s.is_debug]]:
                 kind = "plain"
                 if item is definition:
                     kind = "def"

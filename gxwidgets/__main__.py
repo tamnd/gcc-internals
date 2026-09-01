@@ -14,8 +14,8 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxray import corpus_store, gimple, passes
-from gxwidgets import PassTape, PredictGate, SSAWeb, script
+from gxray import corpus_store, gimple, locs, passes
+from gxwidgets import IRLadder, PassTape, PredictGate, SSAWeb, script
 
 FIXTURE = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "l1-O2-passes.txt"
 
@@ -40,12 +40,26 @@ attach();
 
 def build(entry: str = "l1-O2") -> str:
     record = corpus_store.load(entry)
-    dumps = {k: gimple.parse(v).only() for k, v in record.dump_texts.items()}
+    # Only the tree dumps hold a function body the GIMPLE parser can read. The RTL one is
+    # for the ladder, which reads it with a different parser.
+    dumps = {
+        k: gimple.parse(v).only() for k, v in record.dump_texts.items() if k.startswith("tree-")
+    }
     pipeline = passes.parse(FIXTURE.read_text(encoding="utf-8"))
     f = dumps["tree-ssa"]
 
+    ladder = locs.ladder(
+        record.source,
+        generic=record.dump_texts.get("tree-original", ""),
+        gimple=record.dump_texts.get("tree-optimized", ""),
+        rtl=record.dump_texts.get("rtl-expand", ""),
+        asm=record.asm,
+        function=f.name,
+    )
+
     widgets = [
         PassTape(pipeline, dumps=dumps, function=f.name, options=" ".join(record.args)),
+        IRLadder(ladder),
         SSAWeb(f, name=SSAWeb(f).names[0]),
         PredictGate(
             "This loop runs three times and the trip count is a constant. "
@@ -64,7 +78,9 @@ def build(entry: str = "l1-O2") -> str:
                 ),
             ],
             answer="cunrolli peels all three iterations, and what is left is straight line code.",
-            observe="\n".join(f"  {s.text}" for b in f.ordered_blocks for s in b.stmts),
+            observe="\n".join(
+                f"  {s.text}" for b in f.ordered_blocks for s in b.stmts if not s.is_debug
+            ),
         ),
     ]
     banner = f"{record.compiler} for {record.target}, recorded {record.recorded}."

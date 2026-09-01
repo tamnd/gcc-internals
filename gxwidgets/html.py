@@ -195,6 +195,37 @@ STYLESHEET = f""":root {{
 .gx-answer[hidden] {{ display: none; }}
 .gx-answer summary {{ cursor: pointer; }}
 
+.gx-chain {{ display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 8px; font-size: 12px;
+  color: var(--gx-unknown-ink); }}
+.gx-chain .gx-step {{ background: var(--gx-neutral-fill); border-radius: 3px;
+  padding: 1px 7px; }}
+.gx-chain .gx-step + .gx-step::before {{ content: "then "; }}
+
+.gx-rungs {{ display: flex; flex-direction: column; gap: 2px; }}
+.gx-rung {{ display: grid; grid-template-columns: 2.5em minmax(0, 1fr) auto; gap: 10px;
+  align-items: center; text-align: left; font: inherit; font-size: 12px; cursor: pointer;
+  padding: 3px 6px; border: 1px solid transparent; border-radius: 4px;
+  background: var(--gx-neutral-fill); color: inherit; }}
+.gx-rung[aria-current="true"] {{ background: var(--gx-focus-fill); color: var(--gx-focus-ink);
+  border-color: currentColor; }}
+.gx-rung-no {{ font-family: {MONO}; color: var(--gx-unknown-ink); text-align: right; }}
+.gx-rung[aria-current="true"] .gx-rung-no {{ color: inherit; }}
+.gx-rung-src {{ font-family: {MONO}; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }}
+.gx-bars {{ display: flex; gap: 3px; }}
+.gx-bar {{ display: flex; align-items: center; gap: 3px; width: 6.4em; }}
+.gx-bar-fill {{ height: 8px; border-radius: 2px; background: var(--gx-changed-ink); }}
+.gx-bar-n {{ font-family: {MONO}; font-size: 11px; color: var(--gx-unknown-ink); }}
+.gx-rung[aria-current="true"] .gx-bar-n {{ color: inherit; }}
+
+.gx-rung-head {{ margin: 0 0 6px; font-size: 12px; }}
+.gx-levels {{ list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }}
+.gx-level {{ border-left: 3px solid var(--gx-unknown-fill); padding-left: 8px; }}
+.gx-level-name {{ margin: 0 0 3px; font-size: 12px; font-weight: 600;
+  color: var(--gx-unknown-ink); }}
+.gx-level pre {{ margin: 0; overflow-x: auto; }}
+.gx-level .gx-note {{ margin: 0; }}
+
 .gx-web {{ max-width: 100%; overflow-x: auto; color: var(--gx-focus-ink); }}
 .gx-web text {{ font-family: {MONO}; font-size: 12px; fill: var(--gx-neutral-ink); }}
 .gx-web .thread {{ fill: none; stroke: currentColor; stroke-width: 1.2; }}
