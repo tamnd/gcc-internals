@@ -11,6 +11,10 @@
    "hash": "ad97fac58639fa98",
    "text": "    pn = pass->name;"
   },
+  "gcc/tree-pass.h:235@releases/gcc-16.2.0": {
+   "hash": "8480add6167edcd4",
+   "text": "#define PROP_gimple \\"
+  },
   "gcc/tree-ssa-ccp.cc:1183@releases/gcc-16.2.0": {
    "hash": "b6f15afde0cebcb0",
    "text": "      /* If the incoming edge is executable, Compute the meet operator for"
