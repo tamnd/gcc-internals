@@ -32,3 +32,7 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 filterwarnings = ["error"]
+markers = [
+  "needs_gcc: drives a real gcc-16 and is skipped when there is not one on PATH",
+  "needs_network: talks to Compiler Explorer, never run in CI",
+]
