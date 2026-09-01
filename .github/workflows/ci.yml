@@ -68,8 +68,10 @@ jobs:
 
       # A boss fight nobody has watched fail is a boss fight that might be waving everything
       # through, so both directions are checked.
-      - name: the boss fight grades a right answer and a wrong one
+      - name: the boss fights grade a right answer and a wrong one
         run: |
+          python lessons/t01-what-gcc-runs/grade.py --steps 1,1,2,3 --shared cc1 --to-as no
+          ! python lessons/t01-what-gcc-runs/grade.py --steps 2,2,2,2 --shared as --to-as yes
           python lessons/t05-ssa-in-one-lesson/grade.py --phis 3 --most total --defaults yes
           ! python lessons/t05-ssa-in-one-lesson/grade.py --phis 2 --most k --defaults no
 

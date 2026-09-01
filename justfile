@@ -40,6 +40,10 @@ dumps FILE="corpora/programs/l1.c" OPT="-O2":
 passes FILE="corpora/programs/l1.c" OPT="-O2":
     {{py}} -m gxray passes --file {{FILE}} --gcc {{gcc}} {{OPT}}
 
+# Which programs the driver would run for these flags, without running any of them.
+chain FILE="corpora/programs/l1.c" OPT="-O2":
+    {{py}} -m gxray chain --file {{FILE}} --gcc {{gcc}} {{OPT}}
+
 # Where an SSA name comes from and everywhere it goes.
 web NAME="s_1" FILE="corpora/programs/l1.c" OPT="-O2":
     {{py}} -m gxray web --name {{NAME}} --file {{FILE}} --gcc {{gcc}} {{OPT}}
@@ -68,6 +72,20 @@ corpus:
         --dump tree-optimized-lineno --dump rtl-expand \
         --dump tree-ssa-graph --dump tree-optimized-graph \
         -O2 -g
+
+# The driver chains T01 reads. One entry per invocation the lesson shows, keyed on the exact
+# flags, because the whole point of the lesson is that the chain changes with them.
+corpus-t01:
+    {{py}} -m gxray record --entry t01-driver --file corpora/programs/l1.c --gcc {{gcc}} \
+        --dump tree-optimized \
+        --chain="-O2 -E" --chain="-O2 -S" --chain="-O2 -c" --chain="-O2" --chain="-O0 -c" \
+        -O2
+
+# The same source on a differently configured GCC 16.2, which is the last section of T01.
+# This one needs the network, and it is the only corpus entry that does.
+corpus-t01-ce:
+    {{py}} -m gxray record --backend ce --entry t01-driver-ce --file corpora/programs/l1.c \
+        --dump tree-optimized --chain="-O2" -O2
 
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:

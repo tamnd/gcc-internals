@@ -31,7 +31,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from gxray import cfg, gimple, passes
+from gxray import cfg, chain, gimple, passes
 from gxray.dumps import DumpFile, dump_flags, find_dumps, split_spec, split_stderr_dumps
 from tools.cecache import Cache, request_key
 
@@ -147,6 +147,15 @@ class Backend:
         statement in the dump, and `input.c` is a poor thing for a lesson to quote."""
         raise NotImplementedError
 
+    def chain(self, source: str, *args: str, filename: str = "input.c") -> chain.Chain:
+        """What the driver would run for these flags, without running any of it.
+
+        Separate from `compile` rather than a flag on it, because it answers a different
+        question and returns a different thing. `compile` produces dumps and assembly.
+        This produces no output at all, on purpose, and the answer is the plan.
+        """
+        raise NotImplementedError
+
     def can(self, capability: str) -> bool:
         return capability in self.capabilities
 
@@ -165,7 +174,17 @@ class LocalBackend(Backend):
     """A `gcc-16` on this machine. Everything works and it is fast."""
 
     capabilities = frozenset(
-        {"dumps", "all-dumps", "asm", "passes", "plugins", "named-dumps", "graph-dumps"}
+        {
+            "dumps",
+            "all-dumps",
+            "asm",
+            "passes",
+            "plugins",
+            "named-dumps",
+            "graph-dumps",
+            "chain",
+            "full-chain",
+        }
     )
 
     def __init__(self, gcc: str = "gcc-16"):
@@ -218,6 +237,21 @@ class LocalBackend(Backend):
                 dump_files=found,
             )
 
+    def chain(self, source: str, *args: str, filename: str = "input.c") -> chain.Chain:
+        """`-###` in a temporary directory, so a stray `a.out` never lands anywhere real.
+
+        No `-S` is added here, unlike `compile`, because which programs run is exactly the
+        thing being asked about and adding a flag that removes two of them would answer a
+        question nobody asked.
+        """
+        with tempfile.TemporaryDirectory(prefix="gxray-") as tmp:
+            tmpdir = Path(tmp)
+            src = tmpdir / filename
+            src.write_text(source, encoding="utf-8")
+            cmd = [self.gcc, "-###", *args, src.name]
+            proc = subprocess.run(cmd, capture_output=True, text=True, check=False, cwd=tmpdir)
+        return chain.parse(proc.stderr)
+
     def pipeline(self, source: str, *args: str) -> passes.Pipeline:
         """The pass pipeline for these options, straight out of `-fdump-passes`."""
         r = self.compile(source, *args, "-fdump-passes")
@@ -236,7 +270,7 @@ class CEBackend(Backend):
     `gxray.dumps.split_stderr_dumps` for what can and cannot be recovered from that.
     """
 
-    capabilities = frozenset({"dumps", "asm", "named-dumps", "execute"})
+    capabilities = frozenset({"dumps", "asm", "named-dumps", "execute", "chain"})
 
     def __init__(self, compiler: str = "cg162", cache: Cache | None = None, lang: str = "c"):
         self.compiler = compiler
@@ -315,6 +349,35 @@ class CEBackend(Backend):
             dump_texts=dump_texts,
         )
 
+    def chain(self, source: str, *args: str, filename: str = "input.c") -> chain.Chain:
+        """`-###` through the API. Real, live, and only ever one step long.
+
+        Compiler Explorer adds `-S` to everything it runs, because assembly is the whole
+        point of the site, so the chain that comes back stops at `cc1` and never mentions
+        the assembler or the linker. That is not a limitation worth hiding. It is a fact
+        about the tool most readers are looking at GCC through, and a lesson is better off
+        showing it than pretending the site runs the same chain a terminal does.
+
+        `full-chain` is the capability that says otherwise, and this backend does not have it.
+        """
+        return chain.parse(self.compile(source, "-###", *args).stderr)
+
+    def version(self) -> str:
+        """Which GCC is behind this compiler id, in its own words.
+
+        Read out of a `-###` header rather than out of the site's compiler list, because the
+        list is what somebody typed into a configuration file and the header is the compiler
+        answering for itself. They have disagreed before.
+        """
+        return f"gcc {self._header('version')}"
+
+    def target(self) -> str:
+        return self._header("target")
+
+    def _header(self, field: str) -> str:
+        found = getattr(self.chain("int main(void){return 0;}"), field)
+        return found or "unknown"
+
 
 class CorpusBackend(Backend):
     """Recorded dumps, shipped with the book. Needs nothing, not even a network.
@@ -324,7 +387,9 @@ class CorpusBackend(Backend):
     knows the answers somebody recorded, which is the whole point: it is deterministic.
     """
 
-    capabilities = frozenset({"dumps", "all-dumps", "named-dumps", "asm", "graph-dumps"})
+    capabilities = frozenset(
+        {"dumps", "all-dumps", "named-dumps", "asm", "graph-dumps", "chain", "full-chain"}
+    )
 
     def __init__(self, entry: str, root: Path | str | None = None):
         from gxray.corpus import CORPUS_ROOT
@@ -361,6 +426,25 @@ class CorpusBackend(Backend):
             asm=record.asm,
             dump_texts=selected,
         )
+
+    def chain(self, source: str, *args: str, filename: str = "input.c") -> chain.Chain:
+        """A chain somebody recorded, looked up by the exact flags they recorded it with.
+
+        Exact, not close. `-O2 -c` and `-c -O2` are the same compilation and a different
+        key, which is annoying once and then never again, and the alternative is a lookup
+        that quietly hands back the chain for some other flags.
+        """
+        from gxray.corpus import load
+
+        record = load(self.entry, root=self.root)
+        key = " ".join(args)
+        if key not in record.chains:
+            have = ", ".join(f"{k!r}" for k in sorted(record.chains)) or "none"
+            raise BackendError(
+                f"the corpus entry {self.entry!r} has no recorded chain for {key!r}. "
+                f"It has: {have}."
+            )
+        return chain.parse(record.chains[key])
 
 
 def local(gcc: str = "gcc-16") -> LocalBackend:

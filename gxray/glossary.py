@@ -121,6 +121,14 @@ DRIVING = Group(
             met="T01",
         ),
         Term(
+            name="collect2",
+            short="A wrapper the driver runs instead of the linker, which then runs the linker.",
+            long="Its job is static constructors. On a target whose linker cannot collect them by itself, `collect2` links once, reads the symbol table looking for constructor and destructor symbols, generates a small C file holding a table of them, compiles it and links again. On a modern target with `.init_array` none of that is needed and it passes almost everything straight through, which is why it looks like a pointless extra process in `-###` output. It is still there because removing a program from the middle of every link on every target is not the kind of change anybody makes casually.",
+            cite="gcc/collect2.cc:25@releases/gcc-16.2.0",
+            see=("driver", "cc1"),
+            met="T01",
+        ),
+        Term(
             name="dump file",
             short="A text file GCC writes showing the function after one particular pass.",
             long="Ask for one with `-fdump-tree-ssa` or `-fdump-rtl-expand` and GCC writes the whole function out in that pass's representation. This is the main window this course looks through, and the important thing about it is that it is a rendering rather than the data structure: the dump has no explicit edges, no pointers, and no types unless you ask for them with a modifier. Add `-graph` and you get a `.dot` beside it that does have the edges.",

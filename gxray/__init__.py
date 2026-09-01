@@ -17,7 +17,7 @@ writes recorded dumps is `gxray.corpus_store`, and it is spelled differently on 
 because a notebook wants the short name for the thing it actually calls.
 """
 
-from gxray import build, dumps, gimple, locs, passes
+from gxray import build, chain, dumps, gimple, locs, passes
 from gxray import corpus as corpus_store
 from gxray.build import banner
 from gxray.driver import (
@@ -47,6 +47,7 @@ __all__ = [
     "Result",
     "banner",
     "build",
+    "chain",
     "ce",
     "corpus",
     "corpus_store",
