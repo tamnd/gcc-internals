@@ -1,0 +1,37 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# The per push set has to stay under about twenty five minutes. Past that, authors stop
+# running it locally and start pushing to see whether CI is happy, which is the beginning
+# of the end for a docs project.
+
+jobs:
+  lint:
+    name: lint and prose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check .
+      - run: ruff format --check .
+      - name: prose rules
+        run: python -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md lessons blueprints corpora/programs
+
+  test:
+    name: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - run: python -m pytest -q
+
