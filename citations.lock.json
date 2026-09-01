@@ -43,6 +43,10 @@
    "hash": "7d765f61c6aaf81b",
    "text": "      %{!fsyntax-only:%(invoke_as)}}}}\", 0, 0, 1},"
   },
+  "gcc/gimple.def:46@releases/gcc-16.2.0": {
+   "hash": "25c15e9488a713c6",
+   "text": "DEFGSCODE(GIMPLE_COND, \"gimple_cond\", GSS_WITH_OPS)"
+  },
   "gcc/gimple.h:222@releases/gcc-16.2.0": {
    "hash": "e268c6365b9f8ea8",
    "text": "  gimple"
@@ -66,6 +70,10 @@
   "gcc/passes.cc:973@releases/gcc-16.2.0": {
    "hash": "ad97fac58639fa98",
    "text": "    pn = pass->name;"
+  },
+  "gcc/rtl.def:145@releases/gcc-16.2.0": {
+   "hash": "ba0d244bff7f17bb",
+   "text": "DEF_RTL_EXPR(INSN, \"insn\", \"uuBeLie\", RTX_INSN)"
   },
   "gcc/rtl.h:314@releases/gcc-16.2.0": {
    "hash": "5fdc10b2e6085211",
@@ -94,6 +102,10 @@
   "gcc/tree.def:1035@releases/gcc-16.2.0": {
    "hash": "827ae1b1416647b6",
    "text": "DEFTREECODE (SSA_NAME, \"ssa_name\", tcc_exceptional, 0)"
+  },
+  "gcc/tree.def:41@releases/gcc-16.2.0": {
+   "hash": "a5ae4c9e706bdc62",
+   "text": "DEFTREECODE (ERROR_MARK, \"error_mark\", tcc_exceptional, 0)"
   }
  }
 }
