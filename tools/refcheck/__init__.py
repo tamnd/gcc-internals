@@ -36,6 +36,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 GCC_ROOT = REPO_ROOT / "vendor" / "gcc"
 LOCKFILE = REPO_ROOT / "citations.lock.json"
 PINNED_TAG = "releases/gcc-16.2.0"
+MIRROR = "https://github.com/gcc-mirror/gcc"
 
 # gcc/tree-ssa-ccp.cc:1183@releases/gcc-16.2.0
 CITATION = re.compile(
@@ -94,6 +95,17 @@ class Citation:
             return "somewhere"
         return f"{self.source}:{self.source_line}"
 
+    @property
+    def url(self) -> str:
+        """Where a reader goes when they click it.
+
+        The mirror rather than sourceware, because the mirror is what `vendor/gcc` is a
+        checkout of, so the line a reader lands on is the line refcheck hashed. This lives
+        here so there is one place that knows the format, rather than one here and a second
+        one in whatever builds the prose.
+        """
+        return f"{MIRROR}/blob/{self.tag}/{self.path}#L{self.line}"
+
     def __str__(self) -> str:
         return self.key
 
@@ -123,6 +135,27 @@ def find_citations(text: str, source: Path | None = None) -> list[Citation]:
                 )
             )
     return found
+
+
+def parse(text: str) -> Citation:
+    """One citation from its written form. Raises if it is not one.
+
+    This is the door anything that builds prose comes through, so a malformed citation in a
+    lesson fails while the lesson is being built rather than during the review of a page
+    that already looks finished.
+    """
+    m = CITATION.fullmatch(text.strip())
+    if m is None:
+        raise RefError(
+            f"{text!r} is not a citation. They look like "
+            f"gcc/tree-ssa-ccp.cc:1183@{PINNED_TAG}, with no spaces and nothing else."
+        )
+    return Citation(path=m.group("path"), line=int(m.group("line")), tag=m.group("tag"))
+
+
+def url(text: str) -> str:
+    """The link for a citation, written the one way this project writes them."""
+    return parse(text).url
 
 
 def scan(paths: list[Path]) -> list[Citation]:
@@ -170,7 +203,18 @@ def resolve(citation: Citation, root: Path | None = None) -> Resolved:
             f"`git submodule update --init --depth 1`."
         )
 
-    lines = target.read_text(encoding="utf-8", errors="replace").splitlines()
+    # `split("\n")` rather than `splitlines()`, and this is not a style preference. Python
+    # treats form feed as a line break and GCC's sources are full of them, because the
+    # convention there is to separate sections of a file with one. So `splitlines()` counts
+    # more lines than the file has, and every citation into `gcc.cc` or `gimplify.cc` lands
+    # a few lines early. The number in a citation has to mean what an editor and GitHub both
+    # say it means, and they only break on a newline.
+    lines = target.read_text(encoding="utf-8", errors="replace").split("\n")
+    # A file that ends in a newline splits into a final empty string, which is not a line by
+    # anybody's count. Leaving it in makes every file look one line longer than it is, and
+    # the whole point of this is to agree with what an editor says.
+    if lines and lines[-1] == "":
+        lines.pop()
     if not 1 <= citation.line <= len(lines):
         raise RefError(
             f"{citation.key} at {citation.where} points at line {citation.line}, but "

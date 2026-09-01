@@ -32,12 +32,25 @@ def cite(line: int, path: str = "gcc/passes.cc", tag: str = refcheck.PINNED_TAG)
 
 
 def test_finds_a_citation_in_prose():
-    text = "The pass name may carry a prefix, see `gcc/passes.cc:855@releases/gcc-16.2.0`.\n"
+    text = "The pass name may carry a prefix, see `gcc/passes.cc:854@releases/gcc-16.2.0`.\n"
     (found,) = refcheck.find_citations(text, source=Path("t.md"))
     assert found.path == "gcc/passes.cc"
-    assert found.line == 855
+    assert found.line == 854
     assert found.tag == "releases/gcc-16.2.0"
     assert found.source_line == 1
+
+
+def test_a_citation_becomes_a_link_to_the_mirror():
+    """One place knows the URL format, because the lessons need it too."""
+    assert refcheck.url(f"gcc/passes.cc:854@{refcheck.PINNED_TAG}") == (
+        "https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/passes.cc#L854"
+    )
+
+
+def test_something_that_is_not_a_citation_says_what_one_looks_like():
+    with pytest.raises(RefError) as exc:
+        refcheck.parse("gcc/passes.cc line 854")
+    assert "is not a citation" in str(exc.value)
 
 
 def test_finds_several_on_one_line():
@@ -96,6 +109,18 @@ def test_insn_recog_points_you_at_the_machine_description(tree):
     with pytest.raises(RefError) as exc:
         refcheck.resolve(cite(1, path="gcc/insn-recog.cc"), root=tree)
     assert ".md file" in str(exc.value)
+
+
+def test_a_form_feed_is_not_a_line_break(tree):
+    """The bug that made every citation into `gcc.cc` resolve a few lines early.
+
+    Python's `splitlines` breaks on a form feed and GCC's sources use one to separate
+    sections of a file, so counting lines that way disagrees with every editor and with
+    GitHub. It disagreed silently, because the hash in the lockfile had been recorded by the
+    same broken reader, so the tool was consistent with itself and wrong about the world.
+    """
+    (tree / "gcc" / "passes.cc").write_text(FILE.replace("line 5\n", "line 5\n\f"))
+    assert refcheck.resolve(cite(10), root=tree).text == "line 10"
 
 
 def test_trailing_whitespace_does_not_change_the_hash():
@@ -207,5 +232,5 @@ def test_every_citation_in_this_repository_resolves():
 @needs_tree
 def test_the_citation_behind_the_pass_name_fix_still_says_what_it_said():
     """gxray splits pass names on a space because of this comment. If it goes, so does that."""
-    r = refcheck.resolve(Citation("gcc/passes.cc", 855, refcheck.PINNED_TAG))
+    r = refcheck.resolve(Citation("gcc/passes.cc", 854, refcheck.PINNED_TAG))
     assert "disambiguating prefix" in r.text

@@ -67,7 +67,7 @@ class Pass:
         A pass name may carry a disambiguating prefix, a space, and then the dump name.
         GCC keeps only the part after the space when it names the dump file, so `rtl pre`
         is dumped as `rtl-pre` and not as `rtl-rtl pre`, and the same for `no-opt dfinit`.
-        See `gcc/passes.cc:855@releases/gcc-16.2.0`.
+        See `gcc/passes.cc:854@releases/gcc-16.2.0`.
         """
         body = self.name.split("-", 1)[1] if self.phase else self.name
         return body.split(" ", 1)[1] if " " in body else body

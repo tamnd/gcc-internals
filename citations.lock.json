@@ -3,21 +3,81 @@
  "pinned": "releases/gcc-16.2.0",
  "context_lines": 2,
  "citations": {
-  "gcc/passes.cc:855@releases/gcc-16.2.0": {
+  "gcc/basic-block.h:117@releases/gcc-16.2.0": {
+   "hash": "05175d55535c1aa8",
+   "text": "struct GTY((chain_next (\"%h.next_bb\"), chain_prev (\"%h.prev_bb\"))) basic_block_def {"
+  },
+  "gcc/cfgexpand.cc:7015@releases/gcc-16.2.0": {
+   "hash": "06e86604448666fa",
+   "text": "class pass_expand : public rtl_opt_pass"
+  },
+  "gcc/cfgloop.h:120@releases/gcc-16.2.0": {
+   "hash": "dbb50865dbe74d44",
+   "text": "class GTY ((chain_next (\"%h.next\"))) loop {"
+  },
+  "gcc/dominance.cc:856@releases/gcc-16.2.0": {
+   "hash": "ddd51844694a3c95",
+   "text": "get_immediate_dominator (enum cdi_direction dir, basic_block bb)"
+  },
+  "gcc/dumpfile.h:522@releases/gcc-16.2.0": {
+   "hash": "05363e987fec570a",
+   "text": "extern FILE *dump_file;"
+  },
+  "gcc/gcc.cc:1234@releases/gcc-16.2.0": {
+   "hash": "ebb1ec3c29398f08",
+   "text": "static const char *cc1_spec = CC1_SPEC OS_CC1_SPEC;"
+  },
+  "gcc/gimple.h:222@releases/gcc-16.2.0": {
+   "hash": "e268c6365b9f8ea8",
+   "text": "  gimple"
+  },
+  "gcc/gimple.h:474@releases/gcc-16.2.0": {
+   "hash": "77ddf6b52f21bee0",
+   "text": "  gphi : public gimple"
+  },
+  "gcc/gimplify.cc:20296@releases/gcc-16.2.0": {
+   "hash": "b5fdc152f1a3a350",
+   "text": "gimplify_expr (tree *expr_p, gimple_seq *pre_p, gimple_seq *post_p,"
+  },
+  "gcc/passes.cc:2579@releases/gcc-16.2.0": {
+   "hash": "874fd72273323b29",
+   "text": "execute_one_pass (opt_pass *pass)"
+  },
+  "gcc/passes.cc:854@releases/gcc-16.2.0": {
    "hash": "427de223d27ef038",
    "text": "     that reason, we may have a disambiguating prefix, followed by a space"
   },
-  "gcc/passes.cc:974@releases/gcc-16.2.0": {
+  "gcc/passes.cc:973@releases/gcc-16.2.0": {
    "hash": "ad97fac58639fa98",
    "text": "    pn = pass->name;"
+  },
+  "gcc/rtl.h:314@releases/gcc-16.2.0": {
+   "hash": "5fdc10b2e6085211",
+   "text": "\t    chain_prev (\"RTX_PREV (&%h)\"))) rtx_def {"
+  },
+  "gcc/tree-core.h:2186@releases/gcc-16.2.0": {
+   "hash": "30e19987a7156896",
+   "text": "\t    desc (\"tree_node_structure (&%h)\"), variable_size)) tree_node {"
   },
   "gcc/tree-pass.h:235@releases/gcc-16.2.0": {
    "hash": "8480add6167edcd4",
    "text": "#define PROP_gimple \\"
   },
+  "gcc/tree-pass.h:73@releases/gcc-16.2.0": {
+   "hash": "3f097a4923bb403f",
+   "text": "class opt_pass : public pass_data"
+  },
   "gcc/tree-ssa-ccp.cc:1183@releases/gcc-16.2.0": {
    "hash": "b6f15afde0cebcb0",
    "text": "      /* If the incoming edge is executable, Compute the meet operator for"
+  },
+  "gcc/tree-ssanames.cc:351@releases/gcc-16.2.0": {
+   "hash": "8d4a46c239a088be",
+   "text": "make_ssa_name_fn (struct function *fn, tree var, gimple *stmt,"
+  },
+  "gcc/tree.def:1035@releases/gcc-16.2.0": {
+   "hash": "827ae1b1416647b6",
+   "text": "DEFTREECODE (SSA_NAME, \"ssa_name\", tcc_exceptional, 0)"
   }
  }
 }

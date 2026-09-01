@@ -3,7 +3,7 @@
 Every claim this book makes about GCC's code points at a file, a line and a release tag:
 
 ```text
-gcc/passes.cc:855@releases/gcc-16.2.0
+gcc/passes.cc:854@releases/gcc-16.2.0
 ```
 
 `vendor/gcc` is a git submodule holding the GCC source at exactly that tag, and `refcheck` resolves every citation against it on every push. It hashes the cited line together with two lines either side, and records the hash in `citations.lock.json`. When the hash changes, the build fails and a person has to reread the claim.
@@ -19,12 +19,12 @@ The second is that citing the wrong line is easy and embarrassing. Off by one is
 The third is that a citation makes "I read this in the source" checkable by a stranger. `refcheck show` prints the lines any citation points at, so a reader can look without cloning anything.
 
 ```console
-$ refcheck show gcc/passes.cc:855@releases/gcc-16.2.0
-     853       and to specify dump file name and option.
-     854       The latter two might want something short which is not quite unique; for
->    855       that reason, we may have a disambiguating prefix, followed by a space
-     856       to mark the start of the following dump file name / option string.  */
-     857    name = strchr (pass->name, ' ');
+$ refcheck show gcc/passes.cc:854@releases/gcc-16.2.0
+     852       and to specify dump file name and option.
+     853       The latter two might want something short which is not quite unique; for
+>    854       that reason, we may have a disambiguating prefix, followed by a space
+     855       to mark the start of the following dump file name / option string.  */
+     856    name = strchr (pass->name, ' ');
 
 hash 427de223d27ef038
 ```
@@ -48,7 +48,7 @@ The submodule paid for itself before the tool was finished.
 The reason is in the source, four lines of comment above the code that does it:
 
 ```text
-gcc/passes.cc:855@releases/gcc-16.2.0
+gcc/passes.cc:854@releases/gcc-16.2.0
 
   /* The name is both used to identify the pass for the purposes of plugins,
      and to specify dump file name and option.
@@ -70,7 +70,7 @@ Two lines of the pass list at `-O2` read `(null)`.
 That is not GCC being coy. The pass list prints a name looked up in a table, and falls back to the pass's own name only for the first instance of a pass:
 
 ```text
-gcc/passes.cc:974@releases/gcc-16.2.0
+gcc/passes.cc:973@releases/gcc-16.2.0
 
   if (pass->static_pass_number <= 0)
     pn = pass->name;
@@ -83,6 +83,16 @@ The table is cleared and then filled by walking the map of registered pass names
 One of the two is `pass_ipa_asm_wpa`. It is the second instance of a pass whose data declares the name `ipa-asm`, and the first instance is the line above it in the list, printed as `ipa-ipa-asm`. So the pass list is showing the same pass twice and only naming it once.
 
 `gxray` keeps these rather than dropping them, and marks them. The first version of the parser skipped every line it did not recognise and reported 391 passes where GCC had printed 395. Nothing crashed. The number was wrong, in a way no reader could have caught, which is the exact failure this whole apparatus exists to prevent.
+
+## Line 855 was line 854
+
+The first version of `refcheck` read a file with Python's `splitlines`, which is the obvious thing to write and is wrong here. Python counts a form feed as a line break. GCC's sources separate sections of a file with one, the way a lot of code from that era does, so `gcc.cc` has dozens of them and `gimplify.cc` has hundreds.
+
+The effect is that every citation into a file with a form feed above the cited line resolved a few lines early, silently. `refcheck check` was perfectly happy, because the hash it compared against had been recorded by the same broken reader. The tool agreed with itself and disagreed with every editor and with GitHub.
+
+It surfaced when the glossary went in and eleven new citations were added at once. Four of them landed on blank lines or on a closing brace, which is not something you write on purpose, and that was enough to go looking.
+
+Two of the four citations already in the book were off by one. The fix is `split("\n")`, which counts lines the way an editor does, and there is a test for it now that cites a fixture with a form feed in it. A line number in a citation has to mean the thing a reader sees when they click the link, and the only definition of a line that satisfies that is the one that breaks on a newline and nothing else.
 
 ## Working with the submodule
 
