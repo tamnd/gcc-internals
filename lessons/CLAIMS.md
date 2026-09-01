@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-16 claims across 3 lessons, 1 of them not observable from a notebook.
+20 claims across 4 lessons, 2 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -28,6 +28,15 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | the loop header line is the busiest line in the function at all four levels | [`t02-09`](t02-five-faces/t02.ipynb) |
 | the return statement has nothing at all at the RTL and assembly levels, and the closing brace has two of each | [`t02-12`](t02-five-faces/t02.ipynb) |
 | GCC has more GENERIC node codes than RTL expression codes, and roughly five times as many of either as it has GIMPLE statement codes | not observable from a notebook: the counts come from GCC's own .def files, and this notebook has no copy of the source tree. The citations are checked against the pinned tree on every push instead. |
+
+## GIMPLE is C with the fun removed
+
+| Claim | Proved by |
+| --- | --- |
+| no statement anywhere in the gimplified bench has more than one operator on it, and the GENERIC it came from has a line with seven | [`t03-11`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
+| the bench is seven functions of one line each, and gimplification turns them into between two and eleven statements | [`t03-13`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
+| neither the && nor the ?: leaves an operator behind, and what stands in for both of them is a condition, some labels, some gotos, and one variable written on two different paths | [`t03-18`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
+| one function does nearly all of this, and the switch at the middle of it has over a hundred cases, one per kind of tree node it might have to take apart | not observable from a notebook: the shape of gimplify_expr is a fact about the source tree, and this notebook has no copy of it. The citation is checked against the pinned tree on every push instead. |
 
 ## SSA in one lesson
 

@@ -43,6 +43,10 @@
    "hash": "7d765f61c6aaf81b",
    "text": "      %{!fsyntax-only:%(invoke_as)}}}}\", 0, 0, 1},"
   },
+  "gcc/gimple-expr.cc:836@releases/gcc-16.2.0": {
+   "hash": "42bc3cf0317ea2ed",
+   "text": "is_gimple_val (tree t)"
+  },
   "gcc/gimple.def:46@releases/gcc-16.2.0": {
    "hash": "25c15e9488a713c6",
    "text": "DEFGSCODE(GIMPLE_COND, \"gimple_cond\", GSS_WITH_OPS)"
@@ -58,6 +62,18 @@
   "gcc/gimplify.cc:20296@releases/gcc-16.2.0": {
    "hash": "b5fdc152f1a3a350",
    "text": "gimplify_expr (tree *expr_p, gimple_seq *pre_p, gimple_seq *post_p,"
+  },
+  "gcc/gimplify.cc:5221@releases/gcc-16.2.0": {
+   "hash": "984e15500d07e5c4",
+   "text": "shortcut_cond_expr (tree expr, unsigned condition_uid)"
+  },
+  "gcc/gimplify.cc:5571@releases/gcc-16.2.0": {
+   "hash": "45d75dd792b55a1e",
+   "text": "gimplify_cond_expr (tree *expr_p, gimple_seq *pre_p, fallback_t fallback)"
+  },
+  "gcc/gimplify.cc:683@releases/gcc-16.2.0": {
+   "hash": "90e8955732ed66ab",
+   "text": "internal_get_tmp_var (tree val, gimple_seq *pre_p, gimple_seq *post_p,"
   },
   "gcc/passes.cc:2579@releases/gcc-16.2.0": {
    "hash": "874fd72273323b29",

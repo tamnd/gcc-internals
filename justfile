@@ -87,6 +87,14 @@ corpus-t01-ce:
     {{py}} -m gxray record --backend ce --entry t01-driver-ce --file corpora/programs/l1.c \
         --dump tree-optimized --chain="-O2" -O2
 
+# The gimplification bench T03 reads. -O0 so that nothing runs after gimplification and what
+# comes out is the front end's work and nothing else, and the gimple dump rather than the
+# optimized one because the whole lesson is about the shape GIMPLE arrives in.
+corpus-t03:
+    {{py}} -m gxray record --entry t03-bench --file corpora/programs/t03-bench.c --gcc {{gcc}} \
+        --dump tree-original-lineno --dump tree-gimple-lineno \
+        -O0 -g
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build
