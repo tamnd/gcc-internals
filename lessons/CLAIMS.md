@@ -8,7 +8,17 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-7 claims across 1 lesson, 0 of them not observable from a notebook.
+12 claims across 2 lessons, 0 of them not observable from a notebook.
+
+## What does gcc actually run?
+
+| Claim | Proved by |
+| --- | --- |
+| on this target gcc runs one program for -E and for -S, two for -c, and three for a full link | [`t01-10`](t01-what-gcc-runs/t01.ipynb) |
+| the driver runs cc1 from an absolute path under libexec, and cc1 is not on the PATH | [`t01-12`](t01-what-gcc-runs/t01.ipynb) |
+| the driver hands cc1 many more arguments than the user typed on the command line | [`t01-16`](t01-what-gcc-runs/t01.ipynb) |
+| changing -O0 to -O2 changes one flag given to cc1 and nothing at all given to as | [`t01-18`](t01-what-gcc-runs/t01.ipynb) |
+| the same source and flags run three programs on one GCC 16.2 build and one on another | [`t01-21`](t01-what-gcc-runs/t01.ipynb) |
 
 ## SSA in one lesson
 
