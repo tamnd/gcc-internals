@@ -32,6 +32,11 @@ class Record:
     dump_texts: dict[str, str] = field(default_factory=dict)
     asm: str = ""
 
+    #: What `-###` printed, keyed by the flags that produced it. A dict rather than a single
+    #: string because the interesting thing about the driver is how the chain changes with
+    #: the flags, and one recording cannot show that.
+    chains: dict[str, str] = field(default_factory=dict)
+
     def to_json(self) -> dict:
         return {
             "entry": self.entry,
@@ -41,6 +46,7 @@ class Record:
             "target": self.target,
             "recorded": self.recorded,
             "asm": self.asm,
+            "chains": self.chains,
             "dumps": self.dump_texts,
         }
 
@@ -55,6 +61,7 @@ class Record:
             recorded=data["recorded"],
             dump_texts=dict(data["dumps"]),
             asm=data.get("asm", ""),
+            chains=dict(data.get("chains", {})),
         )
 
     def __str__(self) -> str:
@@ -86,9 +93,21 @@ def entries(root: Path | str | None = None) -> list[str]:
 
 
 def record(
-    backend, entry: str, source: str, *args: str, dumps: list[str], filename: str = "input.c"
+    backend,
+    entry: str,
+    source: str,
+    *args: str,
+    dumps: list[str],
+    filename: str = "input.c",
+    chains: list[list[str]] | None = None,
 ) -> Record:
-    """Run a compilation on a local backend and keep the result."""
+    """Run a compilation on a local backend and keep the result.
+
+    `chains` is a list of flag lists, each recorded under the flags that produced it. They
+    are separate runs of `-###` rather than a by-product of the compile, because the whole
+    point of the driver chain is that it is different for `-c` than it is for a full link
+    and one compilation only ever shows one of those.
+    """
     result = backend.compile(source, *args, dumps=dumps, filename=filename)
     if not result.ok:
         raise RuntimeError(f"cannot record {entry!r}, the compile failed:\n{result.stderr}")
@@ -101,4 +120,8 @@ def record(
         recorded=date.today().isoformat(),
         dump_texts=dict(result.dump_texts),
         asm=result.asm,
+        chains={
+            " ".join(flags): backend.chain(source, *flags, filename=filename).text
+            for flags in chains or []
+        },
     )

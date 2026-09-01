@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [out of SSA](#out-of-ssa) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [out of SSA](#out-of-ssa) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [tree](#tree) | [use](#use)
 
 ## Driving the compiler
 
@@ -37,6 +37,14 @@ First met in T01. See also [driver](#driver), [spec](#spec), [front end](#front-
 A spec is a template full of conditionals like `%{save-temps:...}` that expands into arguments. They are almost unreadable and you will not need to write one, but recognising the syntax stops `gcc -dumpspecs` from looking like line noise, and knowing they exist explains why an option you passed shows up in a completely different form in the `cc1` command line.
 
 First met in T01. See also [driver](#driver), [cc1](#cc1).
+
+### collect2
+
+**A wrapper the driver runs instead of the linker, which then runs the linker.**
+
+Its job is static constructors. On a target whose linker cannot collect them by itself, `collect2` links once, reads the symbol table looking for constructor and destructor symbols, generates a small C file holding a table of them, compiles it and links again. On a modern target with `.init_array` none of that is needed and it passes almost everything straight through, which is why it looks like a pointless extra process in `-###` output. It is still there because removing a program from the middle of every link on every target is not the kind of change anybody makes casually.
+
+First met in T01. See also [driver](#driver), [cc1](#cc1). In the source: [`gcc/collect2.cc:25@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/collect2.cc#L25).
 
 ### dump file
 

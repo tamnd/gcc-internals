@@ -15,6 +15,10 @@
    "hash": "dbb50865dbe74d44",
    "text": "class GTY ((chain_next (\"%h.next\"))) loop {"
   },
+  "gcc/collect2.cc:25@releases/gcc-16.2.0": {
+   "hash": "da91aff74c89821f",
+   "text": "/* Build tables of static constructors and destructors and run ld.  */"
+  },
   "gcc/dominance.cc:856@releases/gcc-16.2.0": {
    "hash": "ddd51844694a3c95",
    "text": "get_immediate_dominator (enum cdi_direction dir, basic_block bb)"
@@ -26,6 +30,18 @@
   "gcc/gcc.cc:1234@releases/gcc-16.2.0": {
    "hash": "ebb1ec3c29398f08",
    "text": "static const char *cc1_spec = CC1_SPEC OS_CC1_SPEC;"
+  },
+  "gcc/gcc.cc:1453@releases/gcc-16.2.0": {
+   "hash": "e60a6f968bc569b2",
+   "text": "static const struct compiler default_compilers[] ="
+  },
+  "gcc/gcc.cc:1493@releases/gcc-16.2.0": {
+   "hash": "113cfbd96886181d",
+   "text": "\t  cc1 %(cpp_unique_options) %(cc1_options)}}}\\"
+  },
+  "gcc/gcc.cc:1494@releases/gcc-16.2.0": {
+   "hash": "7d765f61c6aaf81b",
+   "text": "      %{!fsyntax-only:%(invoke_as)}}}}\", 0, 0, 1},"
   },
   "gcc/gimple.h:222@releases/gcc-16.2.0": {
    "hash": "e268c6365b9f8ea8",

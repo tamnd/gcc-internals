@@ -107,9 +107,28 @@ def cmd_web(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_chain(args: argparse.Namespace) -> int:
+    """What the driver would run, and what it would tell each program."""
+    found = pick_backend(args).chain(source_for(args), *args.flags)
+    print(f"{found}\n")
+    for n, step in enumerate(found, 1):
+        print(f"{n}. {step.name}{'  ' + step.role if step.role else ''}")
+        if args.full:
+            print(f"     {step.program}")
+            for arg in step.argv:
+                print(f"       {arg}")
+    return 0
+
+
 def cmd_record(args: argparse.Namespace) -> int:
-    backend = LocalBackend(args.gcc)
-    if not backend.available:
+    # Almost always local, because the corpus is meant to be the pinned compiler. Compiler
+    # Explorer is allowed here for one job: recording what a differently configured GCC 16
+    # of the same version does, which is the only way a lesson can compare the two offline.
+    backend = pick_backend(args)
+    if isinstance(backend, CorpusBackend):
+        print("recording from the corpus into the corpus would not tell anybody anything")
+        return 2
+    if isinstance(backend, LocalBackend) and not backend.available:
         print(f"{backend.gcc} is not on PATH, and the corpus has to come from the pinned compiler")
         return 2
     # The name the compiler sees ends up printed in front of every statement in a dump
@@ -121,6 +140,7 @@ def cmd_record(args: argparse.Namespace) -> int:
         *args.flags,
         dumps=args.dump or ["tree-all"],
         filename=Path(args.file).name if args.file else f"{args.program}.c",
+        chains=[spec.split() for spec in args.chain or []],
     )
     path = corpus_store.save(rec)
     print(f"wrote {path} ({len(rec.dump_texts)} dumps)")
@@ -152,7 +172,17 @@ def build_parser() -> argparse.ArgumentParser:
     sw = sub.add_parser("web", parents=[common], help="where an SSA name comes from and goes")
     sw.add_argument("--name", required=True, help="an SSA name such as s_1")
 
-    sub.add_parser("record", parents=[common], help="record a corpus entry from local GCC")
+    sc = sub.add_parser("chain", parents=[common], help="which programs the driver would run")
+    sc.add_argument("--full", action="store_true", help="every argument, one per line")
+
+    sr = sub.add_parser("record", parents=[common], help="record a corpus entry from local GCC")
+    sr.add_argument(
+        "--chain",
+        action="append",
+        metavar="FLAGS",
+        # The value starts with a dash, so it has to arrive attached: --chain="-O2 -c".
+        help='also record what -### prints for these flags, repeatable, as --chain="-O2 -c"',
+    )
     return p
 
 
@@ -161,6 +191,7 @@ COMMANDS = {
     "passes": cmd_passes,
     "dumps": cmd_dumps,
     "web": cmd_web,
+    "chain": cmd_chain,
     "record": cmd_record,
 }
 
