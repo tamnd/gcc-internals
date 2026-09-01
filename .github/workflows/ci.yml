@@ -72,6 +72,8 @@ jobs:
         run: |
           python lessons/t01-what-gcc-runs/grade.py --steps 1,1,2,3 --shared cc1 --to-as no
           ! python lessons/t01-what-gcc-runs/grade.py --steps 2,2,2,2 --shared as --to-as yes
+          python lessons/t02-five-faces/grade.py --asm 5=2,6=6,7=1,8=0 --vanished 8 --appeared 9
+          ! python lessons/t02-five-faces/grade.py --asm 5=1,6=1 --vanished 9 --appeared 8
           python lessons/t05-ssa-in-one-lesson/grade.py --phis 3 --most total --defaults yes
           ! python lessons/t05-ssa-in-one-lesson/grade.py --phis 2 --most k --defaults no
 

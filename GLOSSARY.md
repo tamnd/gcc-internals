@@ -120,7 +120,7 @@ First met in T02. See also [tree](#tree), [GIMPLE](#gimple), [gimplification](#g
 
 Every expression is broken up until each statement does exactly one thing, with temporaries invented to hold the middle results. This is the representation the entire middle end works on, and the reason for it is that a pass that has to handle arbitrary nesting is a pass nobody can write correctly. What you lose is readability, which is why the dumps look like somebody ran your code through a shredder.
 
-First met in T03. See also [GENERIC](#generic), [gimplification](#gimplification), [SSA](#ssa), [basic block](#basic-block). In the source: [`gcc/gimple.h:222@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gimple.h#L222).
+First met in T02. See also [GENERIC](#generic), [gimplification](#gimplification), [SSA](#ssa), [basic block](#basic-block). In the source: [`gcc/gimple.h:222@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gimple.h#L222).
 
 ### gimplification
 
@@ -136,7 +136,7 @@ First met in T03. See also [GENERIC](#generic), [GIMPLE](#gimple). In the source
 
 RTL is the back end's representation and it is a Lisp-like expression describing what an instruction does to registers and memory, not what the instruction is called. A target matches those expressions against its patterns to pick real instructions. The move from GIMPLE to RTL is the point where the compiler stops being about your program and starts being about a machine.
 
-Also written `rtx`. First met in T07. See also [expand](#expand), [back end](#back-end). In the source: [`gcc/rtl.h:314@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/rtl.h#L314).
+Also written `rtx`. First met in T02. See also [expand](#expand), [back end](#back-end). In the source: [`gcc/rtl.h:314@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/rtl.h#L314).
 
 ### expand
 

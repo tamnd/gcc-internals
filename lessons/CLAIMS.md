@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-12 claims across 2 lessons, 0 of them not observable from a notebook.
+16 claims across 3 lessons, 1 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -19,6 +19,15 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | the driver hands cc1 many more arguments than the user typed on the command line | [`t01-16`](t01-what-gcc-runs/t01.ipynb) |
 | changing -O0 to -O2 changes one flag given to cc1 and nothing at all given to as | [`t01-18`](t01-what-gcc-runs/t01.ipynb) |
 | the same source and flags run three programs on one GCC 16.2 build and one on another | [`t01-21`](t01-what-gcc-runs/t01.ipynb) |
+
+## The five faces of one function
+
+| Claim | Proved by |
+| --- | --- |
+| every item at every level carries a file and a line, and that is the only field the four levels have in common | [`t02-06`](t02-five-faces/t02.ipynb) |
+| the loop header line is the busiest line in the function at all four levels | [`t02-09`](t02-five-faces/t02.ipynb) |
+| the return statement has nothing at all at the RTL and assembly levels, and the closing brace has two of each | [`t02-12`](t02-five-faces/t02.ipynb) |
+| GCC has more GENERIC node codes than RTL expression codes, and roughly five times as many of either as it has GIMPLE statement codes | not observable from a notebook: the counts come from GCC's own .def files, and this notebook has no copy of the source tree. The citations are checked against the pinned tree on every push instead. |
 
 ## SSA in one lesson
 

@@ -204,7 +204,7 @@ SHAPES = Group(
             long="Every expression is broken up until each statement does exactly one thing, with temporaries invented to hold the middle results. This is the representation the entire middle end works on, and the reason for it is that a pass that has to handle arbitrary nesting is a pass nobody can write correctly. What you lose is readability, which is why the dumps look like somebody ran your code through a shredder.",
             cite="gcc/gimple.h:222@releases/gcc-16.2.0",
             see=("GENERIC", "gimplification", "SSA", "basic block"),
-            met="T03",
+            met="T02",
         ),
         Term(
             name="gimplification",
@@ -221,7 +221,7 @@ SHAPES = Group(
             cite="gcc/rtl.h:314@releases/gcc-16.2.0",
             also=("`rtx`",),
             see=("expand", "back end"),
-            met="T07",
+            met="T02",
         ),
         Term(
             name="expand",
