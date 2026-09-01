@@ -36,6 +36,27 @@ def passes_text() -> str:
     return fixture("l1-O2-passes.txt")
 
 
+@pytest.fixture
+def loops_graph() -> str:
+    """A graph dump of a switch and two nested loops, at -O1.
+
+    Written by `gcc-16 -O1 -c -fdump-tree-optimized-graph`. It is here because `l1.c` has
+    one loop and no nesting, and the cluster nesting in a graph dump is the only place the
+    loop tree shows up.
+    """
+    return fixture("loops-O1-optimized-graph.dot")
+
+
+@pytest.fixture
+def setjmp_graph() -> str:
+    """A graph dump of a function that calls setjmp, at -O1.
+
+    This is where the abnormal edges are. It also has the awkward case the parser has to get
+    right: an edge back to the setjmp receiver that is abnormal and a back edge at once.
+    """
+    return fixture("setjmp-O1-optimized-graph.dot")
+
+
 def pytest_collection_modifyitems(config, items):
     skip = pytest.mark.skip(reason="no gcc-16 on PATH")
     for item in items:

@@ -31,7 +31,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from gxray import gimple, passes
+from gxray import cfg, gimple, passes
 from gxray.dumps import DumpFile, dump_flags, find_dumps, split_spec, split_stderr_dumps
 from tools.cecache import Cache, request_key
 
@@ -67,6 +67,7 @@ class Result:
     dump_texts: dict[str, str] = field(default_factory=dict)
     dump_files: list[DumpFile] = field(default_factory=list)
     _parsed: dict[str, gimple.GimpleDump] = field(default_factory=dict, repr=False)
+    _graphs: dict[str, dict[str, cfg.CFG]] = field(default_factory=dict, repr=False)
 
     @property
     def ok(self) -> bool:
@@ -88,14 +89,44 @@ class Result:
             self._parsed[key] = gimple.parse(self.dump_text(key), name=key)
         return self._parsed[key]
 
+    def cfgs(self, key: str) -> dict[str, cfg.CFG]:
+        """Every control flow graph in a `-graph` dump, by function name.
+
+        Asking for `tree-optimized` works as well as asking for `tree-optimized-graph`. The
+        text dump of the same pass is usually sitting right next to it, and handing the dot
+        parser a text dump gets you an empty graph rather than an error, which is the worst
+        possible outcome, so the graph always wins here.
+        """
+        if not key.endswith("-graph") and f"{key}-graph" in self.dump_texts:
+            key = f"{key}-graph"
+        if key not in self._graphs:
+            self._graphs[key] = cfg.parse(self.dump_text(key))
+        return self._graphs[key]
+
+    def cfg(self, key: str, function: str | None = None) -> cfg.CFG:
+        """One function's control flow graph. The only function, unless you name one."""
+        found = self.cfgs(key)
+        if function is None:
+            if len(found) != 1:
+                names = ", ".join(found) or "none"
+                raise KeyError(f"{key!r} holds {len(found)} functions, so name one. Have: {names}")
+            return next(iter(found.values()))
+        if function not in found:
+            raise KeyError(f"no function {function!r} in {key!r}. Have: {', '.join(found)}")
+        return found[function]
+
     @property
     def unparsed_count(self) -> int:
         """How many statements the parser did not recognise, across every dump here.
 
         CI records this across the corpus and fails when it rises. That is the whole drift
         detection story for the dump parsers.
+
+        Graph dumps are skipped. They are dot files, not GIMPLE, and running the statement
+        parser over one would report a few hundred unparsed lines and drown the number this
+        is for.
         """
-        return sum(len(self.dump(k).unparsed) for k in self.dump_texts)
+        return sum(len(self.dump(k).unparsed) for k in self.dump_texts if not k.endswith("-graph"))
 
     def __str__(self) -> str:
         state = "ok" if self.ok else f"failed ({self.returncode})"
@@ -133,7 +164,9 @@ class Backend:
 class LocalBackend(Backend):
     """A `gcc-16` on this machine. Everything works and it is fast."""
 
-    capabilities = frozenset({"dumps", "all-dumps", "asm", "passes", "plugins", "named-dumps"})
+    capabilities = frozenset(
+        {"dumps", "all-dumps", "asm", "passes", "plugins", "named-dumps", "graph-dumps"}
+    )
 
     def __init__(self, gcc: str = "gcc-16"):
         self.gcc = gcc
@@ -243,6 +276,14 @@ class CEBackend(Backend):
                     "nothing separating them, so a name cannot be attached to a chunk. Ask for "
                     "the passes you want by name, or use the corpus backend."
                 )
+            if spec.endswith("-graph"):
+                # `open_graph_file` in gcc/graph.cc calls fopen, always. There is no
+                # `=stderr` form of a graph dump, so this is not a limit of the API.
+                raise BackendError(
+                    f"{spec!r} is not usable through this backend. GCC writes graph dumps to a "
+                    ".dot file and never to stderr, and this backend has no files. Use the "
+                    "corpus backend, which ships the graph dumps that were recorded."
+                )
 
         arg_string = " ".join([*args, *dump_flags(dumps, to_stderr=True)])
         key = request_key(self.compiler, source, arg_string, CE_FILTERS)
@@ -283,7 +324,7 @@ class CorpusBackend(Backend):
     knows the answers somebody recorded, which is the whole point: it is deterministic.
     """
 
-    capabilities = frozenset({"dumps", "all-dumps", "named-dumps", "asm"})
+    capabilities = frozenset({"dumps", "all-dumps", "named-dumps", "asm", "graph-dumps"})
 
     def __init__(self, entry: str, root: Path | str | None = None):
         from gxray.corpus import CORPUS_ROOT

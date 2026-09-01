@@ -86,6 +86,41 @@ def test_ce_refuses_all_dumps_rather_than_mislabelling_them():
     assert "nothing separating them" in str(exc.value)
 
 
+def test_ce_cannot_serve_a_graph_dump_and_says_why():
+    """Not a limit we chose. `open_graph_file` in gcc/graph.cc calls `fopen`, so there is no
+    way to ask for a dot file on stderr, and CE only ever hands back stderr."""
+    with pytest.raises(BackendError) as exc:
+        CEBackend().compile(programs.L1, "-O2", dumps=["tree-optimized-graph"])
+    assert "never to stderr" in str(exc.value)
+
+
+@pytest.mark.needs_gcc
+def test_the_graph_dump_arrives_beside_the_text_dump_not_instead_of_it():
+    r = local("gcc-16").compile(programs.L1, "-O2", dumps=["tree-optimized-graph"])
+    assert set(r.dump_keys) == {"tree-optimized", "tree-optimized-graph"}
+    assert ";; Function f" in r.dump_text("tree-optimized")
+    assert r.dump_text("tree-optimized-graph").startswith("digraph")
+
+
+@pytest.mark.needs_gcc
+def test_asking_for_a_control_flow_graph_reaches_for_the_dot_file_on_its_own():
+    """Nobody wants to remember the suffix. If the graph is there, it is the honest answer,
+    so `cfg("tree-optimized")` reads the dot file and not the text beside it."""
+    r = local("gcc-16").compile(programs.L1, "-O2", dumps=["tree-optimized-graph"])
+    graph = r.cfg("tree-optimized")
+    assert graph.function == "f"
+    assert graph.check() == []
+    assert graph.back_edges, "the loop in l1 has to leave a back edge behind"
+
+
+@pytest.mark.needs_gcc
+def test_a_graph_dump_is_not_counted_as_an_unparsed_gimple_dump():
+    """It is a dot file. The drift signal counts dumps the GIMPLE parser choked on, and
+    counting this one would make the signal go off for no reason."""
+    r = local("gcc-16").compile(programs.L1, "-O2", dumps=["tree-ssa-graph"])
+    assert r.unparsed_count == 0
+
+
 def test_ce_reads_a_primed_cache_and_never_sends(tmp_path):
     """This is how CI runs: the cache is committed, and a miss is a hard error."""
     cache = Cache(root=tmp_path)

@@ -20,8 +20,29 @@ def test_all_three_phase_letters():
 
 
 def test_a_name_with_dots_in_it_survives():
-    d = dumps.parse_dump_filename("l1.c.024t.ssa.dot")
-    assert d.name == "ssa.dot"
+    d = dumps.parse_dump_filename("l1.c.032t.forwprop1.original")
+    assert d.name == "forwprop1.original"
+
+
+def test_the_dot_file_beside_a_dump_is_a_dump_of_its_own():
+    """`-fdump-tree-optimized-graph` writes both files, so the pair has to have two keys."""
+    text = dumps.parse_dump_filename("l1.c.273t.optimized")
+    graph = dumps.parse_dump_filename("l1.c.273t.optimized.dot")
+    assert (text.name, text.graph, text.key) == ("optimized", False, "tree-optimized")
+    assert (graph.name, graph.graph, graph.key) == ("optimized", True, "tree-optimized-graph")
+    assert text.index == graph.index
+
+
+def test_a_modifier_that_writes_a_file_stays_in_the_key():
+    """`lineno` changes what is inside the dump, so two specs that differ only by it name the
+    same file and get the same key. `graph` writes a second file, so it cannot."""
+    assert dumps.split_spec("tree-optimized-lineno") == ("tree-optimized", ("lineno",))
+    assert dumps.split_spec("tree-optimized-graph") == ("tree-optimized-graph", ())
+    assert dumps.split_spec("tree-optimized-graph-lineno") == (
+        "tree-optimized-graph",
+        ("lineno",),
+    )
+    assert dumps.split_spec("tree-optimized") == ("tree-optimized", ())
 
 
 def test_not_a_dump_file():

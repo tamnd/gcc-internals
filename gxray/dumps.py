@@ -22,7 +22,10 @@ from pathlib import Path
 PHASES = {"t": "tree", "r": "rtl", "i": "ipa"}
 
 # l1.c.024t.ssa  ->  base=l1.c index=024 phase=t name=ssa
-DUMP_NAME = re.compile(r"^(?P<base>.+?)\.(?P<index>\d{3})(?P<phase>[tri])\.(?P<name>.+)$")
+# l1.c.273t.optimized.dot  ->  the same pass, but the graph beside the text
+DUMP_NAME = re.compile(
+    r"^(?P<base>.+?)\.(?P<index>\d{3})(?P<phase>[tri])\.(?P<name>.+?)(?P<graph>\.dot)?$"
+)
 
 # Every dump of a function body opens with this. It is the only reliable boundary in a
 # stream of dumps sent to stderr, which is the only way the browser backend can get them.
@@ -37,11 +40,17 @@ class DumpFile:
     index: int
     phase: str
     name: str
+    graph: bool = False
 
     @property
     def key(self) -> str:
-        """How a lesson refers to this dump. Stable across versions, unlike the index."""
-        return f"{self.phase}-{self.name}"
+        """How a lesson refers to this dump. Stable across versions, unlike the index.
+
+        `graph` is in the key even though the other modifiers are not, because it is the one
+        that produces a second file rather than changing what goes in the first. Asking for
+        `tree-optimized-graph` gets you both `tree-optimized` and `tree-optimized-graph`.
+        """
+        return f"{self.phase}-{self.name}-graph" if self.graph else f"{self.phase}-{self.name}"
 
     @property
     def text(self) -> str:
@@ -62,6 +71,7 @@ def parse_dump_filename(path: Path | str) -> DumpFile | None:
         index=int(m.group("index")),
         phase=PHASES[m.group("phase")],
         name=m.group("name"),
+        graph=bool(m.group("graph")),
     )
 
 
@@ -129,8 +139,15 @@ def dump_flags(specs: list[str] | tuple[str, ...], to_stderr: bool = False) -> l
 
 # What a caller can ask for on top of a dump, from `gcc/dumpfile.cc`. `lineno` is the one
 # this project needs, because a source location on every statement is what joins the four
-# levels of the IR ladder together.
-DUMP_OPTIONS = frozenset({"lineno", "blocks", "details", "slim", "raw", "vops", "uid", "all"})
+# levels of the IR ladder together. `graph` is the other one that earns its place: it is the
+# only way to get the real edges, including the fallthroughs no text dump ever mentions.
+DUMP_OPTIONS = frozenset(
+    {"lineno", "blocks", "details", "slim", "raw", "vops", "uid", "all", "graph"}
+)
+
+# Modifiers that write a second file rather than changing what goes in the first one, so the
+# key has to keep them. See `DumpFile.key`.
+FILE_OPTIONS = frozenset({"graph"})
 
 
 def split_spec(spec: str) -> tuple[str, tuple[str, ...]]:
@@ -140,9 +157,14 @@ def split_spec(spec: str) -> tuple[str, tuple[str, ...]]:
     and not in the key. Without this a dump asked for with `-lineno` would be filed under a
     different name from the same dump asked for without it, and a lesson would have to know
     which one the corpus happened to be recorded with.
+
+    `graph` is the exception. It writes a `.dot` beside the text dump instead of changing
+    the text dump, so it stays in the key and comes back in whichever order it was given.
     """
     parts = spec.split("-")
     options: list[str] = []
+    files: list[str] = []
     while len(parts) > 2 and parts[-1] in DUMP_OPTIONS:
-        options.insert(0, parts.pop())
-    return "-".join(parts), tuple(options)
+        modifier = parts.pop()
+        (files if modifier in FILE_OPTIONS else options).insert(0, modifier)
+    return "-".join([*parts, *files]), tuple(options)

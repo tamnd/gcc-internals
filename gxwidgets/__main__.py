@@ -41,9 +41,12 @@ attach();
 def build(entry: str = "l1-O2") -> str:
     record = corpus_store.load(entry)
     # Only the tree dumps hold a function body the GIMPLE parser can read. The RTL one is
-    # for the ladder, which reads it with a different parser.
+    # for the ladder, which reads it with a different parser, and a graph key is a dot file
+    # sitting beside a tree dump rather than a dump of its own.
     dumps = {
-        k: gimple.parse(v).only() for k, v in record.dump_texts.items() if k.startswith("tree-")
+        k: gimple.parse(v).only()
+        for k, v in record.dump_texts.items()
+        if k.startswith("tree-") and not k.endswith("-graph")
     }
     pipeline = passes.parse(FIXTURE.read_text(encoding="utf-8"))
     f = dumps["tree-ssa"]

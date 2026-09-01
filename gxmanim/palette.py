@@ -124,6 +124,11 @@ EDGES: dict[str, dict[str, str]] = {
     "eh": {"stroke": "dashed", "width": "thin", "glyph": "!", "arrow": "single"},
     "abnormal": {"stroke": "dotted", "width": "thin", "glyph": "", "arrow": "single"},
     "complex": {"stroke": "solid", "width": "thin", "glyph": "<>", "arrow": "single"},
+    # EDGE_FAKE. Control never actually goes this way at runtime. GCC adds these so that
+    # every block still reaches EXIT after a call that never returns, which keeps the
+    # dataflow passes from having to special case it. A reader who does not know that will
+    # count an edge that is not there, so it gets its own mark rather than looking ordinary.
+    "fake": {"stroke": "dotted", "width": "thin", "glyph": "~", "arrow": "single"},
 }
 
 
