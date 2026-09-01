@@ -142,6 +142,20 @@ open("web.svg", "w").write(svg.document(scene))
 
 `just diagrams` rebuilds every diagram from the recorded dumps and opens a contact sheet with each one and its caption underneath. The renderer has no dependencies, so a diagram is a file CI can regenerate from the dump it came from, and when the pinned compiler moves the pictures move with it.
 
+## A live notebook in the middle of a page
+
+The book is MkDocs Material, and a page that wants a runnable experiment says so with one comment:
+
+```markdown
+<!-- island: site/notebooks/ce-probe.py -->
+```
+
+The build runs that notebook in ordinary CPython, writes the cells into the page as a marimo island with their output already in them, and parks everything the marimo runtime needs in a `<template>`. A script inside a template is inert, so the page costs what the HTML costs and not a byte more. Press the button on it and `island.js` moves the template into the head, which is the moment Pyodide starts coming down. A reader who never presses it never pays for it, and a reader with no JavaScript at all still sees the output the build recorded, because prose output is written into the page as plain HTML alongside the live cell.
+
+The one thing this needs from a notebook is that it knows where it is. `sys.platform == "emscripten"` is true in the browser and nowhere else, so a notebook that wants the network takes the other branch at build time and renders its before state. CI never calls a live API.
+
+[The probe page](https://tamnd.github.io/gcc-internals/probe/) is the first one. It posts your C to Compiler Explorer's GCC 16.2 from your browser and prints the GIMPLE that comes back, which is the whole of open question 1 answered by doing it rather than by arguing about it.
+
 ## Blueprints are compiled, not typed
 
 A blueprint has nine sections and no narrative, and the parts of it that are inventories are generated. GCC keeps the facts that have to stay consistent across fifty one targets and twelve front ends in machine readable form, so the list of GIMPLE statement codes comes out of `gcc/gimple.def` and the map from a statement code to the C++ class you may cast it to comes out of the `is_a_helper` specialisations in `gcc/gimple.h`. Nobody transcribes them.

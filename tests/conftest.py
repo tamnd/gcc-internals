@@ -11,6 +11,7 @@ suite is green on a laptop with no GCC and thorough on one that has it.
 
 from __future__ import annotations
 
+import importlib.util
 import shutil
 from pathlib import Path
 
@@ -18,6 +19,7 @@ import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
 HAVE_GCC = shutil.which("gcc-16") is not None
+HAVE_MARIMO = importlib.util.find_spec("marimo") is not None
 
 
 def fixture(name: str) -> str:
@@ -58,7 +60,10 @@ def setjmp_graph() -> str:
 
 
 def pytest_collection_modifyitems(config, items):
-    skip = pytest.mark.skip(reason="no gcc-16 on PATH")
+    no_gcc = pytest.mark.skip(reason="no gcc-16 on PATH")
+    no_marimo = pytest.mark.skip(reason="marimo is not installed, try pip install -e '.[site]'")
     for item in items:
         if "needs_gcc" in item.keywords and not HAVE_GCC:
-            item.add_marker(skip)
+            item.add_marker(no_gcc)
+        if "needs_marimo" in item.keywords and not HAVE_MARIMO:
+            item.add_marker(no_marimo)

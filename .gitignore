@@ -20,3 +20,7 @@ site/_build/
 # generated, never committed
 corpora/dumps/**/*.gz
 tools/cecache/store/
+
+# Marimo caches the last run of a notebook beside it. The island build reruns every cell
+# anyway, so this is scratch.
+__marimo__/
