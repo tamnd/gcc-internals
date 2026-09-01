@@ -180,3 +180,94 @@ def test_a_debug_statement_is_not_a_use():
 
 def test_how_big_a_function_is_means_the_code_in_it():
     assert str(gimple.parse(LINENO).only()) == "f (2 blocks, 3 statements)"
+
+
+# The gimplification dump, which is the only one with no banner and no basic blocks.
+
+PRE_CFG = """int nested (int a, int b, int c)
+{
+  int D.4635;
+
+  _1 = a + b;
+  _2 = a - c;
+  D.4635 = _1 * _2;
+  return D.4635;
+}
+
+
+int loopy (int n)
+{
+  int D.4603;
+  int s;
+
+  s = 0;
+  {
+    int i;
+
+    i = 0;
+    goto <D.4601>;
+    <D.4600>:
+    s = s + i;
+    i = i + 1;
+    <D.4601>:
+    if (i < n) goto <D.4600>; else goto <D.4598>;
+    <D.4598>:
+  }
+  D.4603 = s;
+  return D.4603;
+}
+"""
+
+
+def test_a_headerless_dump_still_finds_its_functions():
+    """The gimplification dump announces a function with nothing but its signature, so the
+    parser has to be willing to start one on a line that looks like C."""
+    dump = gimple.parse(PRE_CFG)
+    assert list(dump.functions) == ["nested", "loopy"]
+    assert dump.functions["nested"].signature == "int nested (int a, int b, int c)"
+
+
+def test_a_pre_cfg_function_says_so_and_has_one_block():
+    fn = gimple.parse(PRE_CFG).functions["nested"]
+    assert fn.pre_cfg
+    assert list(fn.blocks) == [gimple.PRE_CFG_BLOCK]
+    assert str(fn) == "nested (4 statements, no blocks yet)"
+
+
+def test_the_statements_come_back_in_the_order_the_front_end_wrote_them():
+    fn = gimple.parse(PRE_CFG).functions["nested"]
+    assert [s.text for s in fn.code] == [
+        "_1 = a + b;",
+        "_2 = a - c;",
+        "D.4635 = _1 * _2;",
+        "return D.4635;",
+    ]
+
+
+def test_a_return_is_not_mistaken_for_a_declaration():
+    """`return D.4635;` is two words and a semicolon, which is exactly what a declaration
+    looks like, and before the CFG exists there is no block header to tell them apart."""
+    fn = gimple.parse(PRE_CFG).functions["nested"]
+    assert fn.decls == [("int", "D.4635")]
+    assert fn.code[-1].kind == "return"
+
+
+def test_a_nested_scope_declares_into_the_same_function():
+    """The front end keeps the braces the source had. Each one has its own declarations and
+    none of them ends the function."""
+    fn = gimple.parse(PRE_CFG).functions["loopy"]
+    assert fn.decls == [("int", "D.4603"), ("int", "s"), ("int", "i")]
+    assert len(fn.code) == 11
+    assert fn.code[0].text == "s = 0;"
+    assert fn.code[-1].text == "return D.4603;"
+
+
+def test_nothing_in_a_headerless_dump_is_unparsed():
+    assert gimple.parse(PRE_CFG).unparsed == []
+
+
+def test_a_dump_with_blocks_is_not_treated_as_pre_cfg(ssa_dump):
+    """The two shapes go through one parser, so the older one has to be left alone."""
+    fn = gimple.parse(ssa_dump).only()
+    assert not fn.pre_cfg
+    assert sorted(fn.blocks) == [2, 3, 4, 5]

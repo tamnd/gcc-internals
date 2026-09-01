@@ -23,8 +23,26 @@ HAVE_MARIMO = importlib.util.find_spec("marimo") is not None
 HAVE_NBCLIENT = importlib.util.find_spec("nbclient") is not None
 
 
+LESSONS = Path(__file__).resolve().parent.parent / "lessons"
+
+
 def fixture(name: str) -> str:
     return (FIXTURES / name).read_text(encoding="utf-8")
+
+
+def grader(lesson: str):
+    """The `grade.py` of one lesson, loaded from its path.
+
+    Every lesson has a module called `grade`, so a plain import would hand the second test
+    that asks for one whatever the first test imported. Loading by path under the lesson's
+    own name keeps them apart.
+    """
+    path = LESSONS / lesson / "grade.py"
+    spec = importlib.util.spec_from_file_location(f"grade_{lesson.replace('-', '_')}", path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 @pytest.fixture

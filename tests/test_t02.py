@@ -8,14 +8,12 @@ are the noise that gets made instead.
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import pytest
+from conftest import grader
 
 from gxray import corpus_store, locs
 
-LESSON = Path(__file__).resolve().parent.parent / "lessons" / "t02-five-faces"
+LESSON = "t02-five-faces"
 
 
 @pytest.fixture
@@ -59,13 +57,7 @@ def test_one_assignment_became_two_instructions_because_there_are_two_exits(ladd
 def test_the_grader_marks_the_answer_the_lesson_leads_you_to(ladder):
     """A boss fight nobody has watched pass is a boss fight that might be waving everything
     through, so the right answer is checked here as well as in CI."""
-    sys.path.insert(0, str(LESSON))
-    try:
-        import grade  # type: ignore[import-not-found]
-    finally:
-        sys.path.pop(0)
-
-    key = grade.answers(ladder)
+    key = grader(LESSON).answers(ladder)
     assert key["asm"] == {5: 2, 6: 6, 7: 1, 8: 0}
     assert key["vanished"] == [8]
     assert key["appeared"] == [9]
