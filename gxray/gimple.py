@@ -293,6 +293,10 @@ class GimpleDump:
     functions: dict[str, Function] = field(default_factory=dict)
     text: str = ""
     name: str = ""
+    #: Non blank lines the parser walked past without putting anywhere. Prose the dump
+    #: prints between a banner and the first block goes here, and so does anything the
+    #: parser stops recognising the day GCC changes the layout. See `parse`.
+    dropped: list[str] = field(default_factory=list)
 
     @property
     def unparsed(self) -> list[Stmt]:
@@ -361,6 +365,12 @@ def parse(text: str, name: str = "") -> GimpleDump:
     neither, because at that point the function is a straight list of statements and the
     CFG has not been built. Those come back as one function per signature with everything in
     a single block, and `Function.pre_cfg` says which kind you are holding.
+
+    Three places in the loop below walk past a line without keeping it, and every one of
+    them puts the line in `dump.dropped` first. That number is what `tools.dumpparse`
+    watches. A line the parser has no home for is not a bug on its own, because a dump is
+    full of prose, but a count of them that moves is the parser losing its grip on a format
+    that changed underneath it.
     """
     dump = GimpleDump(text=text, name=name)
     current: Function | None = None
@@ -405,6 +415,8 @@ def parse(text: str, name: str = "") -> GimpleDump:
                 block, in_body, in_decls, pending, depth = None, True, True, "", 1
             elif line.strip():
                 pending = line if HEADERLESS.match(line) else ""
+                if not pending:
+                    dump.dropped.append(line.strip())
             continue
 
         if not line.strip():
@@ -432,6 +444,8 @@ def parse(text: str, name: str = "") -> GimpleDump:
             sig = SIGNATURE.match(line)
             if sig and not current.signature and "(" in line:
                 current.signature = sig.group("sig")
+            else:
+                dump.dropped.append(line.strip())
             continue
 
         bb = BLOCK_HEADER.match(line)
@@ -475,6 +489,7 @@ def parse(text: str, name: str = "") -> GimpleDump:
         elif block is None:
             # Noise between the header and the first block, such as the "Removing basic
             # block 5" lines the optimized dump prints. Not a statement, so not unparsed.
+            dump.dropped.append(line.strip())
             continue
 
         # A PHI carries a location on each argument rather than one for the whole node,

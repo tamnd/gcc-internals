@@ -15,7 +15,7 @@ setup:
     @echo "activate with: source .venv/bin/activate"
 
 # Everything CI runs on a push, in the order CI runs it.
-check: lint prose lessons claims tier0 test
+check: lint prose lessons claims tier0 dumpparse test
     @echo "all green"
 
 lint:
@@ -217,6 +217,21 @@ tier0-list:
 # Compiler Explorer is free and run by volunteers. Do not put this in a loop.
 ce-refresh:
     {{py}} -m tools.tier0 refresh
+
+# Every dump in the corpus read by the parser its name calls for, and the four numbers that
+# come out compared against tools/dumpparse/baseline.json. Both parsers tolerate what they do
+# not recognise rather than throwing, so something has to count what got tolerated. This is it.
+dumpparse:
+    {{py}} -m tools.dumpparse check
+
+# The dumps the parsers understand least, worst first. Where to look for the next fix.
+dumpparse-worst:
+    {{py}} -m tools.dumpparse worst
+
+# Write the baseline again. Run it after a parser change or a re-recorded corpus entry, read
+# the diff, and commit it with the change that caused it.
+dumpparse-record:
+    {{py}} -m tools.dumpparse record
 
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:

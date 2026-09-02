@@ -140,6 +140,21 @@ Two paired experiments compare less than the full set, and both are worth knowin
 
 CI never touches the live API. The online half reads the responses committed under `tools/cecache/store` through a cache that raises on a miss, so a new experiment without its cache entry fails the build. Fetching is one command, `just ce-refresh`, it runs on a laptop, and what it writes goes in the pull request. Compiler Explorer is free and run by volunteers and this project does not put it in anybody's CI loop.
 
+## How much of a dump this book can actually read
+
+Neither dump parser throws. A GIMPLE statement the classifier does not recognise becomes an `UnparsedStmt` carrying its text, and an RTL list that does not come out as an insn is skipped, because a dump format that shifts by one field should cost one number in one lesson instead of breaking forty at once. That is also a way to be quietly wrong for a year, so the amount tolerated is counted and written down.
+
+```console
+just dumpparse         # every dump in the corpus against the baseline
+just dumpparse-worst   # the dumps the parsers understand least, worst first
+```
+
+Four numbers per dump, in [`tools/dumpparse/baseline.json`](tools/dumpparse/baseline.json). How many functions came out. How many statements and insns came out. How many things the parser should have built and did not. How much input it walked past. Today that is 326 dumps, 380 functions, 19707 statements and insns, nothing unreadable, and 28450 pieces of prose walked past.
+
+The last number is not supposed to be zero and never will be. A dump is mostly prose, and the IRA report alone is nine thousand parenthesised lines of conflict tables and register costs that are not RTL at all. What matters is that it is written down. A change in the dump format that turns real statements into prose moves that number instead of moving nothing, which is exactly the failure a parser that tolerates the unknown is otherwise built to hide.
+
+Re-recording the baseline is `just dumpparse-record`, the diff goes in the pull request next to the change that caused it, and CI re-records it too and fails if the file moves. A number going down is as much a failure as a number going up, because a baseline nobody re-records stops meaning anything.
+
 ## Widgets that work with the power off
 
 `gxwidgets` draws what `gxray` parsed. A widget builds its own markup in Python and the browser only attaches behaviour to it, so there is one renderer and the version you see with JavaScript blocked is the same drawing, not a placeholder.
