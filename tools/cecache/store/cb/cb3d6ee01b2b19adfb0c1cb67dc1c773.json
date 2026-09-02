@@ -1,0 +1,348 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"f\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        test    edi, edi"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L4",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        jle     .L4"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 12,
+    "file": null,
+    "line": 6
+   },
+   "text": "        xor     eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        xor     edx, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        test    dil, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L3",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        je      .L3"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 6
+   },
+   "text": "        mov     eax, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        cmp     edi, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L1",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        je      .L1"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L3:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 7
+   },
+   "text": "        lea     edx, [rdx+1+rax*2]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 6
+   },
+   "text": "        add     eax, 2"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        cmp     edi, eax"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L3",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        jne     .L3"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L1:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L4:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        xor     edx, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 6168,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O2",
+  "-g",
+  "-fdump-tree-original=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 55,
+ "filteredCount": 365,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"f\"": 1,
+  ".L1": 16,
+  ".L3": 11,
+  ".L4": 19
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 2,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.06561699975281954,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function f (null)"
+  },
+  {
+   "text": ";; enabled by -tree-original"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int s = 0;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  # DEBUG BEGIN STMT;"
+  },
+  {
+   "text": "    int s = 0;"
+  },
+  {
+   "text": "  # DEBUG BEGIN STMT;"
+  },
+  {
+   "text": "  {"
+  },
+  {
+   "text": "    int i = 0;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "    # DEBUG BEGIN STMT;"
+  },
+  {
+   "text": "        int i = 0;"
+  },
+  {
+   "text": "    goto <D.2966>;"
+  },
+  {
+   "text": "    <D.2965>:;"
+  },
+  {
+   "text": "    # DEBUG BEGIN STMT;"
+  },
+  {
+   "text": "    s = s + i;"
+  },
+  {
+   "text": "    # DEBUG BEGIN STMT;"
+  },
+  {
+   "text": "    i++ ;"
+  },
+  {
+   "text": "    <D.2966>:;"
+  },
+  {
+   "text": "    # DEBUG BEGIN STMT;"
+  },
+  {
+   "text": "    if (i < n) goto <D.2965>; else goto <D.2963>;"
+  },
+  {
+   "text": "    <D.2963>:;"
+  },
+  {
+   "text": "  }"
+  },
+  {
+   "text": "  # DEBUG BEGIN STMT;"
+  },
+  {
+   "text": "  return s;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

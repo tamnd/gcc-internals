@@ -1,0 +1,707 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "f:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 4
+   },
+   "text": "        mov     w2, w0"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        cmp     w0, 0"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L4",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        ble     .L4"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 12,
+    "file": null,
+    "line": 6
+   },
+   "text": "        mov     w1, 0"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        mov     w0, 0"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L3:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 7
+   },
+   "text": "        add     w0, w0, w1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 6
+   },
+   "text": "        add     w1, w1, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        cmp     w2, w1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L3",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        bne     .L3"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L4:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        mov     w0, 0"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 5724,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O2",
+  "-g",
+  "-fdump-tree-optimized=stderr",
+  "-fdump-rtl-expand=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 122,
+ "filteredCount": 354,
+ "inputFilename": "example.c",
+ "instructionSet": "aarch64",
+ "labelDefinitions": {
+  ".L3": 7,
+  ".L4": 13,
+  "f": 1
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 1,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.22231600061058998,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function f (f, funcdef_no=0, decl_uid=4590, cgraph_uid=1, symbol_order=0)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "Removing basic block 5"
+  },
+  {
+   "text": "Removing basic block 6"
+  },
+  {
+   "text": "Removing basic block 7"
+  },
+  {
+   "text": "Removing basic block 8"
+  },
+  {
+   "text": "int f (int n)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int i;"
+  },
+  {
+   "text": "  int s;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 2> [local count: 118111600]:"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG i => 0"
+  },
+  {
+   "text": "  # DEBUG s => 0"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_3(D) > 0)"
+  },
+  {
+   "text": "    goto <bb 3>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 4>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 3> [local count: 955630224]:"
+  },
+  {
+   "text": "  # s_9 = PHI <s_5(3), 0(2)>"
+  },
+  {
+   "text": "  # i_11 = PHI <i_6(3), 0(2)>"
+  },
+  {
+   "text": "  # DEBUG i => i_11"
+  },
+  {
+   "text": "  # DEBUG s => s_9"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  s_5 = s_9 + i_11;"
+  },
+  {
+   "text": "  # DEBUG s => s_5"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  i_6 = i_11 + 1;"
+  },
+  {
+   "text": "  # DEBUG i => i_6"
+  },
+  {
+   "text": "  # DEBUG s => s_5"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_3(D) != i_6)"
+  },
+  {
+   "text": "    goto <bb 3>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 4>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 4> [local count: 118111600]:"
+  },
+  {
+   "text": "  # s_10 = PHI <s_5(3), 0(2)>"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  return s_10;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function f (f, funcdef_no=0, decl_uid=4590, cgraph_uid=1, symbol_order=0)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Generating RTL for gimple basic block 2"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Generating RTL for gimple basic block 3"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Generating RTL for gimple basic block 4"
+  },
+  {
+   "text": "Edge 2->4 redirected to 9"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "try_optimize_cfg iteration 1"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "Merging block 3 into block 2..."
+  },
+  {
+   "text": "Merged blocks 2 and 3."
+  },
+  {
+   "text": "Merged 2 and 3 without moving."
+  },
+  {
+   "text": "Forwarding edge 5->6 to 9 failed."
+  },
+  {
+   "text": "Redirecting jump 42 from 8 to 9."
+  },
+  {
+   "text": "Merging block 8 into block 7..."
+  },
+  {
+   "text": "Merged blocks 7 and 8."
+  },
+  {
+   "text": "Merged 7 and 8 without moving."
+  },
+  {
+   "text": "Removing jump 34."
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "try_optimize_cfg iteration 2"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "Forwarding edge 5->6 to 9 failed."
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ";;"
+  },
+  {
+   "text": ";; Full RTL generated for this function:"
+  },
+  {
+   "text": ";;"
+  },
+  {
+   "text": "(note 1 0 7 NOTE_INSN_DELETED)"
+  },
+  {
+   "text": "(note 7 1 2 2 [bb 2] NOTE_INSN_BASIC_BLOCK)"
+  },
+  {
+   "text": "(insn 2 7 3 2 (set (reg/v:SI 103 [ n ])"
+  },
+  {
+   "text": "        (reg:SI 0 x0 [ n ])) \"<source>\":4:1 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(note 3 2 9 2 NOTE_INSN_FUNCTION_BEG)"
+  },
+  {
+   "text": "(debug_insn 9 3 10 2 (debug_marker) \"<source>\":5:3 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 10 9 11 2 (debug_marker) \"<source>\":6:3 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 11 10 12 2 (debug_marker) \"<source>\":6:8 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 12 11 13 2 (var_location:SI i (const_int 0 [0])) -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 13 12 14 2 (var_location:SI s (const_int 0 [0])) -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 14 13 15 2 (debug_marker) \"<source>\":6:21 discrim 2 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(insn 15 14 16 2 (set (reg:CC 66 cc)"
+  },
+  {
+   "text": "        (compare:CC (reg/v:SI 103 [ n ])"
+  },
+  {
+   "text": "            (const_int 0 [0]))) \"<source>\":6:21 discrim 2 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(jump_insn 16 15 40 2 (set (pc)"
+  },
+  {
+   "text": "        (if_then_else (le (reg:CC 66 cc)"
+  },
+  {
+   "text": "                (const_int 0 [0]))"
+  },
+  {
+   "text": "            (label_ref:DI 45)"
+  },
+  {
+   "text": "            (pc))) \"<source>\":6:21 discrim 2 59 {aarch64_bcond}"
+  },
+  {
+   "text": "     (int_list:REG_BR_PROB 118111601 (nil))"
+  },
+  {
+   "text": " -> 45)"
+  },
+  {
+   "text": "(note 40 16 4 4 [bb 4] NOTE_INSN_BASIC_BLOCK)"
+  },
+  {
+   "text": "(insn 4 40 5 4 (set (reg/v:SI 101 [ i ])"
+  },
+  {
+   "text": "        (const_int 0 [0])) \"<source>\":6:12 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(insn 5 4 28 4 (set (reg/v:SI 102 [ <retval> ])"
+  },
+  {
+   "text": "        (const_int 0 [0])) \"<source>\":5:7 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(code_label 28 5 17 5 3 (nil) [1 uses])"
+  },
+  {
+   "text": "(note 17 28 18 5 [bb 5] NOTE_INSN_BASIC_BLOCK)"
+  },
+  {
+   "text": "(debug_insn 18 17 19 5 (var_location:SI i (reg/v:SI 101 [ i ])) -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 19 18 20 5 (var_location:SI s (reg/v:SI 102 [ <retval> ])) -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 20 19 21 5 (debug_marker) \"<source>\":7:5 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(insn 21 20 22 5 (set (reg/v:SI 102 [ <retval> ])"
+  },
+  {
+   "text": "        (plus:SI (reg/v:SI 102 [ <retval> ])"
+  },
+  {
+   "text": "            (reg/v:SI 101 [ i ]))) \"<source>\":7:7 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 22 21 23 5 (var_location:SI s (reg/v:SI 102 [ <retval> ])) \"<source>\":7:7 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 23 22 24 5 (debug_marker) \"<source>\":6:27 discrim 1 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(insn 24 23 25 5 (set (reg/v:SI 101 [ i ])"
+  },
+  {
+   "text": "        (plus:SI (reg/v:SI 101 [ i ])"
+  },
+  {
+   "text": "            (const_int 1 [0x1]))) \"<source>\":6:27 discrim 1 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 25 24 26 5 (var_location:SI i (reg/v:SI 101 [ i ])) -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 26 25 27 5 (var_location:SI s (reg/v:SI 102 [ <retval> ])) -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 27 26 29 5 (debug_marker) \"<source>\":6:21 discrim 2 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(insn 29 27 30 5 (set (reg:CC 66 cc)"
+  },
+  {
+   "text": "        (compare:CC (reg/v:SI 103 [ n ])"
+  },
+  {
+   "text": "            (reg/v:SI 101 [ i ]))) \"<source>\":6:21 discrim 2 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(jump_insn 30 29 41 5 (set (pc)"
+  },
+  {
+   "text": "        (if_then_else (ne (reg:CC 66 cc)"
+  },
+  {
+   "text": "                (const_int 0 [0]))"
+  },
+  {
+   "text": "            (label_ref 28)"
+  },
+  {
+   "text": "            (pc))) \"<source>\":6:21 discrim 2 -1"
+  },
+  {
+   "text": "     (int_list:REG_BR_PROB 955630225 (nil))"
+  },
+  {
+   "text": " -> 28)"
+  },
+  {
+   "text": "(note 41 30 42 6 [bb 6] NOTE_INSN_BASIC_BLOCK)"
+  },
+  {
+   "text": "(jump_insn 42 41 43 6 (set (pc)"
+  },
+  {
+   "text": "        (label_ref:DI 36)) 6 {jump}"
+  },
+  {
+   "text": "     (nil)"
+  },
+  {
+   "text": " -> 36)"
+  },
+  {
+   "text": "(barrier 43 42 45)"
+  },
+  {
+   "text": "(code_label 45 43 44 7 4 (nil) [1 uses])"
+  },
+  {
+   "text": "(note 44 45 6 7 [bb 7] NOTE_INSN_BASIC_BLOCK)"
+  },
+  {
+   "text": "(insn 6 44 33 7 (set (reg/v:SI 102 [ <retval> ])"
+  },
+  {
+   "text": "        (const_int 0 [0])) \"<source>\":5:7 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(debug_insn 33 6 36 7 (debug_marker) \"<source>\":8:3 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(code_label 36 33 39 9 1 (nil) [1 uses])"
+  },
+  {
+   "text": "(note 39 36 37 9 [bb 9] NOTE_INSN_BASIC_BLOCK)"
+  },
+  {
+   "text": "(insn 37 39 38 9 (set (reg/i:SI 0 x0)"
+  },
+  {
+   "text": "        (reg/v:SI 102 [ <retval> ])) \"<source>\":9:1 -1"
+  },
+  {
+   "text": "     (nil))"
+  },
+  {
+   "text": "(insn 38 37 0 9 (use (reg/i:SI 0 x0)) \"<source>\":9:1 -1"
+  },
+  {
+   "text": "     (nil))"
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

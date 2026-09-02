@@ -1,0 +1,73 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "<No output file>"
+  }
+ ],
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-###",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 24,
+ "filteredCount": 0,
+ "inputFilename": "example.c",
+ "instructionSet": "aarch64",
+ "labelDefinitions": {},
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.09188299998641014,
+ "stderr": [
+  {
+   "text": "Using built-in specs."
+  },
+  {
+   "text": "COLLECT_GCC=/opt/compiler-explorer/arm64/gcc-16.1.0/aarch64-unknown-linux-gnu/bin/aarch64-unknown-linux-gnu-gcc"
+  },
+  {
+   "text": "Target: aarch64-unknown-linux-gnu"
+  },
+  {
+   "text": "Configured with: /opt/.build/aarch64-unknown-linux-gnu/src/gcc/configure --build=x86_64-build_pc-linux-gnu --host=x86_64-build_pc-linux-gnu --target=aarch64-unknown-linux-gnu --prefix=/opt/compiler-explorer/arm64/gcc-16.1.0/aarch64-unknown-linux-gnu --exec_prefix=/opt/compiler-explorer/arm64/gcc-16.1.0/aarch64-unknown-linux-gnu --with-sysroot=/opt/compiler-explorer/arm64/gcc-16.1.0/aarch64-unknown-linux-gnu/aarch64-unknown-linux-gnu/sysroot --enable-languages=c,c++,fortran,ada,d,objc,obj-c++,go,algol68 --enable-__cxa_atexit --disable-libmudflap --enable-libgomp --enable-libssp --enable-libquadmath --enable-libquadmath-support --enable-libsanitizer --disable-libmpx --with-gmp=/opt/.build/aarch64-unknown-linux-gnu/buildtools --with-mpfr=/opt/.build/aarch64-unknown-linux-gnu/buildtools --with-mpc=/opt/.build/aarch64-unknown-linux-gnu/buildtools --with-isl=/opt/.build/aarch64-unknown-linux-gnu/buildtools --enable-lto --enable-threads=posix --enable-default-pie --enable-target-optspace --disable-plugin --disable-nls --disable-multilib --with-local-prefix=/opt/compiler-explorer/arm64/gcc-16.1.0/aarch64-unknown-linux-gnu/aarch64-unknown-linux-gnu/sysroot --enable-long-long"
+  },
+  {
+   "text": "Thread model: posix"
+  },
+  {
+   "text": "Supported LTO compression algorithms: zlib zstd"
+  },
+  {
+   "text": "gcc version 16.1.0 (GCC) "
+  },
+  {
+   "text": "COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-g' '-o' '/app/output.s' '-fno-verbose-asm' '-S' '-mlittle-endian' '-mabi=lp64' '-dumpdir' '/app/'"
+  },
+  {
+   "text": " \"/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../libexec/gcc/aarch64-unknown-linux-gnu/16.1.0/cc1\" -quiet -iprefix \"/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../lib/gcc/aarch64-unknown-linux-gnu/16.1.0/\" -isysroot \"/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../aarch64-unknown-linux-gnu/sysroot\" <source> -quiet -dumpdir /app/ -dumpbase output.c -dumpbase-ext .c -mlittle-endian \"-mabi=lp64\" -g \"-fdiagnostics-color=always\" -fno-verbose-asm -o /app/output.s"
+  },
+  {
+   "text": "COMPILER_PATH=/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../libexec/gcc/aarch64-unknown-linux-gnu/16.1.0/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../libexec/gcc/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../lib/gcc/aarch64-unknown-linux-gnu/16.1.0/../../../../aarch64-unknown-linux-gnu/bin/"
+  },
+  {
+   "text": "LIBRARY_PATH=/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../lib/gcc/aarch64-unknown-linux-gnu/16.1.0/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../lib/gcc/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../lib/gcc/aarch64-unknown-linux-gnu/16.1.0/../../../../aarch64-unknown-linux-gnu/lib/../lib64/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../aarch64-unknown-linux-gnu/sysroot/lib/../lib64/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../aarch64-unknown-linux-gnu/sysroot/usr/lib/../lib64/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../lib/gcc/aarch64-unknown-linux-gnu/16.1.0/../../../../aarch64-unknown-linux-gnu/lib/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../aarch64-unknown-linux-gnu/sysroot/lib/:/cefs/38/383ad2f84cbd57a52fd68bbe_consolidated/compilers_c++_cross_gcc_arm64_16.1.0/aarch64-unknown-linux-gnu/bin/../aarch64-unknown-linux-gnu/sysroot/usr/lib/"
+  },
+  {
+   "text": "COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-g' '-o' '/app/output.s' '-fno-verbose-asm' '-S' '-mlittle-endian' '-mabi=lp64' '-dumpdir' '/app/output.'"
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

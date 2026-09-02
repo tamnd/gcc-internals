@@ -1,0 +1,102 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"f\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 7
+   },
+   "text": "        mov     eax, 3"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 7
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 2653,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O2",
+  "-fdump-tree-optimized=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 63,
+ "filteredCount": 168,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"f\"": 1
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.05680700019001961,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function f (f, funcdef_no=0, decl_uid=2959, cgraph_uid=1, symbol_order=0)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int f ()"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  <bb 2> [local count: 1073741824]:"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG x => 3"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  return 3;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

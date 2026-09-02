@@ -1,0 +1,716 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"nearest\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 15
+   },
+   "text": "        mov     r8, rdi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 15
+   },
+   "text": "        mov     r10, rdx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        cmp     esi, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L5",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        jle     .L5"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        mov     edi, DWORD PTR [rdi]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, DWORD PTR [r8+4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     r11, rdx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     esi, esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        sar     r11, 32"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 18,
+    "file": null,
+    "line": 10
+   },
+   "text": "        mov     ecx, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 16
+   },
+   "text": "        xor     r9d, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        sub     edi, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        sub     eax, r11d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    edi, edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 23,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 18,
+    "file": null,
+    "line": 10
+   },
+   "text": "        add     edi, eax"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L4:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        mov     edx, DWORD PTR [r8+rcx*8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, DWORD PTR [r8+4+rcx*8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        sub     edx, r10d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        sub     eax, r11d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 23,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    edx, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 18,
+    "file": null,
+    "line": 10
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 21
+   },
+   "text": "        cmp     edi, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 17,
+    "file": null,
+    "line": 23
+   },
+   "text": "        cmovg   r9d, ecx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 17,
+    "file": null,
+    "line": 23
+   },
+   "text": "        cmovg   edi, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        add     rcx, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        cmp     rsi, rcx"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L4",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        jne     .L4"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     eax, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L5:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 16
+   },
+   "text": "        xor     r9d, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     eax, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 15329,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O2",
+  "-g",
+  "-fdump-tree-ssa=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 74,
+ "filteredCount": 1007,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"nearest\"": 1,
+  ".L4": 18,
+  ".L5": 34
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 9,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.1384819969534874,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function dist2 (dist2, funcdef_no=0, decl_uid=2963, cgraph_uid=1, symbol_order=0)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int dist2 (const struct P * a, const struct P * b)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int dy;"
+  },
+  {
+   "text": "  int dx;"
+  },
+  {
+   "text": "  int _1;"
+  },
+  {
+   "text": "  int _2;"
+  },
+  {
+   "text": "  int _3;"
+  },
+  {
+   "text": "  int _4;"
+  },
+  {
+   "text": "  int _5;"
+  },
+  {
+   "text": "  int _6;"
+  },
+  {
+   "text": "  int _12;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 2> :"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _1 = a_8(D)->x;"
+  },
+  {
+   "text": "  _2 = b_9(D)->x;"
+  },
+  {
+   "text": "  dx_10 = _1 - _2;"
+  },
+  {
+   "text": "  # DEBUG dx => dx_10"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _3 = a_8(D)->y;"
+  },
+  {
+   "text": "  _4 = b_9(D)->y;"
+  },
+  {
+   "text": "  dy_11 = _3 - _4;"
+  },
+  {
+   "text": "  # DEBUG dy => dy_11"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _5 = dx_10 * dx_10;"
+  },
+  {
+   "text": "  _6 = dy_11 * dy_11;"
+  },
+  {
+   "text": "  _12 = _5 + _6;"
+  },
+  {
+   "text": "  return _12;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function nearest (nearest, funcdef_no=1, decl_uid=2970, cgraph_uid=2, symbol_order=1)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int nearest (const struct P * pts, int n, struct P q)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int d;"
+  },
+  {
+   "text": "  int i;"
+  },
+  {
+   "text": "  int bestd;"
+  },
+  {
+   "text": "  int best;"
+  },
+  {
+   "text": "  long unsigned int _1;"
+  },
+  {
+   "text": "  long unsigned int _2;"
+  },
+  {
+   "text": "  const struct P * _3;"
+  },
+  {
+   "text": "  int _17;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 2> :"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  best_10 = 0;"
+  },
+  {
+   "text": "  # DEBUG best => best_10"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  bestd_14 = dist2 (pts_12(D), &q);"
+  },
+  {
+   "text": "  # DEBUG bestd => bestd_14"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  i_15 = 1;"
+  },
+  {
+   "text": "  # DEBUG i => i_15"
+  },
+  {
+   "text": "  goto <bb 6>; [INV]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 3> :"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _1 = (long unsigned int) i_8;"
+  },
+  {
+   "text": "  _2 = _1 * 8;"
+  },
+  {
+   "text": "  _3 = pts_12(D) + _2;"
+  },
+  {
+   "text": "  d_19 = dist2 (_3, &q);"
+  },
+  {
+   "text": "  # DEBUG d => d_19"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (d_19 < bestd_7)"
+  },
+  {
+   "text": "    goto <bb 4>; [INV]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 5>; [INV]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 4> :"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  bestd_20 = d_19;"
+  },
+  {
+   "text": "  # DEBUG bestd => bestd_20"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  best_21 = i_8;"
+  },
+  {
+   "text": "  # DEBUG best => best_21"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 5> :"
+  },
+  {
+   "text": "  # best_4 = PHI <best_5(3), best_21(4)>"
+  },
+  {
+   "text": "  # bestd_6 = PHI <bestd_7(3), bestd_20(4)>"
+  },
+  {
+   "text": "  # DEBUG bestd => bestd_6"
+  },
+  {
+   "text": "  # DEBUG best => best_4"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  i_22 = i_8 + 1;"
+  },
+  {
+   "text": "  # DEBUG i => i_22"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 6> :"
+  },
+  {
+   "text": "  # best_5 = PHI <best_10(2), best_4(5)>"
+  },
+  {
+   "text": "  # bestd_7 = PHI <bestd_14(2), bestd_6(5)>"
+  },
+  {
+   "text": "  # i_8 = PHI <i_15(2), i_22(5)>"
+  },
+  {
+   "text": "  # DEBUG i => i_8"
+  },
+  {
+   "text": "  # DEBUG bestd => bestd_7"
+  },
+  {
+   "text": "  # DEBUG best => best_5"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (i_8 < n_16(D))"
+  },
+  {
+   "text": "    goto <bb 3>; [INV]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 7>; [INV]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 7> :"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _17 = best_5;"
+  },
+  {
+   "text": "  return _17;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

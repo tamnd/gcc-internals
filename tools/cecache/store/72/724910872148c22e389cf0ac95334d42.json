@@ -1,0 +1,405 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"f\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        test    edi, edi"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L4",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        jle     .L4"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 12,
+    "file": null,
+    "line": 6
+   },
+   "text": "        xor     eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        xor     edx, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        test    dil, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L3",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        je      .L3"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 6
+   },
+   "text": "        mov     eax, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        cmp     edi, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L1",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        je      .L1"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L3:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 7
+   },
+   "text": "        lea     edx, [rdx+1+rax*2]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 6
+   },
+   "text": "        add     eax, 2"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        cmp     edi, eax"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L3",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 6
+   },
+   "text": "        jne     .L3"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L1:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L4:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 5
+   },
+   "text": "        xor     edx, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 9
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 6168,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O2",
+  "-g",
+  "-fdump-tree-optimized=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 103,
+ "filteredCount": 365,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"f\"": 1,
+  ".L1": 16,
+  ".L3": 11,
+  ".L4": 19
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 6,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.21227999962866306,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function f (f, funcdef_no=0, decl_uid=2959, cgraph_uid=1, symbol_order=0)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "Removing basic block 5"
+  },
+  {
+   "text": "Removing basic block 6"
+  },
+  {
+   "text": "Removing basic block 7"
+  },
+  {
+   "text": "Removing basic block 8"
+  },
+  {
+   "text": "int f (int n)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int i;"
+  },
+  {
+   "text": "  int s;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 2> [local count: 118111600]:"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG i => 0"
+  },
+  {
+   "text": "  # DEBUG s => 0"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_3(D) > 0)"
+  },
+  {
+   "text": "    goto <bb 3>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 4>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 3> [local count: 955630224]:"
+  },
+  {
+   "text": "  # s_9 = PHI <s_5(3), 0(2)>"
+  },
+  {
+   "text": "  # i_11 = PHI <i_6(3), 0(2)>"
+  },
+  {
+   "text": "  # DEBUG i => i_11"
+  },
+  {
+   "text": "  # DEBUG s => s_9"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  s_5 = s_9 + i_11;"
+  },
+  {
+   "text": "  # DEBUG s => s_5"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  i_6 = i_11 + 1;"
+  },
+  {
+   "text": "  # DEBUG i => i_6"
+  },
+  {
+   "text": "  # DEBUG s => s_5"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_3(D) != i_6)"
+  },
+  {
+   "text": "    goto <bb 3>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 4>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 4> [local count: 118111600]:"
+  },
+  {
+   "text": "  # s_10 = PHI <s_5(3), 0(2)>"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  return s_10;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

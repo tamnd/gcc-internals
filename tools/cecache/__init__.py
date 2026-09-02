@@ -13,9 +13,13 @@ The second is the limiter. It applies in the reader's browser as much as in CI. 
 interval between requests, and identical in flight requests coalesced rather than sent
 twice.
 
-CI never hits the live API at all. It populates the cache deliberately, through
-`just ce-refresh`, and the `ce-parity` job then checks every cached response against the
-local compiler. Fetching is a reviewed act that shows up as a diff in a pull request.
+CI never hits the live API at all. The cache is populated deliberately, on a laptop, through
+`just ce-refresh`, and the `tier 0 parity` job then checks every cached response against the
+recorded corpus. Fetching is a reviewed act that shows up as a diff in a pull request.
+
+`Cache` sends on a miss because that is what a reader in a notebook wants. `OfflineCache`
+raises on one because that is what CI wants, and CI is holding a backend it did not build
+and cannot pass a `send` to. `tools.tier0` is the thing that uses both.
 """
 
 from __future__ import annotations
@@ -113,6 +117,22 @@ class Cache:
     @property
     def size(self) -> int:
         return len(list(self.root.rglob("*.json"))) if self.root.exists() else 0
+
+
+class OfflineCache(Cache):
+    """A cache that answers hits and refuses misses, whatever `send` it is handed.
+
+    A backend decides for itself what a cache miss means, and every backend decides the same
+    thing: send the request. Handing one of these in overrides that from the outside, which
+    is what CI needs, because CI is holding a `CEBackend` it did not build and cannot pass a
+    `send` to. A miss here is a failed build with a message telling you which recipe to run.
+    """
+
+    def fetch(self, key: str, _send) -> dict:
+        cached = self.get(key)
+        if cached is None:
+            refuse()
+        return cached
 
 
 class OfflineError(RuntimeError):

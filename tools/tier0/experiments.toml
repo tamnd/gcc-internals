@@ -1,0 +1,327 @@
+# Every Tier 0 experiment in the book, and what can be proved about it.
+#
+# One entry per recorded compilation. The `corpus` field names a file in corpora/dumps, and
+# the source and the flags come from that file rather than being repeated here, so there is
+# exactly one place where an experiment's inputs are written down.
+#
+# kind = "recorded"  the corpus entry came from Compiler Explorer, so the cached response and
+#                    the corpus entry have to be the same text, byte for byte
+# kind = "paired"    the corpus entry came from a local compiler, so what has to agree with
+#                    Compiler Explorer is the shape of the GIMPLE and not the text of it
+# kind = "offline"   there is no online counterpart, and `why` says what stops it
+#
+# Adding an entry here without running `just ce-refresh` breaks the build on purpose. See
+# tools/tier0/__init__.py for what each check does and why it draws the line where it does.
+
+[[experiment]]
+id = "z01-source"
+kind = "offline"
+question = "What does a C++ construct in the GCC source mean to somebody reading it?"
+lessons = ["z01-cpp-for-reading"]
+why = """
+This lesson reads the GCC source tree, not a compilation. There is no program to send and \
+no dump to compare. What backs it instead is refcheck, which hashes every cited line at the \
+pinned tag and fails when one moves.\
+"""
+
+[[experiment]]
+id = "z02-layout"
+kind = "offline"
+question = "Where in a tree of two million lines does a given part of the compiler live?"
+lessons = ["z02-where-things-are"]
+why = """
+Same as z01. The subject is the directory layout and the build outputs, so the evidence is \
+the pinned tree and the citation lock file rather than a compiler response.\
+"""
+
+[[experiment]]
+id = "t01-driver"
+kind = "paired"
+question = "What programs does the gcc command actually run, and in what order?"
+lessons = ["t01-what-gcc-runs"]
+corpus = "t01-driver"
+compiler = "cg162"
+dumps = ["tree-optimized"]
+why = """
+The five recorded chains in this entry are the point of the lesson and none of them can be \
+paired. Compiler Explorer adds -S to everything, so its chain always stops at cc1 and never \
+reaches the assembler or the linker. That is why t01-driver-ce exists next to this entry: \
+the lesson shows both and says why they differ. The tree-optimized dump is what is left to \
+compare, and it is paired here so the two entries are known to be the same compilation.\
+"""
+
+[[experiment]]
+id = "t01-driver-ce"
+kind = "recorded"
+question = "What does the same command look like through the tool most readers have open?"
+lessons = ["t01-what-gcc-runs"]
+corpus = "t01-driver-ce"
+compiler = "cg162"
+dumps = ["tree-optimized"]
+asm = true
+chains = ["-O2"]
+why = """
+The chain is declared here so the cache entry behind it is accounted for. It is not compared \
+against anything, because it is the one thing in the book with no local counterpart: the site \
+adds -S to every command it runs, so its chain stops at cc1 and the t01-driver chain next to \
+it goes all the way to collect2. The lesson shows both and says why.\
+"""
+
+[[experiment]]
+id = "l1-O2"
+kind = "paired"
+question = "What are the five representations one function passes through?"
+lessons = ["t02-five-faces", "t05-ssa-in-one-lesson", "t07-where-gimple-becomes-rtl"]
+corpus = "l1-O2"
+compiler = "cg162"
+dumps = ["tree-original", "tree-ssa", "tree-optimized"]
+why = """
+The rtl-expand dump in this entry is target dependent by definition, so pairing it against \
+an x86-64 compiler would compare two correct answers and call one of them wrong. T07 is the \
+lesson that cares about that difference and it has four recorded entries of its own for it. \
+The two graph dumps cannot be fetched at all, because GCC writes them with fopen and there \
+is no stderr form.\
+"""
+
+[[experiment]]
+id = "t03-bench"
+kind = "paired"
+question = "What does the gimplifier do to a function that a C programmer would recognise?"
+lessons = ["t03-gimple-is-c-with-the-fun-removed"]
+corpus = "t03-bench"
+compiler = "cg162"
+dumps = ["tree-original", "tree-gimple"]
+
+[[experiment]]
+id = "t04-tape"
+kind = "offline"
+question = "What do all the tree passes do to one function, one after another?"
+lessons = ["t04-three-hundred-and-ninety-five-passes"]
+corpus = "t04-tape"
+why = """
+This entry holds 140 dumps because it was recorded with -fdump-tree-all, and that is the one \
+thing the API cannot serve. Dumps arrive concatenated on stderr with nothing between them, \
+so there is no way to say which chunk is which pass. Asking for the 140 by name instead \
+would be 140 requests to a service somebody else pays for, to prove something the smaller \
+entries already prove.\
+"""
+
+[[experiment]]
+id = "t05-boss-O2"
+kind = "paired"
+question = "Where do PHI nodes come from, and what are they for?"
+lessons = ["t05-ssa-in-one-lesson"]
+corpus = "t05-boss-O2"
+compiler = "cg162"
+dumps = ["tree-original", "tree-ssa", "tree-optimized"]
+why = """
+The PHI count is the single most load bearing number in the whole book, because T05 is the \
+lesson every beginner is sent to first. It is one of the five things compared here, which \
+means an x86-64 GCC and an aarch64 GCC both have to put a PHI in the same place or the \
+build goes red.\
+"""
+
+[[experiment]]
+id = "t06-levels"
+kind = "paired"
+question = "Which passes does -O2 turn on that -O0 does not?"
+lessons = ["t06-what-o2-actually-turns-on"]
+corpus = "t06-levels"
+compiler = "cg162"
+dumps = ["tree-optimized"]
+why = """
+The thirteen option tables in this entry come from -Q --help=optimizers, which is a driver \
+question rather than a compilation, and the eleven assembly recordings are target dependent. \
+The dump is the part that can be paired.\
+"""
+
+[[experiment]]
+id = "t06-l0"
+kind = "paired"
+question = "What does -O2 do to a program with nothing in it to optimise?"
+lessons = ["t06-what-o2-actually-turns-on"]
+corpus = "t06-l0"
+compiler = "cg162"
+dumps = ["tree-optimized"]
+
+[[experiment]]
+id = "t06-l2"
+kind = "paired"
+question = "What does -O2 do to a program with a loop and a pointer walk in it?"
+lessons = ["t06-what-o2-actually-turns-on"]
+corpus = "t06-l2"
+compiler = "cg162"
+dumps = ["tree-optimized"]
+agree = ["functions", "blocks"]
+why = """
+This is the first program in the book where the target reaches back into a tree pass and \
+changes the answer, and it is worth knowing exactly which one. ivopts picks the induction \
+variable for the loop in `nearest` by asking the target which addresses are legitimate. \
+x86-64 has a scaled index, so it keeps the loop counter and writes \
+`MEM[(int *)pts + ivtmp * 8]`. aarch64 does not have that form for this access, so it turns \
+the pointer itself into the induction variable and increments it. Same loop, same blocks, \
+one PHI apart and one statement apart. The two counts and the operator multiset are the \
+things that move, so they are not compared here, and the control flow still is.\
+"""
+
+[[experiment]]
+id = "t06-fast"
+kind = "paired"
+question = "Why is a float sum the shortest way to show what -Ofast gives up?"
+lessons = ["t06-what-o2-actually-turns-on"]
+corpus = "t06-fast"
+compiler = "cg162"
+dumps = ["tree-optimized"]
+agree = ["functions", "blocks", "phis", "statements"]
+why = """
+The second place the target shows through, and a smaller one. Both compilers produce four \
+blocks and seventeen statements for `total`. The difference is one operator: widening_mul \
+asks optab_handler whether the target has a multiply-accumulate, aarch64 says yes and gets \
+`_21 = WIDEN_MULT_PLUS_EXPR <_20, 4, _17>`, and x86-64 says no and gets a multiply and an \
+add that happen to also be two statements. Everything except the operator multiset is \
+compared.\
+"""
+
+[[experiment]]
+id = "t07-x86-64"
+kind = "recorded"
+question = "What does expand produce on x86-64?"
+lessons = ["t07-where-gimple-becomes-rtl"]
+corpus = "t07-x86-64"
+compiler = "cg161"
+dumps = ["tree-optimized", "rtl-expand"]
+asm = true
+
+[[experiment]]
+id = "t07-aarch64"
+kind = "recorded"
+question = "What does expand produce on aarch64?"
+lessons = ["t07-where-gimple-becomes-rtl"]
+corpus = "t07-aarch64"
+compiler = "carm64g1610"
+dumps = ["tree-optimized", "rtl-expand"]
+asm = true
+
+[[experiment]]
+id = "t07-riscv64"
+kind = "recorded"
+question = "What does expand produce on a target with no condition codes?"
+lessons = ["t07-where-gimple-becomes-rtl"]
+corpus = "t07-riscv64"
+compiler = "rv64-cgcc1610"
+dumps = ["tree-optimized", "rtl-expand"]
+asm = true
+
+[[experiment]]
+id = "t07-power64le"
+kind = "recorded"
+question = "What does expand produce on a target with eight condition register fields?"
+lessons = ["t07-where-gimple-becomes-rtl"]
+corpus = "t07-power64le"
+compiler = "cppc64leg1610"
+dumps = ["tree-optimized", "rtl-expand"]
+asm = true
+
+[[experiment]]
+id = "t08-x86-64"
+kind = "recorded"
+question = "What does the register allocator do when there are sixteen registers?"
+lessons = ["t08-registers-are-a-lie-until-they-are-not"]
+corpus = "t08-x86-64"
+compiler = "cg161"
+dumps = ["rtl-ira"]
+asm = true
+
+[[experiment]]
+id = "t08-aarch64"
+kind = "recorded"
+question = "What does the register allocator do when there are thirty one?"
+lessons = ["t08-registers-are-a-lie-until-they-are-not"]
+corpus = "t08-aarch64"
+compiler = "carm64g1610"
+dumps = ["rtl-ira"]
+asm = true
+
+[[experiment]]
+id = "t08-local"
+kind = "offline"
+question = "Does a third compiler for the same target allocate the same way?"
+lessons = ["t08-registers-are-a-lie-until-they-are-not"]
+corpus = "t08-local"
+why = """
+This is the local aarch64-apple-darwin24 compiler, recorded so the lesson can put a third \
+column next to the two Linux ones and show that the ABI and not just the register count \
+moves the answer. Compiler Explorer has no Darwin compiler, so there is nothing to pair it \
+with. The Tier 1 job in CI runs against a real gcc-16 and covers this one instead.\
+"""
+
+[[experiment]]
+id = "t09-final"
+kind = "recorded"
+question = "How does an insn become a line of assembly?"
+lessons = ["t09-the-last-mile"]
+corpus = "t09-final"
+compiler = "carm64g1610"
+dumps = ["rtl-final"]
+asm = true
+raw_asm = true
+
+[[experiment]]
+id = "t09-sections"
+kind = "recorded"
+question = "Which section does each thing a program declares end up in?"
+lessons = ["t09-the-last-mile"]
+corpus = "t09-sections"
+compiler = "carm64g1610"
+dumps = ["rtl-final"]
+asm = true
+raw_asm = true
+
+[[experiment]]
+id = "t09-local"
+kind = "offline"
+question = "What do the -dp annotations look like on the compiler on this machine?"
+lessons = ["t09-the-last-mile"]
+corpus = "t09-local"
+why = """
+Local Darwin recording, same as t08-local, and paired with t09-final in the lesson to show \
+that the Mach-O section names differ from the ELF ones while the insn names do not. No \
+Darwin compiler exists on the service.\
+"""
+
+[[experiment]]
+id = "t10-ladder"
+kind = "paired"
+question = "What does one function look like at every rung of the ladder at once?"
+lessons = ["t10-the-whole-map"]
+corpus = "t10-ladder"
+compiler = "cg162"
+dumps = ["tree-original", "tree-ssa"]
+
+[[experiment]]
+id = "t10-ladder-optimized"
+kind = "paired"
+question = "How much of the top of the ladder is the same on a different machine?"
+lessons = ["t10-the-whole-map"]
+corpus = "t10-ladder"
+compiler = "cg162"
+dumps = ["tree-optimized"]
+agree = ["functions", "blocks"]
+why = """
+The same program as t06-l2 and the same ivopts difference, split off from the rung above it \
+because the rungs below it do agree on everything. That contrast is the point. tree-original \
+and tree-ssa are identical in shape on both machines because nothing target-aware has run \
+yet, and tree-optimized is one PHI apart because ivopts has.\
+"""
+
+[[experiment]]
+id = "t10-whole"
+kind = "offline"
+question = "What is the shape of the entire pipeline, all 146 dumps of it?"
+lessons = ["t10-the-whole-map"]
+corpus = "t10-whole"
+why = """
+Recorded with -fdump-tree-all and -fdump-rtl-all together, for the same reason t04-tape was \
+and with the same consequence. The API returns the lot on stderr in one undelimited blob. \
+The t10-ladder entry next to it is the paired half of this lesson.\
+"""

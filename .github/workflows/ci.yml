@@ -106,6 +106,42 @@ jobs:
           python -m gxmanim film
           git diff --exit-code docs/assets/films docs/films.md
 
+  tier0:
+    name: tier 0 parity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+
+      # Nothing in this job touches the network. The online half reads the Compiler Explorer
+      # responses committed under tools/cecache/store, through a cache that raises on a miss,
+      # so adding an experiment without running `just ce-refresh` fails here instead of
+      # turning a green check into a bet on whether godbolt.org is up. Compiler Explorer is
+      # free and run by volunteers and this project does not put it in anybody's CI loop.
+      - name: every corpus entry and every lesson is registered
+        run: python -m tools.tier0 coverage
+
+      - name: every experiment runs out of the corpus
+        run: python -m tools.tier0 offline
+
+      - name: every experiment agrees with the cached live compiler
+        run: python -m tools.tier0 online
+
+      # The one thing the checks above cannot catch, because they read the cache rather than
+      # what is committed. A response fetched and never committed passes on the laptop that
+      # fetched it and fails for everybody else. status rather than diff, because an
+      # uncommitted response is a new file and diff would not see it.
+      - name: the cache has no uncommitted entries in it
+        run: |
+          test -z "$(git status --porcelain tools/cecache/store)" || {
+            git status --porcelain tools/cecache/store
+            echo "run just ce-refresh and commit what it writes"
+            exit 1
+          }
+
   refcheck:
     name: citations and blueprints
     runs-on: ubuntu-latest
