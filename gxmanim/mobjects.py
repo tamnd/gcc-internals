@@ -8,6 +8,7 @@ between them.
 Four of them here:
 
     pass_tape   the pipeline, one cell per pass, marked where the IR moved
+    flag_ladder every optimizer switch at every level, one row per level
     ir_ladder   one line of C at four levels, one lane each
     ssa_web     one SSA name from its definition to every use
     phi_node    one PHI, its incoming values, and where each came from
@@ -91,6 +92,57 @@ def pass_tape(cells: list[TapeCell], per_row: int = 96, title: str = "") -> Scen
         shape = Cell(name=c.name, role=role, id=f"pass-{c.index}", changed=bool(c.changed))
         scene.add(shape, x, y)
         x += Cell.w + 1
+    return scene
+
+
+# The levels
+
+
+def flag_ladder(levels: dict[str, dict[str, bool]], title: str = "") -> Scene:
+    """One lane per optimization level, one cell per switch, filled where the switch is on.
+
+    `levels` maps a level name to that level's switches. Only the switches that are not
+    the same at every level are drawn. A flag that is on everywhere and a flag that is off
+    everywhere both say nothing about the difference between two levels, and leaving the
+    hundred and thirty odd of them in makes the shape of the picture harder to see rather
+    than more honest, so the caption says how many were left out.
+
+    The columns are ordered by the first lane that turns the switch on, which is what makes
+    the picture a staircase for `-O0` through `-O3` and makes the lanes that are not on that
+    staircase, `-Os` and `-Og` and `-Ofast`, visibly not on it.
+    """
+    names = sorted({name for switches in levels.values() for name in switches})
+    varies = [n for n in names if len({s.get(n) for s in levels.values()}) > 1]
+    order = list(levels)
+    varies.sort(key=lambda n: (next((i for i, k in enumerate(order) if levels[k].get(n)), 99), n))
+
+    scene = Scene(
+        title=title or f"{len(varies)} switches that are not the same at every level",
+        caption=(
+            f"{len(names) - len(varies)} of the {len(names)} switches are the same at all "
+            f"{len(order)} levels and are not drawn."
+        ),
+    )
+    y = TOP
+    for level, switches in levels.items():
+        cells = tuple(
+            Cell(
+                name=n,
+                role="added" if switches.get(n) else "neutral",
+                id=f"{level}{n}",
+                state="on" if switches.get(n) else "off",
+            )
+            for n in varies
+        )
+        on = sum(1 for n in varies if switches.get(n))
+        rung = Rung(
+            name=level,
+            cards=cells,
+            id=f"level{level}",
+            summary=f"{on} of these {len(varies)} switches on",
+        )
+        scene.add(rung, LEFT, y)
+        y += rung.h + GAP
     return scene
 
 

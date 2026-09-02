@@ -42,6 +42,16 @@ class Record:
     #: the pipeline that can only show one level is not a lesson about the pipeline.
     pass_texts: dict[str, str] = field(default_factory=dict)
 
+    #: What `-Q --help=<kind>` printed, keyed by the kind and the flags together, as in
+    #: `optimizers -O2`. The kind is part of the key because the optimizer table and the
+    #: param table are both worth having and neither one contains the other.
+    option_texts: dict[str, str] = field(default_factory=dict)
+
+    #: Assembly, keyed by the flags that produced it. `asm` above is the one compilation
+    #: the entry is named after. This is for a lesson that asks whether two command lines
+    #: produce the same output, which needs both of them and cannot get there with one.
+    asm_texts: dict[str, str] = field(default_factory=dict)
+
     def to_json(self) -> dict:
         return {
             "entry": self.entry,
@@ -53,6 +63,8 @@ class Record:
             "asm": self.asm,
             "chains": self.chains,
             "passes": self.pass_texts,
+            "options": self.option_texts,
+            "assembly": self.asm_texts,
             "dumps": self.dump_texts,
         }
 
@@ -69,6 +81,8 @@ class Record:
             asm=data.get("asm", ""),
             chains=dict(data.get("chains", {})),
             pass_texts=dict(data.get("passes", {})),
+            option_texts=dict(data.get("options", {})),
+            asm_texts=dict(data.get("assembly", {})),
         )
 
     def __str__(self) -> str:
@@ -108,6 +122,8 @@ def record(
     filename: str = "input.c",
     chains: list[list[str]] | None = None,
     pipelines: list[list[str]] | None = None,
+    tables: list[list[str]] | None = None,
+    assemblies: list[list[str]] | None = None,
 ) -> Record:
     """Run a compilation on a local backend and keep the result.
 
@@ -119,6 +135,13 @@ def record(
     `pipelines` is the same idea for `-fdump-passes`. Each entry is a separate compilation,
     because the pass list at `-O0` and the pass list at `-O2` are different lists and no
     single run knows both.
+
+    `tables` is for `-Q --help=`. Each entry is a kind followed by flags, as in
+    `["optimizers", "-O2"]`, and nothing is compiled for it.
+
+    `assemblies` is for the case where the question is whether two command lines agree.
+    Each entry is a flag list, compiled on its own, and the assembly is kept under those
+    flags. The entry's own `asm` is still the compilation the entry is named after.
     """
     result = backend.compile(source, *args, dumps=dumps, filename=filename)
     if not result.ok:
@@ -139,5 +162,12 @@ def record(
         pass_texts={
             " ".join(flags): backend.compile(source, *flags, "-fdump-passes").stderr
             for flags in pipelines or []
+        },
+        option_texts={
+            " ".join(spec): backend.option_text(spec[0], *spec[1:]) for spec in tables or []
+        },
+        asm_texts={
+            " ".join(flags): backend.compile(source, *flags, filename=filename).asm
+            for flags in assemblies or []
         },
     )

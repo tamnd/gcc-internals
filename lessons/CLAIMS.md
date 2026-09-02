@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-26 claims across 5 lessons, 3 of them not observable from a notebook.
+35 claims across 6 lessons, 4 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -60,3 +60,17 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | the SSA versions in tree-optimized are different from the ones in tree-ssa for the same function | [`t05-26`](t05-ssa-in-one-lesson/t05.ipynb) |
 | after optimization the back edge in l1 goes from bb 3 to itself | [`t05-32`](t05-ssa-in-one-lesson/t05.ipynb) |
 | every SSA version of s in tree-optimized ends up in the one virtual register that also holds the return value | [`t05-34`](t05-ssa-in-one-lesson/t05.ipynb) |
+
+## What -O2 actually turns on
+
+| Claim | Proved by |
+| --- | --- |
+| at -O2 the optimizer table is 295 lines, of which 244 are switches that are either on or off | [`t06-05`](t06-what-o2-actually-turns-on/t06.ipynb) |
+| -O1 to -O2 is 55 differences, of which 48 are switches turning on, none are switches turning off, and 7 are options that took a new value | [`t06-08`](t06-what-o2-actually-turns-on/t06.ipynb) |
+| the 114 rows of default_options_table use six of the twelve level words, and ten of the rows are marked speed only | [`t06-12`](t06-what-o2-actually-turns-on/t06.ipynb) |
+| -O2 to -Os is 12 differences, of which 7 are switches going off and none are switches coming on, and -Os and -Oz print byte-identical tables | [`t06-15`](t06-what-o2-actually-turns-on/t06.ipynb) |
+| -Os and -Oz differ inside the compiler, where optimize_size is 1 for one and 2 for the other, and every level word in the table asks whether optimize_size is nonzero rather than what it is, which is why no printed table can tell the two apart | not observable from a notebook: optimize_size is a field on the options structure and the only way to read it is from inside a running compiler. The two lines of source that set it are cited above and checked against the pinned tree on every push. |
+| 13 switches on at -O1 are off at -Og, and one switch is on at -Og and off at -O1, so -Og is neither above nor below it | [`t06-20`](t06-what-o2-actually-turns-on/t06.ipynb) |
+| -O3 to -Ofast is 11 differences, 5 switches on, 4 off and 2 values, and three of the four it turns off were the ones keeping the floating point arithmetic honest | [`t06-23`](t06-what-o2-actually-turns-on/t06.ipynb) |
+| -O1 plus all 48 switches produces 86 lines of assembly for L1, which is worse than -O1 at 54 and worse than -O2 at 56, and adding the 7 value changes makes it byte-identical to -O2 | [`t06-31`](t06-what-o2-actually-turns-on/t06.ipynb) |
+| L0 needs 1 of the 55 flags to match its -O2 output, L1 needs 4, and L2 needs 8 | [`t06-34`](t06-what-o2-actually-turns-on/t06.ipynb) |

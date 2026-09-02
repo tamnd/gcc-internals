@@ -240,13 +240,15 @@ class Renderer:
                 size=12,
             )
         for card, cbox in rung.card_boxes(at):
-            out += self._card(card, cbox)
+            # A lane holds statement cards in the IR ladder and tape cells in the flag
+            # ladder, and the two are drawn by different methods, so ask the shape.
+            out += self._cell(card, cbox) if isinstance(card, Cell) else self._card(card, cbox)
         return out
 
     def _cell(self, cell: Cell, box: Box) -> str:
         r = ROLES[cell.role]
         out = _rect(box, r, radius=1)
-        if cell.changed:
+        if cell.marked:
             # A tick above the cell, so a changing pass is findable without reading colour.
             out += _text(box.cx, box.y - 3, "|", r.light.ink, size=11, text_anchor="middle")
         return out

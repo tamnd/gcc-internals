@@ -10,8 +10,8 @@ recognises a shape before they read its label.
     3 edge              control flow, with the kind in the line style and a glyph
     4 name badge        an SSA name and its version, or a pseudo register
     5 def-use thread    a definition to one of its uses, drawn unlike an edge on purpose
-    6 tape cell         one pass in the pipeline
-    7 rung              one IR level in the ladder
+    6 tape cell         one item in a long ordered row: a pass, or an optimizer flag
+    7 rung              a labelled horizontal lane: an IR level, or an optimization level
     8 tree node         an RTX, a GENERIC tree, a match.pd pattern
     9 slot              a register, a stack frame, a vector lane, a bit field
 
@@ -259,16 +259,22 @@ class Block:
 
 @dataclass(frozen=True)
 class Cell:
-    """A tape cell: one pass in the pipeline.
+    """A tape cell: one item in a long ordered row.
 
-    Narrow on purpose. There are 281 of them at `-O2` and the shape has to say so, because
-    the fact that the pipeline is mostly no-ops for any one function is itself the lesson.
+    Narrow on purpose. There are 281 passes at `-O2` and 244 optimizer switches, and in
+    both cases the shape has to say so, because the fact that almost none of them matter to
+    any one function is itself the lesson.
+
+    `state` is the words a screen reader gets. Left empty it is the pass tape's three
+    states, which is what this shape was built for. A row of something else sets it, so
+    that a flag that is off is not read out as a pass that changed nothing.
     """
 
     name: str
     role: str = "neutral"
     id: str = ""
     changed: bool = False
+    state: str = ""
 
     kind = "cell"
 
@@ -278,6 +284,17 @@ class Cell:
     w = 6
     h = 34
 
+    @property
+    def marked(self) -> bool:
+        """Whether the cell gets a tick above it.
+
+        A cell is six pixels wide, so there is no room inside it for the glyph the role
+        carries, and without the tick the only channel left is colour. That is the one
+        thing the palette is built to avoid, so anything the reader is supposed to pick out
+        of a long row gets a mark above it as well as a fill.
+        """
+        return self.changed or self.role == "added"
+
     def describe(self) -> str:
         """What a screen reader gets, which has to be the three states the drawing has.
 
@@ -285,6 +302,8 @@ class Cell:
         changed nothing, and saying `changed nothing` for both would hand a reader who cannot
         see the colours a claim the tape is careful not to make.
         """
+        if self.state:
+            return f"{self.name}, {self.state}"
         if self.changed:
             return f"{self.name}, changed the IR"
         if self.role == "unknown":
@@ -297,17 +316,27 @@ class Cell:
 
 @dataclass(frozen=True)
 class Rung:
-    """A rung: one IR level in the ladder, as a horizontal lane.
+    """A rung: a labelled horizontal lane.
 
-    The lane is the level and what sits in it is what that level made of one line of C.
-    Empty lanes are drawn rather than skipped, because a level with nothing in it is the
-    most interesting thing the ladder has to say.
+    In the IR ladder the lane is an IR level and what sits in it is what that level made
+    of one line of C. Empty lanes are drawn rather than skipped, because a level with
+    nothing in it is the most interesting thing the ladder has to say.
+
+    The contents are cards or cells. Cells are for a lane holding a few hundred small
+    things, which is what one optimization level's switches are, and the label column is
+    the reason that picture is a lane rather than a bare row of cells: seven unlabelled
+    rows of two hundred squares is not a diagram of anything.
+
+    `summary` is the words a screen reader gets, for a lane where reading out every item
+    would be worse than useless. Left empty every item is read out, which is right for the
+    handful of statements a ladder lane holds.
     """
 
     name: str
-    cards: tuple[Card, ...] = ()
+    cards: tuple[Card | Cell, ...] = ()
     role: str = "neutral"
     id: str = ""
+    summary: str = ""
 
     kind = "rung"
 
@@ -320,9 +349,9 @@ class Rung:
     label_w = 96
     max_w = 700
 
-    def rows(self) -> list[list[Card]]:
+    def rows(self) -> list[list[Card | Cell]]:
         """The cards, wrapped. One row is what fits between the label column and `max_w`."""
-        out: list[list[Card]] = [[]]
+        out: list[list[Card | Cell]] = [[]]
         used = 0.0
         for c in self.cards:
             if out[-1] and used + c.w + GAP > self.max_w - self.label_w:
@@ -345,7 +374,7 @@ class Rung:
         tall = max([c.h for c in self.cards] + [LINE + 2 * PAD])
         return tall * len(rows) + GAP * (len(rows) - 1)
 
-    def card_boxes(self, at: Point) -> list[tuple[Card, Box]]:
+    def card_boxes(self, at: Point) -> list[tuple[Card | Cell, Box]]:
         out = []
         tall = max([c.h for c in self.cards] + [LINE + 2 * PAD])
         y = at.y
@@ -358,6 +387,8 @@ class Rung:
         return out
 
     def describe(self) -> str:
+        if self.summary:
+            return f"{self.name}, {self.summary}"
         if not self.cards:
             return f"{self.name}, nothing"
         return f"{self.name}, {len(self.cards)}: " + "; ".join(c.describe() for c in self.cards)

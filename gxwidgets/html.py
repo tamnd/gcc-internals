@@ -226,6 +226,18 @@ STYLESHEET = f""":root {{
 .gx-level pre {{ margin: 0; overflow-x: auto; }}
 .gx-level .gx-note {{ margin: 0; }}
 
+.gx-ladder {{ overflow-x: auto; padding: 2px 0 6px; scrollbar-width: thin; }}
+.gx-ladder-row {{ display: flex; align-items: center; gap: 6px; }}
+.gx-ladder-name {{ position: sticky; left: 0; z-index: 1; flex: 0 0 4.2em;
+  font-family: {MONO}; font-size: 11px; text-align: right; background: var(--gx-page);
+  padding-right: 4px; }}
+.gx-ladder-cells {{ display: flex; gap: 1px; }}
+.gx-ladder-n {{ font-family: {MONO}; font-size: 11px; color: var(--gx-unknown-ink);
+  padding-left: 4px; }}
+.gx-flagdiff .gx-cell {{ width: 7px; height: 16px; border-bottom: 2px solid transparent; }}
+.gx-flagdiff .gx-cell[data-on="1"] {{ background: var(--gx-added-fill);
+  border-bottom-color: var(--gx-added-ink); }}
+
 .gx-web {{ max-width: 100%; overflow-x: auto; color: var(--gx-focus-ink); }}
 .gx-web text {{ font-family: {MONO}; font-size: 12px; fill: var(--gx-neutral-ink); }}
 .gx-web .thread {{ fill: none; stroke: currentColor; stroke-width: 1.2; }}

@@ -162,6 +162,22 @@ DRIVING = Group(
             met="T04",
         ),
         Term(
+            name="optimization level",
+            short="Four integers, and a table that says what each combination of them turns on.",
+            long="`-O2` is not a thing the compiler has. What it has is `optimize`, `optimize_size`, `optimize_fast` and `optimize_debug`, and `-O2` is the command line spelling of setting the first to 2 and the rest to 0. A table of a hundred and fourteen entries then says, for each option, which combinations turn it on. `-Os` and `-Oz` both set `optimize` to 2 and differ only in `optimize_size` being 1 or 2, which is why the flag table cannot tell them apart. A target gets its own table on top of the shared one, so the answer is not the same on two machines.",
+            cite="gcc/opts.cc:781@releases/gcc-16.2.0",
+            see=("param", "pass"),
+            met="T06",
+        ),
+        Term(
+            name="param",
+            short="A number the optimizer consults, spelled `--param=name=value`.",
+            long="Where a switch says whether to do something, a param says how much. Inlining size limits, unrolling limits, the number of times a loop is peeled. There are three hundred and twenty three of them and the optimization level sets several, so two levels can run exactly the same passes with the same switches and still produce different code because a threshold moved.",
+            cite="gcc/params.opt:24@releases/gcc-16.2.0",
+            see=("optimization level",),
+            met="T06",
+        ),
+        Term(
             name="front end",
             short="The half of the compiler that knows a language, as opposed to the half that does not.",
             long="A front end parses one language and hands the middle end a function body in GENERIC. Everything after that point is shared, which is the single most important structural fact about GCC: twelve languages, one optimiser, one code generator. It is also why an optimisation bug is almost never a C bug.",

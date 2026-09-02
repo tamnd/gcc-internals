@@ -104,6 +104,12 @@ corpus-t04:
         --pipeline="-O0" --pipeline="-O1" --pipeline="-O2" --pipeline="-O3" --pipeline="-Os" \
         -O2 -g
 
+# The four entries T06 reads. A script rather than a command line, because half of what it
+# records is derived from a diff of two flag tables and then found by compiling fifty times.
+# See the comment at the top of the script for what comes out.
+corpus-t06:
+    {{py}} lessons/t06-what-o2-actually-turns-on/record.py {{gcc}}
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build

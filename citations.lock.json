@@ -19,6 +19,18 @@
    "hash": "da91aff74c89821f",
    "text": "/* Build tables of static constructors and destructors and run ld.  */"
   },
+  "gcc/common/common-target.h:28@releases/gcc-16.2.0": {
+   "hash": "235af03be673d0ca",
+   "text": "enum opt_levels"
+  },
+  "gcc/common/config/aarch64/aarch64-common.cc:48@releases/gcc-16.2.0": {
+   "hash": "6c38fbf02b20d4b8",
+   "text": "static const struct default_options aarch_option_optimization_table[] ="
+  },
+  "gcc/common/config/aarch64/aarch64-common.cc:62@releases/gcc-16.2.0": {
+   "hash": "ae2ee40bb1f9c0ea",
+   "text": "    { OPT_LEVELS_2_PLUS, OPT_mearly_ra_, NULL, AARCH64_EARLY_RA_ALL },"
+  },
   "gcc/dominance.cc:856@releases/gcc-16.2.0": {
    "hash": "ddd51844694a3c95",
    "text": "get_immediate_dominator (enum cdi_direction dir, basic_block bb)"
@@ -74,6 +86,46 @@
   "gcc/gimplify.cc:683@releases/gcc-16.2.0": {
    "hash": "90e8955732ed66ab",
    "text": "internal_get_tmp_var (tree val, gimple_seq *pre_p, gimple_seq *post_p,"
+  },
+  "gcc/opts.cc:1234@releases/gcc-16.2.0": {
+   "hash": "3d8ebfd0f828d4fe",
+   "text": "  if (!opts->x_optimize || opts->x_optimize_debug)"
+  },
+  "gcc/opts.cc:471@releases/gcc-16.2.0": {
+   "hash": "8f6f21aaa284a687",
+   "text": "maybe_default_option (struct gcc_options *opts,"
+  },
+  "gcc/opts.cc:490@releases/gcc-16.2.0": {
+   "hash": "bb83336d5ed27120",
+   "text": "  switch (default_opt->levels)"
+  },
+  "gcc/opts.cc:587@releases/gcc-16.2.0": {
+   "hash": "3f2d03d30ca656b6",
+   "text": "static const struct default_options default_options_table[] ="
+  },
+  "gcc/opts.cc:735@releases/gcc-16.2.0": {
+   "hash": "b23b8c95d26c9b07",
+   "text": "default_options_optimization (struct gcc_options *opts,"
+  },
+  "gcc/opts.cc:781@releases/gcc-16.2.0": {
+   "hash": "5185c5655557410a",
+   "text": "\tcase OPT_Os:"
+  },
+  "gcc/opts.cc:790@releases/gcc-16.2.0": {
+   "hash": "bcbb799dd909d78b",
+   "text": "\tcase OPT_Oz:"
+  },
+  "gcc/opts.cc:799@releases/gcc-16.2.0": {
+   "hash": "361f3aa4bd24e7d8",
+   "text": "\tcase OPT_Ofast:"
+  },
+  "gcc/opts.cc:807@releases/gcc-16.2.0": {
+   "hash": "212af0bc53b3c492",
+   "text": "\tcase OPT_Og:"
+  },
+  "gcc/params.opt:24@releases/gcc-16.2.0": {
+   "hash": "4f2c74f0178efadd",
+   "text": ""
   },
   "gcc/passes.cc:2578@releases/gcc-16.2.0": {
    "hash": "8cc6077248d7261e",

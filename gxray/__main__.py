@@ -5,6 +5,7 @@
     gxray passes --program l1 -O2 --grep vrp
     gxray dumps --program l1 -O2
     gxray web --program l1 -O2 --dump tree-ssa --name s_1
+    gxray options --against="-O1" -O2
 
 Everything it prints comes from a real compiler run. There are no baked in numbers, which
 is the point: when a lesson quotes a figure, this is how a reader checks it.
@@ -16,7 +17,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from gxray import corpus_store, programs
+from gxray import corpus_store, options, programs
 from gxray.build import banner
 from gxray.driver import BackendError, CEBackend, CorpusBackend, LocalBackend
 
@@ -120,6 +121,23 @@ def cmd_chain(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_options(args: argparse.Namespace) -> int:
+    """The optimizer flag table for these flags, or the difference from another set."""
+    backend = pick_backend(args)
+    here = backend.options(args.kind, *args.flags)
+    if not args.against:
+        print(f"{here}\n")
+        for option in here.options.values():
+            print(f"  {option}")
+        return 0
+    there = backend.options(args.kind, *args.against.split())
+    changes = options.diff(there, here)
+    print(f"{args.against} to {' '.join(args.flags)}: {len(changes)} change(s)\n")
+    for change in changes:
+        print(f"  {change}")
+    return 0
+
+
 def cmd_record(args: argparse.Namespace) -> int:
     # Almost always local, because the corpus is meant to be the pinned compiler. Compiler
     # Explorer is allowed here for one job: recording what a differently configured GCC 16
@@ -142,9 +160,16 @@ def cmd_record(args: argparse.Namespace) -> int:
         filename=Path(args.file).name if args.file else f"{args.program}.c",
         chains=[spec.split() for spec in args.chain or []],
         pipelines=[spec.split() for spec in args.pipeline or []],
+        tables=[spec.split() for spec in args.table or []],
+        assemblies=[spec.split() for spec in args.asm or []],
     )
     path = corpus_store.save(rec)
-    extra = f", {len(rec.pass_texts)} pass list(s)" if rec.pass_texts else ""
+    counts = [
+        (len(rec.pass_texts), "pass list(s)"),
+        (len(rec.option_texts), "option table(s)"),
+        (len(rec.asm_texts), "assembly listing(s)"),
+    ]
+    extra = "".join(f", {n} {what}" for n, what in counts if n)
     print(f"wrote {path} ({len(rec.dump_texts)} dumps{extra})")
     return 0
 
@@ -177,6 +202,15 @@ def build_parser() -> argparse.ArgumentParser:
     sc = sub.add_parser("chain", parents=[common], help="which programs the driver would run")
     sc.add_argument("--full", action="store_true", help="every argument, one per line")
 
+    so = sub.add_parser("options", parents=[common], help="what -Q --help= prints for these flags")
+    so.add_argument("--kind", default="optimizers", choices=["optimizers", "params"])
+    so.add_argument(
+        "--against",
+        metavar="FLAGS",
+        # Attached, as --against="-O1", because the value starts with a dash.
+        help='print only what differs from these flags, as --against="-O1"',
+    )
+
     sr = sub.add_parser("record", parents=[common], help="record a corpus entry from local GCC")
     sr.add_argument(
         "--chain",
@@ -192,6 +226,20 @@ def build_parser() -> argparse.ArgumentParser:
         # Attached for the same reason --chain is: the value starts with a dash.
         help='also record what -fdump-passes prints for these flags, as --pipeline="-O1"',
     )
+    sr.add_argument(
+        "--table",
+        action="append",
+        metavar="KIND FLAGS",
+        # A kind and then flags, as --table="optimizers -O2". Nothing is compiled for one.
+        help='also record what -Q --help= prints, as --table="optimizers -O2"',
+    )
+    sr.add_argument(
+        "--asm",
+        action="append",
+        metavar="FLAGS",
+        # Attached for the same reason --chain is: the value starts with a dash.
+        help='also record the assembly for these flags, as --asm="-O1 -fgcse"',
+    )
     return p
 
 
@@ -201,6 +249,7 @@ COMMANDS = {
     "dumps": cmd_dumps,
     "web": cmd_web,
     "chain": cmd_chain,
+    "options": cmd_options,
     "record": cmd_record,
 }
 

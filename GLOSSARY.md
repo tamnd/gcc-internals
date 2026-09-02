@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [out of SSA](#out-of-ssa) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
 
 ## Driving the compiler
 
@@ -77,6 +77,22 @@ First met in T04. See also [pass](#pass). In the source: [`gcc/passes.cc:2579@re
 It is a virtual function on the pass, so the condition lives with the pass rather than in a table somewhere, and it is asked again for every function. That is why the answer is not a property of your command line: two functions in one file can get different answers from the same gate. `-fdump-passes` prints the answer for one function at one moment, and a gate that depends on how far compilation has got, such as the one guarding the passes that run after register allocation, will print the answer for that moment rather than for the moment the pass is reached.
 
 First met in T04. See also [pass](#pass), [pass manager](#pass-manager). In the source: [`gcc/tree-pass.h:90@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/tree-pass.h#L90).
+
+### optimization level
+
+**Four integers, and a table that says what each combination of them turns on.**
+
+`-O2` is not a thing the compiler has. What it has is `optimize`, `optimize_size`, `optimize_fast` and `optimize_debug`, and `-O2` is the command line spelling of setting the first to 2 and the rest to 0. A table of a hundred and fourteen entries then says, for each option, which combinations turn it on. `-Os` and `-Oz` both set `optimize` to 2 and differ only in `optimize_size` being 1 or 2, which is why the flag table cannot tell them apart. A target gets its own table on top of the shared one, so the answer is not the same on two machines.
+
+First met in T06. See also [param](#param), [pass](#pass). In the source: [`gcc/opts.cc:781@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/opts.cc#L781).
+
+### param
+
+**A number the optimizer consults, spelled `--param=name=value`.**
+
+Where a switch says whether to do something, a param says how much. Inlining size limits, unrolling limits, the number of times a loop is peeled. There are three hundred and twenty three of them and the optimization level sets several, so two levels can run exactly the same passes with the same switches and still produce different code because a threshold moved.
+
+First met in T06. See also [optimization level](#optimization-level). In the source: [`gcc/params.opt:24@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/params.opt#L24).
 
 ### front end
 

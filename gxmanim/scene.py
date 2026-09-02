@@ -29,6 +29,11 @@ MARGIN = 16
 BOW = 48
 
 
+def _nothing(_at: Point) -> list:
+    """What a shape with no badges on it hands back when asked for its badges."""
+    return []
+
+
 @dataclass
 class Scene:
     """One picture. Deterministic: the same inputs place the same shapes at the same points.
@@ -70,7 +75,8 @@ class Scene:
                 for card, box in shape.card_boxes(p.at):
                     if card.id:
                         out[card.id] = box
-                    for badge, bbox in card.badge_boxes(Point(box.x, box.y)):
+                    # A rung can hold cells rather than cards, and a cell carries no badge.
+                    for badge, bbox in getattr(card, "badge_boxes", _nothing)(Point(box.x, box.y)):
                         if badge.id:
                             out[badge.id] = bbox
             elif isinstance(shape, Card):

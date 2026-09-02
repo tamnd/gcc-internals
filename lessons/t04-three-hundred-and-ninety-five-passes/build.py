@@ -533,8 +533,9 @@ recording the lesson used.
 T05 is SSA, which is the pass at cell 13 of the tape, the one where eight names appear at
 once. It is the pilot lesson of the whole course and it is already written.
 
-T06 is the CFG, which is cell 5, the pass that turns the flat list T03 left behind into
-blocks and edges.
+T06 goes after the ON and OFF in this listing and asks where it comes from. The answer is
+four integers and a table of a hundred and fourteen entries, and it is why `-Os` and `-O2`
+disagree about nine passes rather than one being weaker than the other.
 
 M4 goes back through this list properly, a lesson per group of passes, with the tape as the
 map. This lesson is the map. That one is the territory.

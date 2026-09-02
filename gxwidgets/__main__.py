@@ -14,8 +14,8 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxray import corpus_store, gimple, locs, passes
-from gxwidgets import IRLadder, PassTape, PredictGate, SSAWeb, script
+from gxray import corpus_store, gimple, locs, options, passes
+from gxwidgets import FlagDiff, IRLadder, PassTape, PredictGate, SSAWeb, script
 
 FIXTURE = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "l1-O2-passes.txt"
 
@@ -36,6 +36,21 @@ attach();
 </body>
 </html>
 """
+
+
+def flagdiff(entry: str = "t06-levels") -> FlagDiff | None:
+    """The flag grid, which reads option tables rather than dumps.
+
+    A different corpus entry from everything else on this page, because no one recording
+    holds both a pass pipeline and eight printings of the optimizer table. Missing is not an
+    error, so that someone who has only run `just corpus` still gets a page.
+    """
+    try:
+        record = corpus_store.load(entry)
+    except FileNotFoundError:
+        return None
+    tables = options.by_level(record.option_texts)
+    return FlagDiff(tables) if tables else None
 
 
 def build(entry: str = "l1-O2") -> str:
@@ -86,6 +101,10 @@ def build(entry: str = "l1-O2") -> str:
             ),
         ),
     ]
+    grid = flagdiff()
+    if grid is not None:
+        widgets.insert(1, grid)
+
     banner = f"{record.compiler} for {record.target}, recorded {record.recorded}."
     return PAGE.format(
         banner=banner,
