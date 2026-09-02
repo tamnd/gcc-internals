@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [target hook](#target-hook) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -61,6 +61,34 @@ Also written `poly_int64`, `known_eq`, `maybe_ne`. First met in Z01. See also [m
 GCC running on a 64 bit host compiles for targets with 128 bit integers, so constant folding cannot use the host's arithmetic. `wide_int` is a fixed precision integer carrying enough words for the widest type in play, `widest_int` is wider still and used where an intermediate result might not fit, and the operations live in the `wi::` namespace rather than as operators. When you see `wi::to_widest (value)` in a pass, that is a target constant being brought into a form the compiler can do arithmetic on safely.
 
 Also written `widest_int`, `wi::`. First met in Z01. See also [tree](#tree). In the source: [`gcc/wide-int.h:23@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/wide-int.h#L23).
+
+## Finding things in the tree
+
+Words about the source tree itself rather than about compiling. Z02 is the lesson, and these three are the ones that cost a reader an afternoon if nobody tells them.
+
+### generated file
+
+**A source file that a program in the GCC tree writes during the build, rather than a file anybody wrote.**
+
+A dozen programs under `gcc/` whose names start with `gen` read the machine descriptions, `match.pd`, the `.opt` files and the `GTY` markers, and write C++ into the build directory. `insn-recog.cc` is the biggest of them and can run to hundreds of thousands of lines. The consequence is that a backtrace or a dump line can name a file that is not in the tree at all, and searching for it finds nothing. The route is to work out which generator wrote it and read that generator's input, which is where the change you want to make actually goes. `gxray.layout.generated` will do the lookup for you.
+
+Also written `insn-recog.cc`, `gimple-match-N.cc`, `options.cc`. First met in Z02. See also [machine description](#machine-description), [gengtype](#gengtype). In the source: [`gcc/genrecog.cc:21@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/genrecog.cc#L21).
+
+### port
+
+**Everything GCC needs in order to emit code for one target, which is one directory under `gcc/config` with a machine description in it.**
+
+The count everybody quotes is the number of directories under `gcc/config`, and it is wrong, because three of those directories are shared operating system support rather than targets. What makes a port a port is a `.md` file. A real port is that machine description plus a `target.cc` full of hooks, a `target.h` of macros, an `.opt` file of target specific flags, and usually a pile of built in function definitions. `gcc/config/aarch64` and `gcc/config/i386` are the two most actively worked on and are both worth a look for how differently two people can solve the same problem.
+
+Also written target, back end for a target. First met in Z02. See also [machine description](#machine-description), [back end](#back-end), [target hook](#target-hook).
+
+### target hook
+
+**A function pointer the middle end calls when the answer depends on the target, filled in by the port.**
+
+The middle end cannot know whether an unaligned load is cheap or how arguments are passed, so wherever it needs a target's opinion it calls through `targetm`, a big struct of function pointers that every port fills in from `target-def.h`. Reading a port is mostly reading its hooks. The useful habit is the other direction: when a pass does something that looks target specific, find the `targetm.` call in it, then find that hook in the port you care about, and you are looking at the exact line that decided.
+
+Also written `targetm`, `TARGET_*` macro, `target.def`. First met in Z02. See also [port](#port), [back end](#back-end). In the source: [`gcc/target.h:337@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/target.h#L337).
 
 ## Driving the compiler
 

@@ -35,6 +35,14 @@
    "hash": "f5abd7d294e8bc1b",
    "text": "pass_expand::execute (function *fun)"
   },
+  "gcc/cfgloop.cc:160@releases/gcc-16.2.0": {
+   "hash": "57661d84fd732b68",
+   "text": "  if (!current_loops || ! file)"
+  },
+  "gcc/cfgloop.cc:163@releases/gcc-16.2.0": {
+   "hash": "6ceb32748e5ce0f7",
+   "text": "  fprintf (file, \";; %d loops found\\n\", number_of_loops (cfun));"
+  },
   "gcc/cfgloop.h:120@releases/gcc-16.2.0": {
    "hash": "dbb50865dbe74d44",
    "text": "class GTY ((chain_next (\"%h.next\"))) loop {"
@@ -59,6 +67,10 @@
    "hash": "fb98a06d2f9e5c6d",
    "text": "combine_instructions (rtx_insn *f, unsigned int nregs)"
   },
+  "gcc/common.opt:3220@releases/gcc-16.2.0": {
+   "hash": "5f13812388f3b810",
+   "text": "ftree-ccp"
+  },
   "gcc/common/common-target.h:28@releases/gcc-16.2.0": {
    "hash": "235af03be673d0ca",
    "text": "enum opt_levels"
@@ -70,6 +82,10 @@
   "gcc/common/config/aarch64/aarch64-common.cc:62@releases/gcc-16.2.0": {
    "hash": "ae2ee40bb1f9c0ea",
    "text": "    { OPT_LEVELS_2_PLUS, OPT_mearly_ra_, NULL, AARCH64_EARLY_RA_ALL },"
+  },
+  "gcc/config/aarch64/aarch64.md:2965@releases/gcc-16.2.0": {
+   "hash": "a27939b4ee11cf96",
+   "text": "(define_insn \"add<mode>3_compare0\""
   },
   "gcc/config/aarch64/constraints.md:121@releases/gcc-16.2.0": {
    "hash": "9f50df9c638a2080",
@@ -147,9 +163,17 @@
    "hash": "7d765f61c6aaf81b",
    "text": "      %{!fsyntax-only:%(invoke_as)}}}}\", 0, 0, 1},"
   },
+  "gcc/genmatch.cc:911@releases/gcc-16.2.0": {
+   "hash": "3914db87d88d8a23",
+   "text": "  fprintf_indent (f, 2, \"fprintf (dump_file, \\\"%%s \""
+  },
   "gcc/genpreds.cc:669@releases/gcc-16.2.0": {
    "hash": "3449e67bd76c829f",
    "text": "class constraint_data"
+  },
+  "gcc/genrecog.cc:21@releases/gcc-16.2.0": {
+   "hash": "864e4facf74ebb15",
+   "text": "/* This program is used to produce insn-recog.cc, which contains a"
   },
   "gcc/gimple-expr.cc:836@releases/gcc-16.2.0": {
    "hash": "42bc3cf0317ea2ed",
@@ -403,6 +427,14 @@
    "hash": "626fa72b1682d672",
    "text": "INT_MODE (SI, 4);"
   },
+  "gcc/match.pd:236@releases/gcc-16.2.0": {
+   "hash": "084190181c65f5ad",
+   "text": "(for op (plus pointer_plus minus bit_ior bit_xor)"
+  },
+  "gcc/match.pd:239@releases/gcc-16.2.0": {
+   "hash": "9ec0017abb2fc0c7",
+   "text": "    (non_lvalue @0)))"
+  },
   "gcc/opts.cc:1234@releases/gcc-16.2.0": {
    "hash": "3d8ebfd0f828d4fe",
    "text": "  if (!opts->x_optimize || opts->x_optimize_debug)"
@@ -587,6 +619,10 @@
    "hash": "a66423de6a2f8644",
    "text": "      NEXT_PASS (pass_build_ssa);"
   },
+  "gcc/passes.def:80@releases/gcc-16.2.0": {
+   "hash": "bc750d58492694fc",
+   "text": "\t  NEXT_PASS (pass_remove_cgraph_callee_edges);"
+  },
   "gcc/poly-int.h:374@releases/gcc-16.2.0": {
    "hash": "9a97de5b8705c3ec",
    "text": "/* A class containing polynomial integers.  The polynomial has N coefficients"
@@ -651,6 +687,10 @@
    "hash": "fb01c32eb89f1656",
    "text": "(predict_doloop_p,"
   },
+  "gcc/target.h:337@releases/gcc-16.2.0": {
+   "hash": "dd0aa9ffee116580",
+   "text": "extern struct gcc_target targetm;"
+  },
   "gcc/toplev.cc:449@releases/gcc-16.2.0": {
    "hash": "212540f0d47231aa",
    "text": "compile_file (void)"
@@ -658,6 +698,22 @@
   "gcc/tree-cfg.cc:182@releases/gcc-16.2.0": {
    "hash": "e8e403328c3f6a6b",
    "text": "build_gimple_cfg (gimple_seq seq)"
+  },
+  "gcc/tree-cfg.cc:1979@releases/gcc-16.2.0": {
+   "hash": "1688138e606023ad",
+   "text": "  if (dump_file)"
+  },
+  "gcc/tree-cfg.cc:1980@releases/gcc-16.2.0": {
+   "hash": "69d062fd049c68d2",
+   "text": "    fprintf (dump_file, \"Merging blocks %d and %d\\n\", a->index, b->index);"
+  },
+  "gcc/tree-cfg.cc:2191@releases/gcc-16.2.0": {
+   "hash": "30e3566400b2cc4c",
+   "text": "  if (dump_file)"
+  },
+  "gcc/tree-cfg.cc:2193@releases/gcc-16.2.0": {
+   "hash": "b574855da47d4544",
+   "text": "      fprintf (dump_file, \"Removing basic block %d\\n\", bb->index);"
   },
   "gcc/tree-core.h:1138@releases/gcc-16.2.0": {
    "hash": "846071afbfa6d275",
@@ -695,6 +751,10 @@
    "hash": "78c56868081ddba0",
    "text": "#define TODO_do_not_ggc_collect\t\t(1 << 1)"
   },
+  "gcc/tree-pass.h:39@releases/gcc-16.2.0": {
+   "hash": "f83f09f6815a3382",
+   "text": "/* Metadata for a pass, non-varying across all instances of a pass.  */"
+  },
   "gcc/tree-pass.h:40@releases/gcc-16.2.0": {
    "hash": "b96bcfe25ebea6a1",
    "text": "struct pass_data"
@@ -702,6 +762,10 @@
   "gcc/tree-pass.h:44@releases/gcc-16.2.0": {
    "hash": "76101b7ab5820972",
    "text": ""
+  },
+  "gcc/tree-pass.h:45@releases/gcc-16.2.0": {
+   "hash": "9faa190a69596bcf",
+   "text": "  /* Terse name of the pass used as a fragment of the dump file"
   },
   "gcc/tree-pass.h:73@releases/gcc-16.2.0": {
    "hash": "3f097a4923bb403f",
@@ -727,6 +791,14 @@
    "hash": "4f27987395906be5",
    "text": "const pass_data pass_data_ccp ="
   },
+  "gcc/tree-ssa-ccp.cc:3082@releases/gcc-16.2.0": {
+   "hash": "3273d1c771d3fb12",
+   "text": "gimple_opt_pass *"
+  },
+  "gcc/tree-ssa-ccp.cc:3083@releases/gcc-16.2.0": {
+   "hash": "c0d4d3ada15f529e",
+   "text": "make_pass_ccp (gcc::context *ctxt)"
+  },
   "gcc/tree-ssa-ccp.cc:566@releases/gcc-16.2.0": {
    "hash": "f938ad2256a87ad7",
    "text": "      if (dump_file && (dump_flags & TDF_DETAILS))"
@@ -739,6 +811,14 @@
    "hash": "c6f844c20c9a234a",
    "text": "analyze_and_mark_doloop_use (struct ivopts_data *data)"
   },
+  "gcc/tree-ssa-propagate.cc:484@releases/gcc-16.2.0": {
+   "hash": "e7a16be38cc74d10",
+   "text": "\t  if (dump_file && (dump_flags & TDF_DETAILS))"
+  },
+  "gcc/tree-ssa-propagate.cc:486@releases/gcc-16.2.0": {
+   "hash": "d3afc00bf95aba71",
+   "text": "\t      fprintf (dump_file, \"\\nSimulating statement: \");"
+  },
   "gcc/tree-ssanames.cc:351@releases/gcc-16.2.0": {
    "hash": "8d4a46c239a088be",
    "text": "make_ssa_name_fn (struct function *fn, tree var, gimple *stmt,"
@@ -750,6 +830,10 @@
   "gcc/tree.def:1035@releases/gcc-16.2.0": {
    "hash": "827ae1b1416647b6",
    "text": "DEFTREECODE (SSA_NAME, \"ssa_name\", tcc_exceptional, 0)"
+  },
+  "gcc/tree.def:295@releases/gcc-16.2.0": {
+   "hash": "2a35532da92cb72b",
+   "text": "DEFTREECODE (INTEGER_CST, \"integer_cst\", tcc_constant, 0)"
   },
   "gcc/tree.def:41@releases/gcc-16.2.0": {
    "hash": "a5ae4c9e706bdc62",

@@ -152,6 +152,40 @@ READING = Group(
 )
 
 
+FINDING = Group(
+    "Finding things in the tree",
+    "Words about the source tree itself rather than about compiling. Z02 is the lesson, and these three are the ones that cost a reader an afternoon if nobody tells them.",
+    (
+        Term(
+            name="generated file",
+            short="A source file that a program in the GCC tree writes during the build, rather than a file anybody wrote.",
+            long="A dozen programs under `gcc/` whose names start with `gen` read the machine descriptions, `match.pd`, the `.opt` files and the `GTY` markers, and write C++ into the build directory. `insn-recog.cc` is the biggest of them and can run to hundreds of thousands of lines. The consequence is that a backtrace or a dump line can name a file that is not in the tree at all, and searching for it finds nothing. The route is to work out which generator wrote it and read that generator's input, which is where the change you want to make actually goes. `gxray.layout.generated` will do the lookup for you.",
+            cite="gcc/genrecog.cc:21@releases/gcc-16.2.0",
+            also=("`insn-recog.cc`", "`gimple-match-N.cc`", "`options.cc`"),
+            see=("machine description", "gengtype"),
+            met="Z02",
+        ),
+        Term(
+            name="port",
+            short="Everything GCC needs in order to emit code for one target, which is one directory under `gcc/config` with a machine description in it.",
+            long="The count everybody quotes is the number of directories under `gcc/config`, and it is wrong, because three of those directories are shared operating system support rather than targets. What makes a port a port is a `.md` file. A real port is that machine description plus a `target.cc` full of hooks, a `target.h` of macros, an `.opt` file of target specific flags, and usually a pile of built in function definitions. `gcc/config/aarch64` and `gcc/config/i386` are the two most actively worked on and are both worth a look for how differently two people can solve the same problem.",
+            also=("target", "back end for a target"),
+            see=("machine description", "back end", "target hook"),
+            met="Z02",
+        ),
+        Term(
+            name="target hook",
+            short="A function pointer the middle end calls when the answer depends on the target, filled in by the port.",
+            long="The middle end cannot know whether an unaligned load is cheap or how arguments are passed, so wherever it needs a target's opinion it calls through `targetm`, a big struct of function pointers that every port fills in from `target-def.h`. Reading a port is mostly reading its hooks. The useful habit is the other direction: when a pass does something that looks target specific, find the `targetm.` call in it, then find that hook in the port you care about, and you are looking at the exact line that decided.",
+            cite="gcc/target.h:337@releases/gcc-16.2.0",
+            also=("`targetm`", "`TARGET_*` macro", "`target.def`"),
+            see=("port", "back end"),
+            met="Z02",
+        ),
+    ),
+)
+
+
 DRIVING = Group(
     "Driving the compiler",
     "What actually runs when you type `gcc`, and how to make it show you its work. T01 and T04 are the lessons that cover this ground.",
@@ -674,7 +708,16 @@ TEXT = Group(
 )
 
 
-GROUPS: tuple[Group, ...] = (READING, DRIVING, SHAPES, CONTROL, STATIC_SINGLE, REGISTERS, TEXT)
+GROUPS: tuple[Group, ...] = (
+    READING,
+    FINDING,
+    DRIVING,
+    SHAPES,
+    CONTROL,
+    STATIC_SINGLE,
+    REGISTERS,
+    TEXT,
+)
 
 #: Every term, flattened.
 TERMS: tuple[Term, ...] = tuple(term for group in GROUPS for term in group.terms)

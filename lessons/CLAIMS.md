@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-73 claims across 11 lessons, 4 of them not observable from a notebook.
+83 claims across 12 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -19,6 +19,21 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | a GIMPLE subclass tells is-a.h what it is with a three line function and nothing else | [`z01-16`](z01-cpp-for-reading/z01.ipynb) |
 | as_a checks with an assert that a release build removes, and dyn_cast checks always | [`z01-20`](z01-cpp-for-reading/z01.ipynb) |
 | twelve of the forty lines of get_default_value carry a construct, of five kinds | [`z01-35`](z01-cpp-for-reading/z01.ipynb) |
+
+## How to be lost in four and a half million lines, productively
+
+| Claim | Proved by |
+| --- | --- |
+| three quarters of the source in the GCC tree is under gcc/, and the rest is libraries that ship alongside the compiler | [`z02-04`](z02-where-things-are/z02.ipynb) |
+| the middle end has no directory of its own and sits loose in gcc/ | [`z02-07`](z02-where-things-are/z02.ipynb) |
+| the compiler proper is about four and a half million lines, and the tests are seven tenths of that in fourteen times as many files | [`z02-10`](z02-where-things-are/z02.ipynb) |
+| there is exactly one .pd file in the whole tree and it is match.pd | [`z02-13`](z02-where-things-are/z02.ipynb) |
+| three directories under gcc/config are not ports and have no machine description | [`z02-20`](z02-where-things-are/z02.ipynb) |
+| the file named in an Applying pattern message does not exist in the source tree | [`z02-23`](z02-where-things-are/z02.ipynb) |
+| every pass in passes.def resolves to a file and to a dump name | [`z02-32`](z02-where-things-are/z02.ipynb) |
+| the Simulating statement line in a ccp dump is not printed by tree-ssa-ccp.cc | [`z02-35`](z02-where-things-are/z02.ipynb) |
+| Removing basic block arrived with the entire GIMPLE and SSA middle end, in one commit | [`z02-38`](z02-where-things-are/z02.ipynb) |
+| the largest file under gcc/ is a hand written parser and not generated at all | [`z02-41`](z02-where-things-are/z02.ipynb) |
 
 ## What does gcc actually run?
 
