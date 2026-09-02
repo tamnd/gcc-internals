@@ -30,6 +30,7 @@ so a still from a video and a live widget look like the same project.
 
 from gxwidgets.asmlisting import AsmListing
 from gxwidgets.base import Widget, live
+from gxwidgets.cfgview import CFGView
 from gxwidgets.flagdiff import FlagDiff
 from gxwidgets.html import STYLESHEET
 from gxwidgets.irladder import IRLadder
@@ -43,6 +44,7 @@ from gxwidgets.targetcompare import TargetCompare
 __all__ = [
     "STYLESHEET",
     "AsmListing",
+    "CFGView",
     "FlagDiff",
     "GateError",
     "IRLadder",

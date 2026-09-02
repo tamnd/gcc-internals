@@ -14,9 +14,10 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxray import asm, corpus_store, gimple, locs, mdesc, options, passes, regalloc, rtl
+from gxray import asm, cfg, corpus_store, gimple, locs, mdesc, options, passes, regalloc, rtl
 from gxwidgets import (
     AsmListing,
+    CFGView,
     FlagDiff,
     IRLadder,
     PassTape,
@@ -152,9 +153,14 @@ def build(entry: str = "l1-O2") -> str:
         function=f.name,
     )
 
+    # The graph dump is a `.dot` file beside the tree dumps rather than a dump the GIMPLE
+    # parser can read, so it is picked out by name and handed to the parser that reads dot.
+    graphs = cfg.parse(record.dump_texts["tree-ssa-graph"])
+
     widgets = [
         PassTape(pipeline, dumps=dumps, function=f.name, options=" ".join(record.args)),
         IRLadder(ladder),
+        CFGView(graphs[f.name]),
         RTXTree(rtl.parse(record.dump_texts["rtl-expand"], entry).only()),
         SSAWeb(f, name=SSAWeb(f).names[0]),
         PredictGate(

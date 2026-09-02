@@ -17,9 +17,10 @@ from pathlib import Path
 
 import pytest
 
-from gxray import corpus_store, gimple, locs, options, passes, rtl
+from gxray import cfg, corpus_store, gimple, locs, options, passes, rtl
 from gxray.rtl import Rtx
 from gxwidgets import (
+    CFGView,
     FlagDiff,
     GateError,
     IRLadder,
@@ -36,6 +37,7 @@ from gxwidgets import (
     state,
     targetcompare,
 )
+from gxwidgets.html import count_of
 from gxwidgets.ssaweb import INLINE_LIMIT
 
 CORPUS = Path(__file__).resolve().parent.parent / "corpora" / "dumps" / "l1-O2.json"
@@ -119,6 +121,23 @@ def targets():
     from gxwidgets.__main__ import targetcompare as four
 
     return four()
+
+
+@pytest.fixture
+def flow(loops_graph):
+    """A switch and two nested loops, which puts every routing case in one drawing.
+
+    Straight drops, an edge that skips four rows, a self loop, and the way back round the
+    outer loop from nine rows down. `l1.c` has one loop and nothing else, so it would leave
+    most of the layout untested.
+    """
+    return CFGView(cfg.parse(loops_graph)["g"])
+
+
+@pytest.fixture
+def l1_flow(recorded):
+    """L1 as it enters SSA. No profile counts and plenty of debug markers."""
+    return CFGView(cfg.parse(recorded["dumps"]["tree-ssa-graph"])["f"])
 
 
 @pytest.fixture
@@ -917,12 +936,193 @@ def test_nothing_recorded_is_a_sentence_rather_than_a_crash():
     assert "No target was recorded." in TargetCompare({}).render()
 
 
+# The control flow graph
+
+
+def test_the_graph_opens_on_the_first_block_with_code_in_it(flow):
+    """ENTRY is first in every graph and has nothing in it, so opening there shows nothing."""
+    assert flow.graph.indices[0] == cfg.ENTRY
+    assert flow.view["at"] == "2"
+
+
+def test_a_block_number_that_is_not_in_the_graph_is_dropped(loops_graph):
+    """A stale link should land somewhere useful rather than on an empty panel."""
+    graph = cfg.parse(loops_graph)["g"]
+    assert CFGView(graph, at=99).view["at"] == "2"
+    assert CFGView(graph, at=7).view["at"] == "7"
+
+
+def test_every_block_is_a_button_and_exactly_one_of_them_is_current(flow):
+    nodes = re.findall(r"<g [^>]*class=\"gx-node\"[^>]*>", flow.body())
+    assert len(nodes) == len(flow.graph.blocks)
+    assert [n for n in nodes if 'aria-current="true"' in n] == [
+        n for n in nodes if 'data-cell="2"' in n
+    ]
+
+
+def test_only_the_panel_for_the_selected_block_is_showing(flow):
+    panels = re.findall(r'<div [^>]*role="tabpanel"[^>]*>', flow.body())
+    assert len(panels) == len(flow.graph.blocks)
+    assert [p for p in panels if "hidden" not in p] == [p for p in panels if 'data-panel="2"' in p]
+
+
+def test_the_drawing_has_one_line_per_edge(flow):
+    assert flow.render().count('class="gx-arc"') == len(flow.graph.edges)
+
+
+def test_no_two_blocks_land_on_top_of_each_other(flow):
+    boxes = list(flow.boxes.values())
+    for n, a in enumerate(boxes):
+        for b in boxes[n + 1 :]:
+            apart = a.right <= b.x or b.right <= a.x or a.bottom <= b.y or b.bottom <= a.y
+            assert apart, f"{a.index} and {b.index} overlap"
+
+
+def test_every_edge_leaves_the_bottom_of_a_block_and_arrives_at_the_top(flow):
+    """A drawing where some arrows come out of the side is one where the reader has to
+    work out which end is which before they can read anything else."""
+    for n, edge in enumerate(flow.graph.edges):
+        (sx, sy), (dx, dy) = flow.points(n)[0], flow.points(n)[-1]
+        src, dst = flow.boxes[edge.src], flow.boxes[edge.dst]
+        assert sy == src.bottom and src.x < sx < src.right
+        assert dy == dst.y and dst.x < dx < dst.right
+
+
+def test_two_edges_out_of_one_block_leave_from_two_different_places(flow):
+    """Otherwise the fork at the bottom of a test looks like one line, which is the one
+    thing about a branch a reader has to be able to see."""
+    for index in flow.graph.indices:
+        out = [n for n, e in enumerate(flow.graph.edges) if e.src == index]
+        starts = {flow.points(n)[0] for n in out}
+        assert len(starts) == len(out)
+
+
+def test_a_long_edge_goes_round_the_side_rather_than_through_a_block(flow):
+    """The reason the side lanes exist. Every corner of an edge that is not a straight drop
+    to the next row is either in a clear strip between two rows or out in a lane."""
+    for n, edge in enumerate(flow.graph.edges):
+        if flow.route(edge) == "down":
+            continue
+        for x, y in flow.points(n)[1:-1]:
+            for box in flow.boxes.values():
+                inside = box.x < x < box.right and box.y < y < box.bottom
+                assert not inside, f"edge {edge.src} to {edge.dst} crosses {box.index}"
+
+
+def test_the_way_back_round_a_loop_gets_a_doubled_arrowhead(flow):
+    """Colour on a one pixel line is the least readable channel there is, so the palette
+    puts the difference in the head of the arrow instead."""
+    out = flow.render()
+    back = [e for e in flow.graph.edges if e.kind == "back"]
+    assert back
+    assert out.count(f"url(#{flow.id}-tip2)") == len(back)
+
+
+def test_an_abnormal_edge_is_dotted_and_not_only_a_different_colour(setjmp_graph):
+    view = CFGView(cfg.parse(setjmp_graph)["k"])
+    out = view.render()
+    odd = [e for e in view.graph.edges if e.kind == "abnormal"]
+    assert odd
+    assert out.count('stroke-dasharray="2 3"') == len(odd)
+
+
+def test_the_two_ways_out_of_a_test_are_told_apart_by_a_letter(flow):
+    labels = re.findall(r'class="gx-arc-label"[^>]*>([^<]*)<', flow.render())
+    assert any(text.startswith("T ") for text in labels)
+    assert any(text.startswith("F ") for text in labels)
+
+
+def test_a_certainty_is_not_written_out_as_a_percentage(flow):
+    """A hundred per cent on every fallthrough is noise, and there are a lot of them."""
+    labels = re.findall(r'class="gx-arc-label"[^>]*>([^<]*)<', flow.render())
+    assert "100%" not in " ".join(labels)
+
+
+def test_a_label_sits_under_the_block_the_edge_leaves(flow):
+    """Rather than halfway along, where a long edge is passing a block it has nothing to
+    do with and the reader reads the label as belonging to that one."""
+    for n, edge in enumerate(flow.graph.edges):
+        (_, sy), _ = flow.ends[n]
+        assert sy == flow.boxes[edge.src].bottom
+
+
+def test_how_often_a_block_runs_is_said_against_one_call(flow):
+    """GCC's counts are guesses scaled to a big round number at the entry, so the only
+    honest thing to print is one block measured against another."""
+    assert flow.often(2) == "once per call"
+    assert flow.often(8) == "about 65 times per call"
+    assert flow.often(6) == "on about 25% of calls"
+
+
+def test_a_graph_with_no_counts_in_it_says_nothing_about_how_often(l1_flow):
+    assert l1_flow.base is None
+    assert all(l1_flow.often(i) == "" for i in l1_flow.graph.indices)
+    assert "per call" not in l1_flow.render()
+
+
+def test_the_panel_counts_the_debug_markers_apart_from_the_statements(l1_flow):
+    """A block recorded with -g is half markers, and folding them into the count makes a
+    three statement block look like an eight statement one."""
+    block = l1_flow.graph.blocks[2]
+    assert len(block.lines) > len(block.code)
+    out = l1_flow.render()
+    assert f"<span>{count_of(len(block.code), 'statement')}</span>" in out
+    assert f"<span>plus {count_of(len(block.lines) - len(block.code), 'debug marker')}" in out
+
+
+def test_entry_and_exit_are_a_short_box_with_no_statement_count(flow):
+    for index in (cfg.ENTRY, cfg.EXIT):
+        assert flow.boxes[index].h < flow.boxes[2].h
+        assert "no code in it" in flow._label(index)
+    assert "somewhere to come from and somewhere to go" in flow.render()
+
+
+def test_an_empty_block_says_why_gcc_kept_it():
+    """A block with nothing in it looks like a bug in the drawing until somebody says it
+    is not, and the reason is a real thing about SSA worth two sentences."""
+    graph = cfg.CFG(
+        function="f",
+        blocks={0: cfg.Block(0), 1: cfg.Block(1), 2: cfg.Block(2, ("x_1 = 0;",)), 3: cfg.Block(3)},
+        edges=(cfg.Edge(0, 2), cfg.Edge(2, 3), cfg.Edge(3, 1)),
+    )
+    assert "a PHI argument is tied to the edge it arrived on" in CFGView(graph, at=3).render()
+
+
+def test_the_summary_says_the_shape_of_the_graph_in_words(flow):
+    assert flow.described == (
+        "The control flow graph of g: 13 blocks, 19 edges, and 2 loops. Every block is a button."
+    )
+    assert f'aria-label="{flow.described}"' in flow.render()
+
+
+def test_every_block_gets_the_glyph_and_one_of_them_gets_the_fill(flow):
+    """The selected block is marked by a character as well as by colour, and the character
+    is on every block so that clicking moves it with no runtime and nothing rerendered."""
+    out = flow.render()
+    assert out.count('class="gx-mark"') == len(flow.graph.blocks)
+    assert '.gx-flow .gx-node[aria-current="true"] .gx-mark { display: block; }' in out
+
+
+def test_the_whole_graph_is_readable_with_no_javascript(flow):
+    out = flow.render()
+    for block in flow.graph.blocks.values():
+        assert html.esc(block.name) in out
+    for line in flow.graph.blocks[3].code:
+        assert html.esc(line.strip()) in out
+
+
+def test_the_text_fallback_lists_both_ends_of_every_edge(flow):
+    text = flow._text()
+    assert text.count("  in ") == len(flow.graph.edges)
+    assert text.count("  out") == len(flow.graph.edges)
+
+
 # What every widget has to do
 
 
 @pytest.fixture
-def every(tape, ssa, gate, rungs, grid, tree, targets):
-    return [tape, rungs, SSAWeb(ssa, "s_1"), gate, grid, tree, targets]
+def every(tape, ssa, gate, rungs, grid, tree, targets, flow):
+    return [tape, rungs, SSAWeb(ssa, "s_1"), gate, grid, tree, targets, flow]
 
 
 def test_every_widget_renders_standalone(every):
@@ -968,7 +1168,7 @@ def test_the_demo_page_builds_from_the_recorded_corpus():
 
     page = build()
     assert page.startswith("<!doctype html>")
-    for kind in ("passtape", "ssaweb", "predictgate"):
+    for kind in ("passtape", "ssaweb", "cfgview", "predictgate"):
         assert f'data-gx="{kind}"' in page
     assert "attach();" in page
 

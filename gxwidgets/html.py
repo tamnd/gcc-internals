@@ -53,6 +53,11 @@ def join(parts: list[str], sep: str = "") -> str:
     return sep.join(p for p in parts if p)
 
 
+def count_of(n: int, word: str) -> str:
+    """`1 use`, `2 uses`. Small, and the alternative is prose that reads like a machine."""
+    return f"{n} {word}" if n == 1 else f"{n} {word}s"
+
+
 def legend(items: list[tuple[str, str, str]]) -> str:
     """The key, as (glyph, css class, what it means).
 
@@ -327,6 +332,27 @@ STYLESHEET = f""":root {{
 .gx-web .tick {{ fill: currentColor; font-size: 10px; }}
 .gx-web .row-header {{ fill: var(--gx-unknown-ink); }}
 .gx-web .hit {{ fill: currentColor; font-weight: 700; }}
+
+.gx-flow {{ max-width: 100%; overflow-x: auto; display: block; }}
+.gx-flow text {{ font: 12px/1 system-ui, sans-serif; fill: var(--gx-neutral-ink); }}
+.gx-flow .gx-node {{ cursor: pointer; }}
+.gx-flow .gx-node rect {{ fill: var(--gx-neutral-fill); stroke: var(--gx-unknown-fill); }}
+.gx-flow .gx-node-name {{ font-family: {MONO}; font-weight: 600; }}
+.gx-flow .gx-node-sub {{ font-size: 11px; fill: var(--gx-unknown-ink); }}
+.gx-flow .gx-node[aria-current="true"] rect {{ fill: var(--gx-focus-fill);
+  stroke: var(--gx-focus-ink); stroke-width: 2; }}
+.gx-flow .gx-node[aria-current="true"] text {{ fill: var(--gx-focus-ink); }}
+.gx-flow .gx-node rect.gx-loop {{ fill: var(--gx-changed-ink); stroke: none; }}
+.gx-flow .gx-mark {{ display: none; fill: var(--gx-focus-ink); }}
+.gx-flow .gx-node[aria-current="true"] .gx-mark {{ display: block; }}
+.gx-flow .gx-arc {{ fill: none; stroke: var(--gx-neutral-ink); stroke-width: 1.2; }}
+.gx-flow .gx-arc[data-width="thick"] {{ stroke-width: 2; }}
+.gx-flow .gx-tip {{ fill: var(--gx-neutral-ink); stroke: none; }}
+.gx-flow .gx-arc-label {{ font-family: {MONO}; font-size: 11px; fill: var(--gx-unknown-ink);
+  paint-order: stroke; stroke: var(--gx-page); stroke-width: 3px; stroke-linejoin: round; }}
+.gx-arcs {{ list-style: none; margin: 0 0 8px; padding: 0; font-size: 12px;
+  display: grid; gap: 2px; }}
+.gx-arcs code {{ font-family: {MONO}; }}
 
 .gx-columns {{ display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }}
 .gx-column {{ overflow-x: auto; max-width: 100%; }}

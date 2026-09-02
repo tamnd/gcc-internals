@@ -310,6 +310,35 @@ class CFG:
             stack.append((nxt, sorted({e.dst for e in self.successors(nxt)})))
         return list(reversed(post))
 
+    def layers(self) -> dict[int, int]:
+        """How far down the page each block goes, counted in forward edges from ENTRY.
+
+        Back edges are left out of the count on purpose. Including them makes the layer
+        number depend on how many times you are willing to go round the loop, which is not a
+        number. Reverse postorder guarantees every forward predecessor of a block is placed
+        before the block itself, so one pass is enough.
+
+        This is a fact about the graph rather than about any one drawing, which is why it
+        lives here: the animation and the widget lay their blocks out the same way, and a
+        reader who has seen one recognises the other.
+        """
+        order = self.reverse_postorder()
+        rank = {b: n for n, b in enumerate(order)}
+        layer: dict[int, int] = {}
+        for block in order:
+            above = [
+                e.src
+                for e in self.predecessors(block)
+                if e.src in layer and rank.get(e.src, -1) < rank[block]
+            ]
+            layer[block] = max((layer[p] + 1 for p in above), default=0)
+        # Anything ENTRY cannot reach still has to go somewhere, and the bottom is honest
+        # about it: nothing above it points at it.
+        bottom = max(layer.values(), default=0) + 1
+        for block in sorted(self.blocks):
+            layer.setdefault(block, bottom)
+        return layer
+
     def depth_of(self, index: int) -> int:
         """How deep in the dominator tree a block sits, with ENTRY at zero."""
         idom = self.dominators()
