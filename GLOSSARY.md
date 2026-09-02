@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [loop](#loop) | [machine mode](#machine-mode) | [middle end](#middle-end) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [pseudo register](#pseudo-register) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
 
 ## Driving the compiler
 
@@ -186,6 +186,38 @@ It is the hinge of the whole compiler and it is not reversible: after expand the
 
 First met in T07. See also [GIMPLE](#gimple), [RTL](#rtl). In the source: [`gcc/cfgexpand.cc:7015@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/cfgexpand.cc#L7015).
 
+### RTX
+
+**One node of RTL. A code, a machine mode, and some operands.**
+
+Every parenthesis you see in an RTL dump is one of these and they are all the same C struct, which is why the dumps look so uniform. The code says what kind of thing it is, `plus` or `reg` or `set`, and it is one of 203 codes listed in one file. There is no separate type for an instruction and an expression: an insn is an RTX whose code happens to be `insn`.
+
+Also written `rtx`, `rtx_def`. First met in T07. See also [RTL](#rtl), [machine mode](#machine-mode), [insn](#insn). In the source: [`gcc/rtl.h:319@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/rtl.h#L319).
+
+### machine mode
+
+**The size and kind of a value, written after the colon in a dump.**
+
+`SI` is four bytes of integer, `DI` is eight, `QI` is one, and the letters are historical rather than descriptive. Every RTX carries one, including ones where it means nothing, and the mode is what stops the back end from having to look at a type. `CC` and its variants are the odd ones: they are the mode of a condition code, and what a target keeps in one is up to the target.
+
+Also written `SImode`, `machine_mode`. First met in T07. See also [RTX](#rtx), [RTL](#rtl). In the source: [`gcc/machmode.def:211@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/machmode.def#L211).
+
+### pseudo register
+
+**A register the compiler invented, numbered from the first free number up.**
+
+Expand pretends the machine has as many registers as it wants and hands them out in order, so the numbers you see in an early dump are a counter and nothing more. The pretence is deliberate: it lets expand pick instructions without also solving register allocation, and it lasts until the allocator runs about twenty passes later. Where the numbering starts is a target's business, which is why the same program starts at 98 on one machine and 134 on another.
+
+Also written `gen_reg_rtx`, virtual register. First met in T07. See also [RTX](#rtx), [expand](#expand), [back end](#back-end). In the source: [`gcc/emit-rtl.cc:1188@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/emit-rtl.cc#L1188).
+
+### insn
+
+**One entry in the chain of things the function will do, in order.**
+
+After expand a function is a doubly linked list of these rather than a graph of blocks, though the blocks are still recorded on the side. Most entries are not instructions at all: notes, labels and debug entries share the chain, and in a small function they outnumber the real work. The spelling is missing a vowel because it is older than filenames that could hold one.
+
+Also written `rtx_insn`. First met in T07. See also [RTX](#rtx), [RTL](#rtl), [basic block](#basic-block). In the source: [`gcc/rtl.def:145@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/rtl.def#L145).
+
 ## The shape of a function
 
 Blocks, edges and the questions you can ask about them. T05 needs the first four of these, G02 and G03 go deeper.
@@ -246,7 +278,7 @@ The one idea that makes the middle end tractable, and the vocabulary that comes 
 
 **Static Single Assignment. Every name is assigned exactly once in the text of the function.**
 
-A variable that was written three times becomes three separate names. That sounds like bookkeeping and it is actually the thing that makes optimisation possible, because once a name has one definition, finding that definition is a pointer dereference rather than a search. Static is the load bearing word: a definition inside a loop runs many times, it just appears once.
+A variable that was written three times becomes three separate names. That sounds like bookkeeping and it is actually the thing that makes optimisation possible, because once a name has one definition, finding that definition is a pointer dereference rather than a search. Static is the load bearing word: a definition inside a loop runs many times and appears once.
 
 First met in T05. See also [SSA name](#ssa-name), [phi node](#phi-node), [out of SSA](#out-of-ssa). In the source: [`gcc/tree.def:1035@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/tree.def#L1035).
 

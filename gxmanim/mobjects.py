@@ -14,6 +14,7 @@ Four of them here:
     phi_node    one PHI, its incoming values, and where each came from
     cfg_view    the control flow graph, with GCC's own edges
     dom_tree    which block has to run before which
+    rtx_tree    one RTL insn's pattern, put back into the tree it was printed from
 
 `ssa_web` and `phi_node` deliberately draw data flow and not control flow. Blocks are laid
 out in index order down the page and the interesting lines are the threads between the
@@ -24,11 +25,14 @@ and a graph built from it is missing every fallthrough.
 
 from __future__ import annotations
 
+from itertools import count
+
 from gxmanim.primitives import GAP, Badge, Block, Card, Cell, Edge, Node, Rung, Thread
 from gxmanim.scene import Scene
 from gxray.cfg import CFG, ENTRY
 from gxray.gimple import Function, Phi, Stmt
 from gxray.locs import LEVEL_NAMES, LEVELS, Ladder, strip_locs
+from gxray.rtl import Insn, Rtx
 from gxray.tape import Cell as TapeCell
 
 # Where the first shape goes. The left margin has to leave room for a def-use thread, which
@@ -426,8 +430,68 @@ def dom_tree(graph: CFG) -> Scene:
     return scene
 
 
-# A tree, so the eighth primitive has a caller. Small on purpose: the real tree mobject that
-# is still missing is RTXTree, which wants an RTL parser nothing in the toolkit has yet.
+# Trees
+
+
+def rtx_tree(insn: Insn, width: int = 24) -> Scene:
+    """One insn's pattern as a tree, which is what it was before the printer flattened it.
+
+    An RTX prints as an s-expression and reads as a wall of brackets, and the only reason it
+    is hard to read is that the printer put a tree on one line. Putting it back is the whole
+    drawing. Nothing here interprets anything: the text on a node is the code, its flags and
+    its mode exactly as the dump spelled them, and the operands that are not nodes hang off
+    their parent as leaves so that a register number is visibly not a node.
+
+    The roles carry the one distinction that matters at expand time. A pseudo is `unknown`,
+    because which hard register it ends up in has not been decided and will not be for
+    another twenty passes. A hard register and a literal are `constant`, because they are
+    already the final answer.
+    """
+    counter = count()
+
+    def convert(node: Rtx, root: bool = False) -> Node:
+        kids = [
+            Node(text=one_line(leaf, width), role=_leaf_role(node), id=f"x{next(counter)}")
+            for leaf in node.leaves
+        ]
+        kids += [convert(k) for k in node.children]
+        return Node(
+            text=one_line(node.head, width),
+            role="focus" if root else "neutral",
+            id=f"x{next(counter)}",
+            children=tuple(kids),
+        )
+
+    if insn.pattern is None:
+        scene = Scene(title=f"{insn.code} {insn.uid}")
+        scene.caption = (
+            "This entry has no pattern. It is a marker in the chain, not an instruction."
+        )
+        return scene
+
+    scene = tree(convert(insn.pattern, root=True))
+    scene.title = f"{insn.code} {insn.uid}, opened up"
+    leaves = sum(len(n.leaves) for n in insn.pattern.walk())
+    matched = (
+        f"matched by {insn.name}"
+        if insn.name
+        else "matched"
+        if insn.recognised
+        else "no pattern has matched it yet"
+    )
+    scene.caption = (
+        f"{insn.pattern.size} nodes and {leaves} operands that are not nodes, "
+        f"{insn.pattern.depth} deep, {matched}. "
+        "Every node is a code, a mode and some operands, and nothing else."
+    )
+    return scene
+
+
+def _leaf_role(parent: Rtx) -> str:
+    """What an operand that is not a node counts as, which depends on what holds it."""
+    if parent.code == "reg":
+        return "unknown" if parent.pseudo else "constant"
+    return "constant" if parent.code.startswith("const") else "neutral"
 
 
 def tree(root: Node, gap: int = 18) -> Scene:
@@ -487,6 +551,7 @@ __all__ = [
     "one_line",
     "pass_tape",
     "phi_node",
+    "rtx_tree",
     "ssa_web",
     "tree",
 ]

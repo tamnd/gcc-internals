@@ -17,7 +17,8 @@ from pathlib import Path
 
 import pytest
 
-from gxray import corpus_store, gimple, locs, options, passes
+from gxray import corpus_store, gimple, locs, options, passes, rtl
+from gxray.rtl import Rtx
 from gxwidgets import (
     FlagDiff,
     GateError,
@@ -25,11 +26,15 @@ from gxwidgets import (
     Option,
     PassTape,
     PredictGate,
+    RTXTree,
     SSAWeb,
+    TargetCompare,
     Widget,
     html,
+    rtxtree,
     script,
     state,
+    targetcompare,
 )
 from gxwidgets.ssaweb import INLINE_LIMIT
 
@@ -90,6 +95,30 @@ def tables():
 @pytest.fixture
 def grid(tables):
     return FlagDiff(tables)
+
+
+@pytest.fixture
+def expand(recorded):
+    """L1 at the moment it becomes RTL, from the pinned local compiler."""
+    return rtl.parse(recorded["dumps"]["rtl-expand"], "l1-O2").only()
+
+
+@pytest.fixture
+def tree(expand):
+    return RTXTree(expand)
+
+
+@pytest.fixture
+def x86():
+    return rtl.parse(corpus_store.load("t07-x86-64").dump_texts["rtl-expand"]).only()
+
+
+@pytest.fixture
+def targets():
+    """The four Compiler Explorer recordings T07 puts side by side."""
+    from gxwidgets.__main__ import targetcompare as four
+
+    return four()
 
 
 @pytest.fixture
@@ -655,12 +684,245 @@ def test_a_column_with_a_hole_in_it_says_so_in_words(grid):
     assert "-ftree-loop-vectorize, first on at -O2, and off again at -Os, -Oz, -Og" in out
 
 
+# The RTX tree
+
+
+def test_the_tree_opens_the_first_ten_entries_and_says_how_many_there_are(tree, expand):
+    out = tree.render()
+    assert len(tree.insns) == 10
+    assert f"first 10 of {len(expand)} entries" in out
+    assert f"{len(expand.code)} in the whole function" in out
+
+
+def test_the_first_ten_entries_are_mostly_not_instructions(tree):
+    """The count is the point of the widget's first paragraph, so it is pinned here."""
+    kinds = [rtxtree.kind_of(i) for i in tree.insns]
+    assert kinds.count("code") == 1
+    assert kinds.count("debug") == 6
+    assert kinds.count("other") == 3
+
+
+def test_every_entry_carries_the_kind_the_filter_reads(tree):
+    for insn in tree.insns:
+        assert f'data-cell="{insn.uid}" data-panel="{insn.uid}"' in tree.render()
+        assert f'data-kind="{rtxtree.kind_of(insn)}"' in tree.render()
+
+
+def test_filtering_to_code_leaves_only_what_becomes_an_instruction(tree):
+    tree.view["kind"] = "code"
+    assert [i.uid for i in tree.shown] == [2]
+    assert 'data-value="code" aria-pressed="true"' in tree.render()
+
+
+def test_a_filter_that_matches_nothing_says_so(expand):
+    short = RTXTree(expand, limit=1)
+    short.view["kind"] = "debug"
+    assert short.shown == []
+    assert "No entry matches this filter." in short.render()
+
+
+def test_the_selected_entry_is_the_only_open_panel(tree):
+    out = tree.render()
+    assert out.count('role="tabpanel"') == 10
+    assert out.count(" hidden>") == 9
+
+
+def test_the_header_names_every_field_in_front_of_the_pattern(tree, expand):
+    tree.insns, tree.view["at"] = [expand.at(21)], "21"
+    out = tree.render()
+    for note in (
+        "its uid, which never gets reused",
+        "the uid before it",
+        "the uid after it, 0 for the last one",
+        "the block it is in",
+        "where in the source it came from",
+        "the machine description pattern",
+    ):
+        assert note in out
+    assert "l1.c:7:7" in out
+
+
+def test_an_unmatched_insn_says_so_rather_than_printing_minus_one(tree, expand):
+    tree.insns, tree.view["at"] = [expand.at(21)], "21"
+    assert "-1, nothing has matched it yet" in tree.render()
+
+
+def test_a_matched_insn_names_the_pattern_that_claimed_it(tree, expand):
+    tree.insns, tree.view["at"] = [expand.at(16)], "16"
+    assert "59, aarch64_bcond" in tree.render()
+
+
+def test_a_marker_says_it_has_no_pattern_rather_than_rendering_an_empty_tree(tree, expand):
+    note = next(i for i in expand if i.code == "note")
+    tree.insns, tree.view["at"] = [note], str(note.uid)
+    assert "This entry is a marker in the chain" in tree.render()
+
+
+def test_the_three_columns_are_what_it_is_how_wide_and_what_it_means(tree, expand):
+    tree.insns, tree.view["at"] = [expand.at(21)], "21"
+    out = tree.render()
+    assert '<code class="gx-rtx-head">plus:SI</code>' in out
+    assert "single integer, four bytes" in out
+    assert "put the right hand side into the left hand side" in out
+
+
+def test_a_flag_on_a_node_is_spelled_out(tree, expand):
+    tree.insns, tree.view["at"] = [expand.at(21)], "21"
+    assert "/v a register the user declared" in tree.render()
+
+
+def test_a_register_number_says_who_chose_it(tree, expand):
+    tree.insns, tree.view["at"] = [expand.at(38)], "38"
+    out = tree.render()
+    assert "a number the target chose" in out
+    tree.insns, tree.view["at"] = [expand.at(21)], "21"
+    assert "invented by the expander" in tree.render()
+
+
+def test_a_condition_code_mode_is_not_in_the_table_and_is_still_explained():
+    assert rtxtree.mode_note("CC").startswith("a condition code,")
+    assert "the NO part of it" in rtxtree.mode_note("CCNO")
+    assert rtxtree.mode_note("") == ""
+    assert rtxtree.mode_note("V4SI") == "a mode this widget has no note for"
+
+
+def test_the_reading_is_a_sentence_a_person_can_say(expand):
+    assert rtxtree.english(expand.at(21).pattern) == (
+        "pseudo 102, holding <retval> becomes pseudo 102, holding <retval> "
+        "plus pseudo 101, holding i"
+    )
+    assert rtxtree.english(expand.at(16).pattern) == (
+        "the program counter becomes label 45 if register cc is less than or equal to 0, "
+        "otherwise the program counter"
+    )
+
+
+def test_a_parallel_reads_as_two_things_happening_at_once(x86):
+    """This is the insn T07's boss fight asks about, so the wording is pinned."""
+    assert rtxtree.english(x86.at(21).pattern) == (
+        "all at once: pseudo 99, holding <retval> becomes pseudo 99, holding <retval> "
+        "plus pseudo 98, holding i; register flags gets destroyed"
+    )
+
+
+def test_a_code_with_no_wording_is_named_rather_than_guessed_at():
+    node = Rtx(code="vec_concat", mode="V4SI", operands=(Rtx(code="pc"),))
+    assert rtxtree.english(node) == "vec_concat: the program counter"
+    assert rtxtree.english(Rtx(code="vec_concat")) == "vec_concat"
+
+
+def test_the_reading_never_raises_on_a_shape_it_did_not_expect():
+    odd = [
+        Rtx(code="set"),
+        Rtx(code="plus", operands=("2",)),
+        Rtx(code="if_then_else", operands=(Rtx(code="pc"),)),
+        Rtx(code="reg", operands=()),
+        Rtx(code="const_int", operands=("not a number",)),
+        Rtx(code="label_ref"),
+        Rtx(code="symbol_ref"),
+        Rtx(code="var_location", operands=(Rtx(code="pc"),)),
+        Rtx(code=rtl.VECTOR),
+    ]
+    for node in odd:
+        assert isinstance(rtxtree.english(node), str)
+
+
+def test_a_long_pattern_is_cut_rather_than_wrapped(expand):
+    line = rtxtree.one_line(expand.at(16).pattern)
+    assert len(line) == 62
+    assert line.endswith("…")
+    assert "\n" not in line
+
+
+def test_the_whole_chain_is_readable_with_no_javascript(tree):
+    out = tree.render().split("<noscript>")[1]
+    assert "note 1, a marker." in out
+    assert "insn 2, becomes an instruction." in out
+
+
+def test_a_listing_with_nothing_in_it_says_so():
+    assert "This listing has no insns in it." in RTXTree(rtl.Listing()).render()
+
+
+# The four targets
+
+
+def test_the_table_has_a_column_for_every_target(targets):
+    assert targets.targets == ["x86-64", "aarch64", "riscv64", "power64le"]
+    for name in targets.targets:
+        assert f'data-cell="{name}" data-panel="{name}"' in targets.render()
+
+
+def test_the_row_that_matters_most_is_the_one_they_all_disagree_about(targets):
+    """Four targets, four different answers about where a condition code lives."""
+    assert len({targets.facts[n]["cc"] for n in targets.targets}) == 4
+    assert targets.facts["riscv64"]["cc"] == "nowhere, this machine has no flags register"
+    assert "in a pseudo" in targets.facts["power64le"]["cc"]
+    assert targets.facts["x86-64"]["cc"].endswith("in a fixed register")
+
+
+def test_only_one_target_has_to_say_that_adding_destroys_something(targets):
+    wrecks = [n for n in targets.targets if targets.facts[n]["clobber"].startswith("yes")]
+    assert wrecks == ["x86-64"]
+
+
+def test_only_one_target_folds_the_compare_into_the_branch(targets):
+    fused = [n for n in targets.targets if targets.facts[n]["branch"].startswith("one insn")]
+    assert fused == ["riscv64"]
+
+
+def test_the_lowest_pseudo_number_is_different_on_every_target(targets):
+    """FIRST_PSEUDO_REGISTER plus the six virtual registers, and no target shares it."""
+    first = [targets.facts[n]["first"] for n in targets.targets]
+    assert first == ["98", "101", "134", "117"]
+    assert len(set(first)) == 4
+
+
+def test_a_row_they_agree_on_is_marked_as_agreement(targets):
+    assert targets.agrees("entries") is False
+    same = [k for k, _ in targetcompare.ROWS if targets.agrees(k)]
+    assert same == []
+
+
+def test_agreement_is_marked_with_a_glyph_and_not_only_a_colour():
+    one = rtl.parse(corpus_store.load("t07-x86-64").dump_texts["rtl-expand"]).only()
+    both = TargetCompare({"a": one, "b": one})
+    assert both.agrees("entries") is True
+    table = both.render().split('<table class="gx-facts-table">')[1].split("</table>")[0]
+    assert table.count('<span class="gx-chip gx-unknown">=</span>') == len(targetcompare.ROWS)
+    assert "gx-changed" not in table
+
+
+def test_each_target_lists_its_instructions_and_leaves_out_the_markers(targets):
+    out = targets.render()
+    for name, listing in targets.listings.items():
+        assert f'data-panel="{name}"' in out
+        assert len(listing.code) < len(listing)
+    assert "the notes, the labels and the debug entries are left out".capitalize()[:20] in out
+
+
+def test_powerpc_register_names_are_left_as_the_target_spells_them(targets):
+    """PowerPC prints its general registers as bare numbers. That is its spelling, not a bug."""
+    assert targets.facts["power64le"]["hard"] == "3"
+    assert targets.facts["aarch64"]["hard"] == "x0, cc"
+
+
+def test_the_picker_names_the_compiler_under_each_target(targets):
+    out = targets.render()
+    for value in targets.compilers.values():
+        assert value in out
+
+
+def test_nothing_recorded_is_a_sentence_rather_than_a_crash():
+    assert "No target was recorded." in TargetCompare({}).render()
+
+
 # What every widget has to do
 
 
 @pytest.fixture
-def every(tape, ssa, gate, rungs, grid):
-    return [tape, rungs, SSAWeb(ssa, "s_1"), gate, grid]
+def every(tape, ssa, gate, rungs, grid, tree, targets):
+    return [tape, rungs, SSAWeb(ssa, "s_1"), gate, grid, tree, targets]
 
 
 def test_every_widget_renders_standalone(every):

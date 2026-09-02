@@ -7,6 +7,10 @@
    "hash": "05175d55535c1aa8",
    "text": "struct GTY((chain_next (\"%h.next_bb\"), chain_prev (\"%h.prev_bb\"))) basic_block_def {"
   },
+  "gcc/cfgexpand.cc:6999@releases/gcc-16.2.0": {
+   "hash": "19105c53f8596444",
+   "text": "const pass_data pass_data_expand ="
+  },
   "gcc/cfgexpand.cc:7015@releases/gcc-16.2.0": {
    "hash": "06e86604448666fa",
    "text": "class pass_expand : public rtl_opt_pass"
@@ -38,6 +42,10 @@
   "gcc/dumpfile.h:522@releases/gcc-16.2.0": {
    "hash": "05363e987fec570a",
    "text": "extern FILE *dump_file;"
+  },
+  "gcc/emit-rtl.cc:1188@releases/gcc-16.2.0": {
+   "hash": "84bbfe101e0c8cbd",
+   "text": "gen_reg_rtx (machine_mode mode)"
   },
   "gcc/gcc.cc:1234@releases/gcc-16.2.0": {
    "hash": "ebb1ec3c29398f08",
@@ -86,6 +94,10 @@
   "gcc/gimplify.cc:683@releases/gcc-16.2.0": {
    "hash": "90e8955732ed66ab",
    "text": "internal_get_tmp_var (tree val, gimple_seq *pre_p, gimple_seq *post_p,"
+  },
+  "gcc/machmode.def:211@releases/gcc-16.2.0": {
+   "hash": "626fa72b1682d672",
+   "text": "INT_MODE (SI, 4);"
   },
   "gcc/opts.cc:1234@releases/gcc-16.2.0": {
    "hash": "3d8ebfd0f828d4fe",
@@ -159,13 +171,49 @@
    "hash": "ad97fac58639fa98",
    "text": "    pn = pass->name;"
   },
+  "gcc/print-rtl.cc:661@releases/gcc-16.2.0": {
+   "hash": "fa3c51ad31ca4f3a",
+   "text": "rtx_writer::print_rtx_operand (const_rtx in_rtx, int idx)"
+  },
   "gcc/rtl.def:145@releases/gcc-16.2.0": {
    "hash": "ba0d244bff7f17bb",
    "text": "DEF_RTL_EXPR(INSN, \"insn\", \"uuBeLie\", RTX_INSN)"
   },
+  "gcc/rtl.def:149@releases/gcc-16.2.0": {
+   "hash": "d144bfa7fddb8e1e",
+   "text": "DEF_RTL_EXPR(JUMP_INSN, \"jump_insn\", \"uuBeLie0\", RTX_INSN)"
+  },
+  "gcc/rtl.def:156@releases/gcc-16.2.0": {
+   "hash": "b8bc51f13487af47",
+   "text": "DEF_RTL_EXPR(CALL_INSN, \"call_insn\", \"uuBeLiee\", RTX_INSN)"
+  },
+  "gcc/rtl.h:1968@releases/gcc-16.2.0": {
+   "hash": "948ebd2b223974cc",
+   "text": "#define REG_FUNCTION_VALUE_P(RTX)\t\t\t\t\t\\"
+  },
+  "gcc/rtl.h:1972@releases/gcc-16.2.0": {
+   "hash": "a3f3ee0d7267c90f",
+   "text": "#define REG_USERVAR_P(RTX)\t\t\t\t\t\t\\"
+  },
   "gcc/rtl.h:314@releases/gcc-16.2.0": {
    "hash": "5fdc10b2e6085211",
    "text": "\t    chain_prev (\"RTX_PREV (&%h)\"))) rtx_def {"
+  },
+  "gcc/rtl.h:319@releases/gcc-16.2.0": {
+   "hash": "fce0d5c71475fe38",
+   "text": "  ENUM_BITFIELD(rtx_code) code: RTX_CODE_BITSIZE;"
+  },
+  "gcc/rtl.h:4091@releases/gcc-16.2.0": {
+   "hash": "13571ce7509d2cbd",
+   "text": "#define FIRST_VIRTUAL_REGISTER\t(FIRST_PSEUDO_REGISTER)"
+  },
+  "gcc/rtl.h:4146@releases/gcc-16.2.0": {
+   "hash": "ff1c2929691bffeb",
+   "text": "#define LAST_VIRTUAL_REGISTER\t\t((FIRST_VIRTUAL_REGISTER) + 5)"
+  },
+  "gcc/target.def:4728@releases/gcc-16.2.0": {
+   "hash": "fb01c32eb89f1656",
+   "text": "(predict_doloop_p,"
   },
   "gcc/tree-core.h:2186@releases/gcc-16.2.0": {
    "hash": "30e19987a7156896",
@@ -194,6 +242,10 @@
   "gcc/tree-ssa-ccp.cc:1183@releases/gcc-16.2.0": {
    "hash": "b6f15afde0cebcb0",
    "text": "      /* If the incoming edge is executable, Compute the meet operator for"
+  },
+  "gcc/tree-ssa-loop-ivopts.cc:8104@releases/gcc-16.2.0": {
+   "hash": "c6f844c20c9a234a",
+   "text": "analyze_and_mark_doloop_use (struct ivopts_data *data)"
   },
   "gcc/tree-ssanames.cc:351@releases/gcc-16.2.0": {
    "hash": "8d4a46c239a088be",

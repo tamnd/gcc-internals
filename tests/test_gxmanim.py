@@ -30,7 +30,7 @@ from gxmanim.primitives import (
     Thread,
 )
 from gxmanim.scene import Scene
-from gxray import cfg, gimple, locs, passes, tape
+from gxray import cfg, gimple, locs, passes, rtl, tape
 
 CORPUS = Path(__file__).resolve().parents[1] / "corpora" / "dumps" / "l1-O2.json"
 
@@ -60,6 +60,11 @@ def ladder(recorded):
         asm=recorded["asm"],
         function="f",
     )
+
+
+@pytest.fixture
+def expand(recorded):
+    return rtl.parse(recorded["dumps"]["rtl-expand"], "l1-O2").only()
 
 
 def parsed(scene: Scene) -> ET.Element:
@@ -450,12 +455,53 @@ def test_a_tree_puts_a_parent_over_its_children():
     assert parent.bottom < left.y
 
 
+def test_an_rtx_becomes_the_tree_it_was_printed_from(expand):
+    scene = mobjects.rtx_tree(expand.at(21))
+    said = scene.describe()
+    assert "set over reg/v:SI, plus:SI" in said
+    assert "plus:SI over reg/v:SI, reg/v:SI" in said
+    assert scene.title == "insn 21, opened up"
+
+
+def test_the_drawing_counts_the_nodes_and_the_operands_separately(expand):
+    """Eleven boxes and five of them are nodes, which is the thing the caption has to say."""
+    scene = mobjects.rtx_tree(expand.at(21))
+    assert "5 nodes and 6 operands that are not nodes, 3 deep" in scene.caption
+    assert len(scene.placed) == 11
+
+
+def test_a_pseudo_is_drawn_as_undecided_and_a_hard_register_is_not(expand):
+    roles = {p.shape.text: p.shape.role for p in mobjects.rtx_tree(expand.at(38)).placed}
+    assert roles["0"] == "constant"
+    assert roles["x0"] == "constant"
+    roles = {p.shape.text: p.shape.role for p in mobjects.rtx_tree(expand.at(21)).placed}
+    assert roles["102"] == "unknown"
+    assert roles["101"] == "unknown"
+
+
+def test_the_root_of_the_pattern_is_what_the_drawing_is_about(expand):
+    scene = mobjects.rtx_tree(expand.at(21))
+    focus = [p.shape for p in scene.placed if p.shape.role == "focus"]
+    assert [f.text for f in focus] == ["set"]
+
+
+def test_a_recognised_insn_names_the_pattern_that_claimed_it(expand):
+    assert "matched by aarch64_bcond" in mobjects.rtx_tree(expand.at(16)).caption
+
+
+def test_an_entry_with_no_pattern_draws_nothing_and_says_why(expand):
+    note = next(i for i in expand if i.code == "note")
+    scene = mobjects.rtx_tree(note)
+    assert scene.placed == []
+    assert "It is a marker in the chain, not an instruction." in scene.caption
+
+
 def test_a_tree_node_without_an_id_cannot_be_linked_to():
     with pytest.raises(ValueError, match="reg:SI 103"):
         mobjects.tree(Node("set", id="a", children=(Node("reg:SI 103"),)))
 
 
-def test_every_mobject_draws(fn, graph, ladder, passes_text):
+def test_every_mobject_draws(fn, graph, ladder, passes_text, recorded):
     """A scene that will not render is a bug in the layout and not in the renderer, and it
     is worth finding here rather than the first time a lesson tries to use one."""
     phi = next(p for b in fn.ordered_blocks for p in b.phis)
@@ -467,6 +513,7 @@ def test_every_mobject_draws(fn, graph, ladder, passes_text):
         mobjects.cfg_view(graph),
         mobjects.dom_tree(graph),
         mobjects.tree(Node("set", id="a", children=(Node("reg:SI 103", id="b"),))),
+        mobjects.rtx_tree(rtl.parse(recorded["dumps"]["rtl-expand"]).only().at(21)),
     ]
     for scene in scenes:
         assert ET.fromstring(svg.document(scene)) is not None
