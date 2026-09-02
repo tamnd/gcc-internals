@@ -104,6 +104,14 @@ configure = [
   "--without-headers",
   "--disable-libssp",
   "--disable-threads",
+  # Installing the target binutils is not enough on its own, which cost a second CI round
+  # trip to find out. The driver looks for the assembler under its own prefix, at
+  # /opt/gcc/riscv64-unknown-elf/bin/as, and the distribution package puts it under
+  # /usr/lib/riscv64-unknown-elf/bin/as. Nothing bridges those two, so the driver gives up
+  # and runs the host `as`, which is where `unknown architecture rv64gc` comes from. These
+  # two flags name the binaries outright and the driver stops searching.
+  "--with-as=/usr/bin/riscv64-unknown-elf-as",
+  "--with-ld=/usr/bin/riscv64-unknown-elf-ld",
 ]
 languages = "c"
 cflags = "-O2"

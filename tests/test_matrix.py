@@ -109,6 +109,19 @@ def test_the_triple_and_the_binutils_package_name_agree():
     assert cross.smoke.startswith(f"{target}-gcc")
 
 
+def test_a_cross_compiler_names_its_assembler_and_linker_outright():
+    """Installing the package is not enough, which cost a second round trip to learn. The
+    driver searches its own prefix for the tools and the distribution installs them under
+    another one, so it silently falls back to the host `as`."""
+    cross = FOUND["cross"]
+    named = {f.split("=", 1)[0] for f in cross.configure}
+    assert "--with-as" in named
+    assert "--with-ld" in named
+    for flag in cross.configure:
+        if flag.startswith(("--with-as=", "--with-ld=")):
+            assert flag.split("=", 1)[1].startswith("/"), flag
+
+
 def test_only_the_cross_compiler_asks_for_extra_packages():
     """Everything else belongs in the shared base, where it is installed once."""
     assert [c.id for c in FOUND.configs if c.packages] == ["cross"]

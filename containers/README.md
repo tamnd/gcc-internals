@@ -54,9 +54,18 @@ Error: unrecognized option -march=rv64gc
 
 That is not a GCC bug and it is not a bad `-march`. It is the wrong assembler. The first run of this matrix lost about half an hour to it, twice, once per architecture.
 
-The fix is the `packages` field in `matrix.toml`, which is empty for five of the six and installs `binutils-riscv64-unknown-elf` for `cross`. It is installed in two stages of the Dockerfile, the build stage and the final stage, because the final stage starts again from `base`, and an image that has it in only the first one ships a compiler that built against an assembler it no longer has.
+Fixing it takes two things, and the second one is the part that is easy to miss.
 
-The triple is `riscv64-unknown-elf` rather than the shorter `riscv64-elf` for one reason: that is the name Debian and Ubuntu package binutils under. GCC looks for `<target>-as` by exact name, so picking our own triple would mean building binutils from source too. A test asserts the target and the package name still agree.
+The first is the `packages` field in `matrix.toml`, empty for five of the six, installing `binutils-riscv64-unknown-elf` for `cross`. It goes into two stages of the Dockerfile, the build stage and the final stage, because the final stage starts again from `base`, and an image that has it in only the first one ships a compiler that built against an assembler it no longer has.
+
+That alone still fails, identically, which cost a second round trip through CI to find out. The driver does not search your `PATH` for `riscv64-unknown-elf-as`. It looks under its own prefix, at `/opt/gcc/riscv64-unknown-elf/bin/as`, and the distribution package installs to `/usr/lib/riscv64-unknown-elf/bin/as`. Nothing bridges those two directories, so the search fails and the driver falls back to plain `as`, which is the host's. Hence the second part, two configure flags that name the binaries outright and stop the search happening at all:
+
+```text
+--with-as=/usr/bin/riscv64-unknown-elf-as
+--with-ld=/usr/bin/riscv64-unknown-elf-ld
+```
+
+The triple is `riscv64-unknown-elf` rather than the shorter `riscv64-elf` for one reason: that is the name Debian and Ubuntu package binutils under. Picking our own triple would mean building binutils from source too. A test asserts the target and the package name still agree, and another asserts the assembler and linker are still named by absolute path.
 
 ## Building one yourself
 

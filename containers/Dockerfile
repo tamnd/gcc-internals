@@ -122,9 +122,19 @@ LABEL dev.gcc-internals.gcc-tag="${GCC_TAG}"
 # A build that produced a compiler which cannot compile hello world has failed, and it is
 # better to find that out here than in the job that pulled the image. The command comes
 # from matrix.toml because a cross compiler has no libc and cannot link.
+#
+# The three -print-prog-name lines before it are there because when this does fail, the
+# error you get is from whichever assembler the driver decided on, and it does not tell
+# you which one that was. Printing the resolution first turns a confusing message into an
+# obvious one, and it costs three lines in a log nobody reads when it passes.
 ARG SMOKE
 RUN set -eux; \
     printf 'int main(void){return 0;}\n' > /tmp/t.c; \
+    for tool in cc1 as ld; do \
+      for driver in /opt/gcc/bin/*gcc; do \
+        echo "${driver} ${tool} -> $("${driver}" -print-prog-name="${tool}")"; \
+      done; \
+    done; \
     sh -c "${SMOKE}"; \
     rm -f /tmp/t.c /tmp/t /tmp/t.o
 
