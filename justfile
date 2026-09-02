@@ -178,6 +178,15 @@ corpus-t10:
         --asm="-O2 -g -dp" \
         -O2 -g
 
+# Z01 is the one lesson that does not record a compilation, because it reads the compiler
+# rather than anything a compiler produced. This cuts eighteen spans out of the pinned tree
+# and writes them to corpora/source/z01.json, so a reader in Colab with no vendor/gcc still
+# sees the real lines. It needs the submodule, and it is the only corpus recipe that does.
+# The same spans are written again as citations inside record.py, so refcheck fails when one
+# of them moves and this is the file you come back to fix.
+corpus-z01:
+    {{py}} lessons/z01-cpp-for-reading/record.py
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build

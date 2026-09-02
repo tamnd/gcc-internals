@@ -93,6 +93,65 @@ def anchor(name: str) -> str:
     return re.sub(r"[^a-z0-9_]+", "-", name.lower()).strip("-")
 
 
+READING = Group(
+    "Reading the source",
+    "Words you need before you can read a page of GCC, as opposed to a page of GCC's output. Z01 is the lesson, and it is the first one in the book for a reason.",
+    (
+        Term(
+            name="gengtype",
+            short="A program that runs during GCC's build, reads the `GTY` markers out of the source, and writes the garbage collector's marking code.",
+            long="This is why `GTY(())` is on almost every declaration in the tree and why it does nothing at run time. GCC's collector has to know the shape of every type it might be asked to mark, and rather than maintain that by hand next to four hundred struct definitions, the build generates it. `gengtype` parses a deliberately small subset of C++, which is the real reason some declarations in GCC are written in an odd way: they are written so that `gengtype` can read them. When you see `GTY((user))` somebody is telling it to keep out because they wrote the marking code themselves.",
+            also=("`GTY`", "`gtype-desc.cc`"),
+            see=("garbage collector",),
+            met="Z01",
+        ),
+        Term(
+            name="garbage collector",
+            short="GCC collects its own memory, and most of the compiler's data structures are allocated in it.",
+            long="A compiler builds enormous graphs with no clear owner, so GCC has a mark and sweep collector and `ggc_alloc` rather than `new`. Two things follow that you will trip over. Containers cannot be the standard library's, because the standard library's allocator is not this one, which is why `vec` and `hash_map` exist. And a pointer the collector cannot see is a pointer to freed memory after the next collection, which is why the `GTY` markers matter and why a root that lives in a local variable has to be registered.",
+            also=("`ggc`", "`ggc_alloc`"),
+            see=("gengtype",),
+            met="Z01",
+        ),
+        Term(
+            name="checking build",
+            short="A GCC built with `--enable-checking`, where the accessor macros verify what you claim before they read.",
+            long="Dozens of macros in `tree.h` are defined twice, once to check and once not, and a release build gets the second one. `TREE_TYPE` on a node with no type is a clean crash naming the file and line in a checking build and reads a field off the wrong arm of a union in a release build. The same split is why `gcc_assert` and `gcc_checking_assert` are different spellings: the first survives into a release build and the second does not. Anybody working on GCC builds with checking on, and any bug report about a wrong answer will be asked to reproduce with it.",
+            cite="gcc/tree.h:330@releases/gcc-16.2.0",
+            also=("`--enable-checking`", "`ENABLE_TREE_CHECKING`"),
+            see=("tree",),
+            met="Z01",
+        ),
+        Term(
+            name="current function",
+            short="`cfun`, the function GCC is compiling right now, reachable from anywhere without being passed.",
+            long="Almost every pass works on one function at a time, and rather than thread a pointer through every helper in the middle end, GCC keeps it in a global. `FOR_EACH_BB_FN (bb, cfun)` is the shape you will read most often, and the `_FN` suffix on a name means the version that takes the function explicitly, which is the one an interprocedural pass needs. The trap is that `cfun` is null outside a function, so code that runs at the interprocedural level cannot assume it.",
+            also=("`cfun`", "`struct function`"),
+            see=("basic block", "pass"),
+            met="Z01",
+        ),
+        Term(
+            name="poly_int",
+            short="An integer that may not be known until the program runs, written as a constant plus coefficients.",
+            long="Scalable vector targets like SVE and RVV do not tell the compiler how wide a vector register is, so sizes and offsets that used to be integers cannot be. A `poly_int` is a small polynomial in indeterminates the hardware picks. The consequence for reading is in the comparisons: `a == b` is not a question you can always answer, so GCC has `known_eq`, `maybe_ne`, `known_lt` and the rest, and each one says what it does with the uncertain case. On a fixed vector target every `poly_int` has one coefficient and it all compiles to the obvious thing.",
+            cite="gcc/poly-int.h:374@releases/gcc-16.2.0",
+            also=("`poly_int64`", "`known_eq`", "`maybe_ne`"),
+            see=("machine mode",),
+            met="Z01",
+        ),
+        Term(
+            name="wide_int",
+            short="An integer as wide as the target needs, which is not the same as as wide as the host has.",
+            long="GCC running on a 64 bit host compiles for targets with 128 bit integers, so constant folding cannot use the host's arithmetic. `wide_int` is a fixed precision integer carrying enough words for the widest type in play, `widest_int` is wider still and used where an intermediate result might not fit, and the operations live in the `wi::` namespace rather than as operators. When you see `wi::to_widest (value)` in a pass, that is a target constant being brought into a form the compiler can do arithmetic on safely.",
+            cite="gcc/wide-int.h:23@releases/gcc-16.2.0",
+            also=("`widest_int`", "`wi::`"),
+            see=("tree",),
+            met="Z01",
+        ),
+    ),
+)
+
+
 DRIVING = Group(
     "Driving the compiler",
     "What actually runs when you type `gcc`, and how to make it show you its work. T01 and T04 are the lessons that cover this ground.",
@@ -615,7 +674,7 @@ TEXT = Group(
 )
 
 
-GROUPS: tuple[Group, ...] = (DRIVING, SHAPES, CONTROL, STATIC_SINGLE, REGISTERS, TEXT)
+GROUPS: tuple[Group, ...] = (READING, DRIVING, SHAPES, CONTROL, STATIC_SINGLE, REGISTERS, TEXT)
 
 #: Every term, flattened.
 TERMS: tuple[Term, ...] = tuple(term for group in GROUPS for term in group.terms)

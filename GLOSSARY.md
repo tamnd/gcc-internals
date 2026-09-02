@@ -8,7 +8,59 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+
+## Reading the source
+
+Words you need before you can read a page of GCC, as opposed to a page of GCC's output. Z01 is the lesson, and it is the first one in the book for a reason.
+
+### gengtype
+
+**A program that runs during GCC's build, reads the `GTY` markers out of the source, and writes the garbage collector's marking code.**
+
+This is why `GTY(())` is on almost every declaration in the tree and why it does nothing at run time. GCC's collector has to know the shape of every type it might be asked to mark, and rather than maintain that by hand next to four hundred struct definitions, the build generates it. `gengtype` parses a deliberately small subset of C++, which is the real reason some declarations in GCC are written in an odd way: they are written so that `gengtype` can read them. When you see `GTY((user))` somebody is telling it to keep out because they wrote the marking code themselves.
+
+Also written `GTY`, `gtype-desc.cc`. First met in Z01. See also [garbage collector](#garbage-collector).
+
+### garbage collector
+
+**GCC collects its own memory, and most of the compiler's data structures are allocated in it.**
+
+A compiler builds enormous graphs with no clear owner, so GCC has a mark and sweep collector and `ggc_alloc` rather than `new`. Two things follow that you will trip over. Containers cannot be the standard library's, because the standard library's allocator is not this one, which is why `vec` and `hash_map` exist. And a pointer the collector cannot see is a pointer to freed memory after the next collection, which is why the `GTY` markers matter and why a root that lives in a local variable has to be registered.
+
+Also written `ggc`, `ggc_alloc`. First met in Z01. See also [gengtype](#gengtype).
+
+### checking build
+
+**A GCC built with `--enable-checking`, where the accessor macros verify what you claim before they read.**
+
+Dozens of macros in `tree.h` are defined twice, once to check and once not, and a release build gets the second one. `TREE_TYPE` on a node with no type is a clean crash naming the file and line in a checking build and reads a field off the wrong arm of a union in a release build. The same split is why `gcc_assert` and `gcc_checking_assert` are different spellings: the first survives into a release build and the second does not. Anybody working on GCC builds with checking on, and any bug report about a wrong answer will be asked to reproduce with it.
+
+Also written `--enable-checking`, `ENABLE_TREE_CHECKING`. First met in Z01. See also [tree](#tree). In the source: [`gcc/tree.h:330@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/tree.h#L330).
+
+### current function
+
+**`cfun`, the function GCC is compiling right now, reachable from anywhere without being passed.**
+
+Almost every pass works on one function at a time, and rather than thread a pointer through every helper in the middle end, GCC keeps it in a global. `FOR_EACH_BB_FN (bb, cfun)` is the shape you will read most often, and the `_FN` suffix on a name means the version that takes the function explicitly, which is the one an interprocedural pass needs. The trap is that `cfun` is null outside a function, so code that runs at the interprocedural level cannot assume it.
+
+Also written `cfun`, `struct function`. First met in Z01. See also [basic block](#basic-block), [pass](#pass).
+
+### poly_int
+
+**An integer that may not be known until the program runs, written as a constant plus coefficients.**
+
+Scalable vector targets like SVE and RVV do not tell the compiler how wide a vector register is, so sizes and offsets that used to be integers cannot be. A `poly_int` is a small polynomial in indeterminates the hardware picks. The consequence for reading is in the comparisons: `a == b` is not a question you can always answer, so GCC has `known_eq`, `maybe_ne`, `known_lt` and the rest, and each one says what it does with the uncertain case. On a fixed vector target every `poly_int` has one coefficient and it all compiles to the obvious thing.
+
+Also written `poly_int64`, `known_eq`, `maybe_ne`. First met in Z01. See also [machine mode](#machine-mode). In the source: [`gcc/poly-int.h:374@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/poly-int.h#L374).
+
+### wide_int
+
+**An integer as wide as the target needs, which is not the same as as wide as the host has.**
+
+GCC running on a 64 bit host compiles for targets with 128 bit integers, so constant folding cannot use the host's arithmetic. `wide_int` is a fixed precision integer carrying enough words for the widest type in play, `widest_int` is wider still and used where an intermediate result might not fit, and the operations live in the `wi::` namespace rather than as operators. When you see `wi::to_widest (value)` in a pass, that is a target constant being brought into a form the compiler can do arithmetic on safely.
+
+Also written `widest_int`, `wi::`. First met in Z01. See also [tree](#tree). In the source: [`gcc/wide-int.h:23@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/wide-int.h#L23).
 
 ## Driving the compiler
 

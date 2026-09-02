@@ -7,6 +7,14 @@
    "hash": "05175d55535c1aa8",
    "text": "struct GTY((chain_next (\"%h.next_bb\"), chain_prev (\"%h.prev_bb\"))) basic_block_def {"
   },
+  "gcc/basic-block.h:208@releases/gcc-16.2.0": {
+   "hash": "2d0a065a29724d34",
+   "text": "/* For iterating over basic blocks.  */"
+  },
+  "gcc/basic-block.h:212@releases/gcc-16.2.0": {
+   "hash": "ebb261c42c399a68",
+   "text": "#define FOR_EACH_BB_FN(BB, FN) \\"
+  },
   "gcc/c-family/c-opts.cc:1419@releases/gcc-16.2.0": {
    "hash": "4de52375ef4441f9",
    "text": "c_common_parse_file (void)"
@@ -151,6 +159,10 @@
    "hash": "25c15e9488a713c6",
    "text": "DEFGSCODE(GIMPLE_COND, \"gimple_cond\", GSS_WITH_OPS)"
   },
+  "gcc/gimple.h:220@releases/gcc-16.2.0": {
+   "hash": "e2df58597c06e3e6",
+   "text": "struct GTY((desc (\"gimple_statement_structure (&%h)\"), tag (\"GSS_BASE\"),"
+  },
   "gcc/gimple.h:222@releases/gcc-16.2.0": {
    "hash": "e268c6365b9f8ea8",
    "text": "  gimple"
@@ -158,6 +170,14 @@
   "gcc/gimple.h:474@releases/gcc-16.2.0": {
    "hash": "77ddf6b52f21bee0",
    "text": "  gphi : public gimple"
+  },
+  "gcc/gimple.h:896@releases/gcc-16.2.0": {
+   "hash": "72aabac2390ca5fc",
+   "text": "/* A statement with the invariant that"
+  },
+  "gcc/gimple.h:976@releases/gcc-16.2.0": {
+   "hash": "abdfc0a897f25086",
+   "text": "template <>"
   },
   "gcc/gimplify.cc:20296@releases/gcc-16.2.0": {
    "hash": "b5fdc152f1a3a350",
@@ -182,6 +202,10 @@
   "gcc/hard-reg-set.h:573@releases/gcc-16.2.0": {
    "hash": "ca7eb36ce4473a3f",
    "text": "extern const char * reg_class_names[];"
+  },
+  "gcc/hash-map.h:35@releases/gcc-16.2.0": {
+   "hash": "6290b834c50b1d5f",
+   "text": "const size_t default_hash_map_size = 13;"
   },
   "gcc/ipa-inline.cc:2822@releases/gcc-16.2.0": {
    "hash": "86d4aa2ff3721eab",
@@ -326,6 +350,18 @@
   "gcc/ira.cc:786@releases/gcc-16.2.0": {
    "hash": "9fe8c36b6cc27e80",
    "text": "setup_pressure_classes (void)"
+  },
+  "gcc/is-a.h:224@releases/gcc-16.2.0": {
+   "hash": "f3b2f791aacabaaf",
+   "text": "/* A generic test for a type relationship.  See the discussion above for when"
+  },
+  "gcc/is-a.h:248@releases/gcc-16.2.0": {
+   "hash": "80cbff5c17be906f",
+   "text": "/* A generic conversion from a base type U to a derived type T.  See the"
+  },
+  "gcc/is-a.h:274@releases/gcc-16.2.0": {
+   "hash": "5f0aa388ec450bf2",
+   "text": ""
   },
   "gcc/lra-assigns.cc:1394@releases/gcc-16.2.0": {
    "hash": "27123f8aa736fd79",
@@ -551,6 +587,10 @@
    "hash": "a66423de6a2f8644",
    "text": "      NEXT_PASS (pass_build_ssa);"
   },
+  "gcc/poly-int.h:374@releases/gcc-16.2.0": {
+   "hash": "9a97de5b8705c3ec",
+   "text": "/* A class containing polynomial integers.  The polynomial has N coefficients"
+  },
   "gcc/print-rtl.cc:661@releases/gcc-16.2.0": {
    "hash": "fa3c51ad31ca4f3a",
    "text": "rtx_writer::print_rtx_operand (const_rtx in_rtx, int idx)"
@@ -619,6 +659,14 @@
    "hash": "e8e403328c3f6a6b",
    "text": "build_gimple_cfg (gimple_seq seq)"
   },
+  "gcc/tree-core.h:1138@releases/gcc-16.2.0": {
+   "hash": "846071afbfa6d275",
+   "text": "struct GTY(()) tree_base {"
+  },
+  "gcc/tree-core.h:2182@releases/gcc-16.2.0": {
+   "hash": "af2f7fe2169f9bf1",
+   "text": "/* Define the overall contents of a tree node."
+  },
   "gcc/tree-core.h:2186@releases/gcc-16.2.0": {
    "hash": "30e19987a7156896",
    "text": "\t    desc (\"tree_node_structure (&%h)\"), variable_size)) tree_node {"
@@ -667,6 +715,26 @@
    "hash": "b6f15afde0cebcb0",
    "text": "      /* If the incoming edge is executable, Compute the meet operator for"
   },
+  "gcc/tree-ssa-ccp.cc:121@releases/gcc-16.2.0": {
+   "hash": "f3a4ce906412b158",
+   "text": "#include \"config.h\""
+  },
+  "gcc/tree-ssa-ccp.cc:280@releases/gcc-16.2.0": {
+   "hash": "bd291f2d9ffce547",
+   "text": "static ccp_prop_value_t"
+  },
+  "gcc/tree-ssa-ccp.cc:3042@releases/gcc-16.2.0": {
+   "hash": "4f27987395906be5",
+   "text": "const pass_data pass_data_ccp ="
+  },
+  "gcc/tree-ssa-ccp.cc:566@releases/gcc-16.2.0": {
+   "hash": "f938ad2256a87ad7",
+   "text": "      if (dump_file && (dump_flags & TDF_DETAILS))"
+  },
+  "gcc/tree-ssa-ccp.cc:900@releases/gcc-16.2.0": {
+   "hash": "26ec340d1809c826",
+   "text": "  /* Initialize simulation flags for PHI nodes and statements.  */"
+  },
   "gcc/tree-ssa-loop-ivopts.cc:8104@releases/gcc-16.2.0": {
    "hash": "c6f844c20c9a234a",
    "text": "analyze_and_mark_doloop_use (struct ivopts_data *data)"
@@ -687,6 +755,18 @@
    "hash": "a5ae4c9e706bdc62",
    "text": "DEFTREECODE (ERROR_MARK, \"error_mark\", tcc_exceptional, 0)"
   },
+  "gcc/tree.h:330@releases/gcc-16.2.0": {
+   "hash": "9bf960380ed75a95",
+   "text": "#if defined ENABLE_TREE_CHECKING && (GCC_VERSION >= 2007)"
+  },
+  "gcc/tree.h:438@releases/gcc-16.2.0": {
+   "hash": "0beb81040dfece83",
+   "text": "#define TREE_TYPE(NODE) \\"
+  },
+  "gcc/tree.h:513@releases/gcc-16.2.0": {
+   "hash": "b2ab2f83fa1e4c19",
+   "text": "#define TREE_TYPE(NODE) ((NODE)->typed.type)"
+  },
   "gcc/varasm.cc:1107@releases/gcc-16.2.0": {
    "hash": "aab457ce898e0162",
    "text": "bss_initializer_p (const_tree decl, bool named)"
@@ -706,6 +786,18 @@
   "gcc/varasm.cc:7490@releases/gcc-16.2.0": {
    "hash": "7c939f355038d19d",
    "text": "default_elf_select_section (tree decl, int reloc,"
+  },
+  "gcc/vec.h:446@releases/gcc-16.2.0": {
+   "hash": "40d0a72faa37d900",
+   "text": "template<typename T,"
+  },
+  "gcc/vec.h:72@releases/gcc-16.2.0": {
+   "hash": "a4817058f9e2ba43",
+   "text": "   Vectors are template types with three arguments: the type of the"
+  },
+  "gcc/wide-int.h:23@releases/gcc-16.2.0": {
+   "hash": "511812f39f5d18c9",
+   "text": "/* wide-int.[cc|h] implements a class that efficiently performs"
   }
  }
 }
