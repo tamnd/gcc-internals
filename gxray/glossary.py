@@ -528,7 +528,94 @@ REGISTERS = Group(
 )
 
 
-GROUPS: tuple[Group, ...] = (DRIVING, SHAPES, CONTROL, STATIC_SINGLE, REGISTERS)
+TEXT = Group(
+    "Becoming text",
+    "The last pass in the compiler, the file it writes, and the part of the back end that is a program rather than a table. T09 is the lesson.",
+    (
+        Term(
+            name="final",
+            short="The pass that walks the insn chain one last time and prints each insn as text.",
+            long="It is the end of the line. Every pass before it transformed a function into another function, and this one turns it into characters. It is a short pass because almost all of the work is delegated: the pattern that matched the insn back at recognition time knows what to print, and `final` asks it. What `final` itself deals with is everything around the instructions, which is labels, alignment, the function prologue and epilogue markers, debug and unwind information, and the decision about which of those to skip.",
+            cite="gcc/final.cc:4340@releases/gcc-16.2.0",
+            also=("`pass_final`",),
+            see=("machine description", "output template", "assembler directive"),
+            met="T09",
+        ),
+        Term(
+            name="machine description",
+            short="The `.md` files that describe a target's instructions to the compiler.",
+            long="One directory per target under `gcc/config`, and the `.md` files in it are the largest part of a back end. They are s-expressions with two additions: output templates written in braces can contain C, and names can contain angle bracket placeholders that are expanded at build time. Nothing in them is read at compile time. A dozen generator programs turn them into C during the GCC build, so a pattern is a table entry and a function by the time your compiler runs.",
+            also=("`.md` file", "machine description file"),
+            see=("define_insn", "output template", "mode iterator"),
+            met="T09",
+        ),
+        Term(
+            name="define_insn",
+            short="One pattern: what an insn may look like, what it costs, and what to print for it.",
+            long="Four parts. An RTL template that an insn has to match, a condition that has to be true, an output template or the C that produces one, and a list of attributes. Recognition matches an insn against every pattern and records which one won, and `final` prints what that pattern says. A name beginning with a star has no `gen_` function, which means nothing can ask for it by name and only recognition will ever pick it.",
+            cite="gcc/rtl.def:885@releases/gcc-16.2.0",
+            also=("pattern", "`define_insn_and_split`"),
+            see=("machine description", "output template", "alternative"),
+            met="T09",
+        ),
+        Term(
+            name="output template",
+            short="The string a pattern prints, with `%0` and friends standing in for the operands.",
+            long="`add\\t%w0, %w1, %w2` is one. `output_asm_insn` walks it, copies the literal characters, and calls the target's operand printer for each `%`. A pattern can have a table of these with one row per alternative, or a single string, or a block of C that returns a string, and the third form is how a pattern picks its text at run time from something only the compiler knows.",
+            cite="gcc/final.cc:3428@releases/gcc-16.2.0",
+            also=("`output_asm_insn`",),
+            see=("define_insn", "alternative", "constraint"),
+            met="T09",
+        ),
+        Term(
+            name="constraint",
+            short="A letter saying what an operand has to be for an alternative to be usable.",
+            long="`r` is a general register, `m` is memory, `i` is an immediate, and every target adds its own for the shapes its instructions accept. A predicate says what an insn may match, and a constraint says what the register allocator has to arrange before it can be printed. The distinction matters because the allocator reads constraints and nothing else.",
+            cite="gcc/genpreds.cc:669@releases/gcc-16.2.0",
+            also=("operand constraint",),
+            see=("alternative", "define_insn", "register allocation"),
+            met="T09",
+        ),
+        Term(
+            name="alternative",
+            short="One row of a pattern's table: a set of constraints, and the text to print if the operands fit it.",
+            long="`add w0, w1, w2` and `add w0, w1, #3` are the same pattern with different alternatives, one taking a register and one taking an immediate. The compiler keeps the chosen row in `which_alternative`, and `-dp` prints it after the pattern name as `/1`. It only prints one when the pattern has more than one row, so a bare pattern name in an annotation is telling you the pattern had no choice to make.",
+            cite="gcc/recog.h:363@releases/gcc-16.2.0",
+            also=("`which_alternative`",),
+            see=("constraint", "output template", "define_insn"),
+            met="T09",
+        ),
+        Term(
+            name="mode iterator",
+            short="A placeholder in a pattern that makes one written form into several real patterns.",
+            long="`*add<mode>3_aarch64` with `GPI` as `[SI DI]` is two patterns, `*addsi3_aarch64` and `*adddi3_aarch64`, expanded when GCC is built. It is why searching a `.md` file for the name an annotation printed usually finds nothing, and why the reader in this project resolves the placeholders before it goes looking.",
+            cite="gcc/read-rtl.cc:1482@releases/gcc-16.2.0",
+            also=("`define_mode_iterator`", "code iterator"),
+            see=("machine description", "define_insn"),
+            met="T09",
+        ),
+        Term(
+            name="assembler directive",
+            short="A line of assembly that is an instruction to the assembler rather than to the machine.",
+            long="Anything starting with a dot. It reserves space, switches section, aligns the location counter, declares a symbol global, or records a size. Most of an assembly file is these: the recorded listing this project uses for T09 is forty six lines of which twelve are instructions. None of them assembles to a byte of code and several of them decide where the bytes go.",
+            also=("pseudo op",),
+            see=("section", "final"),
+            met="T09",
+        ),
+        Term(
+            name="section",
+            short="A named region of the object file, and the thing that decides what a variable costs.",
+            long="`.text` is code, `.data` is initialised writable data, `.bss` is data that starts out zero and takes no space in the file, and `.rodata` is read only. Which one a variable lands in is not a style question. `categorize_decl_for_section` decides it from whether the variable is constant, whether its initialiser is all zeros, and whether it needs a relocation, and the answer changes how many bytes the binary is and whether writing to it faults.",
+            cite="gcc/varasm.cc:7368@releases/gcc-16.2.0",
+            also=("`.text`", "`.bss`", "`.rodata`"),
+            see=("assembler directive", "final"),
+            met="T09",
+        ),
+    ),
+)
+
+
+GROUPS: tuple[Group, ...] = (DRIVING, SHAPES, CONTROL, STATIC_SINGLE, REGISTERS, TEXT)
 
 #: Every term, flattened.
 TERMS: tuple[Term, ...] = tuple(term for group in GROUPS for term in group.terms)

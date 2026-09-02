@@ -19,7 +19,7 @@ from pathlib import Path
 
 from gxray import corpus_store, options, programs
 from gxray.build import banner
-from gxray.driver import BackendError, CEBackend, CorpusBackend, LocalBackend
+from gxray.driver import CE_RAW, BackendError, CEBackend, CorpusBackend, LocalBackend
 
 PROGRAMS = {"l0": programs.L0, "l1": programs.L1, "l2": programs.L2}
 
@@ -27,7 +27,7 @@ PROGRAMS = {"l0": programs.L0, "l1": programs.L1, "l2": programs.L2}
 def pick_backend(args: argparse.Namespace):
     """Turn --backend into a backend. Local unless told otherwise."""
     if args.backend == "ce":
-        return CEBackend(args.compiler_id)
+        return CEBackend(args.compiler_id, filters=CE_RAW if args.raw_asm else None)
     if args.backend == "corpus":
         return CorpusBackend(args.entry)
     return LocalBackend(args.gcc)
@@ -183,6 +183,14 @@ def build_parser() -> argparse.ArgumentParser:
     common.add_argument("--program", choices=sorted(PROGRAMS), default="l1")
     common.add_argument("--file", help="compile this file instead of a corpus program")
     common.add_argument("--dump", action="append", help="dump to ask for, repeatable")
+    common.add_argument(
+        "--raw-asm",
+        action="store_true",
+        # Compiler Explorer hides directives, labels and comments by default, which is the
+        # right default for a lesson about instructions and the wrong one for a lesson about
+        # sections or about the -dp annotations, since those are comments.
+        help="ask Compiler Explorer for the assembly unfiltered, directives and all",
+    )
 
     p = argparse.ArgumentParser(prog="gxray", description=__doc__.splitlines()[0])
     sub = p.add_subparsers(dest="command", required=True)

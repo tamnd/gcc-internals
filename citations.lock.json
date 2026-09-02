@@ -35,6 +35,22 @@
    "hash": "ae2ee40bb1f9c0ea",
    "text": "    { OPT_LEVELS_2_PLUS, OPT_mearly_ra_, NULL, AARCH64_EARLY_RA_ALL },"
   },
+  "gcc/config/aarch64/constraints.md:121@releases/gcc-16.2.0": {
+   "hash": "9f50df9c638a2080",
+   "text": "(define_constraint \"J\""
+  },
+  "gcc/config/aarch64/constraints.md:140@releases/gcc-16.2.0": {
+   "hash": "bb63ca5ef33cb724",
+   "text": "(define_constraint \"M\""
+  },
+  "gcc/config/aarch64/constraints.md:21@releases/gcc-16.2.0": {
+   "hash": "513d9f9ad051889a",
+   "text": "(define_register_constraint \"k\" \"STACK_REG\""
+  },
+  "gcc/config/aarch64/constraints.md:87@releases/gcc-16.2.0": {
+   "hash": "eba289ad7f7db17b",
+   "text": "(define_constraint \"I\""
+  },
   "gcc/config/i386/i386.h:991@releases/gcc-16.2.0": {
    "hash": "69bbb0299eba4c24",
    "text": "#define FIRST_PSEUDO_REGISTER FIRST_PSEUDO_REG"
@@ -51,6 +67,34 @@
    "hash": "84bbfe101e0c8cbd",
    "text": "gen_reg_rtx (machine_mode mode)"
   },
+  "gcc/final.cc:2009@releases/gcc-16.2.0": {
+   "hash": "1e77427d6e065c55",
+   "text": "final (rtx_insn *first, FILE *file, int optimize_p)"
+  },
+  "gcc/final.cc:2024@releases/gcc-16.2.0": {
+   "hash": "78a30b3345d1c9ec",
+   "text": "get_insn_template (int code, rtx_insn *insn)"
+  },
+  "gcc/final.cc:2888@releases/gcc-16.2.0": {
+   "hash": "c121c29cc2aea309",
+   "text": "final_scan_insn (rtx_insn *insn, FILE *file, int optimize_p,"
+  },
+  "gcc/final.cc:3219@releases/gcc-16.2.0": {
+   "hash": "f0b49a71781d6d9c",
+   "text": "output_asm_name (void)"
+  },
+  "gcc/final.cc:3428@releases/gcc-16.2.0": {
+   "hash": "fdbee5c5e589ba28",
+   "text": "output_asm_insn (const char *templ, rtx *operands)"
+  },
+  "gcc/final.cc:4259@releases/gcc-16.2.0": {
+   "hash": "318791bbe1a1f471",
+   "text": "rest_of_handle_final (void)"
+  },
+  "gcc/final.cc:4340@releases/gcc-16.2.0": {
+   "hash": "c8096d3c3ff7f567",
+   "text": "class pass_final : public rtl_opt_pass"
+  },
   "gcc/gcc.cc:1234@releases/gcc-16.2.0": {
    "hash": "ebb1ec3c29398f08",
    "text": "static const char *cc1_spec = CC1_SPEC OS_CC1_SPEC;"
@@ -66,6 +110,10 @@
   "gcc/gcc.cc:1494@releases/gcc-16.2.0": {
    "hash": "7d765f61c6aaf81b",
    "text": "      %{!fsyntax-only:%(invoke_as)}}}}\", 0, 0, 1},"
+  },
+  "gcc/genpreds.cc:669@releases/gcc-16.2.0": {
+   "hash": "3449e67bd76c829f",
+   "text": "class constraint_data"
   },
   "gcc/gimple-expr.cc:836@releases/gcc-16.2.0": {
    "hash": "42bc3cf0317ea2ed",
@@ -319,6 +367,10 @@
    "hash": "212af0bc53b3c492",
    "text": "\tcase OPT_Og:"
   },
+  "gcc/output.h:426@releases/gcc-16.2.0": {
+   "hash": "814f474b30a746c0",
+   "text": "enum section_category"
+  },
   "gcc/params.opt:24@releases/gcc-16.2.0": {
    "hash": "4f2c74f0178efadd",
    "text": ""
@@ -359,6 +411,18 @@
    "hash": "fa3c51ad31ca4f3a",
    "text": "rtx_writer::print_rtx_operand (const_rtx in_rtx, int idx)"
   },
+  "gcc/read-rtl.cc:1482@releases/gcc-16.2.0": {
+   "hash": "90d8995b4cc7c821",
+   "text": "  if (strcmp (rtx_name, \"define_mode_iterator\") == 0)"
+  },
+  "gcc/recog.h:363@releases/gcc-16.2.0": {
+   "hash": "246b5672f637a074",
+   "text": "extern int which_alternative;"
+  },
+  "gcc/recog.h:510@releases/gcc-16.2.0": {
+   "hash": "599aad0b569d9c82",
+   "text": "struct insn_data_d"
+  },
   "gcc/rtl.def:145@releases/gcc-16.2.0": {
    "hash": "ba0d244bff7f17bb",
    "text": "DEF_RTL_EXPR(INSN, \"insn\", \"uuBeLie\", RTX_INSN)"
@@ -370,6 +434,10 @@
   "gcc/rtl.def:156@releases/gcc-16.2.0": {
    "hash": "b8bc51f13487af47",
    "text": "DEF_RTL_EXPR(CALL_INSN, \"call_insn\", \"uuBeLiee\", RTX_INSN)"
+  },
+  "gcc/rtl.def:885@releases/gcc-16.2.0": {
+   "hash": "72dfa5469e6cabef",
+   "text": "DEF_RTL_EXPR(DEFINE_INSN, \"define_insn\", \"sEsTV\", RTX_EXTRA)"
   },
   "gcc/rtl.h:1968@releases/gcc-16.2.0": {
    "hash": "948ebd2b223974cc",
@@ -442,6 +510,26 @@
   "gcc/tree.def:41@releases/gcc-16.2.0": {
    "hash": "a5ae4c9e706bdc62",
    "text": "DEFTREECODE (ERROR_MARK, \"error_mark\", tcc_exceptional, 0)"
+  },
+  "gcc/varasm.cc:1107@releases/gcc-16.2.0": {
+   "hash": "aab457ce898e0162",
+   "text": "bss_initializer_p (const_tree decl, bool named)"
+  },
+  "gcc/varasm.cc:2294@releases/gcc-16.2.0": {
+   "hash": "59fa0ff926a2a0fa",
+   "text": "assemble_align (unsigned int align)"
+  },
+  "gcc/varasm.cc:2517@releases/gcc-16.2.0": {
+   "hash": "7c7622cb1a51003b",
+   "text": "assemble_variable (tree decl, int top_level ATTRIBUTE_UNUSED,"
+  },
+  "gcc/varasm.cc:7368@releases/gcc-16.2.0": {
+   "hash": "89c3937695bca5c6",
+   "text": "categorize_decl_for_section (const_tree decl, int reloc)"
+  },
+  "gcc/varasm.cc:7490@releases/gcc-16.2.0": {
+   "hash": "7c939f355038d19d",
+   "text": "default_elf_select_section (tree decl, int reloc,"
   }
  }
 }

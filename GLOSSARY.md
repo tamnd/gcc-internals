@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine mode](#machine-mode) | [middle end](#middle-end) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [spec](#spec) | [spill](#spill) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
 
 ## Driving the compiler
 
@@ -413,3 +413,79 @@ Also written `pass_ira`. First met in T08. See also [LRA](#lra), [allocno](#allo
 It is still called `reload` in the pass list, which is the name of the thing it replaced in 2013, and it does no reloading in the old sense. It loops: satisfy every instruction's operand constraints, which can require inventing a fresh pseudo to hold a reloaded value, which makes the live ranges wrong, so recompute them and reassign, and go round again. That loop is why register allocation is the expensive part of compiling.
 
 Also written `pass_reload`, reload. First met in T08. See also [IRA](#ira), [spill](#spill), [register allocation](#register-allocation). In the source: [`gcc/lra.cc:2420@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/lra.cc#L2420).
+
+## Becoming text
+
+The last pass in the compiler, the file it writes, and the part of the back end that is a program rather than a table. T09 is the lesson.
+
+### final
+
+**The pass that walks the insn chain one last time and prints each insn as text.**
+
+It is the end of the line. Every pass before it transformed a function into another function, and this one turns it into characters. It is a short pass because almost all of the work is delegated: the pattern that matched the insn back at recognition time knows what to print, and `final` asks it. What `final` itself deals with is everything around the instructions, which is labels, alignment, the function prologue and epilogue markers, debug and unwind information, and the decision about which of those to skip.
+
+Also written `pass_final`. First met in T09. See also [machine description](#machine-description), [output template](#output-template), [assembler directive](#assembler-directive). In the source: [`gcc/final.cc:4340@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/final.cc#L4340).
+
+### machine description
+
+**The `.md` files that describe a target's instructions to the compiler.**
+
+One directory per target under `gcc/config`, and the `.md` files in it are the largest part of a back end. They are s-expressions with two additions: output templates written in braces can contain C, and names can contain angle bracket placeholders that are expanded at build time. Nothing in them is read at compile time. A dozen generator programs turn them into C during the GCC build, so a pattern is a table entry and a function by the time your compiler runs.
+
+Also written `.md` file, machine description file. First met in T09. See also [define_insn](#define_insn), [output template](#output-template), [mode iterator](#mode-iterator).
+
+### define_insn
+
+**One pattern: what an insn may look like, what it costs, and what to print for it.**
+
+Four parts. An RTL template that an insn has to match, a condition that has to be true, an output template or the C that produces one, and a list of attributes. Recognition matches an insn against every pattern and records which one won, and `final` prints what that pattern says. A name beginning with a star has no `gen_` function, which means nothing can ask for it by name and only recognition will ever pick it.
+
+Also written pattern, `define_insn_and_split`. First met in T09. See also [machine description](#machine-description), [output template](#output-template), [alternative](#alternative). In the source: [`gcc/rtl.def:885@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/rtl.def#L885).
+
+### output template
+
+**The string a pattern prints, with `%0` and friends standing in for the operands.**
+
+`add\t%w0, %w1, %w2` is one. `output_asm_insn` walks it, copies the literal characters, and calls the target's operand printer for each `%`. A pattern can have a table of these with one row per alternative, or a single string, or a block of C that returns a string, and the third form is how a pattern picks its text at run time from something only the compiler knows.
+
+Also written `output_asm_insn`. First met in T09. See also [define_insn](#define_insn), [alternative](#alternative), [constraint](#constraint). In the source: [`gcc/final.cc:3428@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/final.cc#L3428).
+
+### constraint
+
+**A letter saying what an operand has to be for an alternative to be usable.**
+
+`r` is a general register, `m` is memory, `i` is an immediate, and every target adds its own for the shapes its instructions accept. A predicate says what an insn may match, and a constraint says what the register allocator has to arrange before it can be printed. The distinction matters because the allocator reads constraints and nothing else.
+
+Also written operand constraint. First met in T09. See also [alternative](#alternative), [define_insn](#define_insn), [register allocation](#register-allocation). In the source: [`gcc/genpreds.cc:669@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/genpreds.cc#L669).
+
+### alternative
+
+**One row of a pattern's table: a set of constraints, and the text to print if the operands fit it.**
+
+`add w0, w1, w2` and `add w0, w1, #3` are the same pattern with different alternatives, one taking a register and one taking an immediate. The compiler keeps the chosen row in `which_alternative`, and `-dp` prints it after the pattern name as `/1`. It only prints one when the pattern has more than one row, so a bare pattern name in an annotation is telling you the pattern had no choice to make.
+
+Also written `which_alternative`. First met in T09. See also [constraint](#constraint), [output template](#output-template), [define_insn](#define_insn). In the source: [`gcc/recog.h:363@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/recog.h#L363).
+
+### mode iterator
+
+**A placeholder in a pattern that makes one written form into several real patterns.**
+
+`*add<mode>3_aarch64` with `GPI` as `[SI DI]` is two patterns, `*addsi3_aarch64` and `*adddi3_aarch64`, expanded when GCC is built. It is why searching a `.md` file for the name an annotation printed usually finds nothing, and why the reader in this project resolves the placeholders before it goes looking.
+
+Also written `define_mode_iterator`, code iterator. First met in T09. See also [machine description](#machine-description), [define_insn](#define_insn). In the source: [`gcc/read-rtl.cc:1482@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/read-rtl.cc#L1482).
+
+### assembler directive
+
+**A line of assembly that is an instruction to the assembler rather than to the machine.**
+
+Anything starting with a dot. It reserves space, switches section, aligns the location counter, declares a symbol global, or records a size. Most of an assembly file is these: the recorded listing this project uses for T09 is forty six lines of which twelve are instructions. None of them assembles to a byte of code and several of them decide where the bytes go.
+
+Also written pseudo op. First met in T09. See also [section](#section), [final](#final).
+
+### section
+
+**A named region of the object file, and the thing that decides what a variable costs.**
+
+`.text` is code, `.data` is initialised writable data, `.bss` is data that starts out zero and takes no space in the file, and `.rodata` is read only. Which one a variable lands in is not a style question. `categorize_decl_for_section` decides it from whether the variable is constant, whether its initialiser is all zeros, and whether it needs a relocation, and the answer changes how many bytes the binary is and whether writing to it faults.
+
+Also written `.text`, `.bss`, `.rodata`. First met in T09. See also [assembler directive](#assembler-directive), [final](#final). In the source: [`gcc/varasm.cc:7368@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/varasm.cc#L7368).

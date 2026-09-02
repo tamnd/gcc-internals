@@ -37,6 +37,10 @@ from gxray.dumps import DumpFile, dump_flags, find_dumps, split_spec, split_stde
 from tools.cecache import Cache, request_key
 
 CE_URL = "https://godbolt.org/api/compiler/{compiler}/compile"
+
+#: What the site does to assembly before showing it to you, and what this backend asks for by
+#: default. The three that throw text away are `labels`, `directives` and `commentOnly`, and
+#: they are on because a lesson about instructions does not want half a screen of `.cfi_`.
 CE_FILTERS = {
     "binary": False,
     "execute": False,
@@ -48,6 +52,11 @@ CE_FILTERS = {
     "commentOnly": True,
     "trim": False,
 }
+
+#: Everything the assembler was actually handed, directives and labels and comments included.
+#: A lesson about `varasm` and sections needs this, and so does anything reading the `-dp`
+#: annotations, which are comments and are the first thing `commentOnly` removes.
+CE_RAW = {**CE_FILTERS, "labels": False, "directives": False, "commentOnly": False}
 
 
 class BackendError(RuntimeError):
@@ -292,17 +301,24 @@ class CEBackend(Backend):
 
     capabilities = frozenset({"dumps", "asm", "named-dumps", "execute", "chain"})
 
-    def __init__(self, compiler: str = "cg162", cache: Cache | None = None, lang: str = "c"):
+    def __init__(
+        self,
+        compiler: str = "cg162",
+        cache: Cache | None = None,
+        lang: str = "c",
+        filters: dict[str, bool] | None = None,
+    ):
         self.compiler = compiler
         self.lang = lang
         self.cache = cache if cache is not None else Cache()
+        self.filters = dict(filters if filters is not None else CE_FILTERS)
         self.name = f"ce:{compiler}"
 
     def _send(self, source: str, arg_string: str) -> dict:
         body = json.dumps(
             {
                 "source": source,
-                "options": {"userArguments": arg_string, "filters": CE_FILTERS},
+                "options": {"userArguments": arg_string, "filters": self.filters},
                 "lang": self.lang,
                 "allowStoreCodeDebug": True,
             }
@@ -340,7 +356,7 @@ class CEBackend(Backend):
                 )
 
         arg_string = " ".join([*args, *dump_flags(dumps, to_stderr=True)])
-        key = request_key(self.compiler, source, arg_string, CE_FILTERS)
+        key = request_key(self.compiler, source, arg_string, self.filters)
         response = self.cache.fetch(key, lambda: self._send(source, arg_string))
 
         stderr = "\n".join(line.get("text", "") for line in response.get("stderr", []))
@@ -519,9 +535,11 @@ def local(gcc: str = "gcc-16") -> LocalBackend:
     return LocalBackend(gcc)
 
 
-def ce(compiler: str = "cg162", cache: Cache | None = None) -> CEBackend:
+def ce(
+    compiler: str = "cg162", cache: Cache | None = None, filters: dict[str, bool] | None = None
+) -> CEBackend:
     """Tier 0: Compiler Explorer. Works from a browser, needs nothing installed."""
-    return CEBackend(compiler, cache=cache)
+    return CEBackend(compiler, cache=cache, filters=filters)
 
 
 def corpus(entry: str, root: Path | str | None = None) -> CorpusBackend:
