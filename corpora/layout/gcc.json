@@ -1,0 +1,2371 @@
+{
+ "tag": "releases/gcc-16.2.0",
+ "commit": "78d4ac73dd391005b895a6148cd9831e28e1208b",
+ "places": [
+  {
+   "path": "gcc",
+   "files": 70099,
+   "lines": 7866424,
+   "about": "The compiler. Every other directory here exists to support this one."
+  },
+  {
+   "path": "libgcc",
+   "files": 772,
+   "lines": 328556,
+   "about": "The runtime the compiler emits calls to, for division, unwinding and more."
+  },
+  {
+   "path": "libstdc++-v3",
+   "files": 11006,
+   "lines": 1137270,
+   "about": "The C++ standard library. A separate project that ships in the tree."
+  },
+  {
+   "path": "libgomp",
+   "files": 1526,
+   "lines": 158809,
+   "about": "The OpenMP and OpenACC runtime."
+  },
+  {
+   "path": "libsanitizer",
+   "files": 405,
+   "lines": 111931,
+   "about": "The address and undefined behaviour sanitizer runtimes, from LLVM."
+  },
+  {
+   "path": "libcpp",
+   "files": 27,
+   "lines": 62474,
+   "about": "The preprocessor. Shared by the C, C++, Objective C and Fortran front ends."
+  },
+  {
+   "path": "libiberty",
+   "files": 139,
+   "lines": 50064,
+   "about": "Portability shims and the C++ symbol demangler."
+  },
+  {
+   "path": "include",
+   "files": 51,
+   "lines": 24063,
+   "about": "Headers shared between the compiler and the libraries."
+  },
+  {
+   "path": "fixincludes",
+   "files": 122,
+   "lines": 12397,
+   "about": "Patches for broken system headers. Older than most of you."
+  },
+  {
+   "path": "lto-plugin",
+   "files": 1,
+   "lines": 1710,
+   "about": "The plugin the linker loads so link time optimization can work."
+  },
+  {
+   "path": "contrib",
+   "files": 17,
+   "lines": 3058,
+   "about": "Scripts. Not built, not shipped, and some of them are very useful."
+  },
+  {
+   "path": "gcc/*",
+   "files": 962,
+   "lines": 1398984,
+   "about": "The middle end and the driver, loose in the directory with no subdirectory."
+  },
+  {
+   "path": "gcc/config",
+   "files": 1726,
+   "lines": 1558904,
+   "about": "Every target. The port for your machine is one directory in here."
+  },
+  {
+   "path": "gcc/testsuite",
+   "files": 65426,
+   "lines": 3235366,
+   "about": "The tests. More files than the rest of the tree, and where to look first."
+  },
+  {
+   "path": "gcc/c",
+   "files": 17,
+   "lines": 71535,
+   "about": "The C front end proper, mostly one very large parser."
+  },
+  {
+   "path": "gcc/c-family",
+   "files": 40,
+   "lines": 59580,
+   "about": "The parts of C the C and C++ front ends share, including the warnings."
+  },
+  {
+   "path": "gcc/cp",
+   "files": 60,
+   "lines": 316263,
+   "about": "The C++ front end. Templates alone are a third of it."
+  },
+  {
+   "path": "gcc/fortran",
+   "files": 72,
+   "lines": 256063,
+   "about": "The Fortran front end."
+  },
+  {
+   "path": "gcc/ada",
+   "files": 75,
+   "lines": 63451,
+   "about": "The Ada front end. The rest of it is written in Ada and not counted here."
+  },
+  {
+   "path": "gcc/d",
+   "files": 87,
+   "lines": 36656,
+   "about": "The D front end."
+  },
+  {
+   "path": "gcc/go",
+   "files": 55,
+   "lines": 101638,
+   "about": "The Go front end."
+  },
+  {
+   "path": "gcc/rust",
+   "files": 458,
+   "lines": 202642,
+   "about": "The Rust front end, the newest one in the tree."
+  },
+  {
+   "path": "gcc/m2",
+   "files": 652,
+   "lines": 226720,
+   "about": "The Modula-2 front end, mostly written in Modula-2 and not counted here."
+  },
+  {
+   "path": "gcc/cobol",
+   "files": 41,
+   "lines": 73388,
+   "about": "The COBOL front end, added in GCC 15."
+  },
+  {
+   "path": "gcc/algol68",
+   "files": 63,
+   "lines": 43779,
+   "about": "The Algol 68 front end, added in GCC 16."
+  },
+  {
+   "path": "gcc/objc",
+   "files": 16,
+   "lines": 23167,
+   "about": "The Objective C front end, on top of the C one."
+  },
+  {
+   "path": "gcc/objcp",
+   "files": 4,
+   "lines": 360,
+   "about": "Objective C++, which is four files of glue over the other two."
+  },
+  {
+   "path": "gcc/analyzer",
+   "files": 102,
+   "lines": 84888,
+   "about": "The static analyzer behind -fanalyzer. A whole abstract interpreter."
+  },
+  {
+   "path": "gcc/lto",
+   "files": 16,
+   "lines": 9851,
+   "about": "Link time optimization: reading and writing the on disk representation."
+  },
+  {
+   "path": "gcc/rtl-ssa",
+   "files": 17,
+   "lines": 9607,
+   "about": "SSA over RTL, which is newer than you think and used by few passes."
+  },
+  {
+   "path": "gcc/diagnostics",
+   "files": 68,
+   "lines": 33428,
+   "about": "How an error message gets printed, including the SARIF output."
+  },
+  {
+   "path": "gcc/text-art",
+   "files": 21,
+   "lines": 6851,
+   "about": "Drawing diagrams in a terminal, for the analyzer's output."
+  },
+  {
+   "path": "gcc/jit",
+   "files": 34,
+   "lines": 33243,
+   "about": "libgccjit, which lets a program build code with GCC at run time."
+  },
+  {
+   "path": "gcc/common",
+   "files": 57,
+   "lines": 12643,
+   "about": "Per target bits the driver needs before it knows what it is compiling."
+  },
+  {
+   "path": "gcc/doc",
+   "files": 0,
+   "lines": 0,
+   "about": "The manuals, in Texinfo, so this count sees none of it. Read them anyway."
+  },
+  {
+   "path": "gcc/po",
+   "files": 0,
+   "lines": 0,
+   "about": "Translations of the diagnostics, in .po files, which this count does not see."
+  },
+  {
+   "path": "gcc/ginclude",
+   "files": 16,
+   "lines": 2739,
+   "about": "The headers GCC installs itself, like stddef.h and stdarg.h."
+  },
+  {
+   "path": "gcc/sym-exec",
+   "files": 7,
+   "lines": 4162,
+   "about": "A small symbolic execution helper used by one optimization pass."
+  },
+  {
+   "path": "gcc/custom-sarif-properties",
+   "files": 6,
+   "lines": 457,
+   "about": "Schemas for the machine readable diagnostics output."
+  },
+  {
+   "path": "gcc/topics",
+   "files": 1,
+   "lines": 59,
+   "about": "One file. Sorting for the documentation index."
+  },
+  {
+   "path": "the rest",
+   "files": 1910,
+   "lines": 627189,
+   "about": "Twenty odd more runtimes, one per language, plus the build machinery. Rarely read."
+  }
+ ],
+ "kinds": [
+  {
+   "suffix": ".cc",
+   "count": 1553,
+   "name": "C++ source",
+   "about": "The compiler itself. GCC was C until 2012 and still reads like it in places.",
+   "example": "gcc/tree-ssa-ccp.cc:3083"
+  },
+  {
+   "suffix": ".h",
+   "count": 1919,
+   "name": "C++ header",
+   "about": "Declarations, and a lot of the accessor macros that are the real API.",
+   "example": "gcc/tree-pass.h:45"
+  },
+  {
+   "suffix": ".def",
+   "count": 505,
+   "name": "X macro list",
+   "about": "A list included several times with the macro defined differently each time.",
+   "example": "gcc/tree.def:295"
+  },
+  {
+   "suffix": ".md",
+   "count": 488,
+   "name": "machine description",
+   "about": "Patterns in a Lisp like language saying what a target can do. Not markdown.",
+   "example": "gcc/config/aarch64/aarch64.md:2965"
+  },
+  {
+   "suffix": ".opt",
+   "count": 126,
+   "name": "option list",
+   "about": "Every command line flag. The build turns this into options.cc and options.h.",
+   "example": "gcc/common.opt:3220"
+  },
+  {
+   "suffix": ".pd",
+   "count": 1,
+   "name": "pattern description",
+   "about": "There is exactly one, match.pd, and it is where most folding lives.",
+   "example": "gcc/match.pd:239"
+  }
+ ],
+ "ports": [
+  "aarch64",
+  "alpha",
+  "arc",
+  "arm",
+  "avr",
+  "bfin",
+  "bpf",
+  "c6x",
+  "cris",
+  "csky",
+  "epiphany",
+  "fr30",
+  "frv",
+  "ft32",
+  "gcn",
+  "h8300",
+  "i386",
+  "ia64",
+  "iq2000",
+  "lm32",
+  "loongarch",
+  "m32c",
+  "m32r",
+  "m68k",
+  "mcore",
+  "microblaze",
+  "mips",
+  "mmix",
+  "mn10300",
+  "moxie",
+  "msp430",
+  "nds32",
+  "nvptx",
+  "or1k",
+  "pa",
+  "pdp11",
+  "pru",
+  "riscv",
+  "rl78",
+  "rs6000",
+  "rx",
+  "s390",
+  "sh",
+  "sparc",
+  "stormy16",
+  "v850",
+  "vax",
+  "visium",
+  "xtensa"
+ ],
+ "portless": [
+  "mingw",
+  "vms",
+  "vxworks"
+ ],
+ "generators": [
+  {
+   "program": "gcc/genmatch.cc",
+   "writes": "gimple-match-N.cc and generic-match-N.cc",
+   "reads": "gcc/match.pd"
+  },
+  {
+   "program": "gcc/genrecog.cc",
+   "writes": "insn-recog.cc",
+   "reads": "the target's .md files"
+  },
+  {
+   "program": "gcc/genemit.cc",
+   "writes": "insn-emit.cc",
+   "reads": "the target's .md files"
+  },
+  {
+   "program": "gcc/genoutput.cc",
+   "writes": "insn-output.cc",
+   "reads": "the target's .md files"
+  },
+  {
+   "program": "gcc/genattrtab.cc",
+   "writes": "insn-attrtab.cc",
+   "reads": "the target's .md files"
+  },
+  {
+   "program": "gcc/genopinit.cc",
+   "writes": "insn-opinit.cc",
+   "reads": "the target's .md files"
+  },
+  {
+   "program": "gcc/genpreds.cc",
+   "writes": "tm-preds.h and insn-preds.cc",
+   "reads": "the target's .md files"
+  },
+  {
+   "program": "gcc/genmodes.cc",
+   "writes": "insn-modes.cc and insn-modes.h",
+   "reads": "the target's modes.def"
+  },
+  {
+   "program": "gcc/gengtype.cc",
+   "writes": "gtype-desc.cc",
+   "reads": "every GTY marker in the tree"
+  },
+  {
+   "program": "gcc/gencheck.cc",
+   "writes": "tree-check.h",
+   "reads": "gcc/tree.def"
+  },
+  {
+   "program": "gcc/genflags.cc",
+   "writes": "insn-flags.h",
+   "reads": "the target's .md files"
+  },
+  {
+   "program": "gcc/gencodes.cc",
+   "writes": "insn-codes.h",
+   "reads": "the target's .md files"
+  }
+ ],
+ "passes": [
+  {
+   "name": "pass_adjust_alignment",
+   "dump": "adjust_alignment",
+   "path": "gcc/adjust-alignment.cc",
+   "line": 82
+  },
+  {
+   "name": "pass_all_early_optimizations",
+   "dump": "early_optimizations",
+   "path": "gcc/passes.cc",
+   "line": 540
+  },
+  {
+   "name": "pass_all_optimizations",
+   "dump": "*all_optimizations",
+   "path": "gcc/passes.cc",
+   "line": 578
+  },
+  {
+   "name": "pass_all_optimizations_g",
+   "dump": "*all_optimizations_g",
+   "path": "gcc/passes.cc",
+   "line": 616
+  },
+  {
+   "name": "pass_analyzer",
+   "dump": "analyzer",
+   "path": "gcc/analyzer/analyzer-pass.cc",
+   "line": 94
+  },
+  {
+   "name": "pass_array_bounds",
+   "dump": "bounds",
+   "path": "gcc/gimple-array-bounds.cc",
+   "line": 940
+  },
+  {
+   "name": "pass_asan",
+   "dump": "asan",
+   "path": "gcc/asan.cc",
+   "line": 4515
+  },
+  {
+   "name": "pass_asan_O0",
+   "dump": "asan0",
+   "path": "gcc/asan.cc",
+   "line": 4557
+  },
+  {
+   "name": "pass_assumptions",
+   "dump": "assumptions",
+   "path": "gcc/tree-assume.cc",
+   "line": 461
+  },
+  {
+   "name": "pass_backprop",
+   "dump": "backprop",
+   "path": "gcc/gimple-ssa-backprop.cc",
+   "line": 975
+  },
+  {
+   "name": "pass_build_alias",
+   "dump": "alias",
+   "path": "gcc/tree-ssa-structalias.cc",
+   "line": 1764
+  },
+  {
+   "name": "pass_build_cfg",
+   "dump": "cfg",
+   "path": "gcc/tree-cfg.cc",
+   "line": 381
+  },
+  {
+   "name": "pass_build_cgraph_edges",
+   "dump": "*build_cgraph_edges",
+   "path": "gcc/cgraphbuild.cc",
+   "line": 398
+  },
+  {
+   "name": "pass_build_ealias",
+   "dump": "ealias",
+   "path": "gcc/tree-ssa-structalias.cc",
+   "line": 1802
+  },
+  {
+   "name": "pass_build_ssa",
+   "dump": "ssa",
+   "path": "gcc/tree-into-ssa.cc",
+   "line": 2586
+  },
+  {
+   "name": "pass_build_ssa_passes",
+   "dump": "build_ssa_passes",
+   "path": "gcc/passes.cc",
+   "line": 488
+  },
+  {
+   "name": "pass_call_cdce",
+   "dump": "cdce",
+   "path": "gcc/tree-call-cdce.cc",
+   "line": 1366
+  },
+  {
+   "name": "pass_ccp",
+   "dump": "ccp",
+   "path": "gcc/tree-ssa-ccp.cc",
+   "line": 3083
+  },
+  {
+   "name": "pass_cd_dce",
+   "dump": "cddce",
+   "path": "gcc/tree-ssa-dce.cc",
+   "line": 2140
+  },
+  {
+   "name": "pass_ch",
+   "dump": "ch",
+   "path": "gcc/tree-ssa-loop-ch.cc",
+   "line": 1288
+  },
+  {
+   "name": "pass_ch_vect",
+   "dump": "ch_vect",
+   "path": "gcc/tree-ssa-loop-ch.cc",
+   "line": 1282
+  },
+  {
+   "name": "pass_clean_state",
+   "dump": "*clean_state",
+   "path": "gcc/final.cc",
+   "line": 4599
+  },
+  {
+   "name": "pass_cleanup_barriers",
+   "dump": "barriers",
+   "path": "gcc/jump.cc",
+   "line": 197
+  },
+  {
+   "name": "pass_cleanup_cfg_post_optimizing",
+   "dump": "optimized",
+   "path": "gcc/tree-cfgcleanup.cc",
+   "line": 1549
+  },
+  {
+   "name": "pass_cleanup_eh",
+   "dump": "ehcleanup",
+   "path": "gcc/tree-eh.cc",
+   "line": 5047
+  },
+  {
+   "name": "pass_combine",
+   "dump": "combine",
+   "path": "gcc/combine.cc",
+   "line": 15346
+  },
+  {
+   "name": "pass_compare_elim_after_reload",
+   "dump": "cmpelim",
+   "path": "gcc/compare-elim.cc",
+   "line": 979
+  },
+  {
+   "name": "pass_complete_unroll",
+   "dump": "cunroll",
+   "path": "gcc/tree-ssa-loop-ivcanon.cc",
+   "line": 1742
+  },
+  {
+   "name": "pass_complete_unrolli",
+   "dump": "cunrolli",
+   "path": "gcc/tree-ssa-loop-ivcanon.cc",
+   "line": 1797
+  },
+  {
+   "name": "pass_compute_alignments",
+   "dump": "alignments",
+   "path": "gcc/final.cc",
+   "line": 812
+  },
+  {
+   "name": "pass_convert_switch",
+   "dump": "switchconv",
+   "path": "gcc/tree-switch-conversion.cc",
+   "line": 3000
+  },
+  {
+   "name": "pass_convert_to_eh_region_ranges",
+   "dump": "eh_ranges",
+   "path": "gcc/except.cc",
+   "line": 2800
+  },
+  {
+   "name": "pass_copy_prop",
+   "dump": "copyprop",
+   "path": "gcc/tree-ssa-copy.cc",
+   "line": 630
+  },
+  {
+   "name": "pass_coroutine_early_expand_ifns",
+   "dump": "coro-early-expand-ifns",
+   "path": "gcc/coroutine-passes.cc",
+   "line": 513
+  },
+  {
+   "name": "pass_coroutine_lower_builtins",
+   "dump": "coro-lower-builtins",
+   "path": "gcc/coroutine-passes.cc",
+   "line": 229
+  },
+  {
+   "name": "pass_cprop_hardreg",
+   "dump": "cprop_hardreg",
+   "path": "gcc/regcprop.cc",
+   "line": 1536
+  },
+  {
+   "name": "pass_crc_optimization",
+   "dump": "crc",
+   "path": "gcc/gimple-crc-optimization.cc",
+   "line": 1405
+  },
+  {
+   "name": "pass_cse",
+   "dump": "cse1",
+   "path": "gcc/cse.cc",
+   "line": 7716
+  },
+  {
+   "name": "pass_cse2",
+   "dump": "cse2",
+   "path": "gcc/cse.cc",
+   "line": 7794
+  },
+  {
+   "name": "pass_cse_after_global_opts",
+   "dump": "cse_local",
+   "path": "gcc/cse.cc",
+   "line": 7870
+  },
+  {
+   "name": "pass_cse_reciprocals",
+   "dump": "recip",
+   "path": "gcc/tree-ssa-math-opts.cc",
+   "line": 1111
+  },
+  {
+   "name": "pass_cse_sincos",
+   "dump": "sincos",
+   "path": "gcc/tree-ssa-math-opts.cc",
+   "line": 2282
+  },
+  {
+   "name": "pass_cselim",
+   "dump": "cselim",
+   "path": "gcc/tree-ssa-phiopt.cc",
+   "line": 4211
+  },
+  {
+   "name": "pass_dce",
+   "dump": "dce",
+   "path": "gcc/tree-ssa-dce.cc",
+   "line": 2101
+  },
+  {
+   "name": "pass_delay_slots",
+   "dump": "dbr",
+   "path": "gcc/reorg.cc",
+   "line": 3914
+  },
+  {
+   "name": "pass_dep_fusion",
+   "dump": "dep_fusion",
+   "path": "gcc/dep-fusion.cc",
+   "line": 149
+  },
+  {
+   "name": "pass_df_finish",
+   "dump": "dfinish",
+   "path": "gcc/df-core.cc",
+   "line": 859
+  },
+  {
+   "name": "pass_df_initialize_no_opt",
+   "dump": "no-opt dfinit",
+   "path": "gcc/df-core.cc",
+   "line": 790
+  },
+  {
+   "name": "pass_df_initialize_opt",
+   "dump": "dfinit",
+   "path": "gcc/df-core.cc",
+   "line": 750
+  },
+  {
+   "name": "pass_diagnose_omp_blocks",
+   "dump": "*diagnose_omp_blocks",
+   "path": "gcc/omp-low.cc",
+   "line": 15723
+  },
+  {
+   "name": "pass_diagnose_tm_blocks",
+   "dump": "*diagnose_tm_blocks",
+   "path": "gcc/trans-mem.cc",
+   "line": 884
+  },
+  {
+   "name": "pass_dominator",
+   "dump": "dom",
+   "path": "gcc/tree-ssa-dom.cc",
+   "line": 1076
+  },
+  {
+   "name": "pass_dse",
+   "dump": "dse",
+   "path": "gcc/tree-ssa-dse.cc",
+   "line": 1813
+  },
+  {
+   "name": "pass_duplicate_computed_gotos",
+   "dump": "compgotos",
+   "path": "gcc/bb-reorder.cc",
+   "line": 2855
+  },
+  {
+   "name": "pass_dwarf2_frame",
+   "dump": "dwarf2",
+   "path": "gcc/dwarf2cfi.cc",
+   "line": 3826
+  },
+  {
+   "name": "pass_early_inline",
+   "dump": "einline",
+   "path": "gcc/ipa-inline.cc",
+   "line": 3403
+  },
+  {
+   "name": "pass_early_object_sizes",
+   "dump": "early_objsz",
+   "path": "gcc/tree-object-size.cc",
+   "line": 2469
+  },
+  {
+   "name": "pass_early_remat",
+   "dump": "early_remat",
+   "path": "gcc/early-remat.cc",
+   "line": 2635
+  },
+  {
+   "name": "pass_early_thread_jumps",
+   "dump": "ethread",
+   "path": "gcc/tree-ssa-threadbackward.cc",
+   "line": 1078
+  },
+  {
+   "name": "pass_early_vrp",
+   "dump": "evrp",
+   "path": "gcc/tree-vrp.cc",
+   "line": 1367
+  },
+  {
+   "name": "pass_early_warn_uninitialized",
+   "dump": "early_uninit",
+   "path": "gcc/tree-ssa-uninit.cc",
+   "line": 1572
+  },
+  {
+   "name": "pass_expand",
+   "dump": "expand",
+   "path": "gcc/cfgexpand.cc",
+   "line": 7518
+  },
+  {
+   "name": "pass_expand_omp",
+   "dump": "ompexp",
+   "path": "gcc/omp-expand.cc",
+   "line": 10996
+  },
+  {
+   "name": "pass_expand_omp_ssa",
+   "dump": "ompexpssa",
+   "path": "gcc/omp-expand.cc",
+   "line": 11042
+  },
+  {
+   "name": "pass_expand_pow",
+   "dump": "pow",
+   "path": "gcc/tree-ssa-math-opts.cc",
+   "line": 2435
+  },
+  {
+   "name": "pass_ext_dce",
+   "dump": "ext_dce",
+   "path": "gcc/ext-dce.cc",
+   "line": 1398
+  },
+  {
+   "name": "pass_fast_rtl_dce",
+   "dump": "rtl_dce",
+   "path": "gcc/dce.cc",
+   "line": 1301
+  },
+  {
+   "name": "pass_feedback_split_functions",
+   "dump": "feedback_fnsplit",
+   "path": "gcc/ipa-split.cc",
+   "line": 2079
+  },
+  {
+   "name": "pass_final",
+   "dump": "final",
+   "path": "gcc/final.cc",
+   "line": 4377
+  },
+  {
+   "name": "pass_fix_loops",
+   "dump": "fix_loops",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 89
+  },
+  {
+   "name": "pass_fixup_cfg",
+   "dump": "fixup_cfg",
+   "path": "gcc/tree-cfg.cc",
+   "line": 10140
+  },
+  {
+   "name": "pass_fold_mem_offsets",
+   "dump": "fold_mem_offsets",
+   "path": "gcc/fold-mem-offsets.cc",
+   "line": 931
+  },
+  {
+   "name": "pass_forwprop",
+   "dump": "forwprop",
+   "path": "gcc/tree-ssa-forwprop.cc",
+   "line": 6046
+  },
+  {
+   "name": "pass_fre",
+   "dump": "fre",
+   "path": "gcc/tree-ssa-sccvn.cc",
+   "line": 9278
+  },
+  {
+   "name": "pass_free_cfg",
+   "dump": "*free_cfg",
+   "path": "gcc/cfgrtl.cc",
+   "line": 515
+  },
+  {
+   "name": "pass_gcse2",
+   "dump": "gcse2",
+   "path": "gcc/postreload-gcse.cc",
+   "line": 1484
+  },
+  {
+   "name": "pass_gimple_isel",
+   "dump": "isel",
+   "path": "gcc/gimple-isel.cc",
+   "line": 1404
+  },
+  {
+   "name": "pass_graphite",
+   "dump": "graphite0",
+   "path": "gcc/graphite.cc",
+   "line": 589
+  },
+  {
+   "name": "pass_graphite_transforms",
+   "dump": "graphite",
+   "path": "gcc/graphite.cc",
+   "line": 628
+  },
+  {
+   "name": "pass_harden_compares",
+   "dump": "hardcmp",
+   "path": "gcc/gimple-harden-conditionals.cc",
+   "line": 640
+  },
+  {
+   "name": "pass_harden_conditional_branches",
+   "dump": "hardcbr",
+   "path": "gcc/gimple-harden-conditionals.cc",
+   "line": 380
+  },
+  {
+   "name": "pass_harden_control_flow_redundancy",
+   "dump": "hardcfr",
+   "path": "gcc/gimple-harden-control-flow.cc",
+   "line": 1558
+  },
+  {
+   "name": "pass_hardreg_pre",
+   "dump": "hardreg_pre",
+   "path": "gcc/gcse.cc",
+   "line": 4392
+  },
+  {
+   "name": "pass_if_after_combine",
+   "dump": "ce2",
+   "path": "gcc/ifcvt.cc",
+   "line": 6498
+  },
+  {
+   "name": "pass_if_after_reload",
+   "dump": "ce3",
+   "path": "gcc/ifcvt.cc",
+   "line": 6544
+  },
+  {
+   "name": "pass_if_conversion",
+   "dump": "ifcvt",
+   "path": "gcc/tree-if-conv.cc",
+   "line": 4465
+  },
+  {
+   "name": "pass_if_to_switch",
+   "dump": "iftoswitch",
+   "path": "gcc/gimple-if-to-switch.cc",
+   "line": 591
+  },
+  {
+   "name": "pass_inc_dec",
+   "dump": "auto_inc_dec",
+   "path": "gcc/auto-inc-dec.cc",
+   "line": 1748
+  },
+  {
+   "name": "pass_initialize_regs",
+   "dump": "init-regs",
+   "path": "gcc/init-regs.cc",
+   "line": 167
+  },
+  {
+   "name": "pass_instantiate_virtual_regs",
+   "dump": "vregs",
+   "path": "gcc/function.cc",
+   "line": 2054
+  },
+  {
+   "name": "pass_into_cfg_layout_mode",
+   "dump": "into_cfglayout",
+   "path": "gcc/cfgrtl.cc",
+   "line": 3791
+  },
+  {
+   "name": "pass_ipa_asm_lgen",
+   "dump": "ipa-asm",
+   "path": "gcc/asm-toplevel.cc",
+   "line": 250
+  },
+  {
+   "name": "pass_ipa_asm_wpa",
+   "dump": "ipa-asm",
+   "path": "gcc/asm-toplevel.cc",
+   "line": 256
+  },
+  {
+   "name": "pass_ipa_auto_profile",
+   "dump": "afdo",
+   "path": "gcc/auto-profile.cc",
+   "line": 4856
+  },
+  {
+   "name": "pass_ipa_auto_profile_offline",
+   "dump": "afdo_offline",
+   "path": "gcc/auto-profile.cc",
+   "line": 4902
+  },
+  {
+   "name": "pass_ipa_cdtor_merge",
+   "dump": "cdtor",
+   "path": "gcc/ipa.cc",
+   "line": 1381
+  },
+  {
+   "name": "pass_ipa_comdats",
+   "dump": "comdats",
+   "path": "gcc/ipa-comdats.cc",
+   "line": 438
+  },
+  {
+   "name": "pass_ipa_cp",
+   "dump": "cp",
+   "path": "gcc/ipa-cp.cc",
+   "line": 6843
+  },
+  {
+   "name": "pass_ipa_devirt",
+   "dump": "devirt",
+   "path": "gcc/ipa-devirt.cc",
+   "line": 4209
+  },
+  {
+   "name": "pass_ipa_fn_summary",
+   "dump": "fnsummary",
+   "path": "gcc/ipa-fnsummary.cc",
+   "line": 5330
+  },
+  {
+   "name": "pass_ipa_free_fn_summary",
+   "dump": "free-fnsummary",
+   "path": "gcc/ipa-fnsummary.cc",
+   "line": 5286
+  },
+  {
+   "name": "pass_ipa_free_lang_data",
+   "dump": "*free_lang_data",
+   "path": "gcc/ipa-free-lang-data.cc",
+   "line": 1227
+  },
+  {
+   "name": "pass_ipa_function_and_variable_visibility",
+   "dump": "visibility",
+   "path": "gcc/ipa-visibility.cc",
+   "line": 1029
+  },
+  {
+   "name": "pass_ipa_icf",
+   "dump": "icf",
+   "path": "gcc/ipa-icf.cc",
+   "line": 3716
+  },
+  {
+   "name": "pass_ipa_increase_alignment",
+   "dump": "increase_alignment",
+   "path": "gcc/tree-vectorizer.cc",
+   "line": 1781
+  },
+  {
+   "name": "pass_ipa_inline",
+   "dump": "inline",
+   "path": "gcc/ipa-inline.cc",
+   "line": 3447
+  },
+  {
+   "name": "pass_ipa_locality_cloning",
+   "dump": "locality-clone",
+   "path": "gcc/ipa-locality-cloning.cc",
+   "line": 1528
+  },
+  {
+   "name": "pass_ipa_lower_emutls",
+   "dump": "emutls",
+   "path": "gcc/tree-emutls.cc",
+   "line": 858
+  },
+  {
+   "name": "pass_ipa_modref",
+   "dump": "modref",
+   "path": "gcc/ipa-modref.cc",
+   "line": 4274
+  },
+  {
+   "name": "pass_ipa_oacc",
+   "dump": "ipa_oacc",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 242
+  },
+  {
+   "name": "pass_ipa_oacc_kernels",
+   "dump": "ipa_oacc_kernels",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 276
+  },
+  {
+   "name": "pass_ipa_odr",
+   "dump": "odr",
+   "path": "gcc/ipa-devirt.cc",
+   "line": 4596
+  },
+  {
+   "name": "pass_ipa_profile",
+   "dump": "profile_estimate",
+   "path": "gcc/ipa-profile.cc",
+   "line": 1081
+  },
+  {
+   "name": "pass_ipa_pta",
+   "dump": "pta",
+   "path": "gcc/tree-ssa-structalias.cc",
+   "line": 2149
+  },
+  {
+   "name": "pass_ipa_pure_const",
+   "dump": "pure-const",
+   "path": "gcc/ipa-pure-const.cc",
+   "line": 2138
+  },
+  {
+   "name": "pass_ipa_reference",
+   "dump": "static-var",
+   "path": "gcc/ipa-reference.cc",
+   "line": 1318
+  },
+  {
+   "name": "pass_ipa_remove_symbols",
+   "dump": "remove_symbols",
+   "path": "gcc/passes.cc",
+   "line": 500
+  },
+  {
+   "name": "pass_ipa_single_use",
+   "dump": "single-use",
+   "path": "gcc/ipa.cc",
+   "line": 1594
+  },
+  {
+   "name": "pass_ipa_sra",
+   "dump": "sra",
+   "path": "gcc/ipa-sra.cc",
+   "line": 4735
+  },
+  {
+   "name": "pass_ipa_strub",
+   "dump": "strub",
+   "path": "gcc/ipa-strub.cc",
+   "line": 3631
+  },
+  {
+   "name": "pass_ipa_strub_mode",
+   "dump": "strubm",
+   "path": "gcc/ipa-strub.cc",
+   "line": 2679
+  },
+  {
+   "name": "pass_ipa_tm",
+   "dump": "tmipa",
+   "path": "gcc/trans-mem.cc",
+   "line": 5715
+  },
+  {
+   "name": "pass_ipa_tree_profile",
+   "dump": "profile",
+   "path": "gcc/tree-profile.cc",
+   "line": 2121
+  },
+  {
+   "name": "pass_ipa_whole_program_visibility",
+   "dump": "whole-program",
+   "path": "gcc/ipa-visibility.cc",
+   "line": 1007
+  },
+  {
+   "name": "pass_ira",
+   "dump": "ira",
+   "path": "gcc/ira.cc",
+   "line": 6268
+  },
+  {
+   "name": "pass_isolate_erroneous_paths",
+   "dump": "isolate-paths",
+   "path": "gcc/gimple-ssa-isolate-paths.cc",
+   "line": 1047
+  },
+  {
+   "name": "pass_iv_canon",
+   "dump": "ivcanon",
+   "path": "gcc/tree-ssa-loop-ivcanon.cc",
+   "line": 1685
+  },
+  {
+   "name": "pass_iv_optimize",
+   "dump": "ivopts",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 471
+  },
+  {
+   "name": "pass_jump",
+   "dump": "jump",
+   "path": "gcc/cfgcleanup.cc",
+   "line": 3259
+  },
+  {
+   "name": "pass_jump2",
+   "dump": "jump2",
+   "path": "gcc/cfgcleanup.cc",
+   "line": 3347
+  },
+  {
+   "name": "pass_jump_after_combine",
+   "dump": "jump_after_combine",
+   "path": "gcc/cfgcleanup.cc",
+   "line": 3308
+  },
+  {
+   "name": "pass_laddress",
+   "dump": "laddress",
+   "path": "gcc/gimple-laddress.cc",
+   "line": 135
+  },
+  {
+   "name": "pass_late_combine",
+   "dump": "late_combine",
+   "path": "gcc/late-combine.cc",
+   "line": 946
+  },
+  {
+   "name": "pass_late_compilation",
+   "dump": "*all-late_compilation",
+   "path": "gcc/passes.cc",
+   "line": 741
+  },
+  {
+   "name": "pass_late_thread_prologue_and_epilogue",
+   "dump": "late_pro_and_epilogue",
+   "path": "gcc/function.cc",
+   "line": 6780
+  },
+  {
+   "name": "pass_late_warn_uninitialized",
+   "dump": "uninit",
+   "path": "gcc/tree-ssa-uninit.cc",
+   "line": 1505
+  },
+  {
+   "name": "pass_leaf_regs",
+   "dump": "*leaf_regs",
+   "path": "gcc/function.cc",
+   "line": 6624
+  },
+  {
+   "name": "pass_lim",
+   "dump": "lim",
+   "path": "gcc/tree-ssa-loop-im.cc",
+   "line": 3874
+  },
+  {
+   "name": "pass_linterchange",
+   "dump": "linterchange",
+   "path": "gcc/gimple-loop-interchange.cc",
+   "line": 2122
+  },
+  {
+   "name": "pass_live_range_shrinkage",
+   "dump": "lr_shrinkage",
+   "path": "gcc/sched-rgn.cc",
+   "line": 3828
+  },
+  {
+   "name": "pass_local_fn_summary",
+   "dump": "local-fnsummary",
+   "path": "gcc/ipa-fnsummary.cc",
+   "line": 5227
+  },
+  {
+   "name": "pass_local_optimization_passes",
+   "dump": "opt_local_passes",
+   "path": "gcc/passes.cc",
+   "line": 494
+  },
+  {
+   "name": "pass_local_pure_const",
+   "dump": "local-pure-const",
+   "path": "gcc/ipa-pure-const.cc",
+   "line": 2259
+  },
+  {
+   "name": "pass_loop2",
+   "dump": "loop2",
+   "path": "gcc/loop-init.cc",
+   "line": 389
+  },
+  {
+   "name": "pass_loop_distribution",
+   "dump": "ldist",
+   "path": "gcc/tree-loop-distribution.cc",
+   "line": 4034
+  },
+  {
+   "name": "pass_loop_jam",
+   "dump": "unrolljam",
+   "path": "gcc/gimple-loop-jam.cc",
+   "line": 694
+  },
+  {
+   "name": "pass_loop_prefetch",
+   "dump": "aprefetch",
+   "path": "gcc/tree-ssa-loop-prefetch.cc",
+   "line": 2119
+  },
+  {
+   "name": "pass_loop_split",
+   "dump": "lsplit",
+   "path": "gcc/tree-ssa-loop-split.cc",
+   "line": 1857
+  },
+  {
+   "name": "pass_loop_versioning",
+   "dump": "lversion",
+   "path": "gcc/gimple-loop-versioning.cc",
+   "line": 1824
+  },
+  {
+   "name": "pass_lower_bitint",
+   "dump": "bitintlower",
+   "path": "gcc/gimple-lower-bitint.cc",
+   "line": 8452
+  },
+  {
+   "name": "pass_lower_bitint_O0",
+   "dump": "bitintlower0",
+   "path": "gcc/gimple-lower-bitint.cc",
+   "line": 8499
+  },
+  {
+   "name": "pass_lower_cf",
+   "dump": "lower",
+   "path": "gcc/gimple-low.cc",
+   "line": 251
+  },
+  {
+   "name": "pass_lower_complex",
+   "dump": "cplxlower",
+   "path": "gcc/tree-complex.cc",
+   "line": 2111
+  },
+  {
+   "name": "pass_lower_complex_O0",
+   "dump": "cplxlower0",
+   "path": "gcc/tree-complex.cc",
+   "line": 2158
+  },
+  {
+   "name": "pass_lower_eh",
+   "dump": "eh",
+   "path": "gcc/tree-eh.cc",
+   "line": 2290
+  },
+  {
+   "name": "pass_lower_eh_dispatch",
+   "dump": "ehdisp",
+   "path": "gcc/tree-eh.cc",
+   "line": 4157
+  },
+  {
+   "name": "pass_lower_omp",
+   "dump": "omplower",
+   "path": "gcc/omp-low.cc",
+   "line": 15392
+  },
+  {
+   "name": "pass_lower_resx",
+   "dump": "resx",
+   "path": "gcc/tree-eh.cc",
+   "line": 3686
+  },
+  {
+   "name": "pass_lower_subreg",
+   "dump": "subreg1",
+   "path": "gcc/lower-subreg.cc",
+   "line": 1814
+  },
+  {
+   "name": "pass_lower_subreg2",
+   "dump": "subreg2",
+   "path": "gcc/lower-subreg.cc",
+   "line": 1859
+  },
+  {
+   "name": "pass_lower_subreg3",
+   "dump": "subreg3",
+   "path": "gcc/lower-subreg.cc",
+   "line": 1901
+  },
+  {
+   "name": "pass_lower_switch",
+   "dump": "switchlower",
+   "path": "gcc/tree-switch-conversion.cc",
+   "line": 3104
+  },
+  {
+   "name": "pass_lower_switch_O0",
+   "dump": "switchlower_O0",
+   "path": "gcc/tree-switch-conversion.cc",
+   "line": 3099
+  },
+  {
+   "name": "pass_lower_tm",
+   "dump": "tmlower",
+   "path": "gcc/trans-mem.cc",
+   "line": 1875
+  },
+  {
+   "name": "pass_lower_vaarg",
+   "dump": "lower_vaarg",
+   "path": "gcc/tree-stdarg.cc",
+   "line": 1207
+  },
+  {
+   "name": "pass_lower_vector",
+   "dump": "veclower",
+   "path": "gcc/tree-vect-generic.cc",
+   "line": 2475
+  },
+  {
+   "name": "pass_lower_vector_ssa",
+   "dump": "veclower2",
+   "path": "gcc/tree-vect-generic.cc",
+   "line": 2518
+  },
+  {
+   "name": "pass_machine_reorg",
+   "dump": "mach",
+   "path": "gcc/reorg.cc",
+   "line": 3960
+  },
+  {
+   "name": "pass_match_asm_constraints",
+   "dump": "asmcons",
+   "path": "gcc/function.cc",
+   "line": 7237
+  },
+  {
+   "name": "pass_merge_phi",
+   "dump": "mergephi",
+   "path": "gcc/tree-cfgcleanup.cc",
+   "line": 1430
+  },
+  {
+   "name": "pass_mode_switching",
+   "dump": "mode_sw",
+   "path": "gcc/mode-switching.cc",
+   "line": 1334
+  },
+  {
+   "name": "pass_modref",
+   "dump": "modref",
+   "path": "gcc/ipa-modref.cc",
+   "line": 4268
+  },
+  {
+   "name": "pass_musttail",
+   "dump": "musttail",
+   "path": "gcc/tree-tailcall.cc",
+   "line": 2264
+  },
+  {
+   "name": "pass_nothrow",
+   "dump": "nothrow",
+   "path": "gcc/ipa-pure-const.cc",
+   "line": 2413
+  },
+  {
+   "name": "pass_nrv",
+   "dump": "nrv",
+   "path": "gcc/tree-nrv.cc",
+   "line": 297
+  },
+  {
+   "name": "pass_oacc_device_lower",
+   "dump": "oaccdevlow",
+   "path": "gcc/omp-offload.cc",
+   "line": 2531
+  },
+  {
+   "name": "pass_oacc_kernels",
+   "dump": "oacc_kernels",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 199
+  },
+  {
+   "name": "pass_oacc_loop_designation",
+   "dump": "oaccloops",
+   "path": "gcc/omp-offload.cc",
+   "line": 2525
+  },
+  {
+   "name": "pass_object_sizes",
+   "dump": "objsz",
+   "path": "gcc/tree-object-size.cc",
+   "line": 2430
+  },
+  {
+   "name": "pass_omp_device_lower",
+   "dump": "ompdevlow",
+   "path": "gcc/omp-offload.cc",
+   "line": 2915
+  },
+  {
+   "name": "pass_omp_oacc_kernels_decompose",
+   "dump": "omp_oacc_kernels_decompose",
+   "path": "gcc/omp-oacc-kernels-decompose.cc",
+   "line": 1635
+  },
+  {
+   "name": "pass_omp_oacc_neuter_broadcast",
+   "dump": "omp_oacc_neuter_broadcast",
+   "path": "gcc/omp-oacc-neuter-broadcast.cc",
+   "line": 1974
+  },
+  {
+   "name": "pass_omp_simd_clone",
+   "dump": "simdclone",
+   "path": "gcc/omp-simd-clone.cc",
+   "line": 2164
+  },
+  {
+   "name": "pass_omp_target_link",
+   "dump": "omptargetlink",
+   "path": "gcc/omp-offload.cc",
+   "line": 3017
+  },
+  {
+   "name": "pass_optimize_bswap",
+   "dump": "bswap",
+   "path": "gcc/gimple-ssa-store-merging.cc",
+   "line": 1775
+  },
+  {
+   "name": "pass_optimize_widening_mul",
+   "dump": "widening_mul",
+   "path": "gcc/tree-ssa-math-opts.cc",
+   "line": 6696
+  },
+  {
+   "name": "pass_outof_cfg_layout_mode",
+   "dump": "outof_cfglayout",
+   "path": "gcc/cfgrtl.cc",
+   "line": 3840
+  },
+  {
+   "name": "pass_parallelize_loops",
+   "dump": "parloops",
+   "path": "gcc/tree-parloops.cc",
+   "line": 4078
+  },
+  {
+   "name": "pass_partition_blocks",
+   "dump": "bbpart",
+   "path": "gcc/bb-reorder.cc",
+   "line": 3083
+  },
+  {
+   "name": "pass_peephole2",
+   "dump": "peephole2",
+   "path": "gcc/recog.cc",
+   "line": 4499
+  },
+  {
+   "name": "pass_phiopt",
+   "dump": "phiopt",
+   "path": "gcc/tree-ssa-phiopt.cc",
+   "line": 4016
+  },
+  {
+   "name": "pass_phiprop",
+   "dump": "phiprop",
+   "path": "gcc/tree-ssa-phiprop.cc",
+   "line": 604
+  },
+  {
+   "name": "pass_post_ipa_warn",
+   "dump": "post_ipa_warn",
+   "path": "gcc/tree-ssa-ccp.cc",
+   "line": 3288
+  },
+  {
+   "name": "pass_postreload",
+   "dump": "*all-postreload",
+   "path": "gcc/passes.cc",
+   "line": 700
+  },
+  {
+   "name": "pass_postreload_cse",
+   "dump": "postreload",
+   "path": "gcc/postreload.cc",
+   "line": 2477
+  },
+  {
+   "name": "pass_pre",
+   "dump": "pre",
+   "path": "gcc/tree-ssa-pre.cc",
+   "line": 4727
+  },
+  {
+   "name": "pass_pre_slp_scalar_cleanup",
+   "dump": "*pre_slp_scalar_cleanup",
+   "path": "gcc/passes.cc",
+   "line": 790
+  },
+  {
+   "name": "pass_predcom",
+   "dump": "pcom",
+   "path": "gcc/tree-predcom.cc",
+   "line": 3595
+  },
+  {
+   "name": "pass_profile",
+   "dump": "profile_estimate",
+   "path": "gcc/predict.cc",
+   "line": 4317
+  },
+  {
+   "name": "pass_reassoc",
+   "dump": "reassoc",
+   "path": "gcc/tree-ssa-reassoc.cc",
+   "line": 7553
+  },
+  {
+   "name": "pass_rebuild_cgraph_edges",
+   "dump": "*rebuild_cgraph_edges",
+   "path": "gcc/cgraphbuild.cc",
+   "line": 531
+  },
+  {
+   "name": "pass_rebuild_frequencies",
+   "dump": "rebuild_frequencies",
+   "path": "gcc/predict.cc",
+   "line": 4628
+  },
+  {
+   "name": "pass_ree",
+   "dump": "ree",
+   "path": "gcc/ree.cc",
+   "line": 1430
+  },
+  {
+   "name": "pass_refactor_eh",
+   "dump": "ehopt",
+   "path": "gcc/tree-eh.cc",
+   "line": 3444
+  },
+  {
+   "name": "pass_reginfo_init",
+   "dump": "reginfo",
+   "path": "gcc/reginfo.cc",
+   "line": 981
+  },
+  {
+   "name": "pass_regrename",
+   "dump": "rnreg",
+   "path": "gcc/regrename.cc",
+   "line": 2053
+  },
+  {
+   "name": "pass_release_ssa_names",
+   "dump": "release_ssa",
+   "path": "gcc/tree-ssanames.cc",
+   "line": 1056
+  },
+  {
+   "name": "pass_reload",
+   "dump": "reload",
+   "path": "gcc/ira.cc",
+   "line": 6311
+  },
+  {
+   "name": "pass_remove_cgraph_callee_edges",
+   "dump": "*remove_cgraph_callee_edges",
+   "path": "gcc/cgraphbuild.cc",
+   "line": 579
+  },
+  {
+   "name": "pass_reorder_blocks",
+   "dump": "bbro",
+   "path": "gcc/bb-reorder.cc",
+   "line": 2705
+  },
+  {
+   "name": "pass_rest_of_compilation",
+   "dump": "*rest_of_compilation",
+   "path": "gcc/passes.cc",
+   "line": 656
+  },
+  {
+   "name": "pass_return_slot",
+   "dump": "retslot",
+   "path": "gcc/tree-nrv.cc",
+   "line": 403
+  },
+  {
+   "name": "pass_rtl_avoid_store_forwarding",
+   "dump": "avoid_store_forwarding",
+   "path": "gcc/avoid-store-forwarding.cc",
+   "line": 716
+  },
+  {
+   "name": "pass_rtl_cprop",
+   "dump": "cprop",
+   "path": "gcc/cprop.cc",
+   "line": 2008
+  },
+  {
+   "name": "pass_rtl_doloop",
+   "dump": "loop2_doloop",
+   "path": "gcc/loop-init.cc",
+   "line": 658
+  },
+  {
+   "name": "pass_rtl_dse1",
+   "dump": "dse1",
+   "path": "gcc/dse.cc",
+   "line": 3815
+  },
+  {
+   "name": "pass_rtl_dse2",
+   "dump": "dse2",
+   "path": "gcc/dse.cc",
+   "line": 3858
+  },
+  {
+   "name": "pass_rtl_fwprop",
+   "dump": "fwprop1",
+   "path": "gcc/fwprop.cc",
+   "line": 1042
+  },
+  {
+   "name": "pass_rtl_fwprop_addr",
+   "dump": "fwprop2",
+   "path": "gcc/fwprop.cc",
+   "line": 1078
+  },
+  {
+   "name": "pass_rtl_hoist",
+   "dump": "hoist",
+   "path": "gcc/gcse.cc",
+   "line": 4443
+  },
+  {
+   "name": "pass_rtl_ifcvt",
+   "dump": "ce1",
+   "path": "gcc/ifcvt.cc",
+   "line": 6449
+  },
+  {
+   "name": "pass_rtl_loop_done",
+   "dump": "loop2_done",
+   "path": "gcc/loop-init.cc",
+   "line": 499
+  },
+  {
+   "name": "pass_rtl_loop_init",
+   "dump": "loop2_init",
+   "path": "gcc/loop-init.cc",
+   "line": 442
+  },
+  {
+   "name": "pass_rtl_move_loop_invariants",
+   "dump": "loop2_invariant",
+   "path": "gcc/loop-init.cc",
+   "line": 544
+  },
+  {
+   "name": "pass_rtl_pre",
+   "dump": "rtl pre",
+   "path": "gcc/gcse.cc",
+   "line": 4342
+  },
+  {
+   "name": "pass_rtl_store_motion",
+   "dump": "store_motion",
+   "path": "gcc/store-motion.cc",
+   "line": 1268
+  },
+  {
+   "name": "pass_rtl_unroll_loops",
+   "dump": "loop2_unroll",
+   "path": "gcc/loop-init.cc",
+   "line": 606
+  },
+  {
+   "name": "pass_sancov",
+   "dump": "sancov",
+   "path": "gcc/sancov.cc",
+   "line": 343
+  },
+  {
+   "name": "pass_sancov_O0",
+   "dump": "sancov_O0",
+   "path": "gcc/sancov.cc",
+   "line": 349
+  },
+  {
+   "name": "pass_sanopt",
+   "dump": "sanopt",
+   "path": "gcc/sanopt.cc",
+   "line": 1433
+  },
+  {
+   "name": "pass_sccopy",
+   "dump": "sccopy",
+   "path": "gcc/gimple-ssa-sccopy.cc",
+   "line": 717
+  },
+  {
+   "name": "pass_scev_cprop",
+   "dump": "sccp",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 423
+  },
+  {
+   "name": "pass_sched",
+   "dump": "sched1",
+   "path": "gcc/sched-rgn.cc",
+   "line": 3877
+  },
+  {
+   "name": "pass_sched2",
+   "dump": "sched2",
+   "path": "gcc/sched-rgn.cc",
+   "line": 3927
+  },
+  {
+   "name": "pass_sched_fusion",
+   "dump": "sched_fusion",
+   "path": "gcc/sched-rgn.cc",
+   "line": 3979
+  },
+  {
+   "name": "pass_set_nothrow_function_flags",
+   "dump": "nothrow",
+   "path": "gcc/except.cc",
+   "line": 2086
+  },
+  {
+   "name": "pass_shorten_branches",
+   "dump": "shorten",
+   "path": "gcc/final.cc",
+   "line": 4424
+  },
+  {
+   "name": "pass_simduid_cleanup",
+   "dump": "simduid",
+   "path": "gcc/tree-vectorizer.cc",
+   "line": 1502
+  },
+  {
+   "name": "pass_sink_code",
+   "dump": "sink",
+   "path": "gcc/tree-ssa-sink.cc",
+   "line": 897
+  },
+  {
+   "name": "pass_slp_vectorize",
+   "dump": "slp",
+   "path": "gcc/tree-vectorizer.cc",
+   "line": 1589
+  },
+  {
+   "name": "pass_sms",
+   "dump": "sms",
+   "path": "gcc/modulo-sched.cc",
+   "line": 3389
+  },
+  {
+   "name": "pass_split_after_reload",
+   "dump": "split2",
+   "path": "gcc/recog.cc",
+   "line": 4589
+  },
+  {
+   "name": "pass_split_all_insns",
+   "dump": "split1",
+   "path": "gcc/recog.cc",
+   "line": 4544
+  },
+  {
+   "name": "pass_split_before_regstack",
+   "dump": "split4",
+   "path": "gcc/recog.cc",
+   "line": 4702
+  },
+  {
+   "name": "pass_split_before_sched2",
+   "dump": "split3",
+   "path": "gcc/recog.cc",
+   "line": 4643
+  },
+  {
+   "name": "pass_split_crit_edges",
+   "dump": "crited",
+   "path": "gcc/tree-cfg.cc",
+   "line": 9453
+  },
+  {
+   "name": "pass_split_for_shorten_branches",
+   "dump": "split5",
+   "path": "gcc/recog.cc",
+   "line": 4752
+  },
+  {
+   "name": "pass_split_functions",
+   "dump": "fnsplit",
+   "path": "gcc/ipa-split.cc",
+   "line": 2016
+  },
+  {
+   "name": "pass_split_paths",
+   "dump": "split-paths",
+   "path": "gcc/gimple-ssa-split-paths.cc",
+   "line": 542
+  },
+  {
+   "name": "pass_sra",
+   "dump": "sra",
+   "path": "gcc/tree-sra.cc",
+   "line": 5291
+  },
+  {
+   "name": "pass_sra_early",
+   "dump": "esra",
+   "path": "gcc/tree-sra.cc",
+   "line": 5255
+  },
+  {
+   "name": "pass_stack_adjustments",
+   "dump": "csa",
+   "path": "gcc/combine-stack-adj.cc",
+   "line": 853
+  },
+  {
+   "name": "pass_stack_ptr_mod",
+   "dump": "*stack_ptr_mod",
+   "path": "gcc/stack-ptr-mod.cc",
+   "line": 112
+  },
+  {
+   "name": "pass_stack_regs",
+   "dump": "*stack_regs",
+   "path": "gcc/reg-stack.cc",
+   "line": 3506
+  },
+  {
+   "name": "pass_stack_regs_run",
+   "dump": "stack",
+   "path": "gcc/reg-stack.cc",
+   "line": 3557
+  },
+  {
+   "name": "pass_stdarg",
+   "dump": "stdarg",
+   "path": "gcc/tree-stdarg.cc",
+   "line": 1160
+  },
+  {
+   "name": "pass_store_merging",
+   "dump": "store-merging",
+   "path": "gcc/gimple-ssa-store-merging.cc",
+   "line": 5706
+  },
+  {
+   "name": "pass_strength_reduction",
+   "dump": "slsr",
+   "path": "gcc/gimple-ssa-strength-reduction.cc",
+   "line": 4169
+  },
+  {
+   "name": "pass_strip_predict_hints",
+   "dump": "*strip_predict_hints",
+   "path": "gcc/predict.cc",
+   "line": 4452
+  },
+  {
+   "name": "pass_strlen",
+   "dump": "strlen",
+   "path": "gcc/tree-ssa-strlen.cc",
+   "line": 6170
+  },
+  {
+   "name": "pass_tail_calls",
+   "dump": "tailc",
+   "path": "gcc/tree-tailcall.cc",
+   "line": 2219
+  },
+  {
+   "name": "pass_tail_recursion",
+   "dump": "tailr",
+   "path": "gcc/tree-tailcall.cc",
+   "line": 2180
+  },
+  {
+   "name": "pass_target_clone",
+   "dump": "targetclone",
+   "path": "gcc/multiple_target.cc",
+   "line": 661
+  },
+  {
+   "name": "pass_thread_jumps",
+   "dump": "thread",
+   "path": "gcc/tree-ssa-threadbackward.cc",
+   "line": 1066
+  },
+  {
+   "name": "pass_thread_jumps_full",
+   "dump": "threadfull",
+   "path": "gcc/tree-ssa-threadbackward.cc",
+   "line": 1072
+  },
+  {
+   "name": "pass_thread_prologue_and_epilogue",
+   "dump": "pro_and_epilogue",
+   "path": "gcc/function.cc",
+   "line": 6774
+  },
+  {
+   "name": "pass_tm_edges",
+   "dump": "tmedge",
+   "path": "gcc/trans-mem.cc",
+   "line": 3388
+  },
+  {
+   "name": "pass_tm_init",
+   "dump": "*tminit",
+   "path": "gcc/trans-mem.cc",
+   "line": 2169
+  },
+  {
+   "name": "pass_tm_mark",
+   "dump": "tmmark",
+   "path": "gcc/trans-mem.cc",
+   "line": 3198
+  },
+  {
+   "name": "pass_tm_memopt",
+   "dump": "tmmemopt",
+   "path": "gcc/trans-mem.cc",
+   "line": 4128
+  },
+  {
+   "name": "pass_tracer",
+   "dump": "tracer",
+   "path": "gcc/tracer.cc",
+   "line": 467
+  },
+  {
+   "name": "pass_tree_ifcombine",
+   "dump": "ifcombine",
+   "path": "gcc/tree-ssa-ifcombine.cc",
+   "line": 1424
+  },
+  {
+   "name": "pass_tree_loop",
+   "dump": "loop",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 144
+  },
+  {
+   "name": "pass_tree_loop_done",
+   "dump": "loopdone",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 520
+  },
+  {
+   "name": "pass_tree_loop_init",
+   "dump": "loopinit",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 368
+  },
+  {
+   "name": "pass_tree_no_loop",
+   "dump": "no_loop",
+   "path": "gcc/tree-ssa-loop.cc",
+   "line": 313
+  },
+  {
+   "name": "pass_tree_unswitch",
+   "dump": "unswitch",
+   "path": "gcc/tree-ssa-loop-unswitch.cc",
+   "line": 1676
+  },
+  {
+   "name": "pass_tsan",
+   "dump": "tsan",
+   "path": "gcc/tsan.cc",
+   "line": 929
+  },
+  {
+   "name": "pass_tsan_O0",
+   "dump": "tsan0",
+   "path": "gcc/tsan.cc",
+   "line": 969
+  },
+  {
+   "name": "pass_ubsan",
+   "dump": "ubsan",
+   "path": "gcc/ubsan.cc",
+   "line": 2601
+  },
+  {
+   "name": "pass_ud_rtl_dce",
+   "dump": "ud_dce",
+   "path": "gcc/dce.cc",
+   "line": 867
+  },
+  {
+   "name": "pass_uncprop",
+   "dump": "uncprop",
+   "path": "gcc/tree-ssa-uncprop.cc",
+   "line": 504
+  },
+  {
+   "name": "pass_variable_tracking",
+   "dump": "vartrack",
+   "path": "gcc/var-tracking.cc",
+   "line": 10627
+  },
+  {
+   "name": "pass_vectorize",
+   "dump": "vect",
+   "path": "gcc/tree-vectorizer.cc",
+   "line": 1442
+  },
+  {
+   "name": "pass_vrp",
+   "dump": "vrp",
+   "path": "gcc/tree-vrp.cc",
+   "line": 1361
+  },
+  {
+   "name": "pass_vtable_verify",
+   "dump": "vtable-verify",
+   "path": "gcc/vtable-verify.cc",
+   "line": 837
+  },
+  {
+   "name": "pass_walloca",
+   "dump": "walloca",
+   "path": "gcc/gimple-ssa-warn-alloca.cc",
+   "line": 390
+  },
+  {
+   "name": "pass_warn_access",
+   "dump": "waccess",
+   "path": "gcc/gimple-ssa-warn-access.cc",
+   "line": 4909
+  },
+  {
+   "name": "pass_warn_function_noreturn",
+   "dump": "*warn_function_noreturn",
+   "path": "gcc/ipa-pure-const.cc",
+   "line": 2306
+  },
+  {
+   "name": "pass_warn_function_return",
+   "dump": "*warn_function_return",
+   "path": "gcc/tree-cfg.cc",
+   "line": 9820
+  },
+  {
+   "name": "pass_warn_nonnull_compare",
+   "dump": "*nonnullcmp",
+   "path": "gcc/gimple-ssa-nonnull-compare.cc",
+   "line": 149
+  },
+  {
+   "name": "pass_warn_printf",
+   "dump": "warn-printf",
+   "path": "gcc/tree-ssa-strlen.cc",
+   "line": 6164
+  },
+  {
+   "name": "pass_warn_recursion",
+   "dump": "*infinite-recursion",
+   "path": "gcc/gimple-warn-recursion.cc",
+   "line": 212
+  },
+  {
+   "name": "pass_warn_restrict",
+   "dump": "wrestrict",
+   "path": "gcc/gimple-ssa-warn-restrict.cc",
+   "line": 2117
+  },
+  {
+   "name": "pass_warn_unused_result",
+   "dump": "*warn_unused_result",
+   "path": "gcc/tree-cfg.cc",
+   "line": 9930
+  },
+  {
+   "name": "pass_web",
+   "dump": "web",
+   "path": "gcc/web.cc",
+   "line": 428
+  },
+  {
+   "name": "pass_zero_call_used_regs",
+   "dump": "zero_call_used_regs",
+   "path": "gcc/function.cc",
+   "line": 6870
+  }
+ ],
+ "biggest": [
+  {
+   "path": "gcc/cp/parser.cc",
+   "lines": 57833,
+   "about": "The C++ parser, by hand, no generator. C++ is hard to parse."
+  },
+  {
+   "path": "gcc/config/arm/arm.cc",
+   "lines": 36121,
+   "about": "The 32 bit Arm port, carrying twenty years of Arm variants."
+  },
+  {
+   "path": "gcc/config/aarch64/aarch64.cc",
+   "lines": 34139,
+   "about": "The 64 bit Arm port, including SVE, which is most of it."
+  },
+  {
+   "path": "gcc/cp/pt.cc",
+   "lines": 33978,
+   "about": "C++ templates. Substitution, deduction, and the errors you have seen."
+  },
+  {
+   "path": "gcc/dwarf2out.cc",
+   "lines": 33961,
+   "about": "Debug info generation. Effectively a standards document in code."
+  },
+  {
+   "path": "gcc/config/i386/sse.md",
+   "lines": 33668,
+   "about": "Every x86 vector instruction as a pattern. Machine written feel."
+  },
+  {
+   "path": "gcc/c/c-parser.cc",
+   "lines": 31377,
+   "about": "The C parser, also by hand, also with the extensions in it."
+  },
+  {
+   "path": "gcc/config/i386/i386.md",
+   "lines": 30901,
+   "about": "The rest of x86, in patterns, since 1988."
+  },
+  {
+   "path": "gcc/config/rs6000/rs6000.cc",
+   "lines": 29619,
+   "about": "The PowerPC port."
+  },
+  {
+   "path": "gcc/config/i386/i386.cc",
+   "lines": 29117,
+   "about": "The x86 port proper: costs, ABI, and target hooks."
+  },
+  {
+   "path": "gcc/config/aarch64/arm_neon.h",
+   "lines": 28634,
+   "about": "The NEON intrinsics header. Generated feel, checked in."
+  },
+  {
+   "path": "gcc/config/i386/i386-expand.cc",
+   "lines": 28081,
+   "about": "Turning x86 intrinsics and patterns into insns."
+  }
+ ],
+ "notable": [
+  {
+   "path": "gcc/passes.def",
+   "lines": 577,
+   "about": "The whole pass pipeline in order and nothing else. Start here."
+  },
+  {
+   "path": "gcc/tree-pass.h",
+   "lines": 710,
+   "about": "What a pass is. Read pass_data at the top and stop."
+  },
+  {
+   "path": "gcc/tree.def",
+   "lines": 1617,
+   "about": "Every tree code, one per line, with a comment. A good afternoon."
+  },
+  {
+   "path": "gcc/tree-ssa-ccp.cc",
+   "lines": 3291,
+   "about": "A whole real optimization pass that fits in your head."
+  },
+  {
+   "path": "gcc/cfgloop.cc",
+   "lines": 2185,
+   "about": "Loops, discovered and printed. Small, and it prints things you see."
+  },
+  {
+   "path": "gcc/tree-cfg.cc",
+   "lines": 10779,
+   "about": "The control flow graph over GIMPLE. Large but readable in pieces."
+  },
+  {
+   "path": "gcc/match.pd",
+   "lines": 12293,
+   "about": "Thousands of rewrite rules in a small language. Read a hundred lines."
+  },
+  {
+   "path": "gcc/combine.cc",
+   "lines": 15297,
+   "about": "Instruction combining. Wisdom, accumulated. Not for your first month."
+  },
+  {
+   "path": "gcc/dwarf2out.cc",
+   "lines": 33961,
+   "about": "Debug info. A standards document in disguise. Same advice."
+  }
+ ],
+ "hunt": [
+  {
+   "key": "loops",
+   "dump": ";; 2 loops found",
+   "route": "grep",
+   "path": "gcc/cfgloop.cc",
+   "line": 163,
+   "about": "The plain case. Take the numbers out, search the rest, one hit.",
+   "text": "fprintf (file, \";; %d loops found\\n\", number_of_loops (cfun));"
+  },
+  {
+   "key": "merge",
+   "dump": "Merging blocks 2 and 8",
+   "route": "grep",
+   "path": "gcc/tree-cfg.cc",
+   "line": 1980,
+   "about": "Also plain, but note which file it is in. Nobody would guess tree-cfg.cc.",
+   "text": "fprintf (dump_file, \"Merging blocks %d and %d\\n\", a->index, b->index);"
+  },
+  {
+   "key": "simulate",
+   "dump": "Simulating statement: _1 = i_3 * 2;",
+   "route": "grep",
+   "path": "gcc/tree-ssa-propagate.cc",
+   "line": 486,
+   "about": "It was in the ccp1 dump, and it is not in tree-ssa-ccp.cc. The engine that drives ccp prints it, and three other passes share that engine.",
+   "text": "fprintf (dump_file, \"\\nSimulating statement: \");"
+  },
+  {
+   "key": "ccp",
+   "dump": "hunt.c.114t.ccp2",
+   "route": "passes",
+   "path": "gcc/tree-ssa-ccp.cc",
+   "line": 3083,
+   "about": "A file name, not a message, so there is nothing to grep for. The name after the number is the pass, the 2 says it is the second run, and the pass table gets you the rest of the way.",
+   "text": "make_pass_ccp (gcc::context *ctxt)"
+  },
+  {
+   "key": "block",
+   "dump": "Removing basic block 8",
+   "route": "history",
+   "path": "gcc/tree-cfg.cc",
+   "line": 2193,
+   "about": "Easy to find and worth asking about. It arrived with the whole GIMPLE and SSA middle end, in one merge, on one day.",
+   "commit": "6de9cd9a886e",
+   "date": "2004-05-13",
+   "author": "Diego Novillo",
+   "subject": "Merge tree-ssa-20020619-branch into mainline.",
+   "text": "fprintf (dump_file, \"Removing basic block %d\\n\", bb->index);"
+  },
+  {
+   "key": "pattern",
+   "dump": "Applying pattern match.pd:239, gimple-match-6.cc:11451",
+   "route": "generated",
+   "path": "gcc/match.pd",
+   "line": 239,
+   "about": "There is no gimple-match-6.cc in the tree. The message names its own answer first and a generated file second, and the commit that put the rule there is the one that invented match.pd.",
+   "commit": "e0ee10ed5af1",
+   "date": "2014-10-24",
+   "author": "Richard Biener",
+   "subject": "genmatch.c (expr::gen_transform): Use fold_buildN_loc and build_call_expr_loc.",
+   "text": "(non_lvalue @0)))"
+  }
+ ]
+}

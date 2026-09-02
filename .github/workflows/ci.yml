@@ -70,6 +70,10 @@ jobs:
       # through, so both directions are checked.
       - name: the boss fights grade a right answer and a wrong one
         run: |
+          python lessons/z01-cpp-for-reading/grade.py --says loop,cast,poly,gty,include,treemacro,gimple,wide,dump,gsi,pass,vec
+          ! python lessons/z01-cpp-for-reading/grade.py --says gsi,cast,poly,gty,include,treemacro,gimple,wide,dump,gsi,pass,vec
+          python lessons/z02-where-things-are/grade.py --says gcc/cfgloop.cc:163,gcc/tree-cfg.cc:1980,gcc/tree-ssa-propagate.cc:486,gcc/tree-ssa-ccp.cc:3083,gcc/tree-cfg.cc:2193:2004,gcc/match.pd:239:2014
+          ! python lessons/z02-where-things-are/grade.py --says gcc/cfgloop.cc:163,gcc/tree-cfg.cc:1980,gcc/tree-ssa-ccp.cc:486,gcc/tree-ssa-ccp.cc:3083,gcc/tree-cfg.cc:2193,gcc/match.pd:239
           python lessons/t01-what-gcc-runs/grade.py --steps 1,1,2,3 --shared cc1 --to-as no
           ! python lessons/t01-what-gcc-runs/grade.py --steps 2,2,2,2 --shared as --to-as yes
           python lessons/t02-five-faces/grade.py --asm 5=2,6=6,7=1,8=0 --vanished 8 --appeared 9
@@ -124,6 +128,16 @@ jobs:
       # The parser tests that read the real tree only run where the tree exists.
       - run: pip install -e ".[dev]"
       - run: python -m pytest -q tests/test_bpc.py tests/test_mdesc.py
+
+      # The Z lessons read GCC's source rather than a compilation, through a corpus recorded
+      # once and committed. refcheck proves the cited lines have not moved, and this proves
+      # the committed corpus is what the recorder produces today, so a sentence edited in a
+      # recorder cannot sit unrecorded and a bump cannot leave the corpus behind.
+      - name: the source corpora match the recorders that write them
+        run: |
+          python lessons/z01-cpp-for-reading/record.py
+          python lessons/z02-where-things-are/record.py
+          git diff --exit-code corpora
 
   gcc:
     name: against a real gcc-16

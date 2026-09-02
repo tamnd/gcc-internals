@@ -149,7 +149,7 @@
    "path": "gcc/is-a.h",
    "first": 248,
    "last": 257,
-   "about": "as_a asserts and converts. The assert is a checking assert, so it is usually off.",
+   "about": "as_a asserts and converts, and the assert is one a release build removes.",
    "lines": [
     "/* A generic conversion from a base type U to a derived type T.  See the",
     "   discussion above for when to use this function.  */",
@@ -252,7 +252,7 @@
    "path": "gcc/hash-map.h",
    "first": 35,
    "last": 45,
-   "about": "The same story as vec. GTY((user)) means gengtype is told to expect handwritten code.",
+   "about": "The same story as vec. GTY((user)) tells gengtype the marking is handwritten.",
    "lines": [
     "const size_t default_hash_map_size = 13;",
     "template<typename KeyId, typename Value,",
@@ -271,7 +271,7 @@
    "path": "gcc/poly-int.h",
    "first": 374,
    "last": 387,
-   "about": "A number that may not be known yet, because a vector register may not have a size.",
+   "about": "A number that may not be known yet, because a vector may not have a size yet.",
    "lines": [
     "/* A class containing polynomial integers.  The polynomial has N coefficients",
     "   of type C, and N - 1 indeterminates.  */",
@@ -293,7 +293,7 @@
    "path": "gcc/tree-ssa-ccp.cc",
    "first": 121,
    "last": 132,
-   "about": "The first three are mandatory and in that order. Everything after them is ordinary.",
+   "about": "The first three are mandatory, in that order. Everything after them is ordinary.",
    "lines": [
     "#include \"config.h\"",
     "#include \"system.h\"",

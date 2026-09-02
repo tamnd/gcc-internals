@@ -187,6 +187,13 @@ corpus-t10:
 corpus-z01:
     {{py}} lessons/z01-cpp-for-reading/record.py
 
+# Z02 reads the compiler too, but the whole of it rather than eighteen spans. This counts
+# every source file in the tree, lists the ports, works out which file defines each pass in
+# passes.def, and writes the lot to corpora/layout/gcc.json. It also needs the submodule, and
+# it takes about twenty seconds because it opens every .cc under gcc/ to find the pass table.
+corpus-z02:
+    {{py}} lessons/z02-where-things-are/record.py
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build

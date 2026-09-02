@@ -1,0 +1,180 @@
+{
+ "tag": "releases/gcc-16.2.0",
+ "snippets": {
+  "def": {
+   "path": "gcc/tree.def",
+   "first": 295,
+   "last": 298,
+   "about": "Two tree codes. The file is included several times with DEFTREECODE defined differently, which is how one list becomes an enum and a table of names.",
+   "lines": [
+    "DEFTREECODE (INTEGER_CST, \"integer_cst\", tcc_constant, 0)",
+    "",
+    "/* Contents are given by POLY_INT_CST_COEFF.  */",
+    "DEFTREECODE (POLY_INT_CST, \"poly_int_cst\", tcc_constant, 0)"
+   ]
+  },
+  "md": {
+   "path": "gcc/config/aarch64/aarch64.md",
+   "first": 2965,
+   "last": 2979,
+   "about": "One instruction pattern. The RTL it matches, then the assembly to print, with the register class constraints in a table.",
+   "lines": [
+    "(define_insn \"add<mode>3_compare0\"",
+    "  [(set (reg:CC_NZ CC_REGNUM)",
+    "\t(compare:CC_NZ",
+    "\t (plus:GPI (match_operand:GPI 1 \"register_operand\")",
+    "\t\t   (match_operand:GPI 2 \"aarch64_plus_operand\"))",
+    "\t (const_int 0)))",
+    "   (set (match_operand:GPI 0 \"register_operand\")",
+    "\t(plus:GPI (match_dup 1) (match_dup 2)))]",
+    "  \"\"",
+    "  {@ [ cons: =0 , %1 , 2 ; attrs: type ]",
+    "     [ r        , rk , r ; alus_sreg   ] adds\\t%<w>0, %<w>1, %<w>2",
+    "     [ r        , rk , I ; alus_imm    ] adds\\t%<w>0, %<w>1, %2",
+    "     [ r        , rk , J ; alus_imm    ] subs\\t%<w>0, %<w>1, #%n2",
+    "  }",
+    ")"
+   ]
+  },
+  "opt": {
+   "path": "gcc/common.opt",
+   "first": 3220,
+   "last": 3226,
+   "about": "Two options. The name, then the flags line, then the help text.",
+   "lines": [
+    "ftree-ccp",
+    "Common Var(flag_tree_ccp) Optimization",
+    "Enable SSA-CCP optimization on trees.",
+    "",
+    "ftree-bit-ccp",
+    "Common Var(flag_tree_bit_ccp) Optimization",
+    "Enable SSA-BIT-CCP optimization on trees."
+   ]
+  },
+  "pd": {
+   "path": "gcc/match.pd",
+   "first": 236,
+   "last": 239,
+   "about": "One rewrite rule, over five operators at once. x op 0 becomes x.",
+   "lines": [
+    "(for op (plus pointer_plus minus bit_ior bit_xor)",
+    "  (simplify",
+    "    (op @0 integer_zerop)",
+    "    (non_lvalue @0)))"
+   ]
+  },
+  "pass-data": {
+   "path": "gcc/tree-pass.h",
+   "first": 39,
+   "last": 47,
+   "about": "The struct every pass fills in, and the comment that documents the whole chain from a dump file name back to a pass.",
+   "lines": [
+    "/* Metadata for a pass, non-varying across all instances of a pass.  */",
+    "struct pass_data",
+    "{",
+    "  /* Optimization pass type.  */",
+    "  enum opt_pass_type type;",
+    "",
+    "  /* Terse name of the pass used as a fragment of the dump file",
+    "     name.  If the name starts with a star, no dump happens. */",
+    "  const char *name;"
+   ]
+  },
+  "passes": {
+   "path": "gcc/passes.def",
+   "first": 80,
+   "last": 88,
+   "about": "Nine lines of the pipeline, including the first run of ccp.",
+   "lines": [
+    "\t  NEXT_PASS (pass_remove_cgraph_callee_edges);",
+    "\t  NEXT_PASS (pass_early_object_sizes);",
+    "\t  /* Don't record nonzero bits before IPA to avoid",
+    "\t     using too much memory.  */",
+    "\t  NEXT_PASS (pass_ccp, false /* nonzero_p */);",
+    "\t  /* After CCP we rewrite no longer addressed locals into SSA",
+    "\t     form if possible.  */",
+    "\t  NEXT_PASS (pass_forwprop, /*full_walk=*/true);",
+    "          NEXT_PASS (pass_early_thread_jumps, /*first=*/true);"
+   ]
+  },
+  "make": {
+   "path": "gcc/tree-ssa-ccp.cc",
+   "first": 3082,
+   "last": 3086,
+   "about": "The other end of the chain. passes.def names this function and this file is the pass.",
+   "lines": [
+    "gimple_opt_pass *",
+    "make_pass_ccp (gcc::context *ctxt)",
+    "{",
+    "  return new pass_ccp (ctxt);",
+    "}"
+   ]
+  },
+  "loops": {
+   "path": "gcc/cfgloop.cc",
+   "first": 160,
+   "last": 166,
+   "about": "Where the loop count at the top of half your dumps comes from.",
+   "lines": [
+    "  if (!current_loops || ! file)",
+    "    return;",
+    "",
+    "  fprintf (file, \";; %d loops found\\n\", number_of_loops (cfun));",
+    "",
+    "  for (auto loop : loops_list (cfun, LI_INCLUDE_ROOT))",
+    "    {"
+   ]
+  },
+  "merge": {
+   "path": "gcc/tree-cfg.cc",
+   "first": 1979,
+   "last": 1981,
+   "about": "Three lines, and one of them is a message you have read a hundred times.",
+   "lines": [
+    "  if (dump_file)",
+    "    fprintf (dump_file, \"Merging blocks %d and %d\\n\", a->index, b->index);",
+    ""
+   ]
+  },
+  "simulate": {
+   "path": "gcc/tree-ssa-propagate.cc",
+   "first": 484,
+   "last": 488,
+   "about": "Printed by the propagation engine, not by the pass whose dump it lands in.",
+   "lines": [
+    "\t  if (dump_file && (dump_flags & TDF_DETAILS))",
+    "\t    {",
+    "\t      fprintf (dump_file, \"\\nSimulating statement: \");",
+    "\t      print_gimple_stmt (dump_file, next_stmt, 0, dump_flags);",
+    "\t    }"
+   ]
+  },
+  "block": {
+   "path": "gcc/tree-cfg.cc",
+   "first": 2191,
+   "last": 2196,
+   "about": "Removing a basic block, and the detail dump behind TDF_DETAILS.",
+   "lines": [
+    "  if (dump_file)",
+    "    {",
+    "      fprintf (dump_file, \"Removing basic block %d\\n\", bb->index);",
+    "      if (dump_flags & TDF_DETAILS)",
+    "\t{",
+    "\t  dump_bb (dump_file, bb, 0, TDF_BLOCKS);"
+   ]
+  },
+  "genmatch": {
+   "path": "gcc/genmatch.cc",
+   "first": 911,
+   "last": 915,
+   "about": "A program printing the source of a program that prints the message. This is the only place in the tree the words Applying pattern appear.",
+   "lines": [
+    "  fprintf_indent (f, 2, \"fprintf (dump_file, \\\"%%s \"",
+    "\t\t  \"%%s:%%d, %%s:%%d\\\\n\\\",\\n\");",
+    "  fprintf_indent (f, 10, \"simplify ? \\\"Applying pattern\\\" : \"",
+    "\t\t  \"\\\"Matching expression\\\", file1, \"",
+    "\t\t  \"dbg_line_numbers[line1_id], file2, line2);\");"
+   ]
+  }
+ }
+}
