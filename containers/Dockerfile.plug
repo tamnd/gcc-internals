@@ -1,0 +1,58 @@
+# The five minute path: a distribution's own GCC, with gxplug built against it.
+#
+# This is the row of the matrix that matters most to a reader, and the only one that does
+# not compile a compiler. If the plugin loads only into a GCC we built ourselves then the
+# plugin does not work, and the way to keep that honest is to have a job that never builds
+# one. The plugin ABI is version and configuration sensitive, so a plugin built here has to
+# be built against this exact GCC and no other.
+
+# Debian unstable, because as of September 2026 it is where a packaged GCC 16 actually is.
+# `gcc-16` there is 16.2.0-1, the same release the whole project is pinned to, which makes
+# this a genuine test of the plugin against somebody else's build and not a coincidence.
+# Ubuntu 24.04 has GCC 13 and 26.04 has not caught up either, so a reader on an LTS builds
+# from source or uses this image. That is question 4 and this is the honest answer to it.
+FROM debian:sid
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# `gcc-16-plugin-dev` is what carries the headers a plugin includes. Without it the
+# distribution GCC is there and `-fplugin=` has nothing to compile against, which is the
+# thing every first attempt at this gets wrong.
+RUN apt-get update && apt-get install --no-install-recommends -y \
+      build-essential \
+      ca-certificates \
+      gcc-16 \
+      g++-16 \
+      gcc-16-plugin-dev \
+      make \
+      python3 \
+ && rm -rf /var/lib/apt/lists/*
+
+# Named so that `gcc` means the one this image is about, rather than whichever version the
+# distribution happens to consider default this year.
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-16 100 \
+      --slave /usr/bin/g++ g++ /usr/bin/g++-16
+
+COPY gxplug/ /usr/src/gxplug/
+WORKDIR /usr/src/gxplug
+
+# The plugin builds here rather than being copied in, because a plugin binary is only valid
+# against the compiler it was compiled against and an image that shipped one built anywhere
+# else would be shipping a segfault.
+RUN if [ -f Makefile ]; then make; else echo "gxplug has no Makefile yet, image has the toolchain only"; fi
+
+LABEL org.opencontainers.image.source="https://github.com/tamnd/gcc-internals"
+LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
+LABEL dev.gcc-internals.config="plug"
+
+# Two things have to be true for this image to be worth anything: the compiler works, and
+# it will load a plugin at all. The second is checked by asking it where its plugin headers
+# are, which fails loudly when the plugin-dev package is missing.
+RUN set -eux; \
+    printf 'int main(void){return 0;}\n' > /tmp/t.c; \
+    gcc -O2 /tmp/t.c -o /tmp/t; \
+    /tmp/t; \
+    test -f "$(gcc -print-file-name=plugin)/include/gcc-plugin.h"; \
+    rm -f /tmp/t.c /tmp/t
+
+CMD ["gcc", "--version"]

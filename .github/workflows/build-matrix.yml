@@ -1,0 +1,201 @@
+name: build matrix
+
+# The only job in this project that compiles GCC.
+#
+# Everything else pulls an image by digest out of containers/images.lock.json. That is the
+# rule the whole build caching story rests on: a course whose test suite rebuilds a compiler
+# is a course nobody can contribute to, and a green run that quietly built its own compiler
+# is a green run that proves nothing about the published one.
+#
+# What runs when is in containers/matrix.toml, not here. This file asks for the job list.
+
+on:
+  schedule:
+    # Sunday, early. A full run is about thirteen machine hours across the two architectures
+    # and boot is four of them, so it wants a quiet part of the week.
+    - cron: "0 3 * * 0"
+  push:
+    branches: [main]
+    paths:
+      - "patches/**"
+      - "containers/**"
+      - ".github/workflows/build-matrix.yml"
+  pull_request:
+    paths:
+      - "patches/**"
+      - "containers/**"
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "one configuration id, or blank for the whole matrix"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  packages: write
+
+# A second run while one is going is thirteen hours of duplicated work. The newer one wins
+# on a branch, and on main nothing is cancelled, because a half published matrix is worse
+# than a slow one.
+concurrency:
+  group: build-matrix-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  plan:
+    name: what to build
+    runs-on: ubuntu-latest
+    outputs:
+      jobs: ${{ steps.plan.outputs.jobs }}
+      count: ${{ steps.plan.outputs.count }}
+      publish: ${{ steps.plan.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The matrix file is the source of truth and it can say something impossible, so it
+      # is validated before thirteen hours are spent acting on it.
+      - name: the matrix file makes sense and the README agrees with it
+        run: |
+          python -m tools.matrix table --check
+          python -m tools.matrix jobs --on weekly --pretty
+
+      - id: plan
+        name: the job list
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          trigger=weekly
+          if [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "pull_request" ]; then
+            trigger=push
+          fi
+          jobs=$(python -m tools.matrix jobs --on "$trigger")
+          if [ -n "$ONLY" ]; then
+            jobs=$(printf '%s' "$jobs" | python -c \
+              'import json,os,sys; d=json.load(sys.stdin); d["include"]=[j for j in d["include"] if j["id"]==os.environ["ONLY"]]; print(json.dumps(d,separators=(",",":")))')
+          fi
+          echo "jobs=$jobs" >> "$GITHUB_OUTPUT"
+          echo "count=$(printf '%s' "$jobs" | python -c 'import json,sys; print(len(json.load(sys.stdin)["include"]))')" >> "$GITHUB_OUTPUT"
+          # A pull request proves the images build. It does not push them, because a branch
+          # that anyone can open must not be able to replace the compiler main tests with.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: ${{ matrix.id }} on ${{ matrix.arch }}
+    needs: plan
+    runs-on: ${{ matrix.runner }}
+    # Five hours plus room for a slow runner. The default six hour ceiling would kill boot
+    # somewhere in stage three and leave no useful log.
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.jobs) }}
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # A GCC build tree is tens of gigabytes and a runner has fourteen free. This is the
+      # difference between dbg building and dbg running out of disk in the last five
+      # minutes, which is the most annoying possible failure.
+      - name: make room
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost
+          sudo docker image prune -af
+          df -h /
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: sign in to the registry
+        if: needs.plan.outputs.publish == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: containers/${{ matrix.dockerfile }}
+          platforms: linux/${{ matrix.arch }}
+          push: ${{ needs.plan.outputs.publish == 'true' }}
+          tags: ${{ matrix.image }}
+          build-args: |
+            GCC_TAG=releases/gcc-16.2.0
+            CONFIGURE_FLAGS=${{ matrix.flags }}
+            CFLAGS_FOR_GCC=${{ matrix.cflags }}
+            MAKE_TARGET=${{ matrix.make }}
+            INSTALL_TARGET=${{ matrix.install }}
+            CONFIG_ID=${{ matrix.id }}
+            SMOKE=${{ matrix.smoke }}
+          # Keyed on the configuration and the architecture, so rel does not evict dbg.
+          cache-from: type=gha,scope=${{ matrix.id }}-${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.id }}-${{ matrix.arch }}
+
+      # One line per image, collected by the job below into the lockfile. An artifact rather
+      # than a job output, because a matrix job cannot write one output per leg.
+      - name: write down what was published
+        if: needs.plan.outputs.publish == 'true'
+        run: |
+          mkdir -p digests
+          printf '%s %s\n' "${{ matrix.image }}" "${{ steps.push.outputs.digest }}" \
+            > "digests/${{ matrix.id }}-${{ matrix.arch }}.txt"
+
+      - uses: actions/upload-artifact@v4
+        if: needs.plan.outputs.publish == 'true'
+        with:
+          name: digest-${{ matrix.id }}-${{ matrix.arch }}
+          path: digests/
+          retention-days: 7
+
+  lock:
+    name: record the digests
+    needs: [plan, build]
+    if: needs.plan.outputs.publish == 'true' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: digest-*
+          path: digests
+          merge-multiple: true
+
+      # A run that built one configuration by hand must not delete the other eleven entries,
+      # so this merges into what is there rather than replacing it.
+      - name: merge into the lockfile
+        run: python -m tools.matrix record digests
+
+      # Only meaningful after a full run, which is why it lives here and not in the ordinary
+      # CI. A partial run leaves entries missing and that is a true statement about the
+      # registry rather than a bug in the file.
+      - name: is every image in the matrix pinned now
+        continue-on-error: true
+        run: python -m tools.matrix digests --check
+
+      - name: commit it if it moved
+        run: |
+          if git diff --quiet containers/images.lock.json; then
+            echo "no image moved"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add containers/images.lock.json
+          git commit -m "Record the images the build matrix just published"
+          git push

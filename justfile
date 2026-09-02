@@ -15,7 +15,7 @@ setup:
     @echo "activate with: source .venv/bin/activate"
 
 # Everything CI runs on a push, in the order CI runs it.
-check: lint prose lessons claims tier0 dumpparse test
+check: lint prose lessons claims tier0 dumpparse matrix-check test
     @echo "all green"
 
 lint:
@@ -23,7 +23,7 @@ lint:
     ruff format --check .
 
 prose:
-    {{py}} -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints corpora/programs
+    {{py}} -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints containers corpora/programs
 
 test:
     {{py}} -m pytest -q
@@ -244,6 +244,40 @@ blueprints-check:
 # one copy of every blueprint and not two. Reads the blueprints, not the pinned tree.
 blueprint-pages:
     {{py}} -m tools.bpc pages
+
+# The build matrix. What GCC gets built, how, and on what.
+matrix:
+    {{py}} -m tools.matrix jobs --on weekly --pretty
+
+# One configuration, expanded, exactly the way the build sees it. `just matrix-show chk`.
+matrix-show id:
+    {{py}} -m tools.matrix show {{id}}
+
+# Rewrite the table in containers/README.md from matrix.toml. The table is generated, so a
+# hand edit to it is a hand edit the next run of this throws away.
+matrix-table:
+    {{py}} -m tools.matrix table
+
+matrix-check:
+    {{py}} -m tools.matrix table --check
+
+# Build one image locally. You do not need to, everything pulls the published ones, but B01
+# is a lesson about building GCC and a lesson nobody can follow is not a lesson.
+image id:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    job=$({{py}} -m tools.matrix jobs --on weekly | {{py}} -c \
+      'import json,sys; print(json.dumps(next(j for j in json.load(sys.stdin)["include"] if j["id"]=="{{id}}" and j["arch"]=="amd64")))')
+    read -r file flags cflags mk inst smoke < <({{py}} -c \
+      'import json,shlex,sys; j=json.loads(sys.argv[1]); print(*(shlex.quote(j[k]) for k in ("dockerfile","flags","cflags","make","install","smoke")))' "$job")
+    eval docker build -f "containers/$file" \
+      --build-arg CONFIGURE_FLAGS="$flags" \
+      --build-arg CFLAGS_FOR_GCC="$cflags" \
+      --build-arg MAKE_TARGET="$mk" \
+      --build-arg INSTALL_TARGET="$inst" \
+      --build-arg CONFIG_ID="{{id}}" \
+      --build-arg SMOKE="$smoke" \
+      -t "gcc-internals/{{id}}" .
 
 # The pinned GCC tree, about 1.3 GB shallow. Only refcheck needs it.
 gcc-src:

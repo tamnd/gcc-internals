@@ -1,0 +1,4 @@
+{
+  "comment": "Written by the build matrix workflow. Every image the project uses is pulled by the digest in here, so that a job cannot silently be testing a compiler nobody published. Run: python -m tools.matrix digests --check",
+  "images": {}
+}
