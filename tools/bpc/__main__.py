@@ -4,9 +4,11 @@
     bpc check       fail if any generated section is stale or a blueprint is malformed
     bpc coverage    the coverage ledger, and fail on anything unclassified
     bpc status      the per blueprint status table
+    bpc pages       write the blueprint pages of the site, or --check that they are current
     bpc show ID     print what a single generator would emit, without writing anything
 
-Everything except `status` needs the pinned GCC tree in `vendor/gcc`.
+`build`, `check`, `coverage` and `show` need the pinned GCC tree in `vendor/gcc`. `status` and
+`pages` read the blueprints and nothing else, which is why the site job can run `pages`.
 """
 
 from __future__ import annotations
@@ -17,11 +19,13 @@ import sys
 from tools.bpc import (
     GCC_ROOT,
     GENERATORS,
+    REPO_ROOT,
     BpcError,
     _register_generators,
     build,
     check,
     load,
+    pages,
     render,
 )
 from tools.bpc import coverage as ledger
@@ -92,6 +96,28 @@ def cmd_status(args) -> int:
     return 0
 
 
+def cmd_pages(args) -> int:
+    """The site pages for the blueprints. Needs the blueprints and not the GCC tree.
+
+    Kept out of `check` for that reason. `check` reads the pinned tree and cannot run in the
+    site job, and a page that is stale should fail in the job that builds the site.
+    """
+    if args.check:
+        problems = pages.check()
+        for p in problems:
+            print(f"bpc: {p}", file=sys.stderr)
+        if problems:
+            return 1
+        print(f"bpc: the blueprint pages and the site navigation match {len(load())} blueprints")
+        return 0
+    changed = pages.build()
+    for path in changed:
+        print(f"bpc: wrote {path.relative_to(REPO_ROOT)}")
+    if not changed:
+        print("bpc: every blueprint page was already up to date")
+    return 0
+
+
 def cmd_show(args) -> int:
     if (bad := require_tree()) is not None:
         return bad
@@ -104,6 +130,7 @@ COMMANDS = {
     "check": cmd_check,
     "coverage": cmd_coverage,
     "status": cmd_status,
+    "pages": cmd_pages,
     "show": cmd_show,
 }
 
@@ -116,6 +143,8 @@ def main(argv: list[str] | None = None) -> int:
         sp = sub.add_parser(name)
         if name == "show":
             sp.add_argument("id", choices=sorted(GENERATORS))
+        if name == "pages":
+            sp.add_argument("--check", action="store_true", help="fail instead of writing")
     args = p.parse_args(argv)
     try:
         return COMMANDS[args.command](args)

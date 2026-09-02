@@ -58,6 +58,7 @@ select = ["E", "F", "I", "UP", "B"]
 "gxmanim/films.py" = ["E501"]
 "tools/nbbuild/claims.py" = ["E501"]
 "tools/nbbuild/cli.py" = ["E501"]
+"tools/bpc/pages.py" = ["E501"]
 # A lesson builder is the same thing: the long lines are paragraphs and URLs, not code. Every
 # prose block is an f-string whether or not it happens to interpolate anything, because
 # adding a citation to a paragraph should not also mean remembering to add an f.

@@ -240,6 +240,11 @@ blueprints:
 blueprints-check:
     {{py}} -m tools.bpc check
 
+# The blueprint pages of the site: the index, and one include page per document so there is
+# one copy of every blueprint and not two. Reads the blueprints, not the pinned tree.
+blueprint-pages:
+    {{py}} -m tools.bpc pages
+
 # The pinned GCC tree, about 1.3 GB shallow. Only refcheck needs it.
 gcc-src:
     git submodule update --init --depth 1
