@@ -142,6 +142,34 @@ jobs:
             exit 1
           }
 
+  dumpparse:
+    name: dump parse baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+
+      # Both dump parsers tolerate what they do not recognise instead of throwing, which is
+      # what keeps one changed dump format from breaking forty lessons at once. It is also a
+      # way to be quietly wrong for a year, so the amount tolerated is written down in
+      # tools/dumpparse/baseline.json and checked here on every push.
+      - name: every dump in the corpus reads the way the baseline says it does
+        run: python -m tools.dumpparse check
+
+      # Same reason as the cache check above. `record` writes a file, and a baseline recorded
+      # on a laptop and left there passes for the person who wrote it and nobody else.
+      - name: the baseline is the one this code writes
+        run: |
+          python -m tools.dumpparse record
+          test -z "$(git status --porcelain tools/dumpparse)" || {
+            git diff --stat tools/dumpparse
+            echo "run just dumpparse-record and commit what it writes"
+            exit 1
+          }
+
   refcheck:
     name: citations and blueprints
     runs-on: ubuntu-latest

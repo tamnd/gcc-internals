@@ -63,6 +63,12 @@ NOT_CODE = frozenset({"note", "barrier", "code_label", "debug_insn"})
 #: The insn codes that carry a pattern the machine description has to match.
 REAL = frozenset({"insn", "jump_insn", "call_insn"})
 
+#: Every code that prints as a link in the insn chain. A top level list in a dump is either
+#: one of these or it is prose that happens to have parentheses in it, and the IRA report
+#: has thousands of the latter, so the drift counter has to tell them apart. `rtl.def` calls
+#: this set the ones with an `RTX_INSN` class.
+INSN_CODES = NOT_CODE | REAL | frozenset({"jump_table_data"})
+
 #: `-1` in the pattern slot means this insn has not been matched against the machine
 #: description yet, which is true of everything the expander produces.
 UNRECOGNISED = -1
@@ -247,6 +253,12 @@ class Listing:
     detail: str = ""
     preamble: str = ""
     insns: list[Insn] = field(default_factory=list)
+    #: Top level lists that named an insn code and did not come out as an insn. Empty on
+    #: every dump in the corpus today, and watched by `tools.dumpparse` so it stays that way.
+    missed: list[str] = field(default_factory=list)
+    #: Top level lists that named something else. The IRA report is thousands of these, and
+    #: they are prose with parentheses in it rather than RTL. Counted, not kept.
+    unread: int = 0
 
     def __len__(self) -> int:
         return len(self.insns)
@@ -495,10 +507,15 @@ def _one(text: str, name: str = "") -> Listing:
     for chunk in _split(body):
         parsed, _ = _sexp(tokenize(chunk), 0)
         if not isinstance(parsed, Rtx):
+            listing.unread += 1
             continue
         insn = _insn([parsed.head, *parsed.operands], chunk)
         if insn is not None:
             listing.insns.append(insn)
+        elif parsed.code in INSN_CODES:
+            listing.missed.append(chunk.strip())
+        else:
+            listing.unread += 1
     return listing
 
 
@@ -509,6 +526,14 @@ class RtlDump:
     functions: dict[str, Listing] = field(default_factory=dict)
     text: str = ""
     name: str = ""
+
+    @property
+    def missed(self) -> list[str]:
+        return [chunk for listing in self.functions.values() for chunk in listing.missed]
+
+    @property
+    def unread(self) -> int:
+        return sum(listing.unread for listing in self.functions.values())
 
     def only(self) -> Listing:
         """The single function in this dump, for the common case of a one function file."""
@@ -534,7 +559,9 @@ def parse(text: str, name: str = "") -> RtlDump:
 
     Anything the reader cannot make an insn out of is skipped rather than raised on, for the
     same reason the GIMPLE parser keeps an `UnparsedStmt`: a dump format that shifts by one
-    field should cost one number in one lesson, not forty lessons at once.
+    field should cost one number in one lesson, not forty lessons at once. Skipping is
+    counted rather than silent, in `Listing.missed` and `Listing.unread`, and
+    `tools.dumpparse` fails the build when either moves.
 
     A dump holds one section per function, and a file with seven functions in it produces
     seven banners and seven instruction chains. The uids restart at 1 in each, which is why
