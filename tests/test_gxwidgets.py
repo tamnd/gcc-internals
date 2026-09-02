@@ -12,12 +12,14 @@ recorded corpus entry for the two ends of the pipeline.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
 
-from gxray import gimple, locs, passes
+from gxray import corpus_store, gimple, locs, options, passes
 from gxwidgets import (
+    FlagDiff,
     GateError,
     IRLadder,
     Option,
@@ -77,6 +79,17 @@ def rungs(ladder):
 @pytest.fixture
 def tape(pipeline, both_ends):
     return PassTape(pipeline, dumps=both_ends, function="f")
+
+
+@pytest.fixture
+def tables():
+    """The optimizer table printed at eight levels, out of the recording T06 is built on."""
+    return options.by_level(corpus_store.load("t06-levels").option_texts)
+
+
+@pytest.fixture
+def grid(tables):
+    return FlagDiff(tables)
 
 
 @pytest.fixture
@@ -530,12 +543,124 @@ def test_the_question_is_escaped():
     assert "<legend>Is a_1 &lt; b_2?</legend>" in g.render()
 
 
+# The flag diff
+
+
+def test_only_the_switches_the_levels_disagree_about_are_drawn(grid, tables):
+    every_switch = {o.name for t in tables.values() for o in t.booleans}
+    assert len(grid.switches) == 115
+    assert len(grid.switches) < len(every_switch)
+    for s in grid.switches:
+        assert len(set(s.states.values())) > 1
+
+
+def test_the_columns_are_ordered_by_the_level_that_first_fills_them(grid):
+    """Which is what makes the grid a staircase rather than an alphabet. Ties inside one
+    level go by name, so two runs over the same tables draw the same picture."""
+    order = [(grid.levels.index(s.first), s.name) for s in grid.switches]
+    assert order == sorted(order)
+
+
+def test_the_top_of_the_grid_is_a_staircase_and_the_bottom_is_not(grid):
+    """The argument the whole widget exists to make. From -O1 up, a switch that is on stays
+    on, so the filled part only ever grows. -Os, -Og and -Ofast break that, and a hole in a
+    row is what breaking it looks like."""
+    climb = ["-O1", "-O2", "-O3"]
+    for s in grid.switches:
+        on = [level for level in climb if s.states.get(level)]
+        assert on == climb[climb.index(on[0]) :] if on else True
+    assert [s for s in grid.switches if set(s.holes) & {"-Os", "-Og", "-Ofast"}]
+
+
+def test_the_one_switch_that_goes_off_on_the_way_up_is_the_hand_written_one(grid):
+    """-funreachable-traps is not in `default_options_table`. It is set in C off `optimize`
+    and `optimize_debug`, which is how it manages to be the only switch -O1 takes away."""
+    lost = [s.name for s in grid.switches if s.states["-O0"] and not s.states["-O1"]]
+    assert lost == ["-funreachable-traps"]
+
+
+def test_a_cell_carries_everything_the_filter_and_the_panel_need(grid):
+    out = grid.render()
+    assert 'data-cell="-O2 -ftree-pre"' in out
+    assert 'data-level="-O2"' in out
+    assert 'data-panel="-ftree-pre"' in out
+    assert 'data-on="1"' in out and 'data-on="0"' in out
+
+
+def test_every_cell_says_its_level_its_switch_and_which_way_it_is(grid):
+    out = grid.render()
+    assert 'aria-label="-O2, -ftree-pre, on"' in out
+    assert 'aria-label="-O0, -ftree-pre, off"' in out
+
+
+def test_exactly_one_cell_is_lit(grid):
+    """Counted on the buttons rather than on the document, because the stylesheet is inlined
+    and it has selectors with the same text in them."""
+    buttons = re.findall(r"<button[^>]*>", grid.render())
+    assert len([b for b in buttons if 'aria-current="true"' in b]) == 1
+
+
+def test_the_lit_cell_is_the_one_the_reader_clicked_even_when_it_is_off(grid):
+    """Clicking an off cell is how you ask what a level does not do, so the click has to
+    stick. Only a level the grid has no row for gets moved."""
+    switch = grid.switches[-1]
+    grid.update(at=f"-O0 {switch.name}")
+    assert grid.current == f"-O0 {switch.name}"
+    assert not switch.states["-O0"]
+
+    grid.update(at=f"-O9 {switch.name}")
+    assert grid.current == f"{switch.first} {switch.name}"
+
+
+def test_filtering_leaves_only_the_columns_that_arrive_at_that_level(grid):
+    grid.update(first="-O3")
+    assert grid.shown
+    assert {s.first for s in grid.shown} == {"-O3"}
+    assert len(grid.shown) < len(grid.switches)
+
+
+def test_a_filter_that_hides_the_selected_column_picks_a_visible_one(grid):
+    """A view can come out of a URL with any two values in it, and a panel nothing on the
+    grid points at is worse than landing somewhere the reader did not ask for."""
+    grid.update(at=f"-O0 {grid.switches[0].name}", first="-O3")
+    assert grid.selected in grid.shown
+    assert grid.current.startswith("-O3 ")
+
+
+def test_the_filter_offers_no_level_that_would_empty_the_grid(grid):
+    for level in grid.arrivals:
+        grid.update(first=level)
+        assert grid.shown
+    assert set(grid.arrivals) <= set(grid.levels)
+
+
+def test_the_summary_counts_the_valued_options_it_is_not_drawing(grid):
+    """A reader who counts the columns and quotes the number should get one GCC agrees with,
+    and 115 is not the number of differences between any two levels."""
+    out = grid.render()
+    assert "115 of those switches differ" in out
+    assert "take a value instead of flipping" in out
+
+
+def test_the_whole_grid_is_readable_with_no_javascript(grid):
+    out = grid.render().split("<noscript>")[1]
+    assert "-O2  95 on" in out
+    assert "-ftree-pre, on at -O2" in out
+
+
+def test_a_column_with_a_hole_in_it_says_so_in_words(grid):
+    """Colour carries the hole on the grid and this carries it in the panel, which is where
+    a reader who cannot see the grid finds out that -Os drops things -O2 turned on."""
+    out = grid.render()
+    assert "-ftree-loop-vectorize, first on at -O2, and off again at -Os, -Oz, -Og" in out
+
+
 # What every widget has to do
 
 
 @pytest.fixture
-def every(tape, ssa, gate, rungs):
-    return [tape, rungs, SSAWeb(ssa, "s_1"), gate]
+def every(tape, ssa, gate, rungs, grid):
+    return [tape, rungs, SSAWeb(ssa, "s_1"), gate, grid]
 
 
 def test_every_widget_renders_standalone(every):

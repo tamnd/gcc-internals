@@ -29,6 +29,7 @@ so a still from a video and a live widget look like the same project.
 """
 
 from gxwidgets.base import Widget, live
+from gxwidgets.flagdiff import FlagDiff
 from gxwidgets.html import STYLESHEET
 from gxwidgets.irladder import IRLadder
 from gxwidgets.passtape import PassTape
@@ -37,6 +38,7 @@ from gxwidgets.ssaweb import SSAWeb
 
 __all__ = [
     "STYLESHEET",
+    "FlagDiff",
     "GateError",
     "IRLadder",
     "Option",

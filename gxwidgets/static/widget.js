@@ -65,7 +65,10 @@ function applyFilters(root, view) {
   for (const cell of root.querySelectorAll(".gx-cell")) {
     const wrongPhase = view.phase && view.phase !== "all" && cell.dataset.phase !== view.phase;
     const unchanged = view.only === "changed" && cell.dataset.changed !== "1";
-    cell.hidden = Boolean(wrongPhase || unchanged);
+    // The flag diff filters by the level a switch first comes on at, and the same column
+    // appears once per level, so this hides a whole column across every row at once.
+    const wrongFirst = view.first && view.first !== "all" && cell.dataset.first !== view.first;
+    cell.hidden = Boolean(wrongPhase || unchanged || wrongFirst);
   }
 }
 

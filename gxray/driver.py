@@ -32,6 +32,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from gxray import cfg, chain, gimple, passes
+from gxray import options as options_table
 from gxray.dumps import DumpFile, dump_flags, find_dumps, split_spec, split_stderr_dumps
 from tools.cecache import Cache, request_key
 
@@ -156,6 +157,15 @@ class Backend:
         """
         raise NotImplementedError
 
+    def options(self, kind: str, *args: str) -> options_table.Table:
+        """What `-Q --help=<kind>` prints for these flags.
+
+        No source, because the answer does not depend on one. The table is a function of
+        the command line and the target, and asking for it with a program attached would
+        suggest otherwise.
+        """
+        raise NotImplementedError
+
     def can(self, capability: str) -> bool:
         return capability in self.capabilities
 
@@ -184,6 +194,7 @@ class LocalBackend(Backend):
             "graph-dumps",
             "chain",
             "full-chain",
+            "options",
         }
     )
 
@@ -256,6 +267,15 @@ class LocalBackend(Backend):
         """The pass pipeline for these options, straight out of `-fdump-passes`."""
         r = self.compile(source, *args, "-fdump-passes")
         return passes.parse(r.stderr)
+
+    def option_text(self, kind: str, *args: str) -> str:
+        """The raw `-Q --help=` output. Nothing is compiled, so no source is written."""
+        cmd = [self.gcc, "-Q", f"--help={kind}", *args]
+        out = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        return out.stdout
+
+    def options(self, kind: str, *args: str) -> options_table.Table:
+        return options_table.parse(self.option_text(kind, *args), kind=kind, flags=" ".join(args))
 
 
 class CEBackend(Backend):
@@ -388,7 +408,16 @@ class CorpusBackend(Backend):
     """
 
     capabilities = frozenset(
-        {"dumps", "all-dumps", "named-dumps", "asm", "graph-dumps", "chain", "full-chain"}
+        {
+            "dumps",
+            "all-dumps",
+            "named-dumps",
+            "asm",
+            "graph-dumps",
+            "chain",
+            "full-chain",
+            "options",
+        }
     )
 
     def __init__(self, entry: str, root: Path | str | None = None):
@@ -445,6 +474,44 @@ class CorpusBackend(Backend):
                 f"It has: {have}."
             )
         return chain.parse(record.chains[key])
+
+    def options(self, kind: str, *args: str) -> options_table.Table:
+        """A help table somebody recorded, looked up by kind and by the exact flags.
+
+        Same exactness as `chain`, and for the same reason. The key is the kind and the
+        flags together, because `--help=optimizers -O2` and `--help=params -O2` are two
+        different tables and both are worth having.
+        """
+        from gxray.corpus import load
+
+        record = load(self.entry, root=self.root)
+        key = " ".join([kind, *args])
+        if key not in record.option_texts:
+            have = ", ".join(f"{k!r}" for k in sorted(record.option_texts)) or "none"
+            raise BackendError(
+                f"the corpus entry {self.entry!r} has no recorded option table for {key!r}. "
+                f"It has: {have}."
+            )
+        return options_table.parse(record.option_texts[key], kind=kind, flags=" ".join(args))
+
+    def assembly(self, *args: str) -> str:
+        """Assembly somebody recorded for these exact flags.
+
+        Separate from `compile`, which hands back the one compilation the entry is named
+        after. A lesson that asks whether two command lines produce the same output needs
+        several, so several are recorded and looked up by the flags that produced them.
+        """
+        from gxray.corpus import load
+
+        record = load(self.entry, root=self.root)
+        key = " ".join(args)
+        if key not in record.asm_texts:
+            have = ", ".join(f"{k!r}" for k in sorted(record.asm_texts)) or "none"
+            raise BackendError(
+                f"the corpus entry {self.entry!r} has no recorded assembly for {key!r}. "
+                f"It has: {have}."
+            )
+        return record.asm_texts[key]
 
 
 def local(gcc: str = "gcc-16") -> LocalBackend:
