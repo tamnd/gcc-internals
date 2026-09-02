@@ -95,6 +95,15 @@ corpus-t03:
         --dump tree-original-lineno --dump tree-gimple-lineno \
         -O0 -g
 
+# The pass tape T04 reads. Every tree dump of L1 at -O2, which is what fills the cells, plus
+# the pass list at all five optimization levels, because the lesson is partly about how the
+# list changes with the level and one level would not show that.
+corpus-t04:
+    {{py}} -m gxray record --entry t04-tape --program l1 --gcc {{gcc}} \
+        --dump tree-all \
+        --pipeline="-O0" --pipeline="-O1" --pipeline="-O2" --pipeline="-O3" --pipeline="-Os" \
+        -O2 -g
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build

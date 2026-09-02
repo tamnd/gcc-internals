@@ -36,7 +36,11 @@ class Cell:
     def label(self) -> str:
         counts = ""
         if self.stats:
-            counts = ", {statements} statements, {blocks} blocks".format(**self.stats)
+            # Spelled out rather than formatted with an s on the end, because the first cell
+            # on the tape has one basic block and `1 blocks` in a lesson reads as a bug.
+            blocks = self.stats["blocks"]
+            counts = f", {self.stats['statements']} statements, {blocks} block"
+            counts += "" if blocks == 1 else "s"
         state = {
             True: "changed the IR",
             False: "left the IR alone",

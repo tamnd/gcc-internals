@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-20 claims across 4 lessons, 2 of them not observable from a notebook.
+26 claims across 5 lessons, 3 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -37,6 +37,17 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | the bench is seven functions of one line each, and gimplification turns them into between two and eleven statements | [`t03-13`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
 | neither the && nor the ?: leaves an operator behind, and what stands in for both of them is a condition, some labels, some gotos, and one variable written on two different paths | [`t03-18`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
 | one function does nearly all of this, and the switch at the middle of it has over a hundred cases, one per kind of tree node it might have to take apart | not observable from a notebook: the shape of gimplify_expr is a fact about the source tree, and this notebook has no copy of it. The citation is checked against the pinned tree on every push instead. |
+
+## Three hundred and ninety-five passes
+
+| Claim | Proved by |
+| --- | --- |
+| GCC 16.2 knows about 395 passes, and 281 of them printed ON for L1 at -O2 | [`t04-05`](t04-three-hundred-and-ninety-five-passes/t04.ipynb) |
+| the pipeline is nested four deep, and two containers hold more than half of it between them | [`t04-10`](t04-three-hundred-and-ninety-five-passes/t04.ipynb) |
+| -O3 turns on eight passes that -O2 does not, and -Os turns on one that -O2 does not, so the levels are not a slider | [`t04-15`](t04-three-hundred-and-ninety-five-passes/t04.ipynb) |
+| 60 of the 281 passes that printed ON at -O2 sit under a container that printed OFF, and not one of them left a dump behind | [`t04-18`](t04-three-hundred-and-ninety-five-passes/t04.ipynb) |
+| the container holding the 29 passes that run after register allocation prints OFF at every optimization level, because its gate returns reload_completed and register allocation has not happened at the moment the listing is printed | not observable from a notebook: the recording holds tree dumps and the passes in question are RTL passes, so there is nothing in this notebook that could show them running. The citation is checked against the pinned tree on every push instead. |
+| 281 cells, 135 of them have a dump, 25 changed the IR of f, 109 left it exactly as they found it, and 147 cannot say | [`t04-21`](t04-three-hundred-and-ninety-five-passes/t04.ipynb) |
 
 ## SSA in one lesson
 

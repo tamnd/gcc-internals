@@ -452,6 +452,18 @@ def parse(text: str, name: str = "") -> GimpleDump:
             current.decls.append((decl.group("type").strip(), decl.group("name")))
             continue
 
+        if not current.pre_cfg and block is None and current.signature:
+            # A statement in the body of a function that has a banner and no `<bb N>` header
+            # yet. The three earliest tree dumps, omplower, lower and eh, print a banner and
+            # then the same flat list gimplification left behind, because the CFG does not
+            # exist until the cfg pass builds it. So the function is pre-CFG after all, and
+            # the depth starts at one because the opening brace has already gone past.
+            #
+            # A GENERIC dump also has a body with no blocks in it, and it is not GIMPLE and
+            # must not be parsed as if it were. It is told apart by having no signature line
+            # above the brace, which every GIMPLE dump prints and GENERIC does not.
+            current.pre_cfg, depth, in_decls = True, 1, False
+
         if current.pre_cfg:
             # The declarations are over, whatever the blank lines said, and there is no
             # block header coming because there are no blocks. Everything from here to the

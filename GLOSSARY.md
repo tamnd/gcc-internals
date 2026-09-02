@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [out of SSA](#out-of-ssa) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [loop](#loop) | [middle end](#middle-end) | [out of SSA](#out-of-ssa) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
 
 ## Driving the compiler
 
@@ -69,6 +69,14 @@ First met in T01. See also [dump file](#dump-file), [pass manager](#pass-manager
 It is also the thing that opens the dump file, checks the gate, verifies the IR afterwards when checking is on, and keeps track of which analyses are still valid. When a pass appears to have been skipped, the pass manager is where the answer is, and the answer is almost always the gate.
 
 First met in T04. See also [pass](#pass). In the source: [`gcc/passes.cc:2579@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/passes.cc#L2579).
+
+### gate
+
+**The method a pass answers with yes or no when asked whether it should run.**
+
+It is a virtual function on the pass, so the condition lives with the pass rather than in a table somewhere, and it is asked again for every function. That is why the answer is not a property of your command line: two functions in one file can get different answers from the same gate. `-fdump-passes` prints the answer for one function at one moment, and a gate that depends on how far compilation has got, such as the one guarding the passes that run after register allocation, will print the answer for that moment rather than for the moment the pass is reached.
+
+First met in T04. See also [pass](#pass), [pass manager](#pass-manager). In the source: [`gcc/tree-pass.h:90@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/tree-pass.h#L90).
 
 ### front end
 
