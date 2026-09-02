@@ -71,6 +71,7 @@ extra_javascript:
 nav:
   - Start here: index.md
   - Lessons: lessons.md
+  - The films: films.md
   - Glossary: glossary.md
   - How this is built:
     - The pinned tree and citations: pinned-tree.md

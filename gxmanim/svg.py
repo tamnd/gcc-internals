@@ -126,6 +126,35 @@ def _glyph(box: Box, r: Role) -> str:
     return _text(box.right - PAD, box.y + 13, r.glyph, r.light.ink, size=11, text_anchor="end")
 
 
+def markers() -> str:
+    """The arrowheads, as a `<defs>`. Module level because a film needs them once for the
+    whole document rather than once per shot, and two elements with the same id in one SVG
+    is invalid even when both are the same arrowhead."""
+    ink = ROLES["neutral"].light.ink
+    head = _tag(
+        "marker",
+        _tag("path", d="M0,0 L6,3 L0,6 z", fill=ink),
+        id="gx-arrow",
+        markerWidth="7",
+        markerHeight="7",
+        refX="6",
+        refY="3",
+        orient="auto",
+    )
+    double = _tag(
+        "marker",
+        _tag("path", d="M0,0 L6,3 L0,6 z", fill=ink)
+        + _tag("path", d="M5,0 L11,3 L5,6 z", fill=ink),
+        id="gx-arrow-2",
+        markerWidth="12",
+        markerHeight="7",
+        refX="11",
+        refY="3",
+        orient="auto",
+    )
+    return _tag("defs", head + double)
+
+
 class Renderer:
     """Draws one scene. Made fresh per render, so nothing carries over between drawings."""
 
@@ -135,6 +164,20 @@ class Renderer:
             raise ValueError("this scene cannot be drawn:\n  " + "\n  ".join(problems))
         self.scene = scene
         self.boxes = scene.boxes()
+
+    def body(self, defs: bool = True) -> str:
+        """Everything inside the `<svg>`: the markers, the shapes, then the links.
+
+        Separate from `render` because a film draws several scenes into one document and
+        needs the contents of each without a second `<svg>` element around it, and without
+        a second copy of the arrowheads.
+        """
+        parts = [markers()] if defs else []
+        for placed in self.scene.placed:
+            parts.append(self._shape(placed.shape, placed.box, placed.at))
+        for link in self.scene.links:
+            parts.append(self._edge(link) if isinstance(link, Edge) else self._thread(link))
+        return "".join(parts)
 
     def render(self, described: bool = False) -> str:
         """The scene as one `<svg>` element.
@@ -148,11 +191,7 @@ class Renderer:
         if described:
             body.append(_tag("title", esc(self.scene.title)))
             body.append(_tag("desc", esc(self.scene.describe())))
-        body.append(self._defs())
-        for placed in self.scene.placed:
-            body.append(self._shape(placed.shape, placed.box, placed.at))
-        for link in self.scene.links:
-            body.append(self._edge(link) if isinstance(link, Edge) else self._thread(link))
+        body.append(self.body())
         return _tag(
             "svg",
             "".join(body),
@@ -276,31 +315,6 @@ class Renderer:
 
     # Links
 
-    def _defs(self) -> str:
-        ink = ROLES["neutral"].light.ink
-        head = _tag(
-            "marker",
-            _tag("path", d="M0,0 L6,3 L0,6 z", fill=ink),
-            id="gx-arrow",
-            markerWidth="7",
-            markerHeight="7",
-            refX="6",
-            refY="3",
-            orient="auto",
-        )
-        double = _tag(
-            "marker",
-            _tag("path", d="M0,0 L6,3 L0,6 z", fill=ink)
-            + _tag("path", d="M5,0 L11,3 L5,6 z", fill=ink),
-            id="gx-arrow-2",
-            markerWidth="12",
-            markerHeight="7",
-            refX="11",
-            refY="3",
-            orient="auto",
-        )
-        return _tag("defs", head + double)
-
     def _clear(self, edge: Edge, a: Box, b: Box) -> bool:
         """Whether a straight line from `a` down to `b` misses everything else in the scene.
 
@@ -402,3 +416,175 @@ def render(scene: Scene) -> str:
 def document(scene: Scene) -> str:
     """One scene, as a standalone `.svg` file with its title and description in it."""
     return Renderer(scene).render(described=True)
+
+
+# Films
+#
+# A film is rendered as one SVG with every shot in it and a stylesheet that shows one at a
+# time. There is no video file, no ffmpeg and no JavaScript. That is a deliberate trade: an
+# SVG is text, so a film diffs, a film is reproducible byte for byte, and CI can prove the
+# committed one still matches the corpus it was drawn from. None of that is true of a WebM.
+# It also means a film plays in a notebook, in the book, and in an `<img>` tag, and degrades
+# to its first shot when animation is off.
+
+#: Height of the band under the picture that holds the caption and the progress bar.
+BAND = 52
+
+#: How long the cut between two shots takes, as a percentage of the whole film. Small enough
+#: to read as a cut rather than a dissolve, big enough that no frame is ever blank.
+CUT = 0.4
+
+#: How far off the edge the caption and the shot counter sit. Text with its baseline on the
+#: edge of the viewBox gets its last pixel shaved off by some renderers, and the counter is
+#: right aligned so it is the one that loses.
+INSET = 4
+
+
+def _keyframes(name: str, start: float, end: float) -> str:
+    """One shot's visibility over the whole film, as a `@keyframes` block.
+
+    Opacity rather than `display`, because opacity is the property browsers interpolate
+    cheaply and it is what makes the cut a quick fade instead of a flicker. The stops are
+    clamped into range so the first and last shots do not ask for -0.4% or 100.4%.
+    """
+    stops: list[tuple[float, int]] = []
+    if start > 0:
+        stops += [(0, 0), (max(start - CUT, 0), 0)]
+    stops.append((start, 1))
+    stops.append((end, 1))
+    if end < 100:
+        stops += [(min(end + CUT, 100), 0), (100, 0)]
+    body = " ".join(f"{at:g}% {{ opacity: {o} }}" for at, o in stops)
+    return f"@keyframes {name} {{ {body} }}"
+
+
+class Film:
+    """Draws one film. Made fresh per render, like the scene renderer."""
+
+    def __init__(self, film) -> None:
+        problems = film.check()
+        if problems:
+            raise ValueError("this film cannot be drawn:\n  " + "\n  ".join(problems))
+        self.film = film
+        # Every class and every keyframe carries the film's name. CSS keyframes are global to
+        # the page no matter where the `<style>` that declares them sits, so two films
+        # inlined into one page with the same names would take each other's timings. The
+        # contact sheet puts all six on one page, which is where that showed up.
+        self.tag = f"gx-{film.name}"
+        self.shots = [Renderer(shot.scene) for shot in film.shots]
+        # The frame is the biggest shot, so nothing jumps when the film cuts. A smaller shot
+        # sits in the corner of it with space to the right and below, rather than being
+        # scaled up, because scaling would change the type size halfway through the film.
+        self.width = max(r.scene.bounds().w for r in self.shots)
+        self.height = max(r.scene.bounds().h for r in self.shots)
+
+    def render(self, described: bool = False) -> str:
+        film = self.film
+        body = []
+        if described:
+            body.append(_tag("title", esc(film.title)))
+            body.append(_tag("desc", esc(film.alt)))
+        body.append(_tag("style", self._style()))
+        body.append(markers())
+        for n, renderer in enumerate(self.shots):
+            body.append(self._shot(n, renderer))
+        body.append(self._bar())
+        return _tag(
+            "svg",
+            "".join(body),
+            xmlns="http://www.w3.org/2000/svg",
+            viewBox=f"0 0 {self.width:g} {self.height + BAND:g}",
+            width=f"{self.width:g}",
+            height=f"{self.height + BAND:g}",
+            role="img",
+            aria_label=film.title,
+        )
+
+    def _style(self) -> str:
+        film = self.film
+        total = film.seconds()
+        # The base state is the poster frame and nothing else, so anything that does not run
+        # the animation shows one whole readable shot rather than a stack of all of them.
+        # That covers a renderer with no CSS animation and, below, a reader who has asked
+        # their system not to move things about.
+        still = film.still % len(film.shots) + 1
+        tag = self.tag
+        rules = [
+            f".{tag} {{ opacity: 0; animation: {total:g}s linear infinite both; }}",
+            f".{tag}-{still} {{ opacity: 1 }}",
+            f".{tag}-bar {{ transform-origin: left;"
+            f" animation: {tag}-bar {total:g}s linear infinite; }}",
+            f"@keyframes {tag}-bar {{ from {{ transform: scaleX(0) }}"
+            " to { transform: scaleX(1) } }",
+        ]
+        for n, (start, end) in enumerate(film.marks(), start=1):
+            rules.append(_keyframes(f"{tag}-{n}", start, end))
+            rules.append(f".{tag}-{n} {{ animation-name: {tag}-{n} }}")
+        # Reduced motion gets the poster frame and no motion at all, which is the whole
+        # picture minus the order things happened in. The alt text carries the order, which
+        # is the reason `Film.check` insists it says what happens.
+        rules.append(
+            f"@media (prefers-reduced-motion: reduce) {{ .{tag}, .{tag}-bar"
+            " { animation: none } }"
+        )
+        return "\n".join(rules)
+
+    def _shot(self, n: int, renderer: Renderer) -> str:
+        """One shot in the frame, with its title and its caption under it."""
+        shot = self.film.shots[n]
+        ink = ROLES["neutral"].light.ink
+        muted = ROLES["unknown"].light.ink
+        # Anchored top left rather than centred. A film is usually the same drawing growing,
+        # and centring it would slide everything sideways on every cut, which reads as the
+        # picture moving when the only thing that happened is that it got bigger.
+        picture = _tag("g", renderer.body(defs=False))
+        caption = _text(INSET, self.height + 20, shot.scene.title, ink, size=13)
+        caption += _text(INSET, self.height + 38, shot.caption, muted, size=12)
+        counter = _text(
+            self.width - INSET,
+            self.height + 20,
+            f"{n + 1}/{len(self.film.shots)}",
+            muted,
+            size=11,
+            text_anchor="end",
+        )
+        # The keyframe percentages are already on the class, so the group only needs to say
+        # which shot it is. Two classes rather than an inline style, because a stylesheet
+        # inside the SVG is the one thing that survives being used as an `<img>` source.
+        return _tag(
+            "g",
+            picture + caption + counter,
+            **{"class": f"{self.tag} {self.tag}-{n + 1}"},
+        )
+
+    def _bar(self) -> str:
+        """A progress bar along the bottom, so a reader knows how much is left."""
+        track = ROLES["unknown"].light.fill
+        ink = ROLES["neutral"].light.ink
+        y = self.height + BAND - 4
+        base = _tag("rect", x="0", y=f"{y:g}", width=f"{self.width:g}", height="2", fill=track)
+        run = _tag(
+            "rect",
+            x="0",
+            y=f"{y:g}",
+            width=f"{self.width:g}",
+            height="2",
+            fill=ink,
+            **{"class": f"{self.tag}-bar"},
+        )
+        return base + run
+
+
+def film(reel) -> str:
+    """One film, as an SVG fragment to drop into a page."""
+    return Film(reel).render()
+
+
+def film_document(reel) -> str:
+    """One film, as a standalone animated `.svg` file with its title and alt text in it."""
+    return Film(reel).render(described=True)
+
+
+def still(reel) -> str:
+    """The poster frame of a film, as a standalone `.svg`, for anywhere motion is wrong."""
+    return Renderer(reel.poster()).render(described=True)

@@ -506,6 +506,14 @@ a time does not look like a tree. There is a drawing of it in
 Open it at excalidraw.com and you can move things around. It shows the two pointers, `next`
 and `sub`, and what a closed gate does to everything hanging off one of them.
 
+## The film
+
+The tape above arrives all at once, so the two clusters of changed passes are something you
+have to go looking for.
+[Three hundred passes, and most of them leave the function alone](https://tamnd.github.io/gcc-internals/films/#film-pass-tape)
+fills the same tape in a tenth at a time, and the long stretch in the middle where nothing
+lights up is impossible to miss when you watch it happen rather than reading it off a grid.
+
 ## Boss fight
 
 At the end of `tree-ssa` the function has a temporary in it called `_6`, left over from
