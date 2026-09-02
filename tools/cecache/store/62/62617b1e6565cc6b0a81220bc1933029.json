@@ -1,0 +1,692 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"g\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        test    edi, edi"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L5",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        jle     .L5"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        test    esi, esi"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L6",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        je      .L6"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        xor     edx, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        xor     eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        test    dil, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L4",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        je      .L4"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 8
+   },
+   "text": "        mov     edx, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        cmp     edi, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L21",
+     "range": {
+      "endCol": 21,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        je      .L21"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L4:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 15,
+    "file": null,
+    "line": 11
+   },
+   "text": "        lea     eax, [rax+1+rdx*2]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 8
+   },
+   "text": "        add     edx, 2"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        cmp     edi, edx"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L4",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        jne     .L4"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L5:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 7
+   },
+   "text": "        xor     eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 16
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L6:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        xor     eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        test    dil, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L3",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 10
+   },
+   "text": "        je      .L3"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 8
+   },
+   "text": "        mov     eax, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        cmp     edi, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L19",
+     "range": {
+      "endCol": 21,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        je      .L19"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L3:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 15,
+    "file": null,
+    "line": 13
+   },
+   "text": "        sub     esi, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 8
+   },
+   "text": "        lea     edx, [rax+1]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 8
+   },
+   "text": "        add     eax, 2"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 15,
+    "file": null,
+    "line": 13
+   },
+   "text": "        sub     esi, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        cmp     edi, eax"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L3",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 8
+   },
+   "text": "        jne     .L3"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L19:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 15,
+    "file": null,
+    "line": 13
+   },
+   "text": "        mov     eax, esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 15,
+    "file": null,
+    "line": 13
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L21:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 15,
+    "file": null,
+    "line": 13
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 9100,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O2",
+  "-g",
+  "-fdump-tree-optimized=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 75,
+ "filteredCount": 524,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"g\"": 1,
+  ".L19": 36,
+  ".L21": 39,
+  ".L3": 29,
+  ".L4": 13,
+  ".L5": 19,
+  ".L6": 22
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 6,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.5527309998869896,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function g (g, funcdef_no=0, decl_uid=2960, cgraph_uid=1, symbol_order=0)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "Removing basic block 7"
+  },
+  {
+   "text": "Removing basic block 8"
+  },
+  {
+   "text": "Removing basic block 9"
+  },
+  {
+   "text": "Removing basic block 10"
+  },
+  {
+   "text": "Removing basic block 11"
+  },
+  {
+   "text": "Removing basic block 12"
+  },
+  {
+   "text": "Removing basic block 13"
+  },
+  {
+   "text": "int g (int n, int flag)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int k;"
+  },
+  {
+   "text": "  int total;"
+  },
+  {
+   "text": "  unsigned int patt_3;"
+  },
+  {
+   "text": "  unsigned int patt_10;"
+  },
+  {
+   "text": "  unsigned int patt_29;"
+  },
+  {
+   "text": "  unsigned int patt_32;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 2> [local count: 118111600]:"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG k => 0"
+  },
+  {
+   "text": "  # DEBUG total => 0"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_4(D) > 0)"
+  },
+  {
+   "text": "    goto <bb 3>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 6>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 3> [local count: 105119324]:"
+  },
+  {
+   "text": "  # DEBUG k => 0"
+  },
+  {
+   "text": "  # DEBUG total => 0"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (flag_6(D) != 0)"
+  },
+  {
+   "text": "    goto <bb 4>; [50.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 5>; [50.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 4> [local count: 477815112]:"
+  },
+  {
+   "text": "  # total_26 = PHI <0(3), total_18(4)>"
+  },
+  {
+   "text": "  # k_1 = PHI <0(3), k_22(4)>"
+  },
+  {
+   "text": "  # DEBUG k => NULL"
+  },
+  {
+   "text": "  # DEBUG total => NULL"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  total_18 = k_1 + total_26;"
+  },
+  {
+   "text": "  # DEBUG total => total_18"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  k_22 = k_1 + 1;"
+  },
+  {
+   "text": "  # DEBUG k => k_22"
+  },
+  {
+   "text": "  # DEBUG total => total_18"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_4(D) != k_22)"
+  },
+  {
+   "text": "    goto <bb 4>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 6>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 5> [local count: 477815112]:"
+  },
+  {
+   "text": "  # total_7 = PHI <flag_6(D)(3), total_17(5)>"
+  },
+  {
+   "text": "  # k_9 = PHI <flag_6(D)(3), k_11(5)>"
+  },
+  {
+   "text": "  # DEBUG k => NULL"
+  },
+  {
+   "text": "  # DEBUG total => NULL"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  total_17 = total_7 - k_9;"
+  },
+  {
+   "text": "  # DEBUG total => total_17"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  k_11 = k_9 + 1;"
+  },
+  {
+   "text": "  # DEBUG k => k_11"
+  },
+  {
+   "text": "  # DEBUG total => total_17"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_4(D) != k_11)"
+  },
+  {
+   "text": "    goto <bb 5>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 6>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 6> [local count: 118111600]:"
+  },
+  {
+   "text": "  # total_13 = PHI <total_18(4), 0(2), total_17(5)>"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  return total_13;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

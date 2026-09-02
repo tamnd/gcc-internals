@@ -1,0 +1,1382 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"flat\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 13
+   },
+   "text": "        push    rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 13
+   },
+   "text": "        mov     rbp, rsp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 13
+   },
+   "text": "        mov     DWORD PTR [rbp-4], edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 13
+   },
+   "text": "        mov     DWORD PTR [rbp-8], esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 13
+   },
+   "text": "        mov     DWORD PTR [rbp-12], edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 12,
+    "file": null,
+    "line": 14
+   },
+   "text": "        mov     edx, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 12,
+    "file": null,
+    "line": 14
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 12,
+    "file": null,
+    "line": 14
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 15
+   },
+   "text": "        pop     rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 15
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"nested\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 20
+   },
+   "text": "        push    rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 20
+   },
+   "text": "        mov     rbp, rsp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 20
+   },
+   "text": "        mov     DWORD PTR [rbp-4], edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 20
+   },
+   "text": "        mov     DWORD PTR [rbp-8], esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 20
+   },
+   "text": "        mov     DWORD PTR [rbp-12], edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 21
+   },
+   "text": "        mov     edx, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 21
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 21
+   },
+   "text": "        add     edx, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 23,
+    "file": null,
+    "line": 21
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 23,
+    "file": null,
+    "line": 21
+   },
+   "text": "        sub     eax, DWORD PTR [rbp-12]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 18,
+    "file": null,
+    "line": 21
+   },
+   "text": "        imul    eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 22
+   },
+   "text": "        pop     rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 22
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"deeper\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        push    rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     rbp, rsp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     DWORD PTR [rbp-4], edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     DWORD PTR [rbp-8], esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     DWORD PTR [rbp-12], edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 14,
+    "file": null,
+    "line": 29
+   },
+   "text": "        mov     edx, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 14,
+    "file": null,
+    "line": 29
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 14,
+    "file": null,
+    "line": 29
+   },
+   "text": "        add     edx, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 29
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 29
+   },
+   "text": "        sub     eax, DWORD PTR [rbp-12]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 19,
+    "file": null,
+    "line": 29
+   },
+   "text": "        imul    edx, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 36,
+    "file": null,
+    "line": 29
+   },
+   "text": "        mov     ecx, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 36,
+    "file": null,
+    "line": 29
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-12]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 36,
+    "file": null,
+    "line": 29
+   },
+   "text": "        add     ecx, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 46,
+    "file": null,
+    "line": 29
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 46,
+    "file": null,
+    "line": 29
+   },
+   "text": "        sub     eax, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 41,
+    "file": null,
+    "line": 29
+   },
+   "text": "        imul    eax, ecx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 30,
+    "file": null,
+    "line": 29
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 30
+   },
+   "text": "        pop     rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 30
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"calls\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 35
+   },
+   "text": "        push    rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 35
+   },
+   "text": "        mov     rbp, rsp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 35
+   },
+   "text": "        push    rbx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 35
+   },
+   "text": "        sub     rsp, 24"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 35
+   },
+   "text": "        mov     DWORD PTR [rbp-20], edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 35
+   },
+   "text": "        mov     DWORD PTR [rbp-24], esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 35
+   },
+   "text": "        mov     DWORD PTR [rbp-28], edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 36
+   },
+   "text": "        mov     edx, DWORD PTR [rbp-20]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 36
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-24]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 36
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 36
+   },
+   "text": "        mov     edi, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 36
+   },
+   "text": "        call    \"g\""
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 36
+   },
+   "text": "        mov     ebx, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 22,
+    "file": null,
+    "line": 36
+   },
+   "text": "        mov     edx, DWORD PTR [rbp-24]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 22,
+    "file": null,
+    "line": 36
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-28]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 22,
+    "file": null,
+    "line": 36
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 22,
+    "file": null,
+    "line": 36
+   },
+   "text": "        mov     edi, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 22,
+    "file": null,
+    "line": 36
+   },
+   "text": "        call    \"h\""
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 20,
+    "file": null,
+    "line": 36
+   },
+   "text": "        add     eax, ebx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 37
+   },
+   "text": "        mov     rbx, QWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 37
+   },
+   "text": "        leave"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 37
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"shortcircuit\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 43
+   },
+   "text": "        push    rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 43
+   },
+   "text": "        mov     rbp, rsp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 43
+   },
+   "text": "        mov     DWORD PTR [rbp-4], edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 43
+   },
+   "text": "        mov     DWORD PTR [rbp-8], esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 43
+   },
+   "text": "        mov     DWORD PTR [rbp-12], edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 16,
+    "file": null,
+    "line": 44
+   },
+   "text": "        cmp     DWORD PTR [rbp-4], 0"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L10",
+     "range": {
+      "endCol": 21,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 16,
+    "file": null,
+    "line": 44
+   },
+   "text": "        jle     .L10"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 16,
+    "file": null,
+    "line": 44
+   },
+   "text": "        cmp     DWORD PTR [rbp-8], 0"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L10",
+     "range": {
+      "endCol": 21,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 16,
+    "file": null,
+    "line": 44
+   },
+   "text": "        jle     .L10"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 16,
+    "file": null,
+    "line": 44
+   },
+   "text": "        mov     eax, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L11",
+     "range": {
+      "endCol": 21,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 16,
+    "file": null,
+    "line": 44
+   },
+   "text": "        jmp     .L11"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L10:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 16,
+    "file": null,
+    "line": 44
+   },
+   "text": "        mov     eax, 0"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L11:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 45
+   },
+   "text": "        pop     rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 45
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"ternary\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 50
+   },
+   "text": "        push    rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 50
+   },
+   "text": "        mov     rbp, rsp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 50
+   },
+   "text": "        mov     DWORD PTR [rbp-4], edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 50
+   },
+   "text": "        mov     DWORD PTR [rbp-8], esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 50
+   },
+   "text": "        mov     DWORD PTR [rbp-12], edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        cmp     eax, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L14",
+     "range": {
+      "endCol": 21,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        jle     .L14"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        mov     edx, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-12]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L16",
+     "range": {
+      "endCol": 21,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        jmp     .L16"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L14:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        mov     edx, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-12]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 24,
+    "file": null,
+    "line": 51
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L16:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 52
+   },
+   "text": "        pop     rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 52
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"compound\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 58
+   },
+   "text": "        push    rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 58
+   },
+   "text": "        mov     rbp, rsp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 58
+   },
+   "text": "        mov     DWORD PTR [rbp-4], edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 58
+   },
+   "text": "        mov     DWORD PTR [rbp-8], esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 58
+   },
+   "text": "        mov     DWORD PTR [rbp-12], edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 59
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 59
+   },
+   "text": "        add     DWORD PTR [rbp-4], eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 19,
+    "file": null,
+    "line": 59
+   },
+   "text": "        mov     eax, DWORD PTR [rbp-4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 19,
+    "file": null,
+    "line": 59
+   },
+   "text": "        imul    eax, DWORD PTR [rbp-12]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 60
+   },
+   "text": "        pop     rbp"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 60
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 11276,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O0",
+  "-g",
+  "-fdump-tree-gimple=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 77,
+ "filteredCount": 614,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"calls\"": 47,
+  "\"compound\"": 107,
+  "\"deeper\"": 26,
+  "\"flat\"": 1,
+  "\"nested\"": 12,
+  "\"shortcircuit\"": 70,
+  "\"ternary\"": 87,
+  ".L10": 82,
+  ".L11": 84,
+  ".L14": 100,
+  ".L16": 104
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 6,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.2633119998499751,
+ "stderr": [
+  {
+   "text": "int flat (int a, int b, int c)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int D.2998;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  D.2998 = a + b;"
+  },
+  {
+   "text": "  return D.2998;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int nested (int a, int b, int c)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int D.3000;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  _1 = a + b;"
+  },
+  {
+   "text": "  _2 = a - c;"
+  },
+  {
+   "text": "  D.3000 = _1 * _2;"
+  },
+  {
+   "text": "  return D.3000;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int deeper (int a, int b, int c)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int D.3002;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  _1 = a + b;"
+  },
+  {
+   "text": "  _2 = a - c;"
+  },
+  {
+   "text": "  _3 = _1 * _2;"
+  },
+  {
+   "text": "  _4 = b + c;"
+  },
+  {
+   "text": "  _5 = b - a;"
+  },
+  {
+   "text": "  _6 = _4 * _5;"
+  },
+  {
+   "text": "  D.3002 = _3 + _6;"
+  },
+  {
+   "text": "  return D.3002;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int calls (int a, int b, int c)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int D.3004;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  _1 = a + b;"
+  },
+  {
+   "text": "  _2 = g (_1);"
+  },
+  {
+   "text": "  _3 = b + c;"
+  },
+  {
+   "text": "  _4 = h (_3);"
+  },
+  {
+   "text": "  D.3004 = _2 + _4;"
+  },
+  {
+   "text": "  return D.3004;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int shortcircuit (int a, int b, int c)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int D.3006;"
+  },
+  {
+   "text": "  int iftmp.0;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  if (a > 0) goto <D.3010>; else goto <D.3008>;"
+  },
+  {
+   "text": "  <D.3010>:"
+  },
+  {
+   "text": "  if (b > 0) goto <D.3011>; else goto <D.3008>;"
+  },
+  {
+   "text": "  <D.3011>:"
+  },
+  {
+   "text": "  iftmp.0 = 1;"
+  },
+  {
+   "text": "  goto <D.3009>;"
+  },
+  {
+   "text": "  <D.3008>:"
+  },
+  {
+   "text": "  iftmp.0 = 0;"
+  },
+  {
+   "text": "  <D.3009>:"
+  },
+  {
+   "text": "  D.3006 = iftmp.0;"
+  },
+  {
+   "text": "  return D.3006;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int ternary (int a, int b, int c)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int D.3013;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  if (a > b) goto <D.3014>; else goto <D.3015>;"
+  },
+  {
+   "text": "  <D.3014>:"
+  },
+  {
+   "text": "  D.3013 = a + c;"
+  },
+  {
+   "text": "  goto <D.3016>;"
+  },
+  {
+   "text": "  <D.3015>:"
+  },
+  {
+   "text": "  D.3013 = b + c;"
+  },
+  {
+   "text": "  <D.3016>:"
+  },
+  {
+   "text": "  return D.3013;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "int compound (int a, int b, int c)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int D.3018;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  a = a + b;"
+  },
+  {
+   "text": "  D.3018 = a * c;"
+  },
+  {
+   "text": "  return D.3018;"
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

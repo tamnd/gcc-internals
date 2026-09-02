@@ -1,0 +1,809 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"nearest\":"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 15
+   },
+   "text": "        mov     r8, rdi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 15
+   },
+   "text": "        mov     r10, rdx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        cmp     esi, 1"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L5",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        jle     .L5"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        mov     edi, DWORD PTR [rdi]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, DWORD PTR [r8+4]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     r11, rdx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     esi, esi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        sar     r11, 32"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 18,
+    "file": null,
+    "line": 10
+   },
+   "text": "        mov     ecx, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 16
+   },
+   "text": "        xor     r9d, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        sub     edi, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        sub     eax, r11d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    edi, edi"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 23,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 18,
+    "file": null,
+    "line": 10
+   },
+   "text": "        add     edi, eax"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L4:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        mov     edx, DWORD PTR [r8+rcx*8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        mov     eax, DWORD PTR [r8+4+rcx*8]"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 8
+   },
+   "text": "        sub     edx, r10d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 9
+   },
+   "text": "        sub     eax, r11d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 23,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    eax, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 13,
+    "file": null,
+    "line": 10
+   },
+   "text": "        imul    edx, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 18,
+    "file": null,
+    "line": 10
+   },
+   "text": "        add     eax, edx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 10,
+    "file": null,
+    "line": 21
+   },
+   "text": "        cmp     edi, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 17,
+    "file": null,
+    "line": 23
+   },
+   "text": "        cmovg   r9d, ecx"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 17,
+    "file": null,
+    "line": 23
+   },
+   "text": "        cmovg   edi, eax"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        add     rcx, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        cmp     rsi, rcx"
+  },
+  {
+   "labels": [
+    {
+     "name": ".L4",
+     "range": {
+      "endCol": 20,
+      "startCol": 17
+     }
+    }
+   ],
+   "source": {
+    "column": 21,
+    "file": null,
+    "line": 18
+   },
+   "text": "        jne     .L4"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     eax, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": ".L5:"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 7,
+    "file": null,
+    "line": 16
+   },
+   "text": "        xor     r9d, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        mov     eax, r9d"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 1,
+    "file": null,
+    "line": 28
+   },
+   "text": "        ret"
+  }
+ ],
+ "asmSize": 15329,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-O2",
+  "-g",
+  "-fdump-tree-optimized=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 63,
+ "filteredCount": 1007,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"nearest\"": 1,
+  ".L4": 18,
+  ".L5": 34
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 8,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.20303300023078918,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function nearest (nearest, funcdef_no=1, decl_uid=2970, cgraph_uid=2, symbol_order=1)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "Removing basic block 8"
+  },
+  {
+   "text": "Removing basic block 9"
+  },
+  {
+   "text": "Removing basic block 10"
+  },
+  {
+   "text": "Removing basic block 11"
+  },
+  {
+   "text": "int nearest (const struct P * pts, int n, struct P q)"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  sizetype ivtmp.10;"
+  },
+  {
+   "text": "  const int q$y;"
+  },
+  {
+   "text": "  const int q$x;"
+  },
+  {
+   "text": "  int dx;"
+  },
+  {
+   "text": "  int dy;"
+  },
+  {
+   "text": "  int dx;"
+  },
+  {
+   "text": "  int dy;"
+  },
+  {
+   "text": "  int i;"
+  },
+  {
+   "text": "  int bestd;"
+  },
+  {
+   "text": "  int best;"
+  },
+  {
+   "text": "  sizetype _3;"
+  },
+  {
+   "text": "  int _5;"
+  },
+  {
+   "text": "  int _7;"
+  },
+  {
+   "text": "  int _13;"
+  },
+  {
+   "text": "  int _17;"
+  },
+  {
+   "text": "  int _19;"
+  },
+  {
+   "text": "  int _20;"
+  },
+  {
+   "text": "  int _21;"
+  },
+  {
+   "text": "  int _29;"
+  },
+  {
+   "text": "  int _31;"
+  },
+  {
+   "text": "  unsigned int _32;"
+  },
+  {
+   "text": "  int _46;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 2> [local count: 118111600]:"
+  },
+  {
+   "text": "  # DEBUG D#8 => q.x"
+  },
+  {
+   "text": "  # DEBUG q$x => D#8"
+  },
+  {
+   "text": "  # DEBUG D#7 => q.y"
+  },
+  {
+   "text": "  # DEBUG q$y => D#7"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG best => 0"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG a => pts_10(D)"
+  },
+  {
+   "text": "  # DEBUG b => &q"
+  },
+  {
+   "text": "  # DEBUG INLINE_ENTRY dist2"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG D#6 => pts_10(D)->x"
+  },
+  {
+   "text": "  # DEBUG D#5 => D#6 - D#8"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG D#4 => pts_10(D)->y"
+  },
+  {
+   "text": "  # DEBUG D#3 => D#4 - D#7"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG D#2 => D#5 * D#5"
+  },
+  {
+   "text": "  # DEBUG D#1 => D#3 * D#3"
+  },
+  {
+   "text": "  # DEBUG a => NULL"
+  },
+  {
+   "text": "  # DEBUG b => NULL"
+  },
+  {
+   "text": "  # DEBUG dy => NULL"
+  },
+  {
+   "text": "  # DEBUG dx => NULL"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG i => 1"
+  },
+  {
+   "text": "  # DEBUG bestd => D#2 + D#1"
+  },
+  {
+   "text": "  # DEBUG best => 0"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (n_12(D) > 1)"
+  },
+  {
+   "text": "    goto <bb 3>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 7>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 3> [local count: 105119324]:"
+  },
+  {
+   "text": "  q$x_11 = q.x;"
+  },
+  {
+   "text": "  q$y_14 = q.y;"
+  },
+  {
+   "text": "  _13 = pts_10(D)->x;"
+  },
+  {
+   "text": "  dx_16 = _13 - q$x_11;"
+  },
+  {
+   "text": "  _17 = pts_10(D)->y;"
+  },
+  {
+   "text": "  dy_18 = _17 - q$y_14;"
+  },
+  {
+   "text": "  _19 = dx_16 * dx_16;"
+  },
+  {
+   "text": "  _20 = dy_18 * dy_18;"
+  },
+  {
+   "text": "  _21 = _19 + _20;"
+  },
+  {
+   "text": "  _32 = (unsigned int) n_12(D);"
+  },
+  {
+   "text": "  _3 = (sizetype) _32;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 4> [local count: 955630224]:"
+  },
+  {
+   "text": "  # best_41 = PHI <0(3), best_47(6)>"
+  },
+  {
+   "text": "  # bestd_40 = PHI <_21(3), bestd_48(6)>"
+  },
+  {
+   "text": "  # ivtmp.10_35 = PHI <1(3), ivtmp.10_42(6)>"
+  },
+  {
+   "text": "  # DEBUG D#9 => (int) ivtmp.10_35"
+  },
+  {
+   "text": "  # DEBUG i => D#9"
+  },
+  {
+   "text": "  # DEBUG bestd => bestd_40"
+  },
+  {
+   "text": "  # DEBUG best => best_41"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG a => (const struct P *) ((unsigned long) ivtmp.10_35 * 8 + (unsigned long) pts_10(D))"
+  },
+  {
+   "text": "  # DEBUG b => &q"
+  },
+  {
+   "text": "  # DEBUG INLINE_ENTRY dist2"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _31 = MEM[(int *)pts_10(D) + ivtmp.10_35 * 8];"
+  },
+  {
+   "text": "  dx_30 = _31 - q$x_11;"
+  },
+  {
+   "text": "  # DEBUG dx => dx_30"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _29 = MEM[(int *)pts_10(D) + 4B + ivtmp.10_35 * 8];"
+  },
+  {
+   "text": "  dy_8 = _29 - q$y_14;"
+  },
+  {
+   "text": "  # DEBUG dy => dy_8"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  _7 = dx_30 * dx_30;"
+  },
+  {
+   "text": "  _5 = dy_8 * dy_8;"
+  },
+  {
+   "text": "  _46 = _5 + _7;"
+  },
+  {
+   "text": "  # DEBUG a => NULL"
+  },
+  {
+   "text": "  # DEBUG b => NULL"
+  },
+  {
+   "text": "  # DEBUG dy => NULL"
+  },
+  {
+   "text": "  # DEBUG dx => NULL"
+  },
+  {
+   "text": "  # DEBUG d => _46"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  if (bestd_40 > _46)"
+  },
+  {
+   "text": "    goto <bb 5>; [50.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 6>; [50.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 5> [local count: 477815112]:"
+  },
+  {
+   "text": "  i_39 = (int) ivtmp.10_35;"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG bestd => _46"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG best => D#9"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 6> [local count: 955630224]:"
+  },
+  {
+   "text": "  # best_47 = PHI <best_41(4), i_39(5)>"
+  },
+  {
+   "text": "  # bestd_48 = PHI <bestd_40(4), _46(5)>"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG i => (int) ((unsigned int) ivtmp.10_35 + 1)"
+  },
+  {
+   "text": "  # DEBUG bestd => bestd_48"
+  },
+  {
+   "text": "  # DEBUG best => best_47"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  ivtmp.10_42 = ivtmp.10_35 + 1;"
+  },
+  {
+   "text": "  if (_3 != ivtmp.10_42)"
+  },
+  {
+   "text": "    goto <bb 4>; [89.00%]"
+  },
+  {
+   "text": "  else"
+  },
+  {
+   "text": "    goto <bb 7>; [11.00%]"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 7> [local count: 118111600]:"
+  },
+  {
+   "text": "  # best_33 = PHI <best_47(6), 0(2)>"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  return best_33;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

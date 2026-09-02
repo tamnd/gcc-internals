@@ -19,7 +19,11 @@ site/_build/
 
 # generated, never committed
 corpora/dumps/**/*.gz
-tools/cecache/store/
+
+# tools/cecache/store is deliberately NOT ignored. Every Compiler Explorer response the book
+# depends on is committed, because the tier 0 parity job reads them and a cache that CI
+# populates from a third party service turns somebody else's outage into our build failure.
+# Adding one is `just ce-refresh`, on a laptop, reviewed as a diff.
 
 # Marimo caches the last run of a notebook beside it. The island build reruns every cell
 # anyway, so this is scratch.

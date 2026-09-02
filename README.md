@@ -123,6 +123,23 @@ python -m gxray web --name s_1 -O2
 
 `just setup` puts the toolkit and the dev tools in a virtualenv, and `just check` runs everything CI runs.
 
+## The recorded compiler and the live one have to agree
+
+Swapping `gxray.corpus` for `gxray.ce` in a lesson's first cell is something several lessons invite you to do, so the two have to give the same answer. Every recorded compilation the book reads is registered in [`tools/tier0/experiments.toml`](tools/tier0/experiments.toml) and checked in both directions on every push.
+
+```console
+just tier0-list   # what is registered, and which lessons read it
+just tier0        # run all of it, out of the corpus and out of the cache
+```
+
+There are three kinds. A **recorded** experiment came from Compiler Explorer in the first place, so the cached response and the corpus entry have to be the same text, byte for byte. A **paired** experiment was recorded against a local compiler, so what has to agree is the shape rather than the text: the functions, the block count, the PHI count, the statement count and the multiset of operators. An **offline** experiment has no online counterpart, and every one of them carries a written reason.
+
+Twenty five experiments are registered today. Nine recorded, ten paired, six offline. The registry knows what the corpus holds and what the lessons directory holds, so a corpus entry added without an experiment fails the build rather than going quietly unchecked.
+
+Two paired experiments compare less than the full set, and both are worth knowing about, because they are the places where the target reaches back into a pass that looks target independent. `ivopts` picks an induction variable by asking the target which addressing modes exist, so x86-64 gets `MEM[(int *)pts + ivtmp * 8]` for the loop in `nearest` and aarch64 increments the pointer instead, one PHI apart. `widening_mul` asks `optab_handler` for a multiply-accumulate, so aarch64 gets a `WIDEN_MULT_PLUS_EXPR` where x86-64 gets a multiply and an add. Neither changes the control flow, so those experiments still compare it, and narrowing a comparison without writing down why is rejected by the registry loader.
+
+CI never touches the live API. The online half reads the responses committed under `tools/cecache/store` through a cache that raises on a miss, so a new experiment without its cache entry fails the build. Fetching is one command, `just ce-refresh`, it runs on a laptop, and what it writes goes in the pull request. Compiler Explorer is free and run by volunteers and this project does not put it in anybody's CI loop.
+
 ## Widgets that work with the power off
 
 `gxwidgets` draws what `gxray` parsed. A widget builds its own markup in Python and the browser only attaches behaviour to it, so there is one renderer and the version you see with JavaScript blocked is the same drawing, not a placeholder.

@@ -1,0 +1,75 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "<No output file>"
+  }
+ ],
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-###",
+  "-O2",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 19,
+ "filteredCount": 0,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {},
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.05182799999602139,
+ "stderr": [
+  {
+   "text": "Using built-in specs."
+  },
+  {
+   "text": "COLLECT_GCC=/opt/compiler-explorer/gcc-16.2.0/bin/gcc"
+  },
+  {
+   "text": "Target: x86_64-linux-gnu"
+  },
+  {
+   "text": "Configured with: ../gcc-16.2.0/configure --prefix=/opt/compiler-explorer/gcc-build/staging --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --disable-bootstrap --enable-multiarch --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --enable-clocale=gnu --enable-languages=c,c++,fortran,ada,objc,obj-c++,go,d,m2,rust,cobol,algol68 --enable-ld=yes --enable-gold=yes --enable-libstdcxx-time=yes --enable-linker-build-id --enable-lto --enable-plugins --enable-threads=posix --with-pkgversion=Compiler-Explorer-Build-gcc--binutils-2.44"
+  },
+  {
+   "text": "Thread model: posix"
+  },
+  {
+   "text": "Supported LTO compression algorithms: zlib"
+  },
+  {
+   "text": "gcc version 16.2.0 (Compiler-Explorer-Build-gcc--binutils-2.44) "
+  },
+  {
+   "text": "COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-g' '-o' '/app/output.s' '-masm=intel' '-fno-verbose-asm' '-S' '-O2' '-mtune=generic' '-march=x86-64' '-dumpdir' '/app/'"
+  },
+  {
+   "text": " \"/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../libexec/gcc/x86_64-linux-gnu/16.2.0/cc1\" -quiet -imultiarch x86_64-linux-gnu -iprefix \"/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/x86_64-linux-gnu/16.2.0/\" <source> -quiet -dumpdir /app/ -dumpbase output.c -dumpbase-ext .c \"-masm=intel\" \"-mtune=generic\" \"-march=x86-64\" -g -O2 \"-fdiagnostics-color=always\" -fno-verbose-asm -o /app/output.s"
+  },
+  {
+   "text": "COMPILER_PATH=/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../libexec/gcc/x86_64-linux-gnu/16.2.0/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../libexec/gcc/x86_64-linux-gnu/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../libexec/gcc/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/x86_64-linux-gnu/16.2.0/../../../../x86_64-linux-gnu/bin/"
+  },
+  {
+   "text": "LIBRARY_PATH=/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/x86_64-linux-gnu/16.2.0/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/x86_64-linux-gnu/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/x86_64-linux-gnu/16.2.0/../../../../lib64/:/lib/x86_64-linux-gnu/:/lib/../lib64/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib64/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/x86_64-linux-gnu/16.2.0/../../../../x86_64-linux-gnu/lib/:/cefs/17/17a2c76db590a13a8a92c74c_consolidated/compilers_c++_x86_gcc_16.2.0/bin/../lib/gcc/x86_64-linux-gnu/16.2.0/../../../:/lib/:/usr/lib/"
+  },
+  {
+   "text": "COLLECT_GCC_OPTIONS='-fdiagnostics-color=always' '-g' '-o' '/app/output.s' '-masm=intel' '-fno-verbose-asm' '-S' '-O2' '-mtune=generic' '-march=x86-64' '-dumpdir' '/app/output.'"
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

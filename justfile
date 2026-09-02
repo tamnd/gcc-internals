@@ -15,7 +15,7 @@ setup:
     @echo "activate with: source .venv/bin/activate"
 
 # Everything CI runs on a push, in the order CI runs it.
-check: lint prose lessons claims test
+check: lint prose lessons claims tier0 test
     @echo "all green"
 
 lint:
@@ -199,6 +199,24 @@ corpus-z01:
 # it takes about twenty seconds because it opens every .cc under gcc/ to find the pass table.
 corpus-z02:
     {{py}} lessons/z02-where-things-are/record.py
+
+# Every Tier 0 experiment, run out of the corpus and then out of the cached Compiler Explorer
+# responses, and checked against each other. No network either way. See tools/tier0 for what
+# the three kinds of experiment are and why a recorded one is compared byte for byte while a
+# paired one is compared on shape.
+tier0:
+    {{py}} -m tools.tier0 check
+
+# What is registered, what each experiment asks, and which lessons read it.
+tier0-list:
+    {{py}} -m tools.tier0 list
+
+# Fetch the Compiler Explorer responses a new experiment needs. This is the only command in
+# the project that talks to the live API, it is never run by CI, and what it writes under
+# tools/cecache/store belongs in the same pull request as the experiment that needed it.
+# Compiler Explorer is free and run by volunteers. Do not put this in a loop.
+ce-refresh:
+    {{py}} -m tools.tier0 refresh
 
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
