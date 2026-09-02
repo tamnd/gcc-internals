@@ -51,7 +51,7 @@ make = "all"
 arches = ["amd64", "arm64"]
 weekly = true
 on_patches = true
-minutes = 21
+minutes = 22
 gigabytes = 1.2
 why = "Everything that only needs a working GCC 16 uses this, so it is built the most often and kept the smallest."
 
@@ -77,7 +77,7 @@ make = "all"
 arches = ["amd64", "arm64"]
 weekly = true
 on_patches = true
-minutes = 30
+minutes = 35
 gigabytes = 6.0
 why = "At -O2 a debugger shows you a function whose locals have been optimized away and whose lines jump backwards. B03 is unteachable without -O0 -g3, and -g3 rather than -g because the macros are half of what you want to look at."
 

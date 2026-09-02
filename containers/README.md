@@ -8,14 +8,14 @@ The rule that shapes all of this: **no job in this project compiles GCC except t
 
 | Config | What it is | Build | Size | Arches | Built |
 |---|---|---|---|---|---|
-| `rel` | The fast development loop. Optimized, no bootstrap, and the one most jobs want. | 21 min | 1.2 GB | amd64, arm64 | weekly and on a patch change |
+| `rel` | The fast development loop. Optimized, no bootstrap, and the one most jobs want. | 22 min | 1.2 GB | amd64, arm64 | weekly and on a patch change |
 | `chk` | Every internal consistency check GCC has, turned on. | 47 min | 4 GB | amd64, arm64 | weekly and on a patch change |
-| `dbg` | Unoptimized with full debug info, for the lessons that step through GCC in gdb. | 30 min | 6 GB | amd64, arm64 | weekly and on a patch change |
+| `dbg` | Unoptimized with full debug info, for the lessons that step through GCC in gdb. | 35 min | 6 GB | amd64, arm64 | weekly and on a patch change |
 | `boot` | The full three stage bootstrap, with the stage two against stage three comparison. | 240 min | 8 GB | amd64, arm64 | weekly |
 | `cross` | A riscv64-unknown-elf cross compiler with newlib, for the back end lessons. | 18 min | 1.5 GB | amd64, arm64 | weekly and on a patch change |
 | `plug` | A stock distribution GCC with gxplug built against it, and nothing compiled from source. | 5 min | 1.7 GB | amd64, arm64 | weekly and on a patch change |
 
-6 configurations, `rel`, `chk`, `dbg`, `boot`, `cross`, `plug`, on 2 architectures. One full weekly run is about 12.0 machine hours.
+6 configurations, `rel`, `chk`, `dbg`, `boot`, `cross`, `plug`, on 2 architectures. One full weekly run is about 12.2 machine hours.
 
 <!-- matrix table end -->
 
