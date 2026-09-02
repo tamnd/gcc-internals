@@ -28,6 +28,7 @@ The palette lives in `gxmanim.palette` and both the widgets and the animations i
 so a still from a video and a live widget look like the same project.
 """
 
+from gxwidgets.asmlisting import AsmListing
 from gxwidgets.base import Widget, live
 from gxwidgets.flagdiff import FlagDiff
 from gxwidgets.html import STYLESHEET
@@ -41,6 +42,7 @@ from gxwidgets.targetcompare import TargetCompare
 
 __all__ = [
     "STYLESHEET",
+    "AsmListing",
     "FlagDiff",
     "GateError",
     "IRLadder",

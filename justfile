@@ -140,6 +140,24 @@ corpus-t08:
     {{py}} -m gxray record --entry t08-local --file corpora/programs/t08-pressure.c \
         --gcc {{gcc}} --dump rtl-ira -O2
 
+# What T09 reads. Two flags here are doing more work than they look like they are.
+# `-dp` is what makes the assembly say which machine description pattern emitted each line,
+# and it writes that as a trailing comment, which is the first thing Compiler Explorer throws
+# away. `--raw-asm` turns off the site's filters so the directives, the labels and those
+# comments all survive, and `-g0` cancels the `-g` the site adds, which otherwise buries a
+# forty line function under three hundred lines of `.debug_info`.
+# The rtl-final dump is the other half of the join. Every insn in it carries a uid and a
+# pattern name, and every instruction in the assembly carries the same uid, so a reader can
+# walk from one to the other without being asked to take anything on trust.
+# The first two need the network.
+corpus-t09:
+    {{py}} -m gxray record --backend ce --compiler-id carm64g1610 --raw-asm --entry t09-final \
+        --file corpora/programs/l1.c --dump rtl-final -O2 -g0 -dp
+    {{py}} -m gxray record --backend ce --compiler-id carm64g1610 --raw-asm --entry t09-sections \
+        --file corpora/programs/t09-sections.c --dump rtl-final -O2 -g0 -dp
+    {{py}} -m gxray record --entry t09-local --file corpora/programs/l1.c \
+        --gcc {{gcc}} --dump rtl-final -O2 -dp
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build

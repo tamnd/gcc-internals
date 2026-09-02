@@ -62,6 +62,11 @@ select = ["E", "F", "I", "UP", "B"]
 # The setup cell in a lesson clones the repository and then imports from it, so the import
 # has to come after the code. That is what the cell is for.
 "lessons/*/*.ipynb" = ["E402"]
+# The fixtures in here are patterns pasted out of `gcc/config/aarch64/aarch64.md`, tabs and
+# all, because a parser that only reads retyped input is a parser nobody has tested. GCC
+# indents a continuation line with tabs and then spaces, and reformatting that would be
+# testing something other than what the file says.
+"tests/test_mdesc.py" = ["E101", "W191"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

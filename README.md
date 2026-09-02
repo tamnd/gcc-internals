@@ -2,7 +2,7 @@
 
 A visual, hands on teardown of GCC 16, taught from zero, and specified precisely enough that you can write a working front end, a working back end and a working optimizer against the specifications alone.
 
-The plan is 96 lessons in eleven parts, 58 blueprints, and three capstone tracks. One lesson exists so far, the pilot, and the rest of the repository is the toolkit those lessons are built on plus thirteen milestones and eighteen open questions saying what is still undecided.
+The plan is 96 lessons in eleven parts, 58 blueprints, and three capstone tracks. Nine lessons and four blueprints exist so far, and the rest of the repository is the toolkit those lessons are built on plus thirteen milestones and eighteen open questions saying what is still undecided.
 
 ## The idea
 
@@ -45,8 +45,9 @@ Lessons do not invent a fresh example each time either. There are three programs
 | T06 | [What -O2 actually turns on](https://github.com/tamnd/gcc-internals/blob/main/lessons/t06-what-o2-actually-turns-on/t06.ipynb) | An optimization level is four integers and a table of a hundred and fourteen entries, why counting the switches that flipped gives the wrong answer, why -Os and -Oz look identical from outside and are not, and how few of the fifty five differences between -O1 and -O2 any one function notices | M1 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tamnd/gcc-internals/blob/main/lessons/t06-what-o2-actually-turns-on/t06.ipynb) |
 | T07 | [Where GIMPLE becomes RTL](https://github.com/tamnd/gcc-internals/blob/main/lessons/t07-where-gimple-becomes-rtl/t07.ipynb) | The one node type the whole back end is built from, how to read an RTL expression out loud, why most of a function after expand is not instructions, the fiction of unlimited registers, and the same program on four machines disagreeing about every single thing you can measure | M1 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tamnd/gcc-internals/blob/main/lessons/t07-where-gimple-becomes-rtl/t07.ipynb) |
 | T08 | [Registers are a lie until they are not](https://github.com/tamnd/gcc-internals/blob/main/lessons/t08-registers-are-a-lie-until-they-are-not/t08.ipynb) | The pass that makes good on the expander's promise, what an allocno is and why it is not a pseudo, live ranges and interference, the one number that decides everything, and the same five functions coming out differently on two machines because one of them has half as many registers | M1 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tamnd/gcc-internals/blob/main/lessons/t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| T09 | [The last mile](https://github.com/tamnd/gcc-internals/blob/main/lessons/t09-the-last-mile/t09.ipynb) | The pass that writes the assembly file, the annotation that says which machine description pattern emitted each line, why one pattern can emit five different instructions, and the thirty four lines of a forty six line file that are not instructions at all | M1 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/tamnd/gcc-internals/blob/main/lessons/t09-the-last-mile/t09.ipynb) |
 
-8 of 96 written.
+9 of 96 written.
 <!-- nbbuild:end index -->
 
 This table is generated from the lessons, by the same command that builds them, so it cannot list a lesson that does not exist or miss one that does. T05 is the pilot and it is deliberately in the middle of Part I rather than at the start, because everything the course promises has to be true of a hard lesson before it is worth writing the easy ones.

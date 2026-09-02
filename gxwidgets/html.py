@@ -286,6 +286,39 @@ STYLESHEET = f""":root {{
 .gx-facts-table td.gx-same {{ color: var(--gx-unknown-ink); }}
 .gx-facts-table td.gx-differs {{ color: var(--gx-changed-ink); font-weight: 600; }}
 
+.gx-listing {{ display: flex; flex-direction: column; gap: 1px; max-height: 24em;
+  overflow: auto; padding: 2px; scrollbar-width: thin; }}
+.gx-asmline {{ display: grid; grid-template-columns: 2.6em 1.4em minmax(0, 1fr) auto;
+  gap: 8px; align-items: baseline; text-align: left; font: inherit; font-size: 12px;
+  cursor: pointer; padding: 1px 5px; border: 1px solid transparent; border-radius: 3px;
+  background: transparent; color: inherit; }}
+.gx-asmline:hover {{ background: var(--gx-neutral-fill); }}
+.gx-asmline[hidden] {{ display: none; }}
+.gx-asmline[aria-current="true"] {{ background: var(--gx-focus-fill);
+  color: var(--gx-focus-ink); border-color: currentColor; }}
+.gx-asmline-no {{ font-family: {MONO}; font-size: 11px; text-align: right;
+  color: var(--gx-unknown-ink); }}
+.gx-asmline-text {{ font-family: {MONO}; white-space: pre; overflow: hidden;
+  text-overflow: ellipsis; }}
+.gx-asmline[data-kind="instruction"] .gx-asmline-text {{ padding-left: 1.5em; }}
+.gx-asmline-slot {{ font-family: {MONO}; font-size: 11px; white-space: nowrap;
+  color: var(--gx-unknown-ink); }}
+.gx-asmline[aria-current="true"] .gx-asmline-no,
+.gx-asmline[aria-current="true"] .gx-asmline-slot {{ color: inherit; }}
+.gx-alts {{ border-collapse: collapse; font-size: 12px; margin: 6px 0 0; display: block;
+  max-height: 15em; overflow: auto; scrollbar-width: thin; }}
+.gx-alts th, .gx-alts td {{ font-family: {MONO}; text-align: left; white-space: nowrap;
+  padding: 1px 10px 1px 0; }}
+.gx-alts thead th {{ color: var(--gx-unknown-ink); font-weight: 600;
+  border-bottom: 1px solid var(--gx-unknown-fill); }}
+.gx-alts tbody th {{ font-weight: 400; color: var(--gx-unknown-ink); }}
+.gx-alts tr[aria-current="true"] {{ background: var(--gx-focus-fill);
+  color: var(--gx-focus-ink); }}
+.gx-alts tr[aria-current="true"] th {{ color: inherit; }}
+.gx-source {{ margin-top: 8px; }}
+.gx-source summary {{ cursor: pointer; font-size: 12px; color: var(--gx-unknown-ink); }}
+.gx-source pre {{ margin: 4px 0 0; max-height: 20em; overflow: auto; scrollbar-width: thin; }}
+
 .gx-web {{ max-width: 100%; overflow-x: auto; color: var(--gx-focus-ink); }}
 .gx-web text {{ font-family: {MONO}; font-size: 12px; fill: var(--gx-neutral-ink); }}
 .gx-web .thread {{ fill: none; stroke: currentColor; stroke-width: 1.2; }}

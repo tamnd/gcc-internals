@@ -19,3 +19,9 @@ That covers `gxray/`, `gxplug/`, `gxwidgets/`, `gxmanim/`, `tools/`, `capstones/
 ## Not covered
 
 GCC itself is not in this repository. It arrives as a git submodule pinned to `releases/gcc-16.2.0` and stays under its own licence, which is GPLv3 with the GCC Runtime Library Exception.
+
+## Recorded compiler output and extracts
+
+`corpora/dumps/` and `corpora/programs/` are ours. A dump is what the compiler said about a program we wrote, and the programs are written for the book.
+
+`corpora/mdesc/` is different. It holds verbatim extracts of GCC's machine descriptions, pulled out of the pinned submodule by a script so that a notebook running in a browser can read them without a 1.3 GB checkout. Those extracts are GCC source, they are GPLv3, and they stay that way. Every one of them records the file, the line and the tag it came from.

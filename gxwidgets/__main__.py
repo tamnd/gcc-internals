@@ -14,8 +14,9 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxray import corpus_store, gimple, locs, options, passes, regalloc, rtl
+from gxray import asm, corpus_store, gimple, locs, mdesc, options, passes, regalloc, rtl
 from gxwidgets import (
+    AsmListing,
     FlagDiff,
     IRLadder,
     PassTape,
@@ -111,6 +112,24 @@ def pressure() -> RegAlloc | None:
     return RegAlloc(allocations, compilers) if allocations else None
 
 
+def listing(entry: str = "t09-final") -> AsmListing | None:
+    """The annotated assembly, with the machine description extract beside it.
+
+    The extract can be missing on a fresh checkout that has never run `record.py`, and that
+    is not an error either. Without it the listing still reads, it just cannot say which row
+    of which pattern emitted a line.
+    """
+    try:
+        record = corpus_store.load(entry)
+    except FileNotFoundError:
+        return None
+    try:
+        machine = mdesc.load_extract("aarch64")
+    except FileNotFoundError:
+        machine = {}
+    return AsmListing(asm.parse(record.asm, entry), machine)
+
+
 def build(entry: str = "l1-O2") -> str:
     record = corpus_store.load(entry)
     # Only the tree dumps hold a function body the GIMPLE parser can read. The RTL one is
@@ -169,6 +188,9 @@ def build(entry: str = "l1-O2") -> str:
     two = pressure()
     if two is not None:
         widgets.append(two)
+    last = listing()
+    if last is not None:
+        widgets.append(last)
 
     banner = f"{record.compiler} for {record.target}, recorded {record.recorded}."
     return PAGE.format(

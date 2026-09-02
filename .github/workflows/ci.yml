@@ -86,6 +86,8 @@ jobs:
           ! python lessons/t07-where-gimple-becomes-rtl/grade.py --answers A1 B2 C3 D4 E5 F6 --clobbers aarch64 --no-flags power64le
           python lessons/t08-registers-are-a-lie-until-they-are-not/grade.py --spills p14,p20,p30 --available 15 --p20-memory 7
           ! python lessons/t08-registers-are-a-lie-until-they-are-not/grade.py --spills p20,p30 --available 16 --p20-memory 6
+          python lessons/t09-the-last-mile/grade.py --patterns '*movsi_aarch64,*addsi3_aarch64,*do_return' --no-slash 2 --rows 21
+          ! python lessons/t09-the-last-mile/grade.py --patterns '*addsi3_aarch64,*movsi_aarch64,*do_return' --no-slash 3 --rows 8
 
       - name: the glossary matches the module that generates it
         run: |
@@ -121,7 +123,7 @@ jobs:
 
       # The parser tests that read the real tree only run where the tree exists.
       - run: pip install -e ".[dev]"
-      - run: python -m pytest -q tests/test_bpc.py
+      - run: python -m pytest -q tests/test_bpc.py tests/test_mdesc.py
 
   gcc:
     name: against a real gcc-16

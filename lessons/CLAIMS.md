@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-51 claims across 8 lessons, 4 of them not observable from a notebook.
+60 claims across 9 lessons, 4 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -100,3 +100,17 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | p14 and p20 fit on aarch64 and do not fit on x86-64 | [`t08-23`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
 | the colouring trace and the final disposition disagree about four allocnos in p30 | [`t08-31`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
 | IRA charges nothing for memory on aarch64 until p30, and a great deal on x86-64 | [`t08-34`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+
+## The last mile
+
+| Claim | Proved by |
+| --- | --- |
+| the assembly for a four line function is forty six lines, twelve of them instructions | [`t09-05`](t09-the-last-mile/t09.ipynb) |
+| every annotated line names an insn in the final RTL dump, and the two agree | [`t09-08`](t09-the-last-mile/t09.ipynb) |
+| five patterns emitted all twelve instructions, and one of them emitted four | [`t09-11`](t09-the-last-mile/t09.ipynb) |
+| *addsi3_aarch64 is written *add<mode>3_aarch64 and lives at aarch64.md line 2694 | [`t09-14`](t09-the-last-mile/t09.ipynb) |
+| the two movs used different rows, and the rows differ in one constraint letter | [`t09-19`](t09-the-last-mile/t09.ipynb) |
+| across all three recordings the slash appears exactly when the pattern has more than one row | [`t09-22`](t09-the-last-mile/t09.ipynb) |
+| the same twelve instructions come wrapped in thirty four other lines on Linux and forty four on Darwin | [`t09-25`](t09-the-last-mile/t09.ipynb) |
+| nine names land in five different sections and nothing in the C says which | [`t09-28`](t09-the-last-mile/t09.ipynb) |
+| wide is four bytes and the section it sits in is aligned to sixty four | [`t09-31`](t09-the-last-mile/t09.ipynb) |

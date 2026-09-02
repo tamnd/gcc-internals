@@ -17,6 +17,8 @@ Four of them here:
     rtx_tree    one RTL insn's pattern, put back into the tree it was printed from
     spill_map   one lane per target, one cell per pseudo, marked where it spilled
     pressure_ramp  one lane per function, one cell per live value, marked past the end
+    asm_tape    one cell per line of the assembly file, coloured by what kind of line it is
+    emit_path   one insn, the pattern that emitted it, and the text that came out
 
 `ssa_web` and `phi_node` deliberately draw data flow and not control flow. Blocks are laid
 out in index order down the page and the interesting lines are the threads between the
@@ -31,6 +33,8 @@ from itertools import count
 
 from gxmanim.primitives import GAP, Badge, Block, Card, Cell, Edge, Node, Rung, Thread
 from gxmanim.scene import Scene
+from gxray.asm import Line
+from gxray.asm import Listing as AsmFile
 from gxray.cfg import CFG, ENTRY
 from gxray.gimple import Function, Phi, Stmt
 from gxray.locs import LEVEL_NAMES, LEVELS, Ladder, strip_locs
@@ -595,6 +599,111 @@ def pressure_ramp(rows: dict[str, dict[str, Allocation]], target: str) -> Scene:
     return scene
 
 
+# Text
+
+
+#: What each kind of line is drawn as. The same five roles the assembly listing widget uses,
+#: so a reader who learned the colours in the notebook does not have to learn them again in
+#: the picture. An instruction is `added` because it is the only kind that puts a machine
+#: instruction in the object file, and a directive is `constant` because it says something
+#: about the file rather than doing anything at run time.
+LINE_ROLES = {
+    "instruction": "added",
+    "directive": "constant",
+    "label": "focus",
+    "comment": "unknown",
+    "blank": "neutral",
+}
+
+
+def asm_tape(listing: AsmFile, per_row: int = 64, title: str = "") -> Scene:
+    """One cell per line of the assembly file, coloured by what kind of line it is.
+
+    T07 made the point that a function of four lines of C is thirteen RTL insns. This is the
+    same argument one stage later and it comes out the other way round: the file GCC hands
+    the assembler is mostly not instructions, and the twelve that are sit in a crowd of
+    directives, labels and comments that nobody counts.
+
+    Lines are drawn in file order, wrapped, so the shape of the file survives. The block of
+    directives at the top, the run of instructions in the middle and the tail of `.size` and
+    `.ident` are all visible as runs of one colour.
+    """
+    counts = listing.counts()
+    scene = Scene(
+        title=title or f"{counts['total']} lines, {counts['instruction']} of them instructions",
+        caption=(
+            f"{counts['directive']} directives, {counts['label']} labels, "
+            f"{counts['comment']} comments and {counts['blank']} blank. "
+            "Only the instructions become machine code."
+        ),
+    )
+    x, y = LEFT, TOP
+    for i, line in enumerate(listing):
+        if i and i % per_row == 0:
+            x, y = LEFT, y + Cell.h + 22
+        state = line.slot if line.slot else line.kind
+        shape = Cell(
+            name=f"line {line.number}",
+            role=LINE_ROLES[line.kind],
+            id=f"line-{line.number}",
+            changed=line.kind == "instruction",
+            state=state,
+        )
+        scene.add(shape, x, y)
+        x += Cell.w + 1
+    return scene
+
+
+def emit_path(line: Line, pattern: dict | None = None) -> Scene:
+    """The four steps from one RTL insn to one line of text, drawn as a chain.
+
+    `pattern` is an entry out of `corpora/mdesc/<target>.json`, or None when the extract does
+    not have that pattern in it. Without it the chain is three cards rather than four, which
+    is honest: the missing card is the one nobody can fill in without the machine description.
+    """
+    if not line.annotated:
+        raise ValueError(f"line {line.number} carries no annotation, so there is no path to draw")
+
+    scene = Scene(title=f"insn {line.uid} becomes one line of assembly")
+    cards = [
+        Card(
+            text=f"insn {line.uid}, cost {line.cost}, {line.length} bytes",
+            role="neutral",
+            id="insn",
+        ),
+        Card(text=line.pattern, role="focus", id="pattern"),
+    ]
+    if pattern is not None:
+        rows = pattern.get("alternatives") or []
+        row = rows[line.alternative or 0] if rows else None
+        if row is not None:
+            which = (
+                f"alternative {row['index']}: {' , '.join(row['cons'])}"
+                if len(rows) > 1
+                else f"the only alternative: {' , '.join(row['cons'])}"
+            )
+            cards.append(Card(text=which, role="changed", id="alternative"))
+            cards.append(Card(text=row["template"], role="constant", id="template"))
+    cards.append(Card(text=str(line).split("  [")[0], role="added", id="text"))
+
+    y = TOP
+    for card in cards:
+        scene.add(card, LEFT, y)
+        y += card.h + DOWN
+    scene.link(
+        *[
+            Edge(src=a.id, dst=b.id, kind="fallthrough")
+            for a, b in zip(cards, cards[1:], strict=False)
+        ]
+    )
+    where = pattern["citation"] if pattern else "the machine description"
+    scene.caption = (
+        f"Every step is printed somewhere. The first two come off the `-dp` annotation, "
+        f"the middle ones are in {where}, and the last one is the file."
+    )
+    return scene
+
+
 def tree(root: Node, gap: int = 18) -> Scene:
     """Any tree of nodes, laid out with children under their parent and edges down.
 
@@ -646,8 +755,10 @@ def tree(root: Node, gap: int = 18) -> Scene:
 
 
 __all__ = [
+    "asm_tape",
     "cfg_view",
     "dom_tree",
+    "emit_path",
     "ir_ladder",
     "one_line",
     "pass_tape",
