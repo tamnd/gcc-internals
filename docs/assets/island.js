@@ -8,6 +8,13 @@
 (function () {
   "use strict";
 
+  // How long to let it run before saying something. A warm browser hydrates in under a
+  // minute and a cold one takes longer, so SLOW is only a reassurance and not a diagnosis.
+  // STUCK is the point where marimo's own parent to worker RPC has certainly given up, and
+  // a reader who is not told that will sit in front of a spinner until they leave.
+  var SLOW = 25000;
+  var STUCK = 120000;
+
   function start(button) {
     var island = button.closest(".island");
     var template = island.querySelector("template.island-head");
@@ -25,20 +32,87 @@
     var line = document.createElement("span");
     line.className = "island-status";
     line.setAttribute("role", "status");
-    line.textContent = "Starting Python. The first time takes a few seconds.";
+    line.textContent =
+      "Starting Python. The first time in a browser takes up to a minute, because Python" +
+      " itself has to come down. After that it is quick.";
+
+    var slow = setTimeout(function () {
+      line.textContent =
+        "Still downloading Python. This is the slow part and it only happens once.";
+    }, SLOW);
+
+    // Held so that a runtime which turns up late can take it away again. Nothing stops
+    // marimo hydrating after this fires, and a live island with a "try again" button on it
+    // is its own small lie.
+    var out = null;
+
+    var stuck = setTimeout(function () {
+      island.classList.remove("is-starting");
+      island.classList.add("is-stuck");
+      line.textContent =
+        "This has taken longer than it should and it has probably given up. Everything it" +
+        " downloaded is in your browser's cache now, so a reload and a second press is" +
+        " fast. What is below is the output recorded when the page was built, and it is" +
+        " still true.";
+      out = reload();
+      line.after(out);
+    }, STUCK);
 
     // Marimo swaps the static output for live cells as it hydrates, so the first change
     // under .island-cells is the runtime arriving. Nothing else tells us.
     var cells = island.querySelector(".island-cells");
     var watcher = new MutationObserver(function () {
       watcher.disconnect();
+      clearTimeout(slow);
+      clearTimeout(stuck);
+      if (out) {
+        out.remove();
+        out = null;
+      }
       island.classList.remove("is-starting");
+      island.classList.remove("is-stuck");
       island.classList.add("is-live");
       line.textContent = "Python is running here now. Every cell below is live.";
     });
     watcher.observe(cells, { childList: true, subtree: true });
 
     return line;
+  }
+
+  function reload() {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "island-reload";
+    button.textContent = "Reload and try again";
+    button.addEventListener("click", function () {
+      location.reload();
+    });
+    return button;
+  }
+
+  // Warm the bundle when the reader reaches for the button rather than when they press it.
+  //
+  // The failure this exists for is a cold browser: pressing start begins the bundle, the
+  // bundle begins Pyodide, and marimo's RPC timeout is counting through both. Seconds spent
+  // hovering or tabbing to a button are seconds the download could already have been using,
+  // and they are usually enough to turn the cold case into the warm one.
+  //
+  // `modulepreload` and not `prefetch`, because the thing being warmed is a module script
+  // and this is the rel that fetches one with the mode a module script is later fetched
+  // with. A prefetch that misses on mode downloads the whole bundle a second time, which is
+  // worse than not warming it. A browser that does not know the rel ignores the line.
+  var warmed = {};
+  function warm(button) {
+    var url = button.getAttribute("data-island-bundle");
+    if (!url || warmed[url]) {
+      return;
+    }
+    warmed[url] = true;
+    var link = document.createElement("link");
+    link.rel = "modulepreload";
+    link.crossOrigin = "anonymous";
+    link.href = url;
+    document.head.appendChild(link);
   }
 
   // Two theme systems on one page. Material puts its scheme on the body as a data
@@ -97,5 +171,20 @@
     if (button) {
       start(button);
     }
+  });
+
+  // Pointer for a mouse, focus for a keyboard, touchstart because a phone has no hover and
+  // the gap between a finger landing and the tap completing is still worth having.
+  ["pointerover", "focusin", "touchstart"].forEach(function (name) {
+    document.addEventListener(
+      name,
+      function (event) {
+        var button = event.target.closest && event.target.closest("[data-island-start]");
+        if (button) {
+          warm(button);
+        }
+      },
+      { passive: true }
+    );
   });
 })();
