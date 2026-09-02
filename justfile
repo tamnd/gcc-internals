@@ -268,15 +268,17 @@ image id:
     set -euo pipefail
     job=$({{py}} -m tools.matrix jobs --on weekly | {{py}} -c \
       'import json,sys; print(json.dumps(next(j for j in json.load(sys.stdin)["include"] if j["id"]=="{{id}}" and j["arch"]=="amd64")))')
-    read -r file flags cflags mk inst smoke < <({{py}} -c \
-      'import json,shlex,sys; j=json.loads(sys.argv[1]); print(*(shlex.quote(j[k]) for k in ("dockerfile","flags","cflags","make","install","smoke")))' "$job")
+    read -r file tag flags cflags mk inst smoke pkgs < <({{py}} -c \
+      'import json,shlex,sys; j=json.loads(sys.argv[1]); print(*(shlex.quote(j[k]) for k in ("dockerfile","tag","flags","cflags","make","install","smoke","packages")))' "$job")
     eval docker build -f "containers/$file" \
+      --build-arg GCC_TAG="$tag" \
       --build-arg CONFIGURE_FLAGS="$flags" \
       --build-arg CFLAGS_FOR_GCC="$cflags" \
       --build-arg MAKE_TARGET="$mk" \
       --build-arg INSTALL_TARGET="$inst" \
       --build-arg CONFIG_ID="{{id}}" \
       --build-arg SMOKE="$smoke" \
+      --build-arg EXTRA_PACKAGES="$pkgs" \
       -t "gcc-internals/{{id}}" .
 
 # The pinned GCC tree, about 1.3 GB shallow. Only refcheck needs it.

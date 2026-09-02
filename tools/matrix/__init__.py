@@ -75,6 +75,10 @@ class Config:
     on_patches: bool
     configure: tuple[str, ...] = ()
     common: tuple[str, ...] = ()
+    # Distribution packages this configuration needs and the others do not. Only `cross`
+    # uses it, for the target assembler, and putting that in the shared base image would
+    # add it to five images that will never call it.
+    packages: str = ""
 
     @property
     def from_source(self) -> bool:
@@ -136,6 +140,7 @@ class Matrix:
                     {
                         "id": config.id,
                         "arch": arch,
+                        "tag": self.tag,
                         "runner": runner(arch),
                         "dockerfile": config.dockerfile,
                         "image": config.image(self.registry, arch),
@@ -144,6 +149,7 @@ class Matrix:
                         "make": config.make,
                         "install": config.install,
                         "smoke": config.smoke,
+                        "packages": config.packages,
                         "minutes": config.minutes,
                     }
                 )
@@ -192,6 +198,7 @@ def load(path: Path | None = None) -> Matrix:
                 on_patches=entry["on_patches"],
                 configure=tuple(entry.get("configure", ())),
                 common=common if entry["make"] else (),
+                packages=entry.get("packages", ""),
             )
         )
     problems = validate(found)

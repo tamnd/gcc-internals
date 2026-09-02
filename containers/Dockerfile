@@ -59,6 +59,17 @@ ARG MAKE_TARGET="all"
 ARG INSTALL_TARGET="install-strip"
 ARG CONFIG_ID="rel"
 
+# Anything this configuration needs that the shared base does not have. Empty for five of
+# the six. `cross` uses it for the target assembler, which GCC's configure looks for and
+# quietly does without if it is not there.
+ARG EXTRA_PACKAGES=""
+RUN set -eux; \
+    if [ -n "${EXTRA_PACKAGES}" ]; then \
+      apt-get update; \
+      apt-get install --no-install-recommends -y ${EXTRA_PACKAGES}; \
+      rm -rf /var/lib/apt/lists/*; \
+    fi
+
 # GCC will not configure in its own source directory and says so, which is the one thing
 # every first time builder gets wrong.
 WORKDIR /usr/src/build
@@ -75,6 +86,17 @@ FROM base AS final
 
 ARG CONFIG_ID="rel"
 ARG GCC_TAG=releases/gcc-16.2.0
+
+# Installed twice on purpose. The build stage needs them to configure against and this
+# stage starts again from base, so a cross image without this line ships a compiler that
+# built fine and cannot assemble a single instruction.
+ARG EXTRA_PACKAGES=""
+RUN set -eux; \
+    if [ -n "${EXTRA_PACKAGES}" ]; then \
+      apt-get update; \
+      apt-get install --no-install-recommends -y ${EXTRA_PACKAGES}; \
+      rm -rf /var/lib/apt/lists/*; \
+    fi
 
 COPY --from=build /opt/gcc /opt/gcc
 ENV PATH="/opt/gcc/bin:${PATH}"

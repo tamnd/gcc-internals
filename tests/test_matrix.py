@@ -88,7 +88,30 @@ def test_a_cross_compiler_installs_and_smoke_tests_differently_from_a_native_one
     assert cross.make == "all-gcc"
     assert cross.install == "install-gcc"
     assert " -c " in cross.smoke
-    assert cross.smoke.startswith("riscv64-elf-gcc")
+    assert cross.smoke.startswith("riscv64-unknown-elf-gcc")
+
+
+def test_a_cross_compiler_brings_its_own_assembler():
+    """The first run of this matrix built the compiler and then could not assemble with it.
+    GCC falls back to the host `as`, which says `unknown architecture rv64gc` and reads like
+    a GCC bug rather than a missing package."""
+    cross = FOUND["cross"]
+    assert "binutils-riscv64-unknown-elf" in cross.packages
+    assert cross.packages != ""
+
+
+def test_the_triple_and_the_binutils_package_name_agree():
+    """GCC looks for `<target>-as` by that exact name. A target of riscv64-elf with binutils
+    packaged as riscv64-unknown-elf finds nothing, and finds it silently."""
+    cross = FOUND["cross"]
+    (target,) = [f.split("=", 1)[1] for f in cross.configure if f.startswith("--target=")]
+    assert f"binutils-{target}" == cross.packages
+    assert cross.smoke.startswith(f"{target}-gcc")
+
+
+def test_only_the_cross_compiler_asks_for_extra_packages():
+    """Everything else belongs in the shared base, where it is installed once."""
+    assert [c.id for c in FOUND.configs if c.packages] == ["cross"]
 
 
 def test_the_matrix_is_pinned_to_the_same_gcc_the_citations_resolve_against():
@@ -231,8 +254,9 @@ def test_the_workflow_builds_the_configurations_this_file_describes():
     text = WORKFLOW.read_text(encoding="utf-8")
     assert "python -m tools.matrix jobs --on" in text
     assert "fromJSON(needs.plan.outputs.jobs)" in text
-    for flag in ("--enable-checking=all,rtl,extra", "riscv64-elf"):
+    for flag in ("--enable-checking=all,rtl,extra", "riscv64-unknown-elf"):
         assert flag not in text, "a configure flag belongs in matrix.toml and nowhere else"
+    assert FOUND.tag not in text, "the pinned tag belongs in matrix.toml and nowhere else"
 
 
 def test_the_workflow_hands_the_build_every_argument_a_dockerfile_takes():

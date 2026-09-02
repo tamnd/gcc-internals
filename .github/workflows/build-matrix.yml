@@ -131,13 +131,14 @@ jobs:
           push: ${{ needs.plan.outputs.publish == 'true' }}
           tags: ${{ matrix.image }}
           build-args: |
-            GCC_TAG=releases/gcc-16.2.0
+            GCC_TAG=${{ matrix.tag }}
             CONFIGURE_FLAGS=${{ matrix.flags }}
             CFLAGS_FOR_GCC=${{ matrix.cflags }}
             MAKE_TARGET=${{ matrix.make }}
             INSTALL_TARGET=${{ matrix.install }}
             CONFIG_ID=${{ matrix.id }}
             SMOKE=${{ matrix.smoke }}
+            EXTRA_PACKAGES=${{ matrix.packages }}
           # Keyed on the configuration and the architecture, so rel does not evict dbg.
           cache-from: type=gha,scope=${{ matrix.id }}-${{ matrix.arch }}
           cache-to: type=gha,mode=max,scope=${{ matrix.id }}-${{ matrix.arch }}

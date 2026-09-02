@@ -2,20 +2,20 @@
 
 Six ways to build GCC 16.2.0, on two architectures, published to a registry and pulled by digest.
 
-The rule that shapes all of this: **no job in this project compiles GCC except the matrix job.** Building GCC takes between twenty five minutes and five hours depending on the configuration, and a course whose test suite rebuilds a compiler is a course nobody can contribute to. Everything else names an image by its digest in `images.lock.json`, so a green run cannot quietly have been testing a compiler nobody published, and a pull request that wants a different compiler has to say so in a file a reviewer can see.
+The rule that shapes all of this: **no job in this project compiles GCC except the matrix job.** Building GCC takes between twenty minutes and several hours depending on the configuration, and a course whose test suite rebuilds a compiler is a course nobody can contribute to. Everything else names an image by its digest in `images.lock.json`, so a green run cannot quietly have been testing a compiler nobody published, and a pull request that wants a different compiler has to say so in a file a reviewer can see.
 
 <!-- matrix table start -->
 
 | Config | What it is | Build | Size | Arches | Built |
 |---|---|---|---|---|---|
-| `rel` | The fast development loop. Optimized, no bootstrap, and the one most jobs want. | 25 min | 1.2 GB | amd64, arm64 | weekly and on a patch change |
-| `chk` | Every internal consistency check GCC has, turned on. | 45 min | 4 GB | amd64, arm64 | weekly and on a patch change |
-| `dbg` | Unoptimized with full debug info, for the lessons that step through GCC in gdb. | 50 min | 6 GB | amd64, arm64 | weekly and on a patch change |
+| `rel` | The fast development loop. Optimized, no bootstrap, and the one most jobs want. | 21 min | 1.2 GB | amd64, arm64 | weekly and on a patch change |
+| `chk` | Every internal consistency check GCC has, turned on. | 47 min | 4 GB | amd64, arm64 | weekly and on a patch change |
+| `dbg` | Unoptimized with full debug info, for the lessons that step through GCC in gdb. | 30 min | 6 GB | amd64, arm64 | weekly and on a patch change |
 | `boot` | The full three stage bootstrap, with the stage two against stage three comparison. | 240 min | 8 GB | amd64, arm64 | weekly |
-| `cross` | A riscv64-elf cross compiler with newlib, for the back end lessons. | 35 min | 1.5 GB | amd64, arm64 | weekly and on a patch change |
+| `cross` | A riscv64-unknown-elf cross compiler with newlib, for the back end lessons. | 18 min | 1.5 GB | amd64, arm64 | weekly and on a patch change |
 | `plug` | A stock distribution GCC with gxplug built against it, and nothing compiled from source. | 5 min | 1.7 GB | amd64, arm64 | weekly and on a patch change |
 
-6 configurations, `rel`, `chk`, `dbg`, `boot`, `cross`, `plug`, on 2 architectures. One full weekly run is about 13.3 machine hours.
+6 configurations, `rel`, `chk`, `dbg`, `boot`, `cross`, `plug`, on 2 architectures. One full weekly run is about 12.0 machine hours.
 
 <!-- matrix table end -->
 
@@ -40,6 +40,23 @@ chk, Every internal consistency check GCC has, turned on.
 `Dockerfile.plug` is the exception, and it is the row that matters most to a reader. It installs a distribution's own GCC 16 and builds the plugin against it. If the plugin loads only into a compiler we built ourselves then the plugin does not work, and the way to keep that honest is to have one image that never builds one.
 
 It is Debian unstable, because as of September 2026 that is where a packaged GCC 16 actually is, at exactly the 16.2.0 this project is pinned to. Ubuntu 24.04 has GCC 13, and 26.04 has not caught up. A reader on an LTS either uses this image or builds from source, which is the honest answer to open question 4 rather than a wish.
+
+## The cross compiler needs an assembler, and GCC will not say so
+
+`cross` is the one configuration that needs a package the others do not, and it is worth writing down because the failure is so misleading.
+
+GCC compiles to assembly text and then calls the assembler for the target. Configure it with `--target=riscv64-unknown-elf` and it looks for `riscv64-unknown-elf-as`. When that is not on the path, configure does not fail and neither does the build. The compiler comes out, installs, and looks finished. Then the first `-c` reaches for the host assembler instead, which reads the RISC-V it was handed and says:
+
+```text
+Error: unknown architecture `rv64gc'
+Error: unrecognized option -march=rv64gc
+```
+
+That is not a GCC bug and it is not a bad `-march`. It is the wrong assembler. The first run of this matrix lost about half an hour to it, twice, once per architecture.
+
+The fix is the `packages` field in `matrix.toml`, which is empty for five of the six and installs `binutils-riscv64-unknown-elf` for `cross`. It is installed in two stages of the Dockerfile, the build stage and the final stage, because the final stage starts again from `base`, and an image that has it in only the first one ships a compiler that built against an assembler it no longer has.
+
+The triple is `riscv64-unknown-elf` rather than the shorter `riscv64-elf` for one reason: that is the name Debian and Ubuntu package binutils under. GCC looks for `<target>-as` by exact name, so picking our own triple would mean building binutils from source too. A test asserts the target and the package name still agree.
 
 ## Building one yourself
 
@@ -66,6 +83,8 @@ Anything in `patches/` is applied to the source tree inside the image and nowher
 ## What the images cost
 
 Twenty two gigabytes per architecture if you kept all six, which is why the retention policy is the last four weekly builds plus every image a released version of the site refers to. `dbg` is six gigabytes on its own, because it keeps the GCC source tree in the image: a debugger needs the sources its debug info points at, and B03 is unteachable without them.
+
+The sizes in the table are estimates apart from `plug`, which was built and weighed. Nothing has been pushed yet, so nothing has a registry size. The times are measured: they come from the first run of this matrix on GitHub hosted runners with a cold cache, amd64, which is the slower of the two architectures on every configuration. `boot` is the exception and is still a guess, because it does not run on a pull request and there has not been a scheduled run.
 
 ## The lockfile
 

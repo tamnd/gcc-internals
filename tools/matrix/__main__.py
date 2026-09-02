@@ -77,7 +77,11 @@ def cmd_show(args) -> int:
         print("\nThis one does not build GCC. It installs the distribution's and adds the plugin.")
         return 0
     print(f"  make         {config.make}")
+    print(f"  install      {config.install}")
     print(f"  cflags       {config.cflags}")
+    if config.packages:
+        print(f"  packages     {config.packages}")
+    print(f"  smoke        {config.smoke}")
     print("\nconfigure")
     for flag in config.flags:
         print(f"  {flag}")
