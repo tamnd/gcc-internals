@@ -83,7 +83,7 @@ def test_the_modes_are_almost_all_four_byte_integers(listing):
 
 
 def test_almost_nothing_is_recognised_yet(listing):
-    """Two of thirteen. The other eleven are what T08 is about."""
+    """Two of thirteen. Matching the other eleven against target patterns is a later pass."""
     assert [i.uid for i in listing.code if i.recognised] == [16, 42]
     assert listing.at(16).name == "aarch64_bcond"
 

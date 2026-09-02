@@ -35,6 +35,10 @@
    "hash": "ae2ee40bb1f9c0ea",
    "text": "    { OPT_LEVELS_2_PLUS, OPT_mearly_ra_, NULL, AARCH64_EARLY_RA_ALL },"
   },
+  "gcc/config/i386/i386.h:991@releases/gcc-16.2.0": {
+   "hash": "69bbb0299eba4c24",
+   "text": "#define FIRST_PSEUDO_REGISTER FIRST_PSEUDO_REG"
+  },
   "gcc/dominance.cc:856@releases/gcc-16.2.0": {
    "hash": "ddd51844694a3c95",
    "text": "get_immediate_dominator (enum cdi_direction dir, basic_block bb)"
@@ -94,6 +98,186 @@
   "gcc/gimplify.cc:683@releases/gcc-16.2.0": {
    "hash": "90e8955732ed66ab",
    "text": "internal_get_tmp_var (tree val, gimple_seq *pre_p, gimple_seq *post_p,"
+  },
+  "gcc/hard-reg-set.h:573@releases/gcc-16.2.0": {
+   "hash": "ca7eb36ce4473a3f",
+   "text": "extern const char * reg_class_names[];"
+  },
+  "gcc/ira-build.cc:3134@releases/gcc-16.2.0": {
+   "hash": "49e5f30ec679023c",
+   "text": "ira_flattening (int max_regno_before_emit, int ira_max_point_before_emit)"
+  },
+  "gcc/ira-build.cc:3478@releases/gcc-16.2.0": {
+   "hash": "964de02c3c7971a9",
+   "text": "ira_build (void)"
+  },
+  "gcc/ira-color.cc:1971@releases/gcc-16.2.0": {
+   "hash": "a78297e7d6c418b3",
+   "text": "assign_hard_reg (ira_allocno_t a, bool retry_p)"
+  },
+  "gcc/ira-color.cc:2567@releases/gcc-16.2.0": {
+   "hash": "92b904001100d89e",
+   "text": "allocno_spill_priority (ira_allocno_t a)"
+  },
+  "gcc/ira-color.cc:2736@releases/gcc-16.2.0": {
+   "hash": "13500dd886e785b4",
+   "text": "push_allocno_to_stack (ira_allocno_t a)"
+  },
+  "gcc/ira-color.cc:2950@releases/gcc-16.2.0": {
+   "hash": "98bb3e5965219060",
+   "text": "push_allocnos_to_stack (void)"
+  },
+  "gcc/ira-color.cc:2983@releases/gcc-16.2.0": {
+   "hash": "06920e03039c5fb1",
+   "text": "pop_allocnos_from_stack (void)"
+  },
+  "gcc/ira-color.cc:2994@releases/gcc-16.2.0": {
+   "hash": "3070d3dfcd6b6f29",
+   "text": "\t  fprintf (ira_dump_file, \"      Popping\");"
+  },
+  "gcc/ira-color.cc:3011@releases/gcc-16.2.0": {
+   "hash": "f1da86a208d5ee4a",
+   "text": "\t    fprintf (ira_dump_file, \"        assign reg %d\\n\","
+  },
+  "gcc/ira-color.cc:3098@releases/gcc-16.2.0": {
+   "hash": "905008165684c4f5",
+   "text": "setup_allocno_priorities (ira_allocno_t *consideration_allocnos, int n)"
+  },
+  "gcc/ira-color.cc:3217@releases/gcc-16.2.0": {
+   "hash": "0bb32d7e13860735",
+   "text": "improve_allocation (void)"
+  },
+  "gcc/ira-color.cc:3489@releases/gcc-16.2.0": {
+   "hash": "f381980b65f1acd4",
+   "text": "color_allocnos (void)"
+  },
+  "gcc/ira-color.cc:3611@releases/gcc-16.2.0": {
+   "hash": "29bb4f60932d91c0",
+   "text": "print_loop_title (ira_loop_tree_node_t loop_tree_node)"
+  },
+  "gcc/ira-color.cc:3654@releases/gcc-16.2.0": {
+   "hash": "f7735477d9bad9f4",
+   "text": "  fprintf (ira_dump_file, \"\\n    Pressure:\");"
+  },
+  "gcc/ira-color.cc:3843@releases/gcc-16.2.0": {
+   "hash": "f9037dc769f4d38d",
+   "text": "do_coloring (void)"
+  },
+  "gcc/ira-color.cc:4072@releases/gcc-16.2.0": {
+   "hash": "6981cd2d2a1fac7b",
+   "text": "ira_reassign_conflict_allocnos (int start_regno)"
+  },
+  "gcc/ira-color.cc:5246@releases/gcc-16.2.0": {
+   "hash": "cae9c6fc62bbfe8a",
+   "text": "color (void)"
+  },
+  "gcc/ira-conflicts.cc:570@releases/gcc-16.2.0": {
+   "hash": "4b2b1fc65d02402e",
+   "text": "build_object_conflicts (ira_object_t obj)"
+  },
+  "gcc/ira-conflicts.cc:812@releases/gcc-16.2.0": {
+   "hash": "3dde7c5b3bc17b09",
+   "text": "ira_build_conflicts (void)"
+  },
+  "gcc/ira-costs.cc:1974@releases/gcc-16.2.0": {
+   "hash": "ba362d59ac6a353e",
+   "text": "find_costs_and_classes (void)"
+  },
+  "gcc/ira-int.h:198@releases/gcc-16.2.0": {
+   "hash": "a7458fe173f03f2f",
+   "text": "struct live_range"
+  },
+  "gcc/ira-int.h:226@releases/gcc-16.2.0": {
+   "hash": "e9dd7519ca628628",
+   "text": "struct ira_object"
+  },
+  "gcc/ira-int.h:274@releases/gcc-16.2.0": {
+   "hash": "42917d81647e4978",
+   "text": "struct ira_allocno"
+  },
+  "gcc/ira-lives.cc:1660@releases/gcc-16.2.0": {
+   "hash": "e3abaa00aa7952df",
+   "text": "remove_some_program_points_and_update_live_ranges (void)"
+  },
+  "gcc/ira-lives.cc:1810@releases/gcc-16.2.0": {
+   "hash": "b59125d4a36fc588",
+   "text": "ira_create_allocno_live_ranges (void)"
+  },
+  "gcc/ira-lives.cc:1833@releases/gcc-16.2.0": {
+   "hash": "8b6f5a4b9433a39c",
+   "text": "ira_compress_allocno_live_ranges (void)"
+  },
+  "gcc/ira.cc:2640@releases/gcc-16.2.0": {
+   "hash": "086037901a538fa9",
+   "text": "calculate_allocation_cost (void)"
+  },
+  "gcc/ira.cc:2677@releases/gcc-16.2.0": {
+   "hash": "68e46daf2f792ade",
+   "text": "\t       \"+++Costs: overall %\" PRId64"
+  },
+  "gcc/ira.cc:466@releases/gcc-16.2.0": {
+   "hash": "893c1866b6188e94",
+   "text": "setup_class_hard_regs (void)"
+  },
+  "gcc/ira.cc:5663@releases/gcc-16.2.0": {
+   "hash": "9b6241400d24c905",
+   "text": "ira (FILE *f)"
+  },
+  "gcc/ira.cc:6056@releases/gcc-16.2.0": {
+   "hash": "f2637abc449fc69d",
+   "text": "do_reload (void)"
+  },
+  "gcc/ira.cc:6202@releases/gcc-16.2.0": {
+   "hash": "c534d4fa2a5d41ca",
+   "text": "const pass_data pass_data_ira ="
+  },
+  "gcc/ira.cc:6247@releases/gcc-16.2.0": {
+   "hash": "81cae47b45ed09da",
+   "text": "const pass_data pass_data_reload ="
+  },
+  "gcc/ira.cc:698@releases/gcc-16.2.0": {
+   "hash": "2d92b42ce0157e2f",
+   "text": "ira_print_disposition (FILE *f)"
+  },
+  "gcc/ira.cc:786@releases/gcc-16.2.0": {
+   "hash": "9fe8c36b6cc27e80",
+   "text": "setup_pressure_classes (void)"
+  },
+  "gcc/lra-assigns.cc:1394@releases/gcc-16.2.0": {
+   "hash": "27123f8aa736fd79",
+   "text": "assign_by_spills (void)"
+  },
+  "gcc/lra-assigns.cc:1624@releases/gcc-16.2.0": {
+   "hash": "de3c1ca77b3dc0b9",
+   "text": "lra_assign (bool &fails_p)"
+  },
+  "gcc/lra-assigns.cc:943@releases/gcc-16.2.0": {
+   "hash": "9fdf780d760f34f3",
+   "text": "spill_for (int regno, bitmap spilled_pseudo_bitmap, bool first_p)"
+  },
+  "gcc/lra-constraints.cc:5589@releases/gcc-16.2.0": {
+   "hash": "9369c5fd9023e8ea",
+   "text": "lra_constraints (bool first_p)"
+  },
+  "gcc/lra-constraints.cc:7105@releases/gcc-16.2.0": {
+   "hash": "8536616ee10ab9c4",
+   "text": "inherit_in_ebb (rtx_insn *head, rtx_insn *tail)"
+  },
+  "gcc/lra-constraints.cc:7564@releases/gcc-16.2.0": {
+   "hash": "60efa62633b8498b",
+   "text": "lra_inheritance (void)"
+  },
+  "gcc/lra-lives.cc:1516@releases/gcc-16.2.0": {
+   "hash": "09a064bcd01e7aba",
+   "text": "lra_create_live_ranges (bool all_p, bool dead_insn_p)"
+  },
+  "gcc/lra-spills.cc:659@releases/gcc-16.2.0": {
+   "hash": "228e2cabe84dfec9",
+   "text": "lra_spill (void)"
+  },
+  "gcc/lra.cc:2420@releases/gcc-16.2.0": {
+   "hash": "1ede9f8df66ccd8f",
+   "text": "lra (FILE *f, int verbose)"
   },
   "gcc/machmode.def:211@releases/gcc-16.2.0": {
    "hash": "626fa72b1682d672",

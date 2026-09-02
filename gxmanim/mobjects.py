@@ -15,6 +15,8 @@ Four of them here:
     cfg_view    the control flow graph, with GCC's own edges
     dom_tree    which block has to run before which
     rtx_tree    one RTL insn's pattern, put back into the tree it was printed from
+    spill_map   one lane per target, one cell per pseudo, marked where it spilled
+    pressure_ramp  one lane per function, one cell per live value, marked past the end
 
 `ssa_web` and `phi_node` deliberately draw data flow and not control flow. Blocks are laid
 out in index order down the page and the interesting lines are the threads between the
@@ -32,6 +34,7 @@ from gxmanim.scene import Scene
 from gxray.cfg import CFG, ENTRY
 from gxray.gimple import Function, Phi, Stmt
 from gxray.locs import LEVEL_NAMES, LEVELS, Ladder, strip_locs
+from gxray.regalloc import Allocation
 from gxray.rtl import Insn, Rtx
 from gxray.tape import Cell as TapeCell
 
@@ -494,6 +497,104 @@ def _leaf_role(parent: Rtx) -> str:
     return "constant" if parent.code.startswith("const") else "neutral"
 
 
+# Registers
+
+
+def spill_map(allocations: dict[str, Allocation], title: str = "") -> Scene:
+    """One lane per target, one cell per pseudo, filled where the value ended up in memory.
+
+    The picture is a comparison and nothing else. The same function is compiled for two
+    machines, the lanes hold the same number of cells because the program is the same, and
+    the reader is meant to see that one lane has marks in it and the other does not.
+
+    A pseudo that got a register is `constant`, because the allocator answered and the
+    answer is a register. One that did not is `removed`, because the value is gone from the
+    register file and every use of it is now a load. Nothing here is `unknown`: by the time
+    IRA prints its disposition there is no third state.
+    """
+    scene = Scene(title=title or "who got a register")
+    y = TOP
+    for target, alloc in allocations.items():
+        pseudos = sorted(alloc.pseudos)
+        spilled = set(alloc.spilled)
+        cells = tuple(
+            Cell(
+                name=f"r{p}",
+                role="removed" if p in spilled else "constant",
+                id=f"{target}-r{p}",
+                changed=p in spilled,
+                state="in memory" if p in spilled else "in a register",
+            )
+            for p in pseudos
+        )
+        rung = Rung(
+            name=target,
+            cards=cells,
+            id=f"target-{target}",
+            summary=(
+                f"{alloc.peak()} live at the busiest point, {alloc.available()} registers "
+                f"to hand out, {len(spilled)} of these {len(pseudos)} pseudos in memory"
+            ),
+        )
+        scene.add(rung, LEFT, y)
+        y += rung.h + GAP
+    counts = ", ".join(f"{t}: {len(a.spilled)}" for t, a in allocations.items())
+    scene.caption = (
+        f"Same function, same flags, same compiler version. Values sent to memory, {counts}. "
+        "The difference is how many registers the machine has."
+    )
+    return scene
+
+
+def pressure_ramp(rows: dict[str, dict[str, Allocation]], target: str) -> Scene:
+    """One lane per function, up the pressure ramp, on one target.
+
+    Each lane is one function and each cell is one value alive at the busiest point in it.
+    A cell past the number of registers the target can hand out is drawn as removed, so the
+    lane where the row first runs off the end of the register file is visible without
+    reading a number. That is the whole argument of the lesson in one shape.
+    """
+    first = next(iter(rows.values()))[target] if rows else None
+    limit = first.available() if first is not None else 0
+    scene = Scene(title=f"{target}, {limit} registers to hand out")
+    y = TOP
+    for name, byfn in rows.items():
+        alloc = byfn[target]
+        cells = tuple(
+            Cell(
+                name=f"value {i + 1}",
+                role="removed" if i >= limit else "constant",
+                id=f"{target}-{name}-{i}",
+                changed=i >= limit,
+                state="past the end of the register file" if i >= limit else "fits",
+            )
+            for i in range(alloc.peak())
+        )
+        over = max(0, alloc.over())
+        spilled = len(alloc.spilled)
+        if over:
+            tail = (
+                f"{over} more than there are registers, "
+                f"{spilled} {'pseudo' if spilled == 1 else 'pseudos'} in memory"
+            )
+        else:
+            tail = f"{limit - alloc.peak()} registers to spare, nothing in memory"
+        rung = Rung(
+            name=name,
+            cards=cells,
+            id=f"fn-{name}",
+            summary=f"{alloc.peak()} live, {tail}",
+        )
+        scene.add(rung, LEFT, y)
+        y += rung.h + GAP
+    scene.caption = (
+        "One cell per value alive at the busiest point. Everything past the "
+        f"{limit}th cell has nowhere to go, and the lane where that first happens is the "
+        "lane where the compiler starts writing to the stack."
+    )
+    return scene
+
+
 def tree(root: Node, gap: int = 18) -> Scene:
     """Any tree of nodes, laid out with children under their parent and edges down.
 
@@ -551,7 +652,9 @@ __all__ = [
     "one_line",
     "pass_tape",
     "phi_node",
+    "pressure_ramp",
     "rtx_tree",
+    "spill_map",
     "ssa_web",
     "tree",
 ]

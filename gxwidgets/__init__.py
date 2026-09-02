@@ -34,6 +34,7 @@ from gxwidgets.html import STYLESHEET
 from gxwidgets.irladder import IRLadder
 from gxwidgets.passtape import PassTape
 from gxwidgets.predictgate import GateError, Option, PredictGate
+from gxwidgets.regalloc import RegAlloc
 from gxwidgets.rtxtree import RTXTree, english
 from gxwidgets.ssaweb import SSAWeb
 from gxwidgets.targetcompare import TargetCompare
@@ -47,6 +48,7 @@ __all__ = [
     "PassTape",
     "PredictGate",
     "RTXTree",
+    "RegAlloc",
     "SSAWeb",
     "TargetCompare",
     "Widget",

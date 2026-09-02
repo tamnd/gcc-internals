@@ -55,7 +55,7 @@ def test_looking_up_a_term_ignores_case():
 
 def test_a_term_that_does_not_exist_says_how_many_there_are():
     with pytest.raises(KeyError) as exc:
-        glossary.get("register allocation")
+        glossary.get("monomorphisation")
     assert str(len(glossary.TERMS)) in str(exc.value)
 
 

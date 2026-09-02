@@ -16,7 +16,7 @@ An RTL expression, an RTX, is a node with a code, a machine mode, and a fixed nu
 
 **What this document covers.** The node structure, the machine modes, the register numbering, the insn chain, and the format strings that define what an operand slot holds.
 
-**What it does not cover.** Expansion, which is `BP-EXPAND`. The machine description and how a pattern comes to match an insn, which is `BP-MD` and `BP-RECOG`. Register allocation, which is `BP-IRA` and `BP-LRA`. The RTL passes, each of which gets its own. RTL is the noun here and everything that acts on it is elsewhere.
+**What it does not cover.** Expansion, which is `BP-EXPAND`. The machine description and how a pattern comes to match an insn, which is `BP-MD` and `BP-RECOG`. Register allocation, which is `BP-REGALLOC`. The RTL passes, each of which gets its own. RTL is the noun here and everything that acts on it is elsewhere.
 
 **Position in the pipeline.** RTL exists from `pass_expand` at `gcc/cfgexpand.cc:6999@releases/gcc-16.2.0` to the end of compilation. A function in RTL form has `PROP_rtl` and no longer has `PROP_gimple`, and the pass that makes the change is the only one in the compiler that consumes one and provides the other.
 

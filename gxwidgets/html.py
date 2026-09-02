@@ -294,6 +294,21 @@ STYLESHEET = f""":root {{
 .gx-web .tick {{ fill: currentColor; font-size: 10px; }}
 .gx-web .row-header {{ fill: var(--gx-unknown-ink); }}
 .gx-web .hit {{ fill: currentColor; font-weight: 700; }}
+
+.gx-columns {{ display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }}
+.gx-column {{ overflow-x: auto; max-width: 100%; }}
+.gx-slots {{ display: grid; gap: 2px; }}
+.gx-slot {{ display: grid; grid-template-columns: 5.2em auto 6.5em; gap: 10px;
+  align-items: center; font-size: 12px; }}
+.gx-slot[hidden] {{ display: none; }}
+.gx-slot-name {{ font-family: {MONO}; white-space: nowrap; }}
+.gx-slot-home {{ font-family: {MONO}; font-size: 11px; color: var(--gx-unknown-ink);
+  white-space: nowrap; }}
+.gx-slot[data-home="memory"] .gx-slot-home {{ color: var(--gx-removed-ink); font-weight: 600; }}
+.gx-life {{ display: flex; }}
+.gx-life span {{ height: 11px; background: transparent; }}
+.gx-life span[data-on="1"] {{ background: var(--gx-constant-ink); }}
+.gx-slot[data-home="memory"] .gx-life span[data-on="1"] {{ background: var(--gx-removed-ink); }}
 """
 
 # The two page colours are exported so a host page can match the widget background without

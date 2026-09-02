@@ -125,6 +125,21 @@ corpus-t07:
     {{py}} -m gxray record --backend ce --compiler-id cppc64leg1610 --entry t07-power64le \
         --file corpora/programs/l1.c --dump tree-optimized --dump rtl-expand -O2 -g
 
+# The three configurations T08 compares. Two through Compiler Explorer at 16.1.0, one from
+# the local compiler, and the third one is not redundant: Apple reserves x18 as the platform
+# register, so aarch64 Darwin allocates twenty nine general registers where aarch64 Linux
+# allocates thirty, and the same program spills one more value. One dump each, because the
+# ira dump already carries the costs, the live ranges, the conflicts, the pressure, the
+# colouring trace and the disposition, and it is 600 KB on its own.
+# The first two need the network.
+corpus-t08:
+    {{py}} -m gxray record --backend ce --compiler-id cg161 --entry t08-x86-64 \
+        --file corpora/programs/t08-pressure.c --dump rtl-ira -O2
+    {{py}} -m gxray record --backend ce --compiler-id carm64g1610 --entry t08-aarch64 \
+        --file corpora/programs/t08-pressure.c --dump rtl-ira -O2
+    {{py}} -m gxray record --entry t08-local --file corpora/programs/t08-pressure.c \
+        --gcc {{gcc}} --dump rtl-ira -O2
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build
