@@ -291,7 +291,9 @@ for alloc in dump:
 lesson.md(f"""
 Look at the last two columns. Every row, the number of pseudos in memory is exactly the
 amount by which pressure exceeded supply. Sixteen values and fifteen registers puts one value
-in memory. Twenty two puts seven. Thirty two puts seventeen.
+in memory. Twenty two puts seven. Thirty two puts seventeen. Putting a value in memory
+because there was no register for it is called a {term("spill")}, and the last column is a
+count of them.
 
 Do not learn that as a rule. It is exact here because this program was built to make it exact:
 uniform pressure, one loop, every value equally hot, so the allocator has nothing to trade and

@@ -49,7 +49,14 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  # The glossary page is a snippet of GLOSSARY.md, which lives at the root of the repository
+  # and is outside docs_dir. Paths are resolved from the working directory, and both `just
+  # serve` and CI run from the root, so `.` is the one that hits. `..` is there for anyone
+  # who runs mkdocs from inside site/. check_paths turns a missing include into a build
+  # failure rather than a page with a stray marker on it.
+  - pymdownx.snippets:
+      base_path: [".", ".."]
+      check_paths: true
 
 # Builds the marimo islands the pages ask for. See tools/island.
 hooks:
@@ -64,6 +71,7 @@ extra_javascript:
 nav:
   - Start here: index.md
   - Lessons: lessons.md
+  - Glossary: glossary.md
   - How this is built:
     - The pinned tree and citations: pinned-tree.md
     - Can a browser compile C here: probe.md

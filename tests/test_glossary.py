@@ -7,6 +7,7 @@ go nowhere is worse than no glossary.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,17 @@ import pytest
 from gxray import glossary
 
 ROOT = Path(__file__).resolve().parent.parent
+
+#: Every `term("...")` call in a lesson's `build.py`, keyed by the lesson code. That is the
+#: only way a link into the glossary can get into a notebook, because `term` is the only
+#: thing that writes one, so grepping for the call is the same as reading the built markdown
+#: and a great deal easier to look at when it fails.
+LINKED = {
+    path.parent.name.split("-")[0].upper(): set(
+        re.findall(r'term\(\s*"([^"]+)"', path.read_text(encoding="utf-8"))
+    )
+    for path in sorted(ROOT.glob("lessons/*/build.py"))
+}
 
 
 def test_the_committed_file_matches_the_module():
@@ -73,6 +85,34 @@ def test_every_term_says_where_a_reader_first_meets_it():
     """A term with no lesson behind it is a term the course has not earned yet."""
     for term in glossary.TERMS:
         assert term.met, term.name
+
+
+def test_the_lesson_a_term_is_taught_in_exists():
+    for term in glossary.TERMS:
+        assert term.met in LINKED, f"{term.name} says {term.met}, which is not a lesson"
+
+
+def test_the_lesson_a_term_is_taught_in_actually_links_it():
+    """`Taught in T05` is a promise to the reader, so it has to be true.
+
+    A term whose own lesson never links it is either in the wrong group, or the lesson
+    forgot to use the word, and both are worth failing over. Add the `term(...)` call at
+    the first place the lesson uses the word, or move `met` to the lesson that earns it.
+    """
+    missing = [
+        f"{term.name} says {term.met}, which never links it"
+        for term in glossary.TERMS
+        if term.name not in LINKED.get(term.met, set())
+    ]
+    assert not missing, "\n".join(missing)
+
+
+def test_every_term_a_lesson_links_is_a_term_that_exists():
+    """`term()` raises at build time, so this only catches a term deleted out from under a
+    lesson without the lesson being rebuilt."""
+    for lesson, names in LINKED.items():
+        for name in names:
+            assert name in glossary.names(), f"{lesson} links {name!r}, which is gone"
 
 
 def test_the_index_lists_everything():

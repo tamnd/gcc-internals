@@ -80,17 +80,19 @@ record = gxray.corpus_store.load("t03-bench")
 print(record.source)
 """)
 
-lesson.md("""
+lesson.md(f"""
 The recording was made with `-O0` and `-fdump-tree-gimple`. Both halves matter.
 
-`-O0` means nothing runs after gimplification, so nothing in the dump is an optimization. If
-you take this dump at `-O2` instead, several of these functions come back as one instruction
-and you learn nothing about gimplification, because you are looking at the work of two
-hundred passes that ran afterwards.
+`-O0` means nothing runs after {term("gimplification")}, so nothing in the dump is an
+optimization. If you take this dump at `-O2` instead, several of these functions come back as
+one instruction and you learn nothing about gimplification, because you are looking at the
+work of two hundred passes that ran afterwards.
 
 `tree-gimple` is the earliest dump GCC will give you. It is the first moment the function
 exists as GIMPLE at all, which is a few microseconds after it stopped being a parse tree.
+""")
 
+lesson.md("""
 ## Predict first
 
 Before you look at anything. Here is the second function on the bench:

@@ -65,7 +65,12 @@ class Term:
     #: Related terms, by name. Checked, so a rename cannot leave a dead link behind.
     see: tuple[str, ...] = ()
 
-    #: The lesson where a reader first meets it.
+    #: The lesson that teaches the term, which is the one that links it and then spends some
+    #: prose on it. A later lesson linking the same word is a reminder and a nicety. An
+    #: earlier lesson linking it is a forward reference, which is allowed, because a reader
+    #: who clicks it lands on a definition and this field tells them where the real
+    #: explanation is. What is not allowed is a term whose own lesson never links it, and
+    #: `tests/test_glossary.py` fails the build over that.
     met: str = ""
 
     @property
@@ -236,7 +241,7 @@ DRIVING = Group(
             long="The whole middle end and back end is a list of these. A pass has a name, a gate that decides whether it runs at all, and an execute function. The list is much longer than people expect and most of what it contains does nothing at `-O0`, which is why the count you get from `-fdump-passes` depends on the optimisation level. Passes are the unit everything else in this course is organised around, because a dump file is named after one.",
             cite="gcc/tree-pass.h:73@releases/gcc-16.2.0",
             see=("dump file", "pass manager"),
-            met="T01",
+            met="T04",
         ),
         Term(
             name="pass manager",
@@ -755,7 +760,7 @@ def _entry(term: Term) -> list[str]:
     if term.also:
         notes.append("Also written " + ", ".join(term.also) + ".")
     if term.met:
-        notes.append(f"First met in {term.met}.")
+        notes.append(f"Taught in {term.met}.")
     if term.see:
         related = ", ".join(f"[{other}](#{anchor(other)})" for other in term.see)
         notes.append(f"See also {related}.")
