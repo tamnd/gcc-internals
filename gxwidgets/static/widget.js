@@ -62,7 +62,7 @@ function step(root, from, by) {
 // this never has to ask Python what a pass was.
 
 function applyFilters(root, view) {
-  for (const cell of root.querySelectorAll(".gx-cell, .gx-insn")) {
+  for (const cell of root.querySelectorAll(".gx-cell, .gx-insn, .gx-slot")) {
     const wrongPhase = view.phase && view.phase !== "all" && cell.dataset.phase !== view.phase;
     const unchanged = view.only === "changed" && cell.dataset.changed !== "1";
     // The flag diff filters by the level a switch first comes on at, and the same column
@@ -71,7 +71,11 @@ function applyFilters(root, view) {
     // The RTX tree filters an insn chain down to the entries that become instructions,
     // which is a third of it and is what a reader means when they say "the code".
     const wrongKind = view.kind && view.kind !== "all" && cell.dataset.kind !== view.kind;
-    cell.hidden = Boolean(wrongPhase || unchanged || wrongFirst || wrongKind);
+    // The register allocation widget filters a function's pseudos down to the ones that
+    // got a register or the ones that did not, which on a spilling function is the only
+    // way to see the second group without counting rows.
+    const wrongHome = view.home && view.home !== "all" && cell.dataset.home !== view.home;
+    cell.hidden = Boolean(wrongPhase || unchanged || wrongFirst || wrongKind || wrongHome);
   }
 }
 

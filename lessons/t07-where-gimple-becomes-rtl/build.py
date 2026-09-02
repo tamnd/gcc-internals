@@ -520,10 +520,11 @@ for letter, entry, uid in boss.EXPRESSIONS:
 lesson.md("""
 ## What to read next
 
-T08 stays in RTL and asks what happens to it next, which is the pass that tries to match every
-one of those expressions against a pattern the target declares. Two of L1's thirteen
-instructions are already matched at expand. The other eleven are not, and something has to
-deal with that.
+T08 stays in RTL and comes back to the pretence this lesson set up. Expand handed out pseudo
+101, 102 and 103 on the understanding that the machine has as many registers as anybody wants.
+It does not. T08 is about the pass that has to make good on that promise with the sixteen or
+thirty two registers the machine actually has, and about what happens when there are not
+enough.
 
 M3 is the back end properly, and it opens by taking the machine description apart. Everything
 in this lesson that came down to "the target decides" is a file you can go and read.

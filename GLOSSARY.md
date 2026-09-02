@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [loop](#loop) | [machine mode](#machine-mode) | [middle end](#middle-end) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [pseudo register](#pseudo-register) | [spec](#spec) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [collect2](#collect2) | [control flow graph](#control-flow-graph) | [default definition](#default-definition) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [front end](#front-end) | [gate](#gate) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine mode](#machine-mode) | [middle end](#middle-end) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [spec](#spec) | [spill](#spill) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use)
 
 ## Driving the compiler
 
@@ -208,7 +208,7 @@ Also written `SImode`, `machine_mode`. First met in T07. See also [RTX](#rtx), [
 
 Expand pretends the machine has as many registers as it wants and hands them out in order, so the numbers you see in an early dump are a counter and nothing more. The pretence is deliberate: it lets expand pick instructions without also solving register allocation, and it lasts until the allocator runs about twenty passes later. Where the numbering starts is a target's business, which is why the same program starts at 98 on one machine and 134 on another.
 
-Also written `gen_reg_rtx`, virtual register. First met in T07. See also [RTX](#rtx), [expand](#expand), [back end](#back-end). In the source: [`gcc/emit-rtl.cc:1188@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/emit-rtl.cc#L1188).
+Also written `gen_reg_rtx`, virtual register. First met in T07. See also [RTX](#rtx), [expand](#expand), [hard register](#hard-register), [register allocation](#register-allocation). In the source: [`gcc/emit-rtl.cc:1188@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/emit-rtl.cc#L1188).
 
 ### insn
 
@@ -329,3 +329,87 @@ Also written `PHI`, `gphi`. First met in T05. See also [SSA name](#ssa-name), [b
 It has to happen because no machine has an instruction that means whichever way you came. Doing it naively costs a copy per phi argument, so the real pass spends most of its effort proving that two SSA names can share one location and dropping the copy. This is the last thing that happens on GIMPLE before expand.
 
 First met in T05. See also [phi node](#phi-node), [SSA](#ssa), [expand](#expand).
+
+## Registers, and running out of them
+
+What the back end does about the fact that the expander invented more values than the machine has places to put them. T08 is the lesson.
+
+### hard register
+
+**A register the machine actually has, numbered below `FIRST_PSEUDO_REGISTER`.**
+
+The number is an index into a table the target defines, so register 3 means one thing on x86-64 and another on aarch64, and nothing outside the target can turn it into a name. A target has fewer of them available than it has in total, because the stack pointer, usually the frame pointer, and sometimes a platform reserved register are spoken for before the allocator gets a look in.
+
+Also written `FIRST_PSEUDO_REGISTER`. First met in T08. See also [pseudo register](#pseudo-register), [register class](#register-class), [register allocation](#register-allocation). In the source: [`gcc/config/i386/i386.h:991@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/config/i386/i386.h#L991).
+
+### register class
+
+**A named set of hard registers, because an instruction will not accept an arbitrary register.**
+
+`GENERAL_REGS` is the one integer code lives in. Targets define more, some of them very small, and an instruction that demands a one register class forces the allocator's hand whatever the pressure is. A pressure class is the subset IRA bothers tracking occupancy for, chosen so the tracking stays cheap.
+
+Also written `GENERAL_REGS`, pressure class. First met in T08. See also [hard register](#hard-register), [register pressure](#register-pressure). In the source: [`gcc/hard-reg-set.h:573@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/hard-reg-set.h#L573).
+
+### register allocation
+
+**Deciding which values get a hard register and which get a stack slot.**
+
+It is the pass that makes the expander's pretence true. Everything before it in the back end may use as many pseudos as it likes, and after it there are no pseudos left. GCC does it in two stages, IRA and then LRA, and it is one of the most expensive things the compiler does, because the second stage is a loop that can make more work for itself.
+
+First met in T08. See also [IRA](#ira), [LRA](#lra), [spill](#spill), [pseudo register](#pseudo-register).
+
+### allocno
+
+**A pseudo register within one region of the function. The thing IRA actually colours.**
+
+Not the same as a pseudo, and that is the first thing to get straight about an IRA dump. IRA splits a function into regions along the loop tree, and a value live across a loop boundary gets one allocno inside and another outside, which can be given different registers with a copy between them. So thirty pseudos can be sixty two allocnos. The dump writes one as `a58(r159,l0)`: allocno 58, pseudo 159, region 0.
+
+Also written `ira_allocno`. First met in T08. See also [pseudo register](#pseudo-register), [IRA](#ira), [live range](#live-range). In the source: [`gcc/ira-int.h:274@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/ira-int.h#L274).
+
+### live range
+
+**The stretch of program points where a value has to exist.**
+
+Written `[4..7] [12..40]` in a dump, closed intervals, and a value can have several with gaps between them. Program points are not insn numbers. IRA numbers them by walking the insns and then throws away every point at which nothing was born and nothing died, which typically cuts the numbering by two thirds, so the numbers only mean anything within one dump of one function on one target.
+
+Also written `live_range`. First met in T08. See also [interference](#interference), [register pressure](#register-pressure), [allocno](#allocno). In the source: [`gcc/ira-int.h:198@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/ira-int.h#L198).
+
+### interference
+
+**Two values are alive at the same point, so they cannot share a register.**
+
+Take every value as a node and put an edge between any two whose live ranges overlap, and you have the interference graph. Allocation is colouring it with as many colours as the target has registers. That problem is NP complete in general, which is why the allocator is a pile of heuristics rather than an algorithm.
+
+Also written conflict, interference graph. First met in T08. See also [live range](#live-range), [register pressure](#register-pressure), [spill](#spill). In the source: [`gcc/ira-conflicts.cc:570@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/ira-conflicts.cc#L570).
+
+### register pressure
+
+**How many values are alive at the busiest point, counted per register class.**
+
+Printed as `Pressure: GENERAL_REGS=22` in an IRA dump, per region. Pressure above the number of available registers means something has to go to memory. Pressure at or below it does not promise everything fits, because a class constraint or a value that needs a register pair can still fail, but it is the number to look at first and it is the number that decides whether two targets compiling the same source come out the same.
+
+First met in T08. See also [register class](#register-class), [spill](#spill), [interference](#interference). In the source: [`gcc/ira-color.cc:3654@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/ira-color.cc#L3654).
+
+### spill
+
+**Giving a value a stack slot instead of a register, and loading it back at every use.**
+
+It is what the allocator does when it loses. The cost is not one store, it is a store and then a load at every subsequent use, and if that happens inside a hot loop it is the difference between fast code and slow code. Which value gets picked is a cost model rather than a coin toss: something used once outside a loop is a much better victim than something touched every iteration.
+
+Also written spilling, spilled. First met in T08. See also [register pressure](#register-pressure), [register allocation](#register-allocation), [LRA](#lra). In the source: [`gcc/lra-spills.cc:659@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/lra-spills.cc#L659).
+
+### IRA
+
+**Integrated Register Allocator. The pass that decides where every value goes.**
+
+It builds the interference graph, colours it, and records the answer, but it does not rewrite a single instruction. Its output is a decision, written to the dump as the `Disposition:` block, and it is the shortest honest answer to what happened to your registers. The pass runs immediately before the one that carries the decision out.
+
+Also written `pass_ira`. First met in T08. See also [LRA](#lra), [allocno](#allocno), [register allocation](#register-allocation). In the source: [`gcc/ira.cc:6202@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/ira.cc#L6202).
+
+### LRA
+
+**Local Register Allocator. The pass that makes IRA's decision true, and fixes it where it was not.**
+
+It is still called `reload` in the pass list, which is the name of the thing it replaced in 2013, and it does no reloading in the old sense. It loops: satisfy every instruction's operand constraints, which can require inventing a fresh pseudo to hold a reloaded value, which makes the live ranges wrong, so recompute them and reassign, and go round again. That loop is why register allocation is the expensive part of compiling.
+
+Also written `pass_reload`, reload. First met in T08. See also [IRA](#ira), [spill](#spill), [register allocation](#register-allocation). In the source: [`gcc/lra.cc:2420@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/lra.cc#L2420).

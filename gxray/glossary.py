@@ -296,7 +296,7 @@ SHAPES = Group(
             long="Expand pretends the machine has as many registers as it wants and hands them out in order, so the numbers you see in an early dump are a counter and nothing more. The pretence is deliberate: it lets expand pick instructions without also solving register allocation, and it lasts until the allocator runs about twenty passes later. Where the numbering starts is a target's business, which is why the same program starts at 98 on one machine and 134 on another.",
             cite="gcc/emit-rtl.cc:1188@releases/gcc-16.2.0",
             also=("`gen_reg_rtx`", "virtual register"),
-            see=("RTX", "expand", "back end"),
+            see=("RTX", "expand", "hard register", "register allocation"),
             met="T07",
         ),
         Term(
@@ -433,7 +433,102 @@ STATIC_SINGLE = Group(
 )
 
 
-GROUPS: tuple[Group, ...] = (DRIVING, SHAPES, CONTROL, STATIC_SINGLE)
+REGISTERS = Group(
+    "Registers, and running out of them",
+    "What the back end does about the fact that the expander invented more values than the machine has places to put them. T08 is the lesson.",
+    (
+        Term(
+            name="hard register",
+            short="A register the machine actually has, numbered below `FIRST_PSEUDO_REGISTER`.",
+            long="The number is an index into a table the target defines, so register 3 means one thing on x86-64 and another on aarch64, and nothing outside the target can turn it into a name. A target has fewer of them available than it has in total, because the stack pointer, usually the frame pointer, and sometimes a platform reserved register are spoken for before the allocator gets a look in.",
+            cite="gcc/config/i386/i386.h:991@releases/gcc-16.2.0",
+            also=("`FIRST_PSEUDO_REGISTER`",),
+            see=("pseudo register", "register class", "register allocation"),
+            met="T08",
+        ),
+        Term(
+            name="register class",
+            short="A named set of hard registers, because an instruction will not accept an arbitrary register.",
+            long="`GENERAL_REGS` is the one integer code lives in. Targets define more, some of them very small, and an instruction that demands a one register class forces the allocator's hand whatever the pressure is. A pressure class is the subset IRA bothers tracking occupancy for, chosen so the tracking stays cheap.",
+            cite="gcc/hard-reg-set.h:573@releases/gcc-16.2.0",
+            also=("`GENERAL_REGS`", "pressure class"),
+            see=("hard register", "register pressure"),
+            met="T08",
+        ),
+        Term(
+            name="register allocation",
+            short="Deciding which values get a hard register and which get a stack slot.",
+            long="It is the pass that makes the expander's pretence true. Everything before it in the back end may use as many pseudos as it likes, and after it there are no pseudos left. GCC does it in two stages, IRA and then LRA, and it is one of the most expensive things the compiler does, because the second stage is a loop that can make more work for itself.",
+            see=("IRA", "LRA", "spill", "pseudo register"),
+            met="T08",
+        ),
+        Term(
+            name="allocno",
+            short="A pseudo register within one region of the function. The thing IRA actually colours.",
+            long="Not the same as a pseudo, and that is the first thing to get straight about an IRA dump. IRA splits a function into regions along the loop tree, and a value live across a loop boundary gets one allocno inside and another outside, which can be given different registers with a copy between them. So thirty pseudos can be sixty two allocnos. The dump writes one as `a58(r159,l0)`: allocno 58, pseudo 159, region 0.",
+            cite="gcc/ira-int.h:274@releases/gcc-16.2.0",
+            also=("`ira_allocno`",),
+            see=("pseudo register", "IRA", "live range"),
+            met="T08",
+        ),
+        Term(
+            name="live range",
+            short="The stretch of program points where a value has to exist.",
+            long="Written `[4..7] [12..40]` in a dump, closed intervals, and a value can have several with gaps between them. Program points are not insn numbers. IRA numbers them by walking the insns and then throws away every point at which nothing was born and nothing died, which typically cuts the numbering by two thirds, so the numbers only mean anything within one dump of one function on one target.",
+            cite="gcc/ira-int.h:198@releases/gcc-16.2.0",
+            also=("`live_range`",),
+            see=("interference", "register pressure", "allocno"),
+            met="T08",
+        ),
+        Term(
+            name="interference",
+            short="Two values are alive at the same point, so they cannot share a register.",
+            long="Take every value as a node and put an edge between any two whose live ranges overlap, and you have the interference graph. Allocation is colouring it with as many colours as the target has registers. That problem is NP complete in general, which is why the allocator is a pile of heuristics rather than an algorithm.",
+            cite="gcc/ira-conflicts.cc:570@releases/gcc-16.2.0",
+            also=("conflict", "interference graph"),
+            see=("live range", "register pressure", "spill"),
+            met="T08",
+        ),
+        Term(
+            name="register pressure",
+            short="How many values are alive at the busiest point, counted per register class.",
+            long="Printed as `Pressure: GENERAL_REGS=22` in an IRA dump, per region. Pressure above the number of available registers means something has to go to memory. Pressure at or below it does not promise everything fits, because a class constraint or a value that needs a register pair can still fail, but it is the number to look at first and it is the number that decides whether two targets compiling the same source come out the same.",
+            cite="gcc/ira-color.cc:3654@releases/gcc-16.2.0",
+            see=("register class", "spill", "interference"),
+            met="T08",
+        ),
+        Term(
+            name="spill",
+            short="Giving a value a stack slot instead of a register, and loading it back at every use.",
+            long="It is what the allocator does when it loses. The cost is not one store, it is a store and then a load at every subsequent use, and if that happens inside a hot loop it is the difference between fast code and slow code. Which value gets picked is a cost model rather than a coin toss: something used once outside a loop is a much better victim than something touched every iteration.",
+            cite="gcc/lra-spills.cc:659@releases/gcc-16.2.0",
+            also=("spilling", "spilled"),
+            see=("register pressure", "register allocation", "LRA"),
+            met="T08",
+        ),
+        Term(
+            name="IRA",
+            short="Integrated Register Allocator. The pass that decides where every value goes.",
+            long="It builds the interference graph, colours it, and records the answer, but it does not rewrite a single instruction. Its output is a decision, written to the dump as the `Disposition:` block, and it is the shortest honest answer to what happened to your registers. The pass runs immediately before the one that carries the decision out.",
+            cite="gcc/ira.cc:6202@releases/gcc-16.2.0",
+            also=("`pass_ira`",),
+            see=("LRA", "allocno", "register allocation"),
+            met="T08",
+        ),
+        Term(
+            name="LRA",
+            short="Local Register Allocator. The pass that makes IRA's decision true, and fixes it where it was not.",
+            long="It is still called `reload` in the pass list, which is the name of the thing it replaced in 2013, and it does no reloading in the old sense. It loops: satisfy every instruction's operand constraints, which can require inventing a fresh pseudo to hold a reloaded value, which makes the live ranges wrong, so recompute them and reassign, and go round again. That loop is why register allocation is the expensive part of compiling.",
+            cite="gcc/lra.cc:2420@releases/gcc-16.2.0",
+            also=("`pass_reload`", "reload"),
+            see=("IRA", "spill", "register allocation"),
+            met="T08",
+        ),
+    ),
+)
+
+
+GROUPS: tuple[Group, ...] = (DRIVING, SHAPES, CONTROL, STATIC_SINGLE, REGISTERS)
 
 #: Every term, flattened.
 TERMS: tuple[Term, ...] = tuple(term for group in GROUPS for term in group.terms)

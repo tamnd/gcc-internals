@@ -14,12 +14,13 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxray import corpus_store, gimple, locs, options, passes, rtl
+from gxray import corpus_store, gimple, locs, options, passes, regalloc, rtl
 from gxwidgets import (
     FlagDiff,
     IRLadder,
     PassTape,
     PredictGate,
+    RegAlloc,
     RTXTree,
     SSAWeb,
     TargetCompare,
@@ -35,6 +36,10 @@ TARGETS = {
     "riscv64": "t07-riscv64",
     "power64le": "t07-power64le",
 }
+
+#: The two back ends T08 puts side by side, with the small one first. Fifteen registers
+#: against thirty is the whole comparison, and the order is the order the lesson argues in.
+PRESSURE = {"x86-64": "t08-x86-64", "aarch64": "t08-aarch64"}
 
 FIXTURE = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "l1-O2-passes.txt"
 
@@ -87,6 +92,23 @@ def targetcompare() -> TargetCompare | None:
         listings[name] = rtl.parse(record.dump_texts["rtl-expand"], name).only()
         compilers[name] = record.target
     return TargetCompare(listings, compilers) if listings else None
+
+
+def pressure() -> RegAlloc | None:
+    """The register allocator on five functions, on two targets with different sized files.
+
+    Two entries again, and missing is not an error, so a checkout that has never talked to
+    Compiler Explorer still gets a page with the rest of the widgets on it.
+    """
+    allocations, compilers = {}, {}
+    for name, entry in PRESSURE.items():
+        try:
+            record = corpus_store.load(entry)
+        except FileNotFoundError:
+            continue
+        allocations[name] = regalloc.parse(record.dump_texts["rtl-ira"], name).functions
+        compilers[name] = record.target
+    return RegAlloc(allocations, compilers) if allocations else None
 
 
 def build(entry: str = "l1-O2") -> str:
@@ -144,6 +166,9 @@ def build(entry: str = "l1-O2") -> str:
     four = targetcompare()
     if four is not None:
         widgets.append(four)
+    two = pressure()
+    if two is not None:
+        widgets.append(two)
 
     banner = f"{record.compiler} for {record.target}, recorded {record.recorded}."
     return PAGE.format(

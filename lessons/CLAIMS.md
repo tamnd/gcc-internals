@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-42 claims across 7 lessons, 4 of them not observable from a notebook.
+51 claims across 8 lessons, 4 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -86,3 +86,17 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | L1 uses three pseudo registers, numbered 101 to 103, and two hard ones | [`t07-23`](t07-where-gimple-becomes-rtl/t07.ipynb) |
 | SI appears 30 times in L1, CC six times and DI twice | [`t07-26`](t07-where-gimple-becomes-rtl/t07.ipynb) |
 | the four targets agree on none of the ten things the table measures | [`t07-29`](t07-where-gimple-becomes-rtl/t07.ipynb) |
+
+## Registers are a lie until they are not
+
+| Claim | Proved by |
+| --- | --- |
+| the five functions have register pressure 6, 12, 16, 22 and 32, which is N plus two | [`t08-05`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| in p20 half the pseudos have two allocnos, one for the loop and one for outside it | [`t08-08`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| compressing the point numbering throws away about two thirds of the points | [`t08-11`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| in p20 the busiest value conflicts with 39 of the other 41 pseudos | [`t08-14`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| x86-64 hands out 15 registers, and the pressure of p14 is 16, one too many | [`t08-17`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| in p20 on x86-64 seven pseudos are in memory and the rest are in numbered registers | [`t08-20`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| p14 and p20 fit on aarch64 and do not fit on x86-64 | [`t08-23`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| the colouring trace and the final disposition disagree about four allocnos in p30 | [`t08-31`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
+| IRA charges nothing for memory on aarch64 until p30, and a great deal on x86-64 | [`t08-34`](t08-registers-are-a-lie-until-they-are-not/t08.ipynb) |
