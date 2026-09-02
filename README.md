@@ -2,6 +2,8 @@
 
 A visual, hands on teardown of GCC 16, taught from zero, and specified precisely enough that you can write a working front end, a working back end and a working optimizer against the specifications alone.
 
+**The book is at [tamnd.github.io/gcc-internals](https://tamnd.github.io/gcc-internals/).** The lessons, the films, the glossary and the blueprints are all there, and one page has a live Python notebook in the middle of it that sends your C to a real GCC 16 and shows you the GIMPLE that comes back.
+
 The plan is 96 lessons in eleven parts, 58 blueprints, and three capstone tracks. Twelve lessons and nine blueprints exist so far, and the rest of the repository is the toolkit those lessons are built on plus thirteen milestones and eighteen open questions saying what is still undecided.
 
 ## The idea
@@ -288,7 +290,9 @@ Nine of the fifty eight exist. A stub has all nine sections and says in the head
 
 ## Status
 
-M0 is underway. See the [milestones](https://github.com/tamnd/gcc-internals/milestones) for the plan and the [open questions](https://github.com/tamnd/gcc-internals/issues?q=is%3Aissue+label%3Akind%2Fopen-question) for what could still change it.
+M1 is done and the book publishes at [tamnd.github.io/gcc-internals](https://tamnd.github.io/gcc-internals/) on every merge to main. Twelve lessons, six films, nine blueprints, the glossary, and the live probe page. M0 is still underway, because the parts of it that are left are a six configuration GCC build matrix, a compiler plugin on two distribution channels, and three beginner testers, none of which are things a merge can finish.
+
+See the [milestones](https://github.com/tamnd/gcc-internals/milestones) for the plan and the [open questions](https://github.com/tamnd/gcc-internals/issues?q=is%3Aissue+label%3Akind%2Fopen-question) for what could still change it.
 
 The riskiest one is #1. If Pyodide cannot reach the Compiler Explorer API from a static site, Tier 0 becomes recorded dumps only, and that is a materially worse project. It gets answered in week one.
 

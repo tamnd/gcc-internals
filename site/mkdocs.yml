@@ -68,11 +68,27 @@ extra_css:
 extra_javascript:
   - assets/island.js
 
+# The blueprint entries below are checked against the blueprints directory by
+# `python -m tools.bpc pages --check`, because MkDocs will happily build a page nothing
+# links to and `--strict` does not mind either, so a blueprint added without an entry here
+# would ship as a URL only its author knows about.
 nav:
   - Start here: index.md
   - Lessons: lessons.md
   - The films: films.md
   - Glossary: glossary.md
+  - Blueprints:
+    - What they are: blueprints.md
+    - The pseudocode: blueprints/NOTATION.md
+    - BP-PIPELINE, the shape of a compilation: blueprints/BP-PIPELINE.md
+    - BP-DRIVER, the program that runs the other programs: blueprints/BP-DRIVER.md
+    - BP-GIMPLE, the GIMPLE statement representation: blueprints/BP-GIMPLE.md
+    - BP-CFG, blocks and edges: blueprints/BP-CFG.md
+    - BP-SSA, one definition per name: blueprints/BP-SSA.md
+    - BP-EXPAND, GIMPLE becomes RTL: blueprints/BP-EXPAND.md
+    - BP-RTL, the RTL expression representation: blueprints/BP-RTL.md
+    - BP-REGALLOC, giving out the machine's registers: blueprints/BP-REGALLOC.md
+    - BP-FINAL, turning insns into text: blueprints/BP-FINAL.md
   - How this is built:
     - The pinned tree and citations: pinned-tree.md
     - Can a browser compile C here: probe.md

@@ -33,6 +33,13 @@ jobs:
       # The island tests only have something to test when marimo is here.
       - run: python -m pytest -q tests/test_island.py
 
+      # The blueprint pages are generated and the navigation lists them by hand, so both can
+      # drift. MkDocs will build a page nothing links to and `--strict` does not mind, which
+      # means a blueprint added without a nav entry would publish as a URL only its author
+      # knows. This is the check that catches it, and it needs the blueprints rather than the
+      # pinned GCC tree, so it belongs here rather than in the citations job.
+      - run: python -m tools.bpc pages --check
+
       - run: python -m mkdocs build --strict -f site/mkdocs.yml
 
       # A build that quietly stopped producing islands still looks like a good build, so
@@ -44,6 +51,18 @@ jobs:
       # gives you a page that builds fine and has nothing on it.
       - name: the glossary page really pulled the glossary in
         run: grep -q 'id="phi-node"' site/_build/glossary/index.html
+
+      # Same failure mode as the glossary, nine more times. A blueprint page is a one line
+      # snippet include, so a wrong path gives a page that builds fine and holds a comment.
+      - name: every blueprint page really pulled its blueprint in
+        run: |
+          for f in blueprints/BP-*.md; do
+            id=$(basename "$f" .md)
+            grep -q "Applies to" "site/_build/blueprints/$id/index.html" || {
+              echo "$id published as an empty page"
+              exit 1
+            }
+          done
 
       - uses: actions/upload-pages-artifact@v3
         with:
