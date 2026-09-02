@@ -31,6 +31,7 @@ so a still from a video and a live widget look like the same project.
 from gxwidgets.asmlisting import AsmListing
 from gxwidgets.base import Widget, live
 from gxwidgets.cfgview import CFGView
+from gxwidgets.dumpdiff import DumpDiff
 from gxwidgets.flagdiff import FlagDiff
 from gxwidgets.html import STYLESHEET
 from gxwidgets.irladder import IRLadder
@@ -45,6 +46,7 @@ __all__ = [
     "STYLESHEET",
     "AsmListing",
     "CFGView",
+    "DumpDiff",
     "FlagDiff",
     "GateError",
     "IRLadder",

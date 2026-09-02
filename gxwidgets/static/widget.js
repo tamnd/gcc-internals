@@ -62,8 +62,11 @@ function step(root, from, by) {
 // this never has to ask Python what a pass was.
 
 function applyFilters(root, view) {
-  for (const cell of root.querySelectorAll(".gx-cell, .gx-insn, .gx-slot, .gx-asmline")) {
+  const FILTERED = ".gx-cell, .gx-insn, .gx-slot, .gx-asmline, .gx-diffrow";
+  for (const cell of root.querySelectorAll(FILTERED)) {
     const wrongPhase = view.phase && view.phase !== "all" && cell.dataset.phase !== view.phase;
+    // The dump diff uses the same key one level down: on the tape a changed cell is a
+    // pass that moved something, and on the diff it is a line that moved.
     const unchanged = view.only === "changed" && cell.dataset.changed !== "1";
     // The flag diff filters by the level a switch first comes on at, and the same column
     // appears once per level, so this hides a whole column across every row at once.

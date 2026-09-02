@@ -17,10 +17,11 @@ from pathlib import Path
 
 import pytest
 
-from gxray import cfg, corpus_store, gimple, locs, options, passes, rtl
+from gxray import cfg, corpus_store, diff, gimple, locs, options, passes, rtl
 from gxray.rtl import Rtx
 from gxwidgets import (
     CFGView,
+    DumpDiff,
     FlagDiff,
     GateError,
     IRLadder,
@@ -31,6 +32,7 @@ from gxwidgets import (
     SSAWeb,
     TargetCompare,
     Widget,
+    dumpdiff,
     html,
     rtxtree,
     script,
@@ -1117,12 +1119,120 @@ def test_the_text_fallback_lists_both_ends_of_every_edge(flow):
     assert text.count("  out") == len(flow.graph.edges)
 
 
+# Two dumps side by side
+
+
+@pytest.fixture
+def moved(both_ends):
+    """The two ends of the tree pipeline, which is the widget doing real work."""
+    return DumpDiff(
+        diff.compare(
+            both_ends["tree-ssa"],
+            both_ends["tree-optimized"],
+            before_name="tree-ssa",
+            after_name="tree-optimized",
+        )
+    )
+
+
+@pytest.fixture
+def still(both_ends):
+    """A dump against itself. Every widget needs the case where there is nothing to show."""
+    f = both_ends["tree-ssa"]
+    return DumpDiff(diff.compare(f, f, before_name="before", after_name="after"))
+
+
+def test_there_is_a_row_for_every_line_of_the_comparison(moved):
+    assert moved.body().count('class="gx-diffrow"') == len(moved.diff.rows)
+
+
+def test_a_row_carries_both_real_lines_and_not_the_normalized_ones(moved):
+    """The normalizing decides what lines up. What the reader sees is what GCC wrote."""
+    changed = [r for r in moved.diff.rows if r.role == "changed"]
+    row = moved._row(changed[0])
+    assert html.esc(changed[0].before) in row
+    assert html.esc(changed[0].after) in row
+    assert "#" not in row.replace("&#", "")
+
+
+def test_a_line_that_only_moved_its_numbers_is_marked_apart_from_one_that_did_not(moved):
+    """Both are changes, so both are marked, but a reader has to be able to tell them
+    apart without counting digits."""
+    body = moved.body()
+    assert body.count('data-renumbered="1"') == len(moved.diff.renumbered)
+    assert 'data-role="changed" data-renumbered="1"' in body
+    assert "gx-diffrow[data-renumbered" in html.STYLESHEET
+
+
+def test_the_summary_says_how_much_of_the_change_is_only_renumbering(moved):
+    assert "only moved their numbers" in moved._summary()
+
+
+def test_a_comparison_with_nothing_in_it_says_so_rather_than_showing_an_empty_table(still):
+    assert "Nothing moved" in still._summary()
+    assert still.body().count('class="gx-diffrow"') == len(still.diff.rows)
+    assert 'data-changed="1"' not in still.body()
+
+
+def test_the_filter_counts_what_it_would_leave_on_screen(moved, still):
+    assert f"only what moved ({len(moved.diff.moved)})" in moved._controls()
+    assert "only what moved (0)" in still._controls()
+
+
+def test_the_filter_key_is_the_one_the_pass_tape_uses(moved):
+    """A reader who has driven the tape has driven this, and the shared behaviour module
+    needs no second branch for it."""
+    assert moved.defaults["only"] == "all"
+    assert 'data-filter="only"' in moved._controls()
+    assert ".gx-diffrow" in script()
+
+
+def test_every_row_says_what_it_is_without_relying_on_the_colour(moved):
+    for row in moved.diff.rows:
+        drawn = moved._row(row)
+        assert f'aria-label="{html.esc(row.label)}"' in drawn
+        assert f'data-role="{row.role}"' in drawn
+
+
+def test_the_marker_column_is_hidden_from_a_screen_reader(moved):
+    """It repeats what the label already said, one character at a time."""
+    assert moved._row(moved.diff.rows[0]).count('aria-hidden="true"') == 1
+
+
+def test_a_line_number_is_the_one_the_reader_would_count_to(moved):
+    """One based, because nobody counts the first line of a dump as line zero."""
+    first = moved.diff.rows[0]
+    assert moved._number(first.before_line) == "1"
+    assert moved._number(None) == ""
+
+
+def test_a_pair_of_dumps_too_far_apart_is_cut_and_says_so(both_ends, monkeypatch):
+    monkeypatch.setattr(dumpdiff, "LIMIT", 4)
+    wide = DumpDiff(diff.compare(both_ends["tree-ssa"], both_ends["tree-optimized"]))
+    assert len(wide.rows) == 4
+    assert "are not drawn" in wide.body()
+
+
+def test_the_patch_fallback_holds_every_line_of_both_dumps(moved):
+    text = moved._text()
+    assert "--- tree-ssa" in text and "+++ tree-optimized" in text
+    for row in moved.diff.rows:
+        assert html.esc(row.text) in text
+
+
+def test_what_the_widget_hands_to_python_is_the_shape_of_the_comparison(moved):
+    got = moved.data()
+    assert got["before"] == "tree-ssa" and got["after"] == "tree-optimized"
+    assert got["rows"] == len(moved.diff.rows)
+    assert sum(got["counts"].values()) == got["rows"]
+
+
 # What every widget has to do
 
 
 @pytest.fixture
-def every(tape, ssa, gate, rungs, grid, tree, targets, flow):
-    return [tape, rungs, SSAWeb(ssa, "s_1"), gate, grid, tree, targets, flow]
+def every(tape, ssa, gate, rungs, grid, tree, targets, flow, moved):
+    return [tape, rungs, SSAWeb(ssa, "s_1"), gate, grid, tree, targets, flow, moved]
 
 
 def test_every_widget_renders_standalone(every):
@@ -1168,7 +1278,7 @@ def test_the_demo_page_builds_from_the_recorded_corpus():
 
     page = build()
     assert page.startswith("<!doctype html>")
-    for kind in ("passtape", "ssaweb", "cfgview", "predictgate"):
+    for kind in ("passtape", "ssaweb", "cfgview", "dumpdiff", "predictgate"):
         assert f'data-gx="{kind}"' in page
     assert "attach();" in page
 

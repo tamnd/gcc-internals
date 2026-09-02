@@ -14,10 +14,11 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxray import asm, cfg, corpus_store, gimple, locs, mdesc, options, passes, regalloc, rtl
+from gxray import asm, cfg, corpus_store, diff, gimple, locs, mdesc, options, passes, regalloc, rtl
 from gxwidgets import (
     AsmListing,
     CFGView,
+    DumpDiff,
     FlagDiff,
     IRLadder,
     PassTape,
@@ -161,6 +162,16 @@ def build(entry: str = "l1-O2") -> str:
         PassTape(pipeline, dumps=dumps, function=f.name, options=" ".join(record.args)),
         IRLadder(ladder),
         CFGView(graphs[f.name]),
+        # The two ends of the tree pipeline. Every pass in between is in the tape above, so
+        # this is the same recording read the other way round: what all of them added up to.
+        DumpDiff(
+            diff.compare(
+                f,
+                dumps["tree-optimized"],
+                before_name="tree-ssa",
+                after_name="tree-optimized",
+            )
+        ),
         RTXTree(rtl.parse(record.dump_texts["rtl-expand"], entry).only()),
         SSAWeb(f, name=SSAWeb(f).names[0]),
         PredictGate(

@@ -354,6 +354,31 @@ STYLESHEET = f""":root {{
   display: grid; gap: 2px; }}
 .gx-arcs code {{ font-family: {MONO}; }}
 
+.gx-diff {{ width: 100%; border-collapse: collapse; font-family: {MONO}; font-size: 12px;
+  table-layout: auto; }}
+.gx-diff th {{ text-align: left; font-family: system-ui, sans-serif; font-size: 12px;
+  font-weight: 600; color: var(--gx-unknown-ink); padding: 0 6px 4px;
+  border-bottom: 1px solid var(--gx-unknown-fill); }}
+.gx-diff td {{ padding: 0 6px; vertical-align: top; white-space: pre; }}
+.gx-diffrow[hidden] {{ display: none; }}
+.gx-diff-no {{ color: var(--gx-unknown-ink); text-align: right; user-select: none;
+  width: 1%; }}
+/* The middle column is the marker, and it is the only thing between the two sides, so it
+   gets the rule that separates them rather than a border on either text column. */
+.gx-diff-gutter {{ text-align: center; color: var(--gx-unknown-ink); user-select: none;
+  border-left: 1px solid var(--gx-unknown-fill);
+  border-right: 1px solid var(--gx-unknown-fill); width: 1%; }}
+.gx-diffrow[data-role="added"] .gx-diff-new {{ background: var(--gx-added-fill);
+  color: var(--gx-added-ink); }}
+.gx-diffrow[data-role="removed"] .gx-diff-old {{ background: var(--gx-removed-fill);
+  color: var(--gx-removed-ink); }}
+.gx-diffrow[data-role="changed"] td:is(.gx-diff-old, .gx-diff-new) {{
+  background: var(--gx-changed-fill); color: var(--gx-changed-ink); }}
+/* A row where only the numbers moved is marked, because it is a change, but it is marked
+   more quietly than one where the statement is different, because it is a smaller thing. */
+.gx-diffrow[data-renumbered="1"] td:is(.gx-diff-old, .gx-diff-new) {{ background: none;
+  color: var(--gx-unknown-ink); }}
+
 .gx-columns {{ display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }}
 .gx-column {{ overflow-x: auto; max-width: 100%; }}
 .gx-slots {{ display: grid; gap: 2px; }}
