@@ -2,7 +2,7 @@
 
 A visual, hands on teardown of GCC 16, taught from zero, and specified precisely enough that you can write a working front end, a working back end and a working optimizer against the specifications alone.
 
-The plan is 96 lessons in eleven parts, 58 blueprints, and three capstone tracks. Nine lessons and four blueprints exist so far, and the rest of the repository is the toolkit those lessons are built on plus thirteen milestones and eighteen open questions saying what is still undecided.
+The plan is 96 lessons in eleven parts, 58 blueprints, and three capstone tracks. Twelve lessons and nine blueprints exist so far, and the rest of the repository is the toolkit those lessons are built on plus thirteen milestones and eighteen open questions saying what is still undecided.
 
 ## The idea
 
@@ -239,6 +239,20 @@ python -m tools.bpc coverage
 ```
 
 The last one is the honest number. Every GIMPLE code is classified as covered, mentioned, or out of scope with a written reason, the inventory is read from the pinned tree rather than from the ledger, and a code that nothing classifies fails the build. Today it says 47 codes, 11 covered, 12 mentioned, 24 out of scope.
+
+Nine of the fifty eight exist. A stub has all nine sections and says in the header what it does not yet cover, so it is useful to read and honest about its gaps rather than absent.
+
+| Blueprint | Covers | Status |
+|---|---|---|
+| [BP-PIPELINE](blueprints/BP-PIPELINE.md) | the pass manager, the pass lists, and how a pass is registered and run | complete |
+| [BP-GIMPLE](blueprints/BP-GIMPLE.md) | the GIMPLE statement, its codes, its layouts, and the gimplifier | partial |
+| [BP-DRIVER](blueprints/BP-DRIVER.md) | the `gcc` program itself, the spec language, and how a suffix picks a compiler | stub |
+| [BP-CFG](blueprints/BP-CFG.md) | basic blocks, edges, dominance, and the hook table that serves two IRs | stub |
+| [BP-SSA](blueprints/BP-SSA.md) | SSA names, PHIs, virtual operands, and the four step construction | stub |
+| [BP-EXPAND](blueprints/BP-EXPAND.md) | out of SSA, stack layout, and the optab search that turns GIMPLE into RTL | stub |
+| [BP-RTL](blueprints/BP-RTL.md) | the insn, the pattern, and what recognition means | stub |
+| [BP-REGALLOC](blueprints/BP-REGALLOC.md) | IRA and LRA, and what a register class actually constrains | stub |
+| [BP-FINAL](blueprints/BP-FINAL.md) | the last pass, and how an insn becomes a line of assembly | stub |
 
 ## Status
 

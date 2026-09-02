@@ -7,6 +7,10 @@
    "hash": "05175d55535c1aa8",
    "text": "struct GTY((chain_next (\"%h.next_bb\"), chain_prev (\"%h.prev_bb\"))) basic_block_def {"
   },
+  "gcc/basic-block.h:156@releases/gcc-16.2.0": {
+   "hash": "8938d83231fcbf86",
+   "text": "STATIC_ASSERT (sizeof (rtl_bb_info) >= sizeof (gimple_bb_info));"
+  },
   "gcc/basic-block.h:208@releases/gcc-16.2.0": {
    "hash": "2d0a065a29724d34",
    "text": "/* For iterating over basic blocks.  */"
@@ -15,6 +19,22 @@
    "hash": "ebb261c42c399a68",
    "text": "#define FOR_EACH_BB_FN(BB, FN) \\"
   },
+  "gcc/basic-block.h:244@releases/gcc-16.2.0": {
+   "hash": "1c7b891f74563fcb",
+   "text": "#define FOR_ALL_BB_FN(BB, FN) \\"
+  },
+  "gcc/basic-block.h:265@releases/gcc-16.2.0": {
+   "hash": "1f364f8aa4d42791",
+   "text": "#define NUM_FIXED_BLOCKS (2)"
+  },
+  "gcc/basic-block.h:26@releases/gcc-16.2.0": {
+   "hash": "5353e9a4786afd4c",
+   "text": "class GTY((user)) edge_def {"
+  },
+  "gcc/basic-block.h:69@releases/gcc-16.2.0": {
+   "hash": "ffc15cd485455b35",
+   "text": "#define EDGE_COMPLEX \\"
+  },
   "gcc/c-family/c-opts.cc:1419@releases/gcc-16.2.0": {
    "hash": "4de52375ef4441f9",
    "text": "c_common_parse_file (void)"
@@ -22,6 +42,94 @@
   "gcc/c/c-parser.cc:31269@releases/gcc-16.2.0": {
    "hash": "7c397c5b5864c371",
    "text": "c_parse_file (void)"
+  },
+  "gcc/cfg.cc:169@releases/gcc-16.2.0": {
+   "hash": "2be7cc40efdca37e",
+   "text": "compact_blocks (void)"
+  },
+  "gcc/cfg.cc:215@releases/gcc-16.2.0": {
+   "hash": "c6c20063fed6ec82",
+   "text": "connect_src (edge e)"
+  },
+  "gcc/cfg.cc:278@releases/gcc-16.2.0": {
+   "hash": "e652d347592a9b32",
+   "text": "unchecked_make_edge (basic_block src, basic_block dst, int flags)"
+  },
+  "gcc/cfg.h:35@releases/gcc-16.2.0": {
+   "hash": "6b4de929a2bc4056",
+   "text": "   The x_* prefixing is necessary because otherwise references to the"
+  },
+  "gcc/cfg.h:38@releases/gcc-16.2.0": {
+   "hash": "cd5064c379e222b3",
+   "text": "struct GTY(()) control_flow_graph {"
+  },
+  "gcc/cfganal.cc:1075@releases/gcc-16.2.0": {
+   "hash": "2ae599e7ca3d95e0",
+   "text": "pre_and_rev_post_order_compute (int *pre_order, int *rev_post_order,"
+  },
+  "gcc/cfganal.cc:1639@releases/gcc-16.2.0": {
+   "hash": "1943a65fd1cf0f7c",
+   "text": "compute_dominance_frontiers (bitmap_head *frontiers)"
+  },
+  "gcc/cfganal.cc:1680@releases/gcc-16.2.0": {
+   "hash": "236e0905ff567883",
+   "text": "compute_idf (bitmap def_blocks, bitmap_head *dfs)"
+  },
+  "gcc/cfganal.cc:622@releases/gcc-16.2.0": {
+   "hash": "2a986c802458f9f3",
+   "text": "connect_infinite_loops_to_exit (void)"
+  },
+  "gcc/cfganal.cc:62@releases/gcc-16.2.0": {
+   "hash": "2a3d259407b901a5",
+   "text": "mark_dfs_back_edges (struct function *fun)"
+  },
+  "gcc/cfganal.cc:655@releases/gcc-16.2.0": {
+   "hash": "7fe8f672c8c2ee2a",
+   "text": "post_order_compute (int *post_order, bool include_entry_exit,"
+  },
+  "gcc/cfgexpand.cc:1240@releases/gcc-16.2.0": {
+   "hash": "07c81c9b33441e14",
+   "text": "partition_stack_vars (void)"
+  },
+  "gcc/cfgexpand.cc:1400@releases/gcc-16.2.0": {
+   "hash": "1bd4e6c2f7317650",
+   "text": "expand_stack_vars (bool (*pred) (unsigned), class stack_vars_data *data)"
+  },
+  "gcc/cfgexpand.cc:2468@releases/gcc-16.2.0": {
+   "hash": "251cf123a3c28dcb",
+   "text": "expand_used_vars (bitmap forced_stack_vars)"
+  },
+  "gcc/cfgexpand.cc:2923@releases/gcc-16.2.0": {
+   "hash": "11c5f5c9ed34b41c",
+   "text": "expand_gimple_cond (basic_block bb, gcond *stmt)"
+  },
+  "gcc/cfgexpand.cc:312@releases/gcc-16.2.0": {
+   "hash": "5a9470ab51954698",
+   "text": "class stack_var"
+  },
+  "gcc/cfgexpand.cc:4214@releases/gcc-16.2.0": {
+   "hash": "cd943949daff3cae",
+   "text": "expand_gimple_stmt_1 (gimple *stmt)"
+  },
+  "gcc/cfgexpand.cc:4380@releases/gcc-16.2.0": {
+   "hash": "2f7ef12e59278bca",
+   "text": "expand_gimple_stmt (gimple *stmt)"
+  },
+  "gcc/cfgexpand.cc:4434@releases/gcc-16.2.0": {
+   "hash": "4fa013f96c5f2b74",
+   "text": "expand_gimple_tailcall (basic_block bb, gcall *stmt, bool *can_fallthru,"
+  },
+  "gcc/cfgexpand.cc:4822@releases/gcc-16.2.0": {
+   "hash": "db3e46ae5eea52de",
+   "text": "expand_debug_expr (tree exp)"
+  },
+  "gcc/cfgexpand.cc:6172@releases/gcc-16.2.0": {
+   "hash": "8cb57c96cf030a9f",
+   "text": "expand_gimple_basic_block (basic_block bb, rtx_insn *asan_epilog_seq)"
+  },
+  "gcc/cfgexpand.cc:6579@releases/gcc-16.2.0": {
+   "hash": "aaea5e078a8b66d3",
+   "text": "construct_init_block (void)"
   },
   "gcc/cfgexpand.cc:6999@releases/gcc-16.2.0": {
    "hash": "19105c53f8596444",
@@ -34,6 +142,34 @@
   "gcc/cfgexpand.cc:7028@releases/gcc-16.2.0": {
    "hash": "f5abd7d294e8bc1b",
    "text": "pass_expand::execute (function *fun)"
+  },
+  "gcc/cfgexpand.cc:7039@releases/gcc-16.2.0": {
+   "hash": "590746ba84971fcb",
+   "text": "  SA.partition_to_pseudo = XCNEWVEC (rtx, SA.map->num_partitions);"
+  },
+  "gcc/cfgexpand.cc:7060@releases/gcc-16.2.0": {
+   "hash": "a98a685a05082608",
+   "text": "  /* Dominators are not kept up-to-date as we may create new basic-blocks.  */"
+  },
+  "gcc/cfgexpand.cc:7086@releases/gcc-16.2.0": {
+   "hash": "d15a3d00b133db1b",
+   "text": "  emit_note (NOTE_INSN_DELETED);"
+  },
+  "gcc/cfgexpand.cc:7088@releases/gcc-16.2.0": {
+   "hash": "900202e4edad9ad5",
+   "text": "  targetm.expand_to_rtl_hook ();"
+  },
+  "gcc/cfgexpand.cc:7119@releases/gcc-16.2.0": {
+   "hash": "6fb4e3e083b885fa",
+   "text": "  /* Temporarily mark PARM_DECLs and RESULT_DECLs we need to expand to"
+  },
+  "gcc/cfghooks.cc:105@releases/gcc-16.2.0": {
+   "hash": "ecd3d134eb59a0d7",
+   "text": "verify_flow_info (void)"
+  },
+  "gcc/cfghooks.h:78@releases/gcc-16.2.0": {
+   "hash": "7161a26a0116f132",
+   "text": "struct cfg_hooks"
   },
   "gcc/cfgloop.cc:160@releases/gcc-16.2.0": {
    "hash": "57661d84fd732b68",
@@ -107,9 +243,29 @@
    "hash": "69bbb0299eba4c24",
    "text": "#define FIRST_PSEUDO_REGISTER FIRST_PSEUDO_REG"
   },
+  "gcc/dominance.cc:1125@releases/gcc-16.2.0": {
+   "hash": "5ca962bf82eba31a",
+   "text": "dominated_by_p (enum cdi_direction dir, const_basic_block bb1, const_basic_block bb2)"
+  },
+  "gcc/dominance.cc:1165@releases/gcc-16.2.0": {
+   "hash": "cffa24c32a46a952",
+   "text": "verify_dominators (cdi_direction dir)"
+  },
+  "gcc/dominance.cc:21@releases/gcc-16.2.0": {
+   "hash": "8973311e647359e0",
+   "text": "/* This file implements the well known algorithm from Lengauer and Tarjan"
+  },
+  "gcc/dominance.cc:720@releases/gcc-16.2.0": {
+   "hash": "cb158d3e076dd1ca",
+   "text": "calculate_dominance_info (cdi_direction dir, bool compute_fast_query)"
+  },
   "gcc/dominance.cc:856@releases/gcc-16.2.0": {
    "hash": "ddd51844694a3c95",
    "text": "get_immediate_dominator (enum cdi_direction dir, basic_block bb)"
+  },
+  "gcc/dominance.h:31@releases/gcc-16.2.0": {
+   "hash": "866c7431f98d6550",
+   "text": "enum dom_state"
   },
   "gcc/dumpfile.h:522@releases/gcc-16.2.0": {
    "hash": "05363e987fec570a",
@@ -118,6 +274,22 @@
   "gcc/emit-rtl.cc:1188@releases/gcc-16.2.0": {
    "hash": "84bbfe101e0c8cbd",
    "text": "gen_reg_rtx (machine_mode mode)"
+  },
+  "gcc/expr.cc:5988@releases/gcc-16.2.0": {
+   "hash": "60e2d8e4669a219d",
+   "text": "expand_assignment (tree to, tree from, bool nontemporal)"
+  },
+  "gcc/expr.cc:6591@releases/gcc-16.2.0": {
+   "hash": "af167c37ce793b7c",
+   "text": "store_expr (tree exp, rtx target, int call_param_p,"
+  },
+  "gcc/expr.cc:9605@releases/gcc-16.2.0": {
+   "hash": "337896601de7001c",
+   "text": "expand_expr_real (tree exp, rtx target, machine_mode tmode,"
+  },
+  "gcc/expr.cc:9847@releases/gcc-16.2.0": {
+   "hash": "45a6b5f38af3ffed",
+   "text": "expand_expr_real_2 (const_sepops ops, rtx target, machine_mode tmode,"
   },
   "gcc/final.cc:2009@releases/gcc-16.2.0": {
    "hash": "1e77427d6e065c55",
@@ -151,9 +323,25 @@
    "hash": "ebb1ec3c29398f08",
    "text": "static const char *cc1_spec = CC1_SPEC OS_CC1_SPEC;"
   },
+  "gcc/gcc.cc:1339@releases/gcc-16.2.0": {
+   "hash": "8b89b8c5655d703d",
+   "text": "static const char *invoke_as ="
+  },
+  "gcc/gcc.cc:1420@releases/gcc-16.2.0": {
+   "hash": "8a82f66205c80b75",
+   "text": "struct compiler"
+  },
+  "gcc/gcc.cc:1445@releases/gcc-16.2.0": {
+   "hash": "51b6b19cbdd5496b",
+   "text": "static struct compiler *compilers;"
+  },
   "gcc/gcc.cc:1453@releases/gcc-16.2.0": {
    "hash": "e60a6f968bc569b2",
    "text": "static const struct compiler default_compilers[] ="
+  },
+  "gcc/gcc.cc:1480@releases/gcc-16.2.0": {
+   "hash": "ac82d6aa75fba5f9",
+   "text": "  {\".c\", \"@c\", 0, 0, 1},"
   },
   "gcc/gcc.cc:1493@releases/gcc-16.2.0": {
    "hash": "113cfbd96886181d",
@@ -162,6 +350,66 @@
   "gcc/gcc.cc:1494@releases/gcc-16.2.0": {
    "hash": "7d765f61c6aaf81b",
    "text": "      %{!fsyntax-only:%(invoke_as)}}}}\", 0, 0, 1},"
+  },
+  "gcc/gcc.cc:1716@releases/gcc-16.2.0": {
+   "hash": "83bb3d642d79e080",
+   "text": "struct spec_list"
+  },
+  "gcc/gcc.cc:1738@releases/gcc-16.2.0": {
+   "hash": "5ccd4e56173e54fb",
+   "text": "static struct spec_list static_specs[] ="
+  },
+  "gcc/gcc.cc:1806@releases/gcc-16.2.0": {
+   "hash": "cad3d20326709b80",
+   "text": "static const struct spec_function static_spec_functions[] ="
+  },
+  "gcc/gcc.cc:3059@releases/gcc-16.2.0": {
+   "hash": "89cb526bab34543e",
+   "text": "find_a_file (const struct path_prefix *pprefix, const char *name, int mode,"
+  },
+  "gcc/gcc.cc:3110@releases/gcc-16.2.0": {
+   "hash": "f5672980eedd978b",
+   "text": "find_a_program (const char *name)"
+  },
+  "gcc/gcc.cc:3273@releases/gcc-16.2.0": {
+   "hash": "f2d6261634456fae",
+   "text": "execute (void)"
+  },
+  "gcc/gcc.cc:5854@releases/gcc-16.2.0": {
+   "hash": "13a14bba332c15da",
+   "text": "do_spec (const char *spec)"
+  },
+  "gcc/gcc.cc:6163@releases/gcc-16.2.0": {
+   "hash": "8aa3ef4fb2d76595",
+   "text": "do_spec_1 (const char *spec, int inswitch, const char *soft_matched_part)"
+  },
+  "gcc/gcc.cc:625@releases/gcc-16.2.0": {
+   "hash": "cf0c4d3441d99c10",
+   "text": " %{S}   substitutes the -S switch, if that switch was given to GCC."
+  },
+  "gcc/gcc.cc:7046@releases/gcc-16.2.0": {
+   "hash": "26002503b1824c7c",
+   "text": "eval_spec_function (const char *func, const char *args,"
+  },
+  "gcc/gcc.cc:7293@releases/gcc-16.2.0": {
+   "hash": "2effc14662256a40",
+   "text": "handle_braces (const char *p)"
+  },
+  "gcc/gcc.cc:8305@releases/gcc-16.2.0": {
+   "hash": "da146c315a778de1",
+   "text": "driver::main (int argc, char **argv)"
+  },
+  "gcc/gcc.cc:9070@releases/gcc-16.2.0": {
+   "hash": "2bab89abb7da4a7e",
+   "text": "driver::do_spec_on_infiles () const"
+  },
+  "gcc/gcc.cc:9217@releases/gcc-16.2.0": {
+   "hash": "01b72aacfbd7b63b",
+   "text": "driver::maybe_run_linker (const char *argv0) const"
+  },
+  "gcc/gcc.cc:9398@releases/gcc-16.2.0": {
+   "hash": "79747d5e7f35a2c6",
+   "text": "lookup_compiler (const char *name, size_t length, const char *language)"
   },
   "gcc/genmatch.cc:911@releases/gcc-16.2.0": {
    "hash": "3914db87d88d8a23",
@@ -186,6 +434,10 @@
   "gcc/gimple.h:220@releases/gcc-16.2.0": {
    "hash": "e2df58597c06e3e6",
    "text": "struct GTY((desc (\"gimple_statement_structure (&%h)\"), tag (\"GSS_BASE\"),"
+  },
+  "gcc/gimple.h:2229@releases/gcc-16.2.0": {
+   "hash": "115f91a7960bd291",
+   "text": "gimple_vuse (const gimple *g)"
   },
   "gcc/gimple.h:222@releases/gcc-16.2.0": {
    "hash": "e268c6365b9f8ea8",
@@ -435,6 +687,22 @@
    "hash": "9ec0017abb2fc0c7",
    "text": "    (non_lvalue @0)))"
   },
+  "gcc/optabs.cc:1501@releases/gcc-16.2.0": {
+   "hash": "dc3d25bcf32153f6",
+   "text": "expand_binop (machine_mode mode, optab binoptab, rtx op0, rtx op1,"
+  },
+  "gcc/optabs.cc:3249@releases/gcc-16.2.0": {
+   "hash": "7f5d18b5a7786c15",
+   "text": "expand_unop (machine_mode mode, optab unoptab, rtx op0, rtx target,"
+  },
+  "gcc/optabs.cc:8427@releases/gcc-16.2.0": {
+   "hash": "7db146d269ab2322",
+   "text": "maybe_gen_insn (enum insn_code icode, unsigned int nops,"
+  },
+  "gcc/optabs.cc:8514@releases/gcc-16.2.0": {
+   "hash": "0441995f52e93963",
+   "text": "expand_insn (enum insn_code icode, unsigned int nops,"
+  },
   "gcc/opts.cc:1234@releases/gcc-16.2.0": {
    "hash": "3d8ebfd0f828d4fe",
    "text": "  if (!opts->x_optimize || opts->x_optimize_debug)"
@@ -603,6 +871,10 @@
    "hash": "1ef740e2cd1554c1",
    "text": "  INSERT_PASSES_AFTER (all_lowering_passes)"
   },
+  "gcc/passes.def:41@releases/gcc-16.2.0": {
+   "hash": "42c6f73f75ea6de0",
+   "text": "  NEXT_PASS (pass_build_cfg);"
+  },
   "gcc/passes.def:460@releases/gcc-16.2.0": {
    "hash": "828aec59637aacae",
    "text": "  NEXT_PASS (pass_expand);"
@@ -683,6 +955,10 @@
    "hash": "ff1c2929691bffeb",
    "text": "#define LAST_VIRTUAL_REGISTER\t\t((FIRST_VIRTUAL_REGISTER) + 5)"
   },
+  "gcc/ssa-iterators.h:71@releases/gcc-16.2.0": {
+   "hash": "477d9b0c0ff36fb5",
+   "text": "#define FOR_EACH_IMM_USE_FAST(DEST, ITER, SSAVAR)\t\t\\"
+  },
   "gcc/target.def:4728@releases/gcc-16.2.0": {
    "hash": "fb01c32eb89f1656",
    "text": "(predict_doloop_p,"
@@ -707,6 +983,10 @@
    "hash": "69d062fd049c68d2",
    "text": "    fprintf (dump_file, \"Merging blocks %d and %d\\n\", a->index, b->index);"
   },
+  "gcc/tree-cfg.cc:206@releases/gcc-16.2.0": {
+   "hash": "48477d1c51002645",
+   "text": "  /* Group case nodes to reduce the number of edges."
+  },
   "gcc/tree-cfg.cc:2191@releases/gcc-16.2.0": {
    "hash": "30e3566400b2cc4c",
    "text": "  if (dump_file)"
@@ -715,9 +995,45 @@
    "hash": "b574855da47d4544",
    "text": "      fprintf (dump_file, \"Removing basic block %d\\n\", bb->index);"
   },
+  "gcc/tree-cfg.cc:328@releases/gcc-16.2.0": {
+   "hash": "c6c4410c0a05f4b6",
+   "text": "execute_build_cfg (void)"
+  },
+  "gcc/tree-cfg.cc:350@releases/gcc-16.2.0": {
+   "hash": "e195bc0dab0af291",
+   "text": "const pass_data pass_data_build_cfg ="
+  },
+  "gcc/tree-cfg.cc:562@releases/gcc-16.2.0": {
+   "hash": "301444d18010810e",
+   "text": "make_blocks (gimple_seq seq)"
+  },
+  "gcc/tree-cfg.cc:810@releases/gcc-16.2.0": {
+   "hash": "dcf73f6885a0f86d",
+   "text": "make_edges_bb (basic_block bb, struct omp_region **pcur_region, int *pomp_index)"
+  },
+  "gcc/tree-cfg.cc:924@releases/gcc-16.2.0": {
+   "hash": "9febb73333cd0d15",
+   "text": "make_edges (void)"
+  },
   "gcc/tree-core.h:1138@releases/gcc-16.2.0": {
    "hash": "846071afbfa6d275",
    "text": "struct GTY(()) tree_base {"
+  },
+  "gcc/tree-core.h:1704@releases/gcc-16.2.0": {
+   "hash": "b91548e87bb5139a",
+   "text": "struct GTY(()) ssa_use_operand_t {"
+  },
+  "gcc/tree-core.h:1707@releases/gcc-16.2.0": {
+   "hash": "fd3e3faced8cc933",
+   "text": "  /* Immediate uses for a given SSA name are maintained as a cyclic"
+  },
+  "gcc/tree-core.h:1716@releases/gcc-16.2.0": {
+   "hash": "cda9b90b0cd34e61",
+   "text": "struct GTY(()) tree_ssa_name {"
+  },
+  "gcc/tree-core.h:1741@releases/gcc-16.2.0": {
+   "hash": "d5050abc50e81014",
+   "text": "struct GTY(()) phi_arg_d {"
   },
   "gcc/tree-core.h:2182@releases/gcc-16.2.0": {
    "hash": "af2f7fe2169f9bf1",
@@ -726,6 +1042,34 @@
   "gcc/tree-core.h:2186@releases/gcc-16.2.0": {
    "hash": "30e19987a7156896",
    "text": "\t    desc (\"tree_node_structure (&%h)\"), variable_size)) tree_node {"
+  },
+  "gcc/tree-dfa.cc:297@releases/gcc-16.2.0": {
+   "hash": "933feccc9f2e37f2",
+   "text": "ssa_default_def (struct function *fn, tree var)"
+  },
+  "gcc/tree-into-ssa.cc:2490@releases/gcc-16.2.0": {
+   "hash": "87a0a932d80c6e2c",
+   "text": "pass_build_ssa::execute (function *fun)"
+  },
+  "gcc/tree-into-ssa.cc:3369@releases/gcc-16.2.0": {
+   "hash": "27667ade6fca1ca7",
+   "text": "update_ssa (unsigned update_flags)"
+  },
+  "gcc/tree-into-ssa.cc:648@releases/gcc-16.2.0": {
+   "hash": "72d60fdca27f6fed",
+   "text": "mark_def_sites (basic_block bb, gimple *stmt, bitmap kills)"
+  },
+  "gcc/tree-into-ssa.cc:754@releases/gcc-16.2.0": {
+   "hash": "9cfe48f1b116a02a",
+   "text": "prune_unused_phi_nodes (bitmap phis, bitmap kills, bitmap uses)"
+  },
+  "gcc/tree-outof-ssa.cc:1282@releases/gcc-16.2.0": {
+   "hash": "b972af93f3561c77",
+   "text": "insert_backedge_copies (void)"
+  },
+  "gcc/tree-outof-ssa.cc:1499@releases/gcc-16.2.0": {
+   "hash": "f0a35385f0ac0f7b",
+   "text": "rewrite_out_of_ssa (struct ssaexpand *sa)"
   },
   "gcc/tree-pass.h:103@releases/gcc-16.2.0": {
    "hash": "ed9c1c468e1f7997",
@@ -811,6 +1155,10 @@
    "hash": "c6f844c20c9a234a",
    "text": "analyze_and_mark_doloop_use (struct ivopts_data *data)"
   },
+  "gcc/tree-ssa-operands.cc:230@releases/gcc-16.2.0": {
+   "hash": "7da83b9c1aefde5e",
+   "text": ""
+  },
   "gcc/tree-ssa-propagate.cc:484@releases/gcc-16.2.0": {
    "hash": "e7a16be38cc74d10",
    "text": "\t  if (dump_file && (dump_flags & TDF_DETAILS))"
@@ -819,9 +1167,17 @@
    "hash": "d3afc00bf95aba71",
    "text": "\t      fprintf (dump_file, \"\\nSimulating statement: \");"
   },
+  "gcc/tree-ssa.cc:1038@releases/gcc-16.2.0": {
+   "hash": "e0b8baa70246cd71",
+   "text": "verify_ssa (bool check_modified_stmt, bool check_ssa_operands)"
+  },
   "gcc/tree-ssanames.cc:351@releases/gcc-16.2.0": {
    "hash": "8d4a46c239a088be",
    "text": "make_ssa_name_fn (struct function *fn, tree var, gimple *stmt,"
+  },
+  "gcc/tree-ssanames.cc:665@releases/gcc-16.2.0": {
+   "hash": "3eb64c3c2bc7fd94",
+   "text": "release_ssa_name_fn (struct function *fn, tree var)"
   },
   "gcc/tree-ssanames.cc:983@releases/gcc-16.2.0": {
    "hash": "3f75f85f5c6b4a08",
@@ -838,6 +1194,22 @@
   "gcc/tree.def:41@releases/gcc-16.2.0": {
    "hash": "a5ae4c9e706bdc62",
    "text": "DEFTREECODE (ERROR_MARK, \"error_mark\", tcc_exceptional, 0)"
+  },
+  "gcc/tree.h:2217@releases/gcc-16.2.0": {
+   "hash": "b2eb6e2e6bf2348c",
+   "text": "#define SSA_NAME_VAR(NODE)\t\t\t\t\t\\"
+  },
+  "gcc/tree.h:2235@releases/gcc-16.2.0": {
+   "hash": "5a1cdece5befd0a7",
+   "text": "#define SSA_NAME_DEF_STMT(NODE)\tSSA_NAME_CHECK (NODE)->ssa_name.def_stmt"
+  },
+  "gcc/tree.h:2239@releases/gcc-16.2.0": {
+   "hash": "50d78cb379e426f1",
+   "text": "#define SSA_NAME_VERSION(NODE)\tSSA_NAME_CHECK (NODE)->base.u.version"
+  },
+  "gcc/tree.h:2258@releases/gcc-16.2.0": {
+   "hash": "74f08c51c3b68556",
+   "text": "#define SSA_NAME_IS_DEFAULT_DEF(NODE) \\"
   },
   "gcc/tree.h:330@releases/gcc-16.2.0": {
    "hash": "9bf960380ed75a95",
