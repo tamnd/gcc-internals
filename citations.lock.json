@@ -75,13 +75,33 @@
    "hash": "90e8955732ed66ab",
    "text": "internal_get_tmp_var (tree val, gimple_seq *pre_p, gimple_seq *post_p,"
   },
+  "gcc/passes.cc:2578@releases/gcc-16.2.0": {
+   "hash": "8cc6077248d7261e",
+   "text": "bool"
+  },
   "gcc/passes.cc:2579@releases/gcc-16.2.0": {
    "hash": "874fd72273323b29",
    "text": "execute_one_pass (opt_pass *pass)"
   },
+  "gcc/passes.cc:2769@releases/gcc-16.2.0": {
+   "hash": "e255f35e7c34bec9",
+   "text": "      if (execute_one_pass (pass) && pass->sub)"
+  },
+  "gcc/passes.cc:567@releases/gcc-16.2.0": {
+   "hash": "c77958fb6c593137",
+   "text": "  bool gate (function *) final override"
+  },
+  "gcc/passes.cc:687@releases/gcc-16.2.0": {
+   "hash": "3c0302e4d7f79579",
+   "text": "  bool gate (function *) final override"
+  },
   "gcc/passes.cc:854@releases/gcc-16.2.0": {
    "hash": "427de223d27ef038",
    "text": "     that reason, we may have a disambiguating prefix, followed by a space"
+  },
+  "gcc/passes.cc:963@releases/gcc-16.2.0": {
+   "hash": "76a565edc7357284",
+   "text": "dump_one_pass (opt_pass *pass, int pass_indent)"
   },
   "gcc/passes.cc:973@releases/gcc-16.2.0": {
    "hash": "ad97fac58639fa98",
@@ -99,13 +119,25 @@
    "hash": "30e19987a7156896",
    "text": "\t    desc (\"tree_node_structure (&%h)\"), variable_size)) tree_node {"
   },
+  "gcc/tree-pass.h:103@releases/gcc-16.2.0": {
+   "hash": "ed9c1c468e1f7997",
+   "text": "  opt_pass *sub;"
+  },
   "gcc/tree-pass.h:235@releases/gcc-16.2.0": {
    "hash": "8480add6167edcd4",
    "text": "#define PROP_gimple \\"
   },
+  "gcc/tree-pass.h:44@releases/gcc-16.2.0": {
+   "hash": "76101b7ab5820972",
+   "text": ""
+  },
   "gcc/tree-pass.h:73@releases/gcc-16.2.0": {
    "hash": "3f097a4923bb403f",
    "text": "class opt_pass : public pass_data"
+  },
+  "gcc/tree-pass.h:90@releases/gcc-16.2.0": {
+   "hash": "b135664ac21cd667",
+   "text": "  virtual bool gate (function *fun);"
   },
   "gcc/tree-ssa-ccp.cc:1183@releases/gcc-16.2.0": {
    "hash": "b6f15afde0cebcb0",

@@ -76,6 +76,8 @@ jobs:
           ! python lessons/t02-five-faces/grade.py --asm 5=1,6=1 --vanished 9 --appeared 8
           python lessons/t03-gimple-is-c-with-the-fun-removed/grade.py --ops "+,-,*,+,-,*,+" --temps 6 --most shortcircuit
           ! python lessons/t03-gimple-is-c-with-the-fun-removed/grade.py --ops "*,+,-" --temps 2 --most flat
+          python lessons/t04-three-hundred-and-ninety-five-passes/grade.py --pass ccp1 --changed 25 --only-os hoist
+          ! python lessons/t04-three-hundred-and-ninety-five-passes/grade.py --pass dom2 --changed 3 --only-os vect
           python lessons/t05-ssa-in-one-lesson/grade.py --phis 3 --most total --defaults yes
           ! python lessons/t05-ssa-in-one-lesson/grade.py --phis 2 --most k --defaults no
 

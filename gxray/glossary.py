@@ -154,6 +154,14 @@ DRIVING = Group(
             met="T04",
         ),
         Term(
+            name="gate",
+            short="The method a pass answers with yes or no when asked whether it should run.",
+            long="It is a virtual function on the pass, so the condition lives with the pass rather than in a table somewhere, and it is asked again for every function. That is why the answer is not a property of your command line: two functions in one file can get different answers from the same gate. `-fdump-passes` prints the answer for one function at one moment, and a gate that depends on how far compilation has got, such as the one guarding the passes that run after register allocation, will print the answer for that moment rather than for the moment the pass is reached.",
+            cite="gcc/tree-pass.h:90@releases/gcc-16.2.0",
+            see=("pass", "pass manager"),
+            met="T04",
+        ),
+        Term(
             name="front end",
             short="The half of the compiler that knows a language, as opposed to the half that does not.",
             long="A front end parses one language and hands the middle end a function body in GENERIC. Everything after that point is shared, which is the single most important structural fact about GCC: twelve languages, one optimiser, one code generator. It is also why an optimisation bug is almost never a C bug.",

@@ -279,7 +279,17 @@ class Cell:
     h = 34
 
     def describe(self) -> str:
-        return f"{self.name}, {'changed the IR' if self.changed else 'changed nothing'}"
+        """What a screen reader gets, which has to be the three states the drawing has.
+
+        A cell with no dump on either side of it is drawn differently from one that ran and
+        changed nothing, and saying `changed nothing` for both would hand a reader who cannot
+        see the colours a claim the tape is careful not to make.
+        """
+        if self.changed:
+            return f"{self.name}, changed the IR"
+        if self.role == "unknown":
+            return f"{self.name}, nothing to compare against, so nothing is claimed"
+        return f"{self.name}, changed nothing"
 
 
 # Primitive 7.

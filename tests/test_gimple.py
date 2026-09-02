@@ -271,3 +271,70 @@ def test_a_dump_with_blocks_is_not_treated_as_pre_cfg(ssa_dump):
     fn = gimple.parse(ssa_dump).only()
     assert not fn.pre_cfg
     assert sorted(fn.blocks) == [2, 3, 4, 5]
+
+
+# The three dumps that have a banner and no basic blocks, which is the pre-CFG shape again
+# with a header on top of it.
+
+BANNERED_PRE_CFG = """
+;; Function f (f, funcdef_no=0, decl_uid=4594, cgraph_uid=1, symbol_order=0)
+
+int f (int n)
+{
+  int D.4603;
+  int s;
+
+  s = 0;
+  {
+    int i;
+
+    i = 0;
+    <D.4600>:
+    s = s + i;
+  }
+  D.4603 = s;
+  return D.4603;
+}
+"""
+
+#: A GENERIC dump, which also has a body and no blocks in it and is not GIMPLE. It is told
+#: apart by having no signature line above the brace, and it has to keep parsing to nothing
+#: or the drift counter picks up every line of it as unparsed.
+GENERIC = """
+;; Function f (null)
+;; enabled by -tree-original
+
+{
+  int s = 0;
+
+    int i = 0;
+  i++ ;
+}
+"""
+
+
+def test_the_early_dumps_have_a_banner_and_still_have_no_blocks():
+    """omplower, lower and eh all print this shape. Before this was handled they came back
+    as a function with no statements in it, which made the pass tape claim those passes had
+    left the IR alone when it had never read it."""
+    fn = gimple.parse(BANNERED_PRE_CFG).only()
+    assert fn.pre_cfg
+    assert list(fn.blocks) == [gimple.PRE_CFG_BLOCK]
+    assert [s.text for s in fn.code] == [
+        "s = 0;",
+        "i = 0;",
+        "<D.4600>:",
+        "s = s + i;",
+        "D.4603 = s;",
+        "return D.4603;",
+    ]
+    assert fn.decls == [("int", "D.4603"), ("int", "s"), ("int", "i")]
+    assert fn.unparsed == []
+
+
+def test_a_generic_dump_is_not_read_as_gimple():
+    """It has a body and no blocks, same as the early dumps, and none of it is GIMPLE. The
+    difference is the signature line the early dumps print above the brace and this does not."""
+    dump = gimple.parse(GENERIC)
+    assert [len(fn.code) for fn in dump.functions.values()] == [0]
+    assert dump.unparsed == []

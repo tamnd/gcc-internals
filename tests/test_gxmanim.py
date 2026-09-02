@@ -339,8 +339,9 @@ def test_the_tape_says_out_loud_how_many_cells_it_knows_nothing_about(passes_tex
     it would be the tape inventing evidence."""
     pipeline = passes.parse(passes_text)
     scene = mobjects.pass_tape(tape.cells(pipeline))
-    assert "no dump on both sides" in scene.caption
+    assert "nothing to compare against" in scene.caption
     assert all(p.shape.role == "unknown" for p in scene.placed)
+    assert all("nothing is claimed" in p.shape.describe() for p in scene.placed)
 
 
 def test_the_web_runs_a_thread_from_the_definition_to_every_use(fn):
@@ -475,3 +476,18 @@ def test_the_same_input_draws_the_same_picture(fn):
     """Deterministic, because a diagram that changes without the compiler changing makes
     every rebuild a diff nobody can read."""
     assert svg.document(mobjects.ssa_web(fn, "s_9")) == svg.document(mobjects.ssa_web(fn, "s_9"))
+
+
+def test_the_first_cell_with_a_dump_is_still_drawn_as_unknown():
+    """It has a dump and there is nothing in front of it to compare against, so it is one
+    cell short of the count of cells with no dump at all. Drawing it as unchanged would be
+    the tape claiming the very first pass it can see did nothing."""
+    stats = {"statements": 11, "blocks": 4, "names": 8}
+    cells = [
+        tape.Cell(0, "tree-cfg", "cfg", "tree", 1, "tree-cfg"),
+        tape.Cell(1, "tree-ssa", "ssa", "tree", 1, "tree-ssa", changed=None, stats=stats),
+        tape.Cell(2, "tree-ccp1", "ccp1", "tree", 2, "tree-ccp1", changed=False, stats=stats),
+    ]
+    scene = mobjects.pass_tape(cells)
+    assert [p.shape.role for p in scene.placed] == ["unknown", "unknown", "neutral"]
+    assert "2 of the 3 have nothing to compare against" in scene.caption

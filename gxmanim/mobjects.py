@@ -67,15 +67,19 @@ def pass_tape(cells: list[TapeCell], per_row: int = 96, title: str = "") -> Scen
 
     The point is not any one pass. It is that at `-O2` almost every pass leaves the function
     exactly as it found it, and a few hundred cells with a handful marked argues that better
-    than a paragraph does. The cells with no dump on both sides are drawn as unknown rather
-    than as unchanged, because the tape does not know and should not imply that it does.
+    than a paragraph does. The cells with nothing to compare are drawn as unknown rather than
+    as unchanged, because the tape does not know and should not imply that it does.
+
+    Unknown follows `changed`, which is the tri-state, rather than following whether the cell
+    has a dump. Those are nearly the same set and not quite: the first cell with a dump has
+    one and still has nothing in front of it to compare against.
     """
     moved = [c for c in cells if c.changed]
-    blind = [c for c in cells if c.stats is None]
+    blind = [c for c in cells if c.changed is None]
     scene = Scene(
         title=title or f"{len(cells)} passes, {len(moved)} of them changed the IR",
         caption=(
-            f"{len(blind)} of the {len(cells)} have no dump on both sides, "
+            f"{len(blind)} of the {len(cells)} have nothing to compare against, "
             "so the tape says nothing about them either way."
         ),
     )
@@ -83,7 +87,7 @@ def pass_tape(cells: list[TapeCell], per_row: int = 96, title: str = "") -> Scen
     for i, c in enumerate(cells):
         if i and i % per_row == 0:
             x, y = LEFT, y + Cell.h + 22
-        role = "changed" if c.changed else "unknown" if c.stats is None else "neutral"
+        role = "changed" if c.changed else "unknown" if c.changed is None else "neutral"
         shape = Cell(name=c.name, role=role, id=f"pass-{c.index}", changed=bool(c.changed))
         scene.add(shape, x, y)
         x += Cell.w + 1

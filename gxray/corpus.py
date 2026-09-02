@@ -37,6 +37,11 @@ class Record:
     #: the flags, and one recording cannot show that.
     chains: dict[str, str] = field(default_factory=dict)
 
+    #: What `-fdump-passes` printed, keyed by the flags that produced it. Same reason as
+    #: `chains`: the pass list is different at every optimization level, and a lesson about
+    #: the pipeline that can only show one level is not a lesson about the pipeline.
+    pass_texts: dict[str, str] = field(default_factory=dict)
+
     def to_json(self) -> dict:
         return {
             "entry": self.entry,
@@ -47,6 +52,7 @@ class Record:
             "recorded": self.recorded,
             "asm": self.asm,
             "chains": self.chains,
+            "passes": self.pass_texts,
             "dumps": self.dump_texts,
         }
 
@@ -62,6 +68,7 @@ class Record:
             dump_texts=dict(data["dumps"]),
             asm=data.get("asm", ""),
             chains=dict(data.get("chains", {})),
+            pass_texts=dict(data.get("passes", {})),
         )
 
     def __str__(self) -> str:
@@ -100,6 +107,7 @@ def record(
     dumps: list[str],
     filename: str = "input.c",
     chains: list[list[str]] | None = None,
+    pipelines: list[list[str]] | None = None,
 ) -> Record:
     """Run a compilation on a local backend and keep the result.
 
@@ -107,6 +115,10 @@ def record(
     are separate runs of `-###` rather than a by-product of the compile, because the whole
     point of the driver chain is that it is different for `-c` than it is for a full link
     and one compilation only ever shows one of those.
+
+    `pipelines` is the same idea for `-fdump-passes`. Each entry is a separate compilation,
+    because the pass list at `-O0` and the pass list at `-O2` are different lists and no
+    single run knows both.
     """
     result = backend.compile(source, *args, dumps=dumps, filename=filename)
     if not result.ok:
@@ -123,5 +135,9 @@ def record(
         chains={
             " ".join(flags): backend.chain(source, *flags, filename=filename).text
             for flags in chains or []
+        },
+        pass_texts={
+            " ".join(flags): backend.compile(source, *flags, "-fdump-passes").stderr
+            for flags in pipelines or []
         },
     )

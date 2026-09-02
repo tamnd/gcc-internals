@@ -179,6 +179,44 @@ def test_corpus_round_trips_through_json(tmp_path):
     assert corpus_store.entries(root=tmp_path) == ["demo"]
 
 
+def test_the_recorded_pass_lists_round_trip_too(tmp_path):
+    """The pass list is recorded per set of flags, because it is different at every
+    optimization level and T04 is partly about that difference."""
+    rec = corpus_store.Record(
+        "demo",
+        "int f;",
+        ["-O2"],
+        "gcc",
+        "t",
+        "2026-09-01",
+        {"a": "b"},
+        pass_texts={"-O0": "  tree-cfg : ON\n", "-O2": "  tree-cfg : ON\n  tree-pre : ON\n"},
+    )
+    path = corpus_store.save(rec, root=tmp_path)
+    back = corpus_store.Record.from_json(json.loads(path.read_text()))
+    assert back == rec
+    assert sorted(back.pass_texts) == ["-O0", "-O2"]
+
+
+def test_an_older_recording_with_no_pass_lists_still_loads(tmp_path):
+    """Every entry recorded before T04 has no `passes` key, and none of them should have to
+    be re-recorded to stay readable."""
+    (tmp_path / "old.json").write_text(
+        json.dumps(
+            {
+                "entry": "old",
+                "source": "",
+                "args": [],
+                "compiler": "gcc",
+                "target": "t",
+                "recorded": "2026-09-01",
+                "dumps": {},
+            }
+        )
+    )
+    assert corpus_store.load("old", root=tmp_path).pass_texts == {}
+
+
 def test_a_missing_corpus_entry_lists_the_ones_that_exist(tmp_path):
     with pytest.raises(FileNotFoundError) as exc:
         corpus_store.load("nope", root=tmp_path)

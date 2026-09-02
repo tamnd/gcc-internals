@@ -141,9 +141,11 @@ def cmd_record(args: argparse.Namespace) -> int:
         dumps=args.dump or ["tree-all"],
         filename=Path(args.file).name if args.file else f"{args.program}.c",
         chains=[spec.split() for spec in args.chain or []],
+        pipelines=[spec.split() for spec in args.pipeline or []],
     )
     path = corpus_store.save(rec)
-    print(f"wrote {path} ({len(rec.dump_texts)} dumps)")
+    extra = f", {len(rec.pass_texts)} pass list(s)" if rec.pass_texts else ""
+    print(f"wrote {path} ({len(rec.dump_texts)} dumps{extra})")
     return 0
 
 
@@ -182,6 +184,13 @@ def build_parser() -> argparse.ArgumentParser:
         metavar="FLAGS",
         # The value starts with a dash, so it has to arrive attached: --chain="-O2 -c".
         help='also record what -### prints for these flags, repeatable, as --chain="-O2 -c"',
+    )
+    sr.add_argument(
+        "--pipeline",
+        action="append",
+        metavar="FLAGS",
+        # Attached for the same reason --chain is: the value starts with a dash.
+        help='also record what -fdump-passes prints for these flags, as --pipeline="-O1"',
     )
     return p
 
