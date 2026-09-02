@@ -158,6 +158,26 @@ corpus-t09:
     {{py}} -m gxray record --entry t09-local --file corpora/programs/l1.c \
         --gcc {{gcc}} --dump rtl-final -O2 -dp
 
+# The two recordings T10 reads. Both are L2 rather than L1, and that is the only interesting
+# choice here: L1 has one function, so the interprocedural passes have nothing to do and the
+# lesson that is supposed to show the whole pipeline would show a quarter of it with no work
+# in it. L2 has a static helper that gets inlined, which is what puts einline on the trace.
+# The first entry is the wide one: every tree dump, five named RTL dumps, the pass list at -O2
+# and the assembly with -dp so the pattern names survive. The second is narrow and exists only
+# for the ladder, which needs the lineno modifier on three dumps and the graph modifier on two.
+# One recording cannot be both, because -lineno and plain are the same dump under one name.
+corpus-t10:
+    {{py}} -m gxray record --entry t10-whole --program l2 --gcc {{gcc}} \
+        --dump tree-all --dump ipa-inline \
+        --dump rtl-expand --dump rtl-combine --dump rtl-ira --dump rtl-reload --dump rtl-final \
+        --pipeline="-O2" --asm="-O2 -dp" \
+        -O2 -g
+    {{py}} -m gxray record --entry t10-ladder --program l2 --gcc {{gcc}} \
+        --dump tree-original-lineno --dump tree-ssa-lineno --dump tree-optimized-lineno \
+        --dump rtl-expand --dump tree-ssa-graph --dump tree-optimized-graph \
+        --asm="-O2 -g -dp" \
+        -O2 -g
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build

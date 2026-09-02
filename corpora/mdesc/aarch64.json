@@ -25,6 +25,265 @@
   "gcc/config/aarch64/../arm/common.md"
  ],
  "patterns": {
+  "*aarch64_ashr_sisd_or_int_di3": {
+   "alternatives": [
+    {
+     "attrs": [
+      "bfx",
+      "*"
+     ],
+     "cons": [
+      "r",
+      "r",
+      "Us<cmode>"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "asr\\t%x0, %x1, %2",
+     "written": "asr\\t%<w>0, %<w>1, %2"
+    },
+    {
+     "attrs": [
+      "shift_reg",
+      "*"
+     ],
+     "cons": [
+      "r",
+      "r",
+      "r"
+     ],
+     "index": 1,
+     "inherited": false,
+     "template": "asr\\t%x0, %x1, %x2",
+     "written": "asr\\t%<w>0, %<w>1, %<w>2"
+    },
+    {
+     "attrs": [
+      "neon_shift_imm<q>",
+      "simd"
+     ],
+     "cons": [
+      "w",
+      "w",
+      "Us<cmode_simd>"
+     ],
+     "index": 2,
+     "inherited": false,
+     "template": "sshr\\t%d0, %d1, %2",
+     "written": "sshr\\t%<rtn>0<vas>, %<rtn>1<vas>, %2"
+    },
+    {
+     "attrs": [
+      "neon_shift_reg<q>",
+      "simd"
+     ],
+     "cons": [
+      "&w",
+      "w",
+      "w"
+     ],
+     "index": 3,
+     "inherited": false,
+     "template": "#",
+     "written": "#"
+    },
+    {
+     "attrs": [
+      "neon_shift_reg<q>",
+      "simd"
+     ],
+     "cons": [
+      "&w",
+      "w",
+      "0"
+     ],
+     "index": 4,
+     "inherited": false,
+     "template": "#",
+     "written": "#"
+    }
+   ],
+   "attr_heads": [
+    "type",
+    "arch"
+   ],
+   "citation": "gcc/config/aarch64/aarch64.md:6270@releases/gcc-16.2.0",
+   "condition": "",
+   "cons_heads": [
+    "=0",
+    "1",
+    "2"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "table",
+   "iterators": [
+    "GPI"
+   ],
+   "kind": "define_insn",
+   "line": 6270,
+   "modes": [
+    [
+     "GPI",
+     "DI"
+    ]
+   ],
+   "span": 14,
+   "template": "",
+   "text": "(define_insn \"*aarch64_ashr_sisd_or_int_<mode>3\"\n  [(set (match_operand:GPI 0 \"register_operand\")\n\t(ashiftrt:GPI\n\t  (match_operand:GPI 1 \"register_operand\")\n\t  (match_operand:QI 2 \"aarch64_reg_or_shift_imm_di\")))]\n  \"\"\n  {@ [ cons: =0 , 1 , 2              ; attrs: type       , arch  ]\n     [ r        , r , Us<cmode>      ; bfx               , *     ] asr\\t%<w>0, %<w>1, %2\n     [ r        , r , r              ; shift_reg         , *     ] asr\\t%<w>0, %<w>1, %<w>2\n     [ w        , w , Us<cmode_simd> ; neon_shift_imm<q> , simd  ] sshr\\t%<rtn>0<vas>, %<rtn>1<vas>, %2\n     [ &w       , w , w              ; neon_shift_reg<q> , simd  ] #\n     [ &w       , w , 0              ; neon_shift_reg<q> , simd  ] #\n  }\n)",
+   "written": "*aarch64_ashr_sisd_or_int_<mode>3"
+  },
+  "*adddi3_aarch64": {
+   "alternatives": [
+    {
+     "attrs": [
+      "alu_imm",
+      "*"
+     ],
+     "cons": [
+      "rk",
+      "rk",
+      "I"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "add\\t%x0, %x1, %2",
+     "written": "add\\t%<w>0, %<w>1, %2"
+    },
+    {
+     "attrs": [
+      "alu_sreg",
+      "*"
+     ],
+     "cons": [
+      "rk",
+      "rk",
+      "r"
+     ],
+     "index": 1,
+     "inherited": false,
+     "template": "add\\t%x0, %x1, %x2",
+     "written": "add\\t%<w>0, %<w>1, %<w>2"
+    },
+    {
+     "attrs": [
+      "neon_add",
+      "simd"
+     ],
+     "cons": [
+      "w",
+      "w",
+      "w"
+     ],
+     "index": 2,
+     "inherited": false,
+     "template": "add\\t%d0, %d1, %d2",
+     "written": "add\\t%<rtn>0<vas>, %<rtn>1<vas>, %<rtn>2<vas>"
+    },
+    {
+     "attrs": [
+      "alu_imm",
+      "*"
+     ],
+     "cons": [
+      "rk",
+      "rk",
+      "J"
+     ],
+     "index": 3,
+     "inherited": false,
+     "template": "sub\\t%x0, %x1, #%n2",
+     "written": "sub\\t%<w>0, %<w>1, #%n2"
+    },
+    {
+     "attrs": [
+      "multiple",
+      "*"
+     ],
+     "cons": [
+      "r",
+      "rk",
+      "Uaa"
+     ],
+     "index": 4,
+     "inherited": false,
+     "template": "#",
+     "written": "#"
+    },
+    {
+     "attrs": [
+      "alu_imm",
+      "sve"
+     ],
+     "cons": [
+      "r",
+      "0",
+      "Uai"
+     ],
+     "index": 5,
+     "inherited": false,
+     "template": "<< aarch64_output_sve_scalar_inc_dec (operands[2]);",
+     "written": "<< aarch64_output_sve_scalar_inc_dec (operands[2]);"
+    },
+    {
+     "attrs": [
+      "alu_imm",
+      "sve"
+     ],
+     "cons": [
+      "rk",
+      "rk",
+      "Uav"
+     ],
+     "index": 6,
+     "inherited": false,
+     "template": "<< aarch64_output_sve_addvl_addpl (operands[2]);",
+     "written": "<< aarch64_output_sve_addvl_addpl (operands[2]);"
+    },
+    {
+     "attrs": [
+      "alu_imm",
+      "sme"
+     ],
+     "cons": [
+      "rk",
+      "rk",
+      "UaV"
+     ],
+     "index": 7,
+     "inherited": false,
+     "template": "<< aarch64_output_addsvl_addspl (operands[2]);",
+     "written": "<< aarch64_output_addsvl_addspl (operands[2]);"
+    }
+   ],
+   "attr_heads": [
+    "type",
+    "arch"
+   ],
+   "citation": "gcc/config/aarch64/aarch64.md:2694@releases/gcc-16.2.0",
+   "condition": "",
+   "cons_heads": [
+    "=0",
+    "%1",
+    "2"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "table",
+   "iterators": [
+    "GPI"
+   ],
+   "kind": "define_insn",
+   "line": 2694,
+   "modes": [
+    [
+     "GPI",
+     "DI"
+    ]
+   ],
+   "span": 19,
+   "template": "",
+   "text": "(define_insn \"*add<mode>3_aarch64\"\n  [(set\n    (match_operand:GPI 0 \"register_operand\")\n    (plus:GPI\n     (match_operand:GPI 1 \"register_operand\")\n     (match_operand:GPI 2 \"aarch64_pluslong_operand\")))]\n  \"\"\n  {@ [ cons: =0 , %1 , 2   ; attrs: type , arch  ]\n     [ rk       , rk , I   ; alu_imm     , *     ] add\\t%<w>0, %<w>1, %2\n     [ rk       , rk , r   ; alu_sreg    , *     ] add\\t%<w>0, %<w>1, %<w>2\n     [ w        , w  , w   ; neon_add    , simd  ] add\\t%<rtn>0<vas>, %<rtn>1<vas>, %<rtn>2<vas>\n     [ rk       , rk , J   ; alu_imm     , *     ] sub\\t%<w>0, %<w>1, #%n2\n     [ r        , rk , Uaa ; multiple    , *     ] #\n     [ r        , 0  , Uai ; alu_imm     , sve   ] << aarch64_output_sve_scalar_inc_dec (operands[2]);\n     [ rk       , rk , Uav ; alu_imm     , sve   ] << aarch64_output_sve_addvl_addpl (operands[2]);\n     [ rk       , rk , UaV ; alu_imm     , sme   ] << aarch64_output_addsvl_addspl (operands[2]);\n  }\n  ;; The \"alu_imm\" types for INC/DEC and ADDVL/ADDPL are just placeholders.\n)",
+   "written": "*add<mode>3_aarch64"
+  },
   "*addsi3_aarch64": {
    "alternatives": [
     {
@@ -177,6 +436,135 @@
    "text": "(define_insn \"*add<mode>3_aarch64\"\n  [(set\n    (match_operand:GPI 0 \"register_operand\")\n    (plus:GPI\n     (match_operand:GPI 1 \"register_operand\")\n     (match_operand:GPI 2 \"aarch64_pluslong_operand\")))]\n  \"\"\n  {@ [ cons: =0 , %1 , 2   ; attrs: type , arch  ]\n     [ rk       , rk , I   ; alu_imm     , *     ] add\\t%<w>0, %<w>1, %2\n     [ rk       , rk , r   ; alu_sreg    , *     ] add\\t%<w>0, %<w>1, %<w>2\n     [ w        , w  , w   ; neon_add    , simd  ] add\\t%<rtn>0<vas>, %<rtn>1<vas>, %<rtn>2<vas>\n     [ rk       , rk , J   ; alu_imm     , *     ] sub\\t%<w>0, %<w>1, #%n2\n     [ r        , rk , Uaa ; multiple    , *     ] #\n     [ r        , 0  , Uai ; alu_imm     , sve   ] << aarch64_output_sve_scalar_inc_dec (operands[2]);\n     [ rk       , rk , Uav ; alu_imm     , sve   ] << aarch64_output_sve_addvl_addpl (operands[2]);\n     [ rk       , rk , UaV ; alu_imm     , sme   ] << aarch64_output_addsvl_addspl (operands[2]);\n  }\n  ;; The \"alu_imm\" types for INC/DEC and ADDVL/ADDPL are just placeholders.\n)",
    "written": "*add<mode>3_aarch64"
   },
+  "*cmovsi_insn": {
+   "alternatives": [
+    {
+     "attrs": [
+      "csel"
+     ],
+     "cons": [
+      "r",
+      "rZ",
+      "rZ"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "csel\\t%w0, %w3, %w4, %m1",
+     "written": "csel\\t%<w>0, %<w>3, %<w>4, %m1"
+    },
+    {
+     "attrs": [
+      "csel"
+     ],
+     "cons": [
+      "r",
+      "rZ",
+      "UsM"
+     ],
+     "index": 1,
+     "inherited": false,
+     "template": "csinv\\t%w0, %w3, wzr, %m1",
+     "written": "csinv\\t%<w>0, %<w>3, <w>zr, %m1"
+    },
+    {
+     "attrs": [
+      "csel"
+     ],
+     "cons": [
+      "r",
+      "UsM",
+      "rZ"
+     ],
+     "index": 2,
+     "inherited": false,
+     "template": "csinv\\t%w0, %w4, wzr, %M1",
+     "written": "csinv\\t%<w>0, %<w>4, <w>zr, %M1"
+    },
+    {
+     "attrs": [
+      "csel"
+     ],
+     "cons": [
+      "r",
+      "rZ",
+      "Ui1"
+     ],
+     "index": 3,
+     "inherited": false,
+     "template": "csinc\\t%w0, %w3, wzr, %m1",
+     "written": "csinc\\t%<w>0, %<w>3, <w>zr, %m1"
+    },
+    {
+     "attrs": [
+      "csel"
+     ],
+     "cons": [
+      "r",
+      "Ui1",
+      "rZ"
+     ],
+     "index": 4,
+     "inherited": false,
+     "template": "csinc\\t%w0, %w4, wzr, %M1",
+     "written": "csinc\\t%<w>0, %<w>4, <w>zr, %M1"
+    },
+    {
+     "attrs": [
+      "mov_imm"
+     ],
+     "cons": [
+      "r",
+      "UsM",
+      "UsM"
+     ],
+     "index": 5,
+     "inherited": false,
+     "template": "mov\\t%w0, -1",
+     "written": "mov\\t%<w>0, -1"
+    },
+    {
+     "attrs": [
+      "mov_imm"
+     ],
+     "cons": [
+      "r",
+      "Ui1",
+      "Ui1"
+     ],
+     "index": 6,
+     "inherited": false,
+     "template": "mov\\t%w0, 1",
+     "written": "mov\\t%<w>0, 1"
+    }
+   ],
+   "attr_heads": [
+    "type"
+   ],
+   "citation": "gcc/config/aarch64/aarch64.md:4815@releases/gcc-16.2.0",
+   "condition": "!((operands[3] == const1_rtx && operands[4] == constm1_rtx)\n     || (operands[3] == constm1_rtx && operands[4] == const1_rtx))",
+   "cons_heads": [
+    "=0",
+    "3",
+    "4"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "table",
+   "iterators": [
+    "ALLI"
+   ],
+   "kind": "define_insn",
+   "line": 4815,
+   "modes": [
+    [
+     "ALLI",
+     "SI"
+    ]
+   ],
+   "span": 20,
+   "template": "",
+   "text": "(define_insn \"*cmov<mode>_insn\"\n  [(set (match_operand:ALLI 0 \"register_operand\")\n\t(if_then_else:ALLI\n\t (match_operator 1 \"aarch64_comparison_operator\"\n\t  [(match_operand 2 \"cc_register\") (const_int 0)])\n\t (match_operand:ALLI 3 \"aarch64_reg_zero_or_m1_or_1\")\n\t (match_operand:ALLI 4 \"aarch64_reg_zero_or_m1_or_1\")))]\n  \"!((operands[3] == const1_rtx && operands[4] == constm1_rtx)\n     || (operands[3] == constm1_rtx && operands[4] == const1_rtx))\"\n  ;; Final two alternatives should be unreachable, but included for completeness\n  {@ [ cons: =0 , 3   , 4   ; attrs: type ]\n     [ r        , rZ  , rZ  ; csel        ] csel\\t%<w>0, %<w>3, %<w>4, %m1\n     [ r        , rZ  , UsM ; csel        ] csinv\\t%<w>0, %<w>3, <w>zr, %m1\n     [ r        , UsM , rZ  ; csel        ] csinv\\t%<w>0, %<w>4, <w>zr, %M1\n     [ r        , rZ  , Ui1 ; csel        ] csinc\\t%<w>0, %<w>3, <w>zr, %m1\n     [ r        , Ui1 , rZ  ; csel        ] csinc\\t%<w>0, %<w>4, <w>zr, %M1\n     [ r        , UsM , UsM ; mov_imm     ] mov\\t%<w>0, -1\n     [ r        , Ui1 , Ui1 ; mov_imm     ] mov\\t%<w>0, 1\n  }\n)",
+   "written": "*cmov<mode>_insn"
+  },
   "*do_return": {
    "alternatives": [],
    "attr_heads": [],
@@ -193,6 +581,130 @@
    "template": "{\n    const char *ret = NULL;\n    if (aarch64_return_address_signing_enabled ()\n\t&& (TARGET_PAUTH))\n      {\n\tif (aarch64_ra_sign_key == AARCH64_KEY_B)\n\t  ret = \"retab\";\n\telse\n\t  ret = \"retaa\";\n      }\n    else\n      ret = \"ret\";\n    output_asm_insn (ret, operands);\n    return aarch64_sls_barrier (aarch64_harden_sls_retbr_p ());\n  }",
    "text": "(define_insn \"*do_return\"\n  [(return)]\n  \"\"\n  {\n    const char *ret = NULL;\n    if (aarch64_return_address_signing_enabled ()\n\t&& (TARGET_PAUTH))\n      {\n\tif (aarch64_ra_sign_key == AARCH64_KEY_B)\n\t  ret = \"retab\";\n\telse\n\t  ret = \"retaa\";\n      }\n    else\n      ret = \"ret\";\n    output_asm_insn (ret, operands);\n    return aarch64_sls_barrier (aarch64_harden_sls_retbr_p ());\n  }\n  [(set_attr \"type\" \"branch\")\n   (set_attr \"sls_length\" \"retbr\")]\n)",
    "written": "*do_return"
+  },
+  "*load_pair_4": {
+   "alternatives": [
+    {
+     "attrs": [
+      "load_<ldpstp_sz>",
+      "*"
+     ],
+     "cons": [
+      "r",
+      "Umn",
+      "r"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "ldp\\t%w0, %w2, %y1",
+     "written": "ldp\\t%<w>0, %<w>2, %y1"
+    },
+    {
+     "attrs": [
+      "neon_load1_2reg",
+      "fp"
+     ],
+     "cons": [
+      "w",
+      "Umn",
+      "w"
+     ],
+     "index": 1,
+     "inherited": false,
+     "template": "ldp\\t%s0, %s2, %y1",
+     "written": "ldp\\t%<v>0, %<v>2, %y1"
+    }
+   ],
+   "attr_heads": [
+    "type",
+    "arch"
+   ],
+   "citation": "gcc/config/aarch64/aarch64.md:2271@releases/gcc-16.2.0",
+   "condition": "",
+   "cons_heads": [
+    "=0",
+    "1",
+    "=2"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "table",
+   "iterators": [
+    "GPI"
+   ],
+   "kind": "define_insn",
+   "line": 2271,
+   "modes": [
+    [
+     "GPI",
+     "SI"
+    ]
+   ],
+   "span": 16,
+   "template": "",
+   "text": "(define_insn \"*load_pair_<ldst_sz>\"\n  [(set (match_operand:GPI 0 \"aarch64_ldp_reg_operand\")\n\t(unspec [\n\t  (match_operand:<VPAIR> 1 \"aarch64_mem_pair_lanes_operand\")\n\t] UNSPEC_LDP_FST))\n   (set (match_operand:GPI 2 \"aarch64_ldp_reg_operand\")\n\t(unspec [\n\t  (match_dup 1)\n\t] UNSPEC_LDP_SND))]\n  \"\"\n  {@ [cons: =0, 1,   =2; attrs: type,\t   arch]\n     [\t     r, Umn,  r; load_<ldpstp_sz>, *   ] ldp\\t%<w>0, %<w>2, %y1\n     [\t     w, Umn,  w; neon_load1_2reg,  fp  ] ldp\\t%<v>0, %<v>2, %y1\n  }\n  [(set_attr \"ldpstp\" \"ldp\")]\n)",
+   "written": "*load_pair_<ldst_sz>"
+  },
+  "*loadwb_post_pair_4": {
+   "alternatives": [
+    {
+     "attrs": [
+      "load_<ldpstp_sz>"
+     ],
+     "cons": [
+      "rk",
+      "0",
+      "r",
+      "r"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "ldp\\t%w2, %w3, [%1], %4",
+     "written": "ldp\\t%<w>2, %<w>3, [%1], %4"
+    },
+    {
+     "attrs": [
+      "neon_load1_2reg"
+     ],
+     "cons": [
+      "rk",
+      "0",
+      "w",
+      "w"
+     ],
+     "index": 1,
+     "inherited": false,
+     "template": "ldp\\t%s2, %s3, [%1], %4",
+     "written": "ldp\\t%<v>2, %<v>3, [%1], %4"
+    }
+   ],
+   "attr_heads": [
+    "type"
+   ],
+   "citation": "gcc/config/aarch64/aarch64.md:2338@releases/gcc-16.2.0",
+   "condition": "aarch64_mem_pair_offset (operands[4], <MODE>mode)",
+   "cons_heads": [
+    "=0",
+    "1",
+    "=2",
+    "=3"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "table",
+   "iterators": [
+    "GPI"
+   ],
+   "kind": "define_insn",
+   "line": 2338,
+   "modes": [
+    [
+     "GPI",
+     "SI"
+    ]
+   ],
+   "span": 18,
+   "template": "",
+   "text": "(define_insn \"*loadwb_post_pair_<ldst_sz>\"\n  [(set (match_operand 0 \"pmode_register_operand\")\n\t(match_operator 7 \"pmode_plus_operator\" [\n\t  (match_operand 1 \"pmode_register_operand\")\n\t  (match_operand 4 \"const_int_operand\")]))\n   (set (match_operand:GPI 2 \"aarch64_ldp_reg_operand\")\n\t(match_operator 5 \"memory_operand\" [(match_dup 1)]))\n   (set (match_operand:GPI 3 \"aarch64_ldp_reg_operand\")\n\t(match_operator 6 \"memory_operand\" [\n\t  (match_operator 8 \"pmode_plus_operator\" [\n\t    (match_dup 1)\n\t    (const_int <ldst_sz>)])]))]\n  \"aarch64_mem_pair_offset (operands[4], <MODE>mode)\"\n  {@ [cons: =0, 1, =2, =3; attrs: type]\n     [      rk, 0,  r,  r; load_<ldpstp_sz>] ldp\\t%<w>2, %<w>3, [%1], %4\n     [      rk, 0,  w,  w; neon_load1_2reg ] ldp\\t%<v>2, %<v>3, [%1], %4\n  }\n)",
+   "written": "*loadwb_post_pair_<ldst_sz>"
   },
   "*movdi_aarch64": {
    "alternatives": [
@@ -1322,6 +1834,124 @@
    "template": "",
    "text": "(define_insn \"cmp<mode>\"\n  [(set (reg:CC CC_REGNUM)\n\t(compare:CC (match_operand:GPI 0 \"register_operand\")\n\t\t    (match_operand:GPI 1 \"aarch64_plus_operand\")))]\n  \"\"\n  {@ [ cons: 0 , 1 ; attrs: type ]\n     [ rk      , r ; alus_sreg   ] cmp\\t%<w>0, %<w>1\n     [ rk      , I ; alus_imm    ] cmp\\t%<w>0, %1\n     [ rk      , J ; alus_imm    ] cmn\\t%<w>0, #%n1\n  }\n)",
    "written": "cmp<mode>"
+  },
+  "maddsi": {
+   "alternatives": [
+    {
+     "attrs": [],
+     "cons": [
+      "=r",
+      "r",
+      "r",
+      "r"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "madd\\t%w0, %w1, %w2, %w3",
+     "written": "madd\\t%<w>0, %<w>1, %<w>2, %<w>3"
+    }
+   ],
+   "attr_heads": [],
+   "citation": "gcc/config/aarch64/aarch64.md:4350@releases/gcc-16.2.0",
+   "condition": "",
+   "cons_heads": [
+    "0",
+    "1",
+    "2",
+    "3"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "string",
+   "iterators": [
+    "GPI"
+   ],
+   "kind": "define_insn",
+   "line": 4350,
+   "modes": [
+    [
+     "GPI",
+     "SI"
+    ]
+   ],
+   "span": 9,
+   "template": "madd\\t%w0, %w1, %w2, %w3",
+   "text": "(define_insn \"madd<mode>\"\n  [(set (match_operand:GPI 0 \"register_operand\" \"=r\")\n\t(plus:GPI (mult:GPI (match_operand:GPI 1 \"register_operand\" \"r\")\n\t\t\t    (match_operand:GPI 2 \"register_operand\" \"r\"))\n\t\t  (match_operand:GPI 3 \"register_operand\" \"r\")))]\n  \"\"\n  \"madd\\\\t%<w>0, %<w>1, %<w>2, %<w>3\"\n  [(set_attr \"type\" \"mla\")]\n)",
+   "written": "madd<mode>"
+  },
+  "mulsi3": {
+   "alternatives": [
+    {
+     "attrs": [],
+     "cons": [
+      "=r",
+      "r",
+      "r"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "mul\\t%w0, %w1, %w2",
+     "written": "mul\\t%<w>0, %<w>1, %<w>2"
+    }
+   ],
+   "attr_heads": [],
+   "citation": "gcc/config/aarch64/aarch64.md:4330@releases/gcc-16.2.0",
+   "condition": "",
+   "cons_heads": [
+    "0",
+    "1",
+    "2"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "string",
+   "iterators": [
+    "GPI"
+   ],
+   "kind": "define_insn",
+   "line": 4330,
+   "modes": [
+    [
+     "GPI",
+     "SI"
+    ]
+   ],
+   "span": 8,
+   "template": "mul\\t%w0, %w1, %w2",
+   "text": "(define_insn \"mul<mode>3\"\n  [(set (match_operand:GPI 0 \"register_operand\" \"=r\")\n\t(mult:GPI (match_operand:GPI 1 \"register_operand\" \"r\")\n\t\t  (match_operand:GPI 2 \"register_operand\" \"r\")))]\n  \"\"\n  \"mul\\\\t%<w>0, %<w>1, %<w>2\"\n  [(set_attr \"type\" \"mul\")]\n)",
+   "written": "mul<mode>3"
+  },
+  "subsi3": {
+   "alternatives": [
+    {
+     "attrs": [],
+     "cons": [
+      "=rk",
+      "rk",
+      "r"
+     ],
+     "index": 0,
+     "inherited": false,
+     "template": "sub\\t%w0, %w1, %w2",
+     "written": "sub\\t%w0, %w1, %w2"
+    }
+   ],
+   "attr_heads": [],
+   "citation": "gcc/config/aarch64/aarch64.md:3490@releases/gcc-16.2.0",
+   "condition": "",
+   "cons_heads": [
+    "0",
+    "1",
+    "2"
+   ],
+   "file": "gcc/config/aarch64/aarch64.md",
+   "form": "string",
+   "iterators": [],
+   "kind": "define_insn",
+   "line": 3490,
+   "modes": [],
+   "span": 8,
+   "template": "sub\\t%w0, %w1, %w2",
+   "text": "(define_insn \"subsi3\"\n  [(set (match_operand:SI 0 \"register_operand\" \"=rk\")\n\t(minus:SI (match_operand:SI 1 \"register_operand\" \"rk\")\n\t\t  (match_operand:SI 2 \"register_operand\" \"r\")))]\n  \"\"\n  \"sub\\\\t%w0, %w1, %w2\"\n  [(set_attr \"type\" \"alu_sreg\")]\n)",
+   "written": "subsi3"
   }
  },
  "tag": "releases/gcc-16.2.0"

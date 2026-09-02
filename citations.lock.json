@@ -7,6 +7,14 @@
    "hash": "05175d55535c1aa8",
    "text": "struct GTY((chain_next (\"%h.next_bb\"), chain_prev (\"%h.prev_bb\"))) basic_block_def {"
   },
+  "gcc/c-family/c-opts.cc:1419@releases/gcc-16.2.0": {
+   "hash": "4de52375ef4441f9",
+   "text": "c_common_parse_file (void)"
+  },
+  "gcc/c/c-parser.cc:31269@releases/gcc-16.2.0": {
+   "hash": "7c397c5b5864c371",
+   "text": "c_parse_file (void)"
+  },
   "gcc/cfgexpand.cc:6999@releases/gcc-16.2.0": {
    "hash": "19105c53f8596444",
    "text": "const pass_data pass_data_expand ="
@@ -15,13 +23,33 @@
    "hash": "06e86604448666fa",
    "text": "class pass_expand : public rtl_opt_pass"
   },
+  "gcc/cfgexpand.cc:7028@releases/gcc-16.2.0": {
+   "hash": "f5abd7d294e8bc1b",
+   "text": "pass_expand::execute (function *fun)"
+  },
   "gcc/cfgloop.h:120@releases/gcc-16.2.0": {
    "hash": "dbb50865dbe74d44",
    "text": "class GTY ((chain_next (\"%h.next\"))) loop {"
   },
+  "gcc/cgraphunit.cc:1990@releases/gcc-16.2.0": {
+   "hash": "2c78e27bce002bcf",
+   "text": "expand_all_functions (void)"
+  },
+  "gcc/cgraphunit.cc:2231@releases/gcc-16.2.0": {
+   "hash": "7d8dcd538617cdd3",
+   "text": "ipa_passes (void)"
+  },
+  "gcc/cgraphunit.cc:2343@releases/gcc-16.2.0": {
+   "hash": "a2c91cdbef2b0bb4",
+   "text": "symbol_table::compile (void)"
+  },
   "gcc/collect2.cc:25@releases/gcc-16.2.0": {
    "hash": "da91aff74c89821f",
    "text": "/* Build tables of static constructors and destructors and run ld.  */"
+  },
+  "gcc/combine.cc:1123@releases/gcc-16.2.0": {
+   "hash": "fb98a06d2f9e5c6d",
+   "text": "combine_instructions (rtx_insn *f, unsigned int nregs)"
   },
   "gcc/common/common-target.h:28@releases/gcc-16.2.0": {
    "hash": "235af03be673d0ca",
@@ -135,6 +163,10 @@
    "hash": "b5fdc152f1a3a350",
    "text": "gimplify_expr (tree *expr_p, gimple_seq *pre_p, gimple_seq *post_p,"
   },
+  "gcc/gimplify.cc:21974@releases/gcc-16.2.0": {
+   "hash": "677c49ac406edc7b",
+   "text": "gimplify_function_tree (tree fndecl)"
+  },
   "gcc/gimplify.cc:5221@releases/gcc-16.2.0": {
    "hash": "984e15500d07e5c4",
    "text": "shortcut_cond_expr (tree expr, unsigned condition_uid)"
@@ -150,6 +182,10 @@
   "gcc/hard-reg-set.h:573@releases/gcc-16.2.0": {
    "hash": "ca7eb36ce4473a3f",
    "text": "extern const char * reg_class_names[];"
+  },
+  "gcc/ipa-inline.cc:2822@releases/gcc-16.2.0": {
+   "hash": "86d4aa2ff3721eab",
+   "text": "ipa_inline (void)"
   },
   "gcc/ira-build.cc:3134@releases/gcc-16.2.0": {
    "hash": "49e5f30ec679023c",
@@ -375,6 +411,42 @@
    "hash": "4f2c74f0178efadd",
    "text": ""
   },
+  "gcc/passes.cc:1066@releases/gcc-16.2.0": {
+   "hash": "8fca067fd070050e",
+   "text": "enable_disable_pass (const char *arg, bool is_enable)"
+  },
+  "gcc/passes.cc:1251@releases/gcc-16.2.0": {
+   "hash": "758920330303231a",
+   "text": "is_pass_explicitly_enabled_or_disabled (opt_pass *pass,"
+  },
+  "gcc/passes.cc:1480@releases/gcc-16.2.0": {
+   "hash": "51646e5bb483387d",
+   "text": "register_pass (struct register_pass_info *pass_info)"
+  },
+  "gcc/passes.cc:1577@releases/gcc-16.2.0": {
+   "hash": "255a55abd6bb89aa",
+   "text": "pass_manager::pass_manager (context *ctxt)"
+  },
+  "gcc/passes.cc:1748@releases/gcc-16.2.0": {
+   "hash": "524e145cae8cd5a4",
+   "text": "do_per_function_toporder (void (*callback) (function *, void *data), void *data)"
+  },
+  "gcc/passes.cc:2197@releases/gcc-16.2.0": {
+   "hash": "2a973608e479eb78",
+   "text": "verify_curr_properties (function *fn, void *data)"
+  },
+  "gcc/passes.cc:2426@releases/gcc-16.2.0": {
+   "hash": "25a577a6c18aa5ed",
+   "text": "override_gate_status (opt_pass *pass, tree func, bool gate_status)"
+  },
+  "gcc/passes.cc:2478@releases/gcc-16.2.0": {
+   "hash": "65b9feb159394b78",
+   "text": "should_skip_pass_p (opt_pass *pass)"
+  },
+  "gcc/passes.cc:2545@releases/gcc-16.2.0": {
+   "hash": "66bf7d733a68359c",
+   "text": "skip_pass (opt_pass *pass)"
+  },
   "gcc/passes.cc:2578@releases/gcc-16.2.0": {
    "hash": "8cc6077248d7261e",
    "text": "bool"
@@ -383,9 +455,41 @@
    "hash": "874fd72273323b29",
    "text": "execute_one_pass (opt_pass *pass)"
   },
+  "gcc/passes.cc:2675@releases/gcc-16.2.0": {
+   "hash": "be2315d6c6cf0d6b",
+   "text": "      if (cfun->assume_function)"
+  },
+  "gcc/passes.cc:2697@releases/gcc-16.2.0": {
+   "hash": "b2a57c1304b9967e",
+   "text": "  do_per_function (update_properties_after_pass, pass);"
+  },
+  "gcc/passes.cc:2702@releases/gcc-16.2.0": {
+   "hash": "cb4c1aff7eafe934",
+   "text": "  execute_todo (todo_after | pass->todo_flags_finish | TODO_verify_il);"
+  },
+  "gcc/passes.cc:2723@releases/gcc-16.2.0": {
+   "hash": "8fb35367421f3cd0",
+   "text": "  if (pass->type == IPA_PASS"
+  },
+  "gcc/passes.cc:2739@releases/gcc-16.2.0": {
+   "hash": "588ad8d625eadbff",
+   "text": "  if (pass->type != SIMPLE_IPA_PASS && pass->type != IPA_PASS)"
+  },
+  "gcc/passes.cc:2760@releases/gcc-16.2.0": {
+   "hash": "ec8c0d89b2cb5059",
+   "text": "execute_pass_list_1 (opt_pass *pass)"
+  },
   "gcc/passes.cc:2769@releases/gcc-16.2.0": {
    "hash": "e255f35e7c34bec9",
    "text": "      if (execute_one_pass (pass) && pass->sub)"
+  },
+  "gcc/passes.cc:2777@releases/gcc-16.2.0": {
+   "hash": "f38123f30d820e21",
+   "text": "execute_pass_list (function *fn, opt_pass *pass)"
+  },
+  "gcc/passes.cc:3111@releases/gcc-16.2.0": {
+   "hash": "f1ddff5a3908734c",
+   "text": "execute_ipa_pass_list (opt_pass *pass)"
   },
   "gcc/passes.cc:567@releases/gcc-16.2.0": {
    "hash": "c77958fb6c593137",
@@ -395,9 +499,17 @@
    "hash": "3c0302e4d7f79579",
    "text": "  bool gate (function *) final override"
   },
+  "gcc/passes.cc:833@releases/gcc-16.2.0": {
+   "hash": "86845b3dfe1a8723",
+   "text": "pass_manager::register_one_dump_file (opt_pass *pass)"
+  },
   "gcc/passes.cc:854@releases/gcc-16.2.0": {
    "hash": "427de223d27ef038",
    "text": "     that reason, we may have a disambiguating prefix, followed by a space"
+  },
+  "gcc/passes.cc:896@releases/gcc-16.2.0": {
+   "hash": "3bfba2e339e23bb1",
+   "text": "pass_manager::register_dump_files (opt_pass *pass)"
   },
   "gcc/passes.cc:963@releases/gcc-16.2.0": {
    "hash": "76a565edc7357284",
@@ -406,6 +518,38 @@
   "gcc/passes.cc:973@releases/gcc-16.2.0": {
    "hash": "ad97fac58639fa98",
    "text": "    pn = pass->name;"
+  },
+  "gcc/passes.def:163@releases/gcc-16.2.0": {
+   "hash": "66f4df44b72ae1d4",
+   "text": "  INSERT_PASSES_AFTER (all_regular_ipa_passes)"
+  },
+  "gcc/passes.def:192@releases/gcc-16.2.0": {
+   "hash": "dc787f190fa0601d",
+   "text": "  INSERT_PASSES_AFTER (all_late_ipa_passes)"
+  },
+  "gcc/passes.def:199@releases/gcc-16.2.0": {
+   "hash": "918109c3d035e940",
+   "text": "  INSERT_PASSES_AFTER (all_passes)"
+  },
+  "gcc/passes.def:30@releases/gcc-16.2.0": {
+   "hash": "1ef740e2cd1554c1",
+   "text": "  INSERT_PASSES_AFTER (all_lowering_passes)"
+  },
+  "gcc/passes.def:460@releases/gcc-16.2.0": {
+   "hash": "828aec59637aacae",
+   "text": "  NEXT_PASS (pass_expand);"
+  },
+  "gcc/passes.def:49@releases/gcc-16.2.0": {
+   "hash": "4986cdeb9228b2dd",
+   "text": "  INSERT_PASSES_AFTER (all_small_ipa_passes)"
+  },
+  "gcc/passes.def:577@releases/gcc-16.2.0": {
+   "hash": "b38c95610e4bce83",
+   "text": "  TERMINATE_PASS_LIST (all_passes)"
+  },
+  "gcc/passes.def:59@releases/gcc-16.2.0": {
+   "hash": "a66423de6a2f8644",
+   "text": "      NEXT_PASS (pass_build_ssa);"
   },
   "gcc/print-rtl.cc:661@releases/gcc-16.2.0": {
    "hash": "fa3c51ad31ca4f3a",
@@ -467,6 +611,14 @@
    "hash": "fb01c32eb89f1656",
    "text": "(predict_doloop_p,"
   },
+  "gcc/toplev.cc:449@releases/gcc-16.2.0": {
+   "hash": "212540f0d47231aa",
+   "text": "compile_file (void)"
+  },
+  "gcc/tree-cfg.cc:182@releases/gcc-16.2.0": {
+   "hash": "e8e403328c3f6a6b",
+   "text": "build_gimple_cfg (gimple_seq seq)"
+  },
   "gcc/tree-core.h:2186@releases/gcc-16.2.0": {
    "hash": "30e19987a7156896",
    "text": "\t    desc (\"tree_node_structure (&%h)\"), variable_size)) tree_node {"
@@ -475,9 +627,29 @@
    "hash": "ed9c1c468e1f7997",
    "text": "  opt_pass *sub;"
   },
+  "gcc/tree-pass.h:141@releases/gcc-16.2.0": {
+   "hash": "3ec9d4d08a95472f",
+   "text": "class ipa_opt_pass_d : public opt_pass"
+  },
+  "gcc/tree-pass.h:197@releases/gcc-16.2.0": {
+   "hash": "64b231ab52fa4b32",
+   "text": "class simple_ipa_opt_pass : public opt_pass"
+  },
+  "gcc/tree-pass.h:207@releases/gcc-16.2.0": {
+   "hash": "d2d8e502923084dd",
+   "text": "#define PROP_gimple_any\t\t(1 << 0)\t/* entire gimple grammar */"
+  },
   "gcc/tree-pass.h:235@releases/gcc-16.2.0": {
    "hash": "8480add6167edcd4",
    "text": "#define PROP_gimple \\"
+  },
+  "gcc/tree-pass.h:240@releases/gcc-16.2.0": {
+   "hash": "78c56868081ddba0",
+   "text": "#define TODO_do_not_ggc_collect\t\t(1 << 1)"
+  },
+  "gcc/tree-pass.h:40@releases/gcc-16.2.0": {
+   "hash": "b96bcfe25ebea6a1",
+   "text": "struct pass_data"
   },
   "gcc/tree-pass.h:44@releases/gcc-16.2.0": {
    "hash": "76101b7ab5820972",
@@ -502,6 +674,10 @@
   "gcc/tree-ssanames.cc:351@releases/gcc-16.2.0": {
    "hash": "8d4a46c239a088be",
    "text": "make_ssa_name_fn (struct function *fn, tree var, gimple *stmt,"
+  },
+  "gcc/tree-ssanames.cc:983@releases/gcc-16.2.0": {
+   "hash": "3f75f85f5c6b4a08",
+   "text": "release_free_names_and_compact_live_names (function *fun)"
   },
   "gcc/tree.def:1035@releases/gcc-16.2.0": {
    "hash": "827ae1b1416647b6",

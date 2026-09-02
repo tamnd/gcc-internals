@@ -317,32 +317,6 @@ def _defining_statement(block, value: str) -> Stmt | None:
 # Control flow
 
 
-def _layers(graph: CFG) -> dict[int, int]:
-    """How far down the page each block goes, counted in forward edges from ENTRY.
-
-    Back edges are left out of the count on purpose. Including them makes the layer number
-    depend on how many times you are willing to go round the loop, which is not a number.
-    Reverse postorder guarantees every forward predecessor of a block is placed before the
-    block itself, so one pass is enough.
-    """
-    order = graph.reverse_postorder()
-    rank = {b: n for n, b in enumerate(order)}
-    layer: dict[int, int] = {}
-    for block in order:
-        back = [
-            e.src
-            for e in graph.predecessors(block)
-            if e.src in layer and rank.get(e.src, -1) < rank[block]
-        ]
-        layer[block] = max((layer[p] + 1 for p in back), default=0)
-    # Anything ENTRY cannot reach still has to go somewhere, and the bottom is honest about
-    # it: nothing above it points at it.
-    bottom = max(layer.values(), default=0) + 1
-    for block in sorted(graph.blocks):
-        layer.setdefault(block, bottom)
-    return layer
-
-
 def cfg_view(graph: CFG, focus: int | None = None, statements: bool = True) -> Scene:
     """The control flow graph, laid out in layers, with the edge kinds GCC recorded.
 
@@ -354,7 +328,7 @@ def cfg_view(graph: CFG, focus: int | None = None, statements: bool = True) -> S
     Blocks in a loop are drawn with the focus role, which is the one distinction worth
     spending a colour on in a control flow drawing.
     """
-    layer = _layers(graph)
+    layer = graph.layers()
     rows: dict[int, list[int]] = {}
     for index in graph.indices:
         rows.setdefault(layer[index], []).append(index)

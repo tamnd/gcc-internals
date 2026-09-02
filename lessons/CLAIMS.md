@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-60 claims across 9 lessons, 4 of them not observable from a notebook.
+68 claims across 10 lessons, 4 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -114,3 +114,16 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | the same twelve instructions come wrapped in thirty four other lines on Linux and forty four on Darwin | [`t09-25`](t09-the-last-mile/t09.ipynb) |
 | nine names land in five different sections and nothing in the C says which | [`t09-28`](t09-the-last-mile/t09.ipynb) |
 | wide is four bytes and the section it sits in is aligned to sixty four | [`t09-31`](t09-the-last-mile/t09.ipynb) |
+
+## The whole map
+
+| Claim | Proved by |
+| --- | --- |
+| nine of the fourteen stages are passes in the list, and five are not | [`t10-07`](t10-the-whole-map/t10.ipynb) |
+| 281 passes ran on this function and 36 of them changed it | [`t10-10`](t10-the-whole-map/t10.ipynb) |
+| the ladder for nearest has rows for source lines that are inside dist2 | [`t10-15`](t10-the-whole-map/t10.ipynb) |
+| release_ssa changed twenty three lines and every one of them only moved a number | [`t10-20`](t10-the-whole-map/t10.ipynb) |
+| einline is the pass that put dist2 inside nearest, and it is the largest single change | [`t10-24`](t10-the-whole-map/t10.ipynb) |
+| five tree passes changed the squares, and one of them only renumbered them | [`t10-28`](t10-the-whole-map/t10.ipynb) |
+| combine is the pass that turned the multiply and the add into one insn | [`t10-31`](t10-the-whole-map/t10.ipynb) |
+| the fused insn is printed by a pattern called maddsi and the file says which | [`t10-34`](t10-the-whole-map/t10.ipynb) |

@@ -26,7 +26,7 @@ from dataclasses import dataclass
 
 from gxray.gimple import Function
 from gxwidgets.base import Widget
-from gxwidgets.html import el, esc, join, legend
+from gxwidgets.html import count_of, el, esc, join, legend
 
 ROW = 18
 GUTTER = 56
@@ -46,11 +46,6 @@ class Row:
     @property
     def anchor(self) -> float:
         return self.y + ROW / 2
-
-
-def count_of(n: int, word: str) -> str:
-    """`1 use`, `2 uses`. Small, and the alternative is prose that reads like a machine."""
-    return f"{n} {word}" if n == 1 else f"{n} {word}s"
 
 
 class SSAWeb(Widget):

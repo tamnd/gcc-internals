@@ -167,6 +167,67 @@ def test_reverse_postorder_is_the_same_on_every_run(loops):
     assert loops.reverse_postorder()[0] == cfg.ENTRY
 
 
+# Layers
+
+
+def test_a_block_sits_one_row_below_the_last_thing_that_reaches_it(loops):
+    """Which is the whole rule, and it is why two blocks can end up sharing a row.
+
+    Block 5 has three ways in, from blocks 2, 3 and 4, and those are on three different
+    rows. It goes below the lowest of them, so no arrow into it has to travel upwards.
+    Block 6 lands on the same row by the same rule without the two knowing about each other.
+    """
+    layer = loops.layers()
+    assert layer[cfg.ENTRY] == 0
+    assert [layer[b] for b in (2, 3, 4)] == [1, 2, 3]
+    assert layer[5] == 4
+    assert layer[6] == 4
+
+
+def test_the_way_back_round_a_loop_does_not_push_the_header_down(loops):
+    """Counting it would make the row number depend on how many trips you allow for.
+
+    Block 11 is the header of the outer loop. Control gets there from block 10, which is on
+    row 5, and from block 9 at the bottom of the loop, which is on row 9. Only the first of
+    those is a way of arriving for the first time, so the header goes on row 6.
+    """
+    layer = loops.layers()
+    assert (9, 11) in [(e.src, e.dst) for e in loops.back_edges]
+    assert layer[10] == 5
+    assert layer[9] == 9
+    assert layer[11] == 6
+
+
+def test_a_block_that_jumps_to_itself_still_gets_a_row(loops):
+    """Block 8 is its own predecessor, and reading that as a way in would never settle."""
+    layer = loops.layers()
+    assert layer[8] == layer[7] + 1
+
+
+def test_every_forward_edge_in_the_graph_points_downwards(loops, jumper):
+    """The property the layering exists for. A drawing built on it has arrows going one way.
+
+    Back edges are the exception on purpose, and they are the ones a picture draws going
+    back up the side, so a reader can see the loop rather than having to work it out.
+    """
+    for graph in (loops, jumper):
+        layer = graph.layers()
+        for edge in graph.edges:
+            if not edge.back:
+                assert layer[edge.dst] > layer[edge.src], edge
+
+
+def test_a_block_entry_cannot_reach_goes_to_the_bottom():
+    """It has to go somewhere, and the bottom is the one place nothing above points at."""
+    graph = cfg.CFG(
+        function="f",
+        blocks={0: cfg.Block(0), 1: cfg.Block(1), 2: cfg.Block(2), 9: cfg.Block(9)},
+        edges=(cfg.Edge(0, 2), cfg.Edge(2, 1), cfg.Edge(9, 1)),
+    )
+    layer = graph.layers()
+    assert layer == {0: 0, 2: 1, 1: 2, 9: 3}
+
+
 def test_an_unreachable_block_gets_no_dominator_rather_than_a_tidy_one():
     """Nothing dominates a block ENTRY cannot reach, and inventing a parent to make the
     tree connected would be a lie about the graph."""

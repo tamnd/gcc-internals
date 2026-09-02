@@ -53,6 +53,11 @@ def join(parts: list[str], sep: str = "") -> str:
     return sep.join(p for p in parts if p)
 
 
+def count_of(n: int, word: str) -> str:
+    """`1 use`, `2 uses`. Small, and the alternative is prose that reads like a machine."""
+    return f"{n} {word}" if n == 1 else f"{n} {word}s"
+
+
 def legend(items: list[tuple[str, str, str]]) -> str:
     """The key, as (glyph, css class, what it means).
 
@@ -327,6 +332,52 @@ STYLESHEET = f""":root {{
 .gx-web .tick {{ fill: currentColor; font-size: 10px; }}
 .gx-web .row-header {{ fill: var(--gx-unknown-ink); }}
 .gx-web .hit {{ fill: currentColor; font-weight: 700; }}
+
+.gx-flow {{ max-width: 100%; overflow-x: auto; display: block; }}
+.gx-flow text {{ font: 12px/1 system-ui, sans-serif; fill: var(--gx-neutral-ink); }}
+.gx-flow .gx-node {{ cursor: pointer; }}
+.gx-flow .gx-node rect {{ fill: var(--gx-neutral-fill); stroke: var(--gx-unknown-fill); }}
+.gx-flow .gx-node-name {{ font-family: {MONO}; font-weight: 600; }}
+.gx-flow .gx-node-sub {{ font-size: 11px; fill: var(--gx-unknown-ink); }}
+.gx-flow .gx-node[aria-current="true"] rect {{ fill: var(--gx-focus-fill);
+  stroke: var(--gx-focus-ink); stroke-width: 2; }}
+.gx-flow .gx-node[aria-current="true"] text {{ fill: var(--gx-focus-ink); }}
+.gx-flow .gx-node rect.gx-loop {{ fill: var(--gx-changed-ink); stroke: none; }}
+.gx-flow .gx-mark {{ display: none; fill: var(--gx-focus-ink); }}
+.gx-flow .gx-node[aria-current="true"] .gx-mark {{ display: block; }}
+.gx-flow .gx-arc {{ fill: none; stroke: var(--gx-neutral-ink); stroke-width: 1.2; }}
+.gx-flow .gx-arc[data-width="thick"] {{ stroke-width: 2; }}
+.gx-flow .gx-tip {{ fill: var(--gx-neutral-ink); stroke: none; }}
+.gx-flow .gx-arc-label {{ font-family: {MONO}; font-size: 11px; fill: var(--gx-unknown-ink);
+  paint-order: stroke; stroke: var(--gx-page); stroke-width: 3px; stroke-linejoin: round; }}
+.gx-arcs {{ list-style: none; margin: 0 0 8px; padding: 0; font-size: 12px;
+  display: grid; gap: 2px; }}
+.gx-arcs code {{ font-family: {MONO}; }}
+
+.gx-diff {{ width: 100%; border-collapse: collapse; font-family: {MONO}; font-size: 12px;
+  table-layout: auto; }}
+.gx-diff th {{ text-align: left; font-family: system-ui, sans-serif; font-size: 12px;
+  font-weight: 600; color: var(--gx-unknown-ink); padding: 0 6px 4px;
+  border-bottom: 1px solid var(--gx-unknown-fill); }}
+.gx-diff td {{ padding: 0 6px; vertical-align: top; white-space: pre; }}
+.gx-diffrow[hidden] {{ display: none; }}
+.gx-diff-no {{ color: var(--gx-unknown-ink); text-align: right; user-select: none;
+  width: 1%; }}
+/* The middle column is the marker, and it is the only thing between the two sides, so it
+   gets the rule that separates them rather than a border on either text column. */
+.gx-diff-gutter {{ text-align: center; color: var(--gx-unknown-ink); user-select: none;
+  border-left: 1px solid var(--gx-unknown-fill);
+  border-right: 1px solid var(--gx-unknown-fill); width: 1%; }}
+.gx-diffrow[data-role="added"] .gx-diff-new {{ background: var(--gx-added-fill);
+  color: var(--gx-added-ink); }}
+.gx-diffrow[data-role="removed"] .gx-diff-old {{ background: var(--gx-removed-fill);
+  color: var(--gx-removed-ink); }}
+.gx-diffrow[data-role="changed"] td:is(.gx-diff-old, .gx-diff-new) {{
+  background: var(--gx-changed-fill); color: var(--gx-changed-ink); }}
+/* A row where only the numbers moved is marked, because it is a change, but it is marked
+   more quietly than one where the statement is different, because it is a smaller thing. */
+.gx-diffrow[data-renumbered="1"] td:is(.gx-diff-old, .gx-diff-new) {{ background: none;
+  color: var(--gx-unknown-ink); }}
 
 .gx-columns {{ display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start; }}
 .gx-column {{ overflow-x: auto; max-width: 100%; }}

@@ -72,11 +72,33 @@ RETURN = r"""
 )
 """
 
+#: A pattern whose name has a mode attribute in it rather than the mode. `-dp` prints this
+#: one as `*load_pair_4`, and nothing in that name says SI unless you read `ldst_sz`.
+LOAD_PAIR = r"""
+(define_insn "*load_pair_<ldst_sz>"
+  [(set (match_operand:GPI 0 "aarch64_ldp_reg_operand")
+	(unspec [
+	  (match_operand:<VPAIR> 1 "aarch64_mem_pair_lanes_operand")
+	] UNSPEC_LDP_FST))
+   (set (match_operand:GPI 2 "aarch64_ldp_reg_operand")
+	(unspec [
+	  (match_dup 1)
+	] UNSPEC_LDP_SND))]
+  ""
+  {@ [cons: =0, 1,   =2; attrs: type,	   arch]
+     [	     r, Umn,  r; load_<ldpstp_sz>, *   ] ldp\t%<w>0, %<w>2, %y1
+     [	     w, Umn,  w; neon_load1_2reg,  fp  ] ldp\t%<v>0, %<v>2, %y1
+  }
+  [(set_attr "ldpstp" "ldp")]
+)
+"""
+
 #: The iterators the names above need, as `iterators.md` writes them.
 ITERATORS = """
 (define_mode_iterator GPI [SI DI])
 (define_mode_iterator P [(SI "ptr_mode == SImode") (DI "ptr_mode == DImode")])
 (define_mode_attr w [(QI "w") (HI "w") (SI "w") (DI "x")])
+(define_mode_attr ldst_sz [(SI "4") (DI "8")])
 """
 
 
@@ -87,7 +109,7 @@ def read(*texts: str) -> mdesc.Machine:
 
 @pytest.fixture
 def machine():
-    return read(ITERATORS, CMP, LOSYM, RETURN)
+    return read(ITERATORS, CMP, LOSYM, RETURN, LOAD_PAIR)
 
 
 @pytest.fixture
@@ -112,8 +134,8 @@ def test_a_quoted_string_inside_a_c_block_does_not_end_the_block(machine):
 def test_a_pattern_carries_the_line_it_starts_on_so_a_citation_can_be_written(machine):
     """A lesson that says a pattern is at a line and is wrong is worse than one that does
     not say. The line is the only thing here a reader can check by hand."""
-    assert machine.get("cmp<mode>").line == 7
-    assert machine.get("cmp<mode>").citation == "aarch64.md:7"
+    assert machine.get("cmp<mode>").line == 8
+    assert machine.get("cmp<mode>").citation == "aarch64.md:8"
 
 
 # The alternative table
@@ -185,6 +207,31 @@ def test_a_placeholder_the_reader_cannot_resolve_is_left_exactly_as_written(mach
 
 def test_an_exact_name_wins_over_an_iterator(machine):
     assert machine.find("*do_return").modes == ()
+
+
+def test_a_hole_in_a_name_can_be_a_mode_attribute_rather_than_the_mode(machine):
+    """`*load_pair_<ldst_sz>` is the awkward one. There is no mode anywhere in the name that
+    `-dp` prints, only the size in bytes, and the way back is the `ldst_sz` table."""
+    found = machine.find("*load_pair_4")
+    assert found.pattern.name == "*load_pair_<ldst_sz>"
+    assert found.modes == (("GPI", "SI"),)
+    assert machine.find("*load_pair_8").mode == "DI"
+    assert machine.find("*load_pair_2") is None
+
+
+def test_the_mode_a_name_attribute_pinned_down_resolves_the_rest_of_the_pattern(machine):
+    """Which is the point of working the mode out at all. Once the reader knows this is the
+    SI form, `%<w>0` in the template is `%w0` and not a guess."""
+    found = machine.find("*load_pair_4")
+    assert found.resolve(r"ldp\t%<w>0, %<w>2, %y1", machine) == r"ldp\t%w0, %w2, %y1"
+    assert machine.find("*load_pair_8").resolve(r"%<w>0", machine) == "%x0"
+
+
+def test_a_name_built_out_of_a_code_attribute_is_not_guessed_at(machine):
+    """Code iterators are not read, so a name like `<optab>si3` has a hole this cannot
+    fill. Reporting nothing is right, and reporting a mode that happens to fit is not."""
+    other = read(ITERATORS, '(define_insn "<optab><mode>3" [(const_int 0)] "" "nop")')
+    assert other.find("addsi3") is None
 
 
 # The committed extract, which is what a notebook actually reads

@@ -10,9 +10,10 @@ opening T09 in a browser has the repository and no GCC tree, and the tree is 1.3
 lesson cannot ask for it. Every extract carries the file, the line and the tag it came from,
 so the citation in the notebook is checkable even by a reader who never clones GCC.
 
-Which patterns get extracted is not a guess. The script reads the three assembly recordings,
-collects every pattern name `-dp` printed in them, and extracts exactly those. Re-record the
-corpus against a different target and this picks up whatever the new listings name.
+Which patterns get extracted is not a guess. The script reads every recording in the corpus
+that has assembly in it, collects the pattern names `-dp` printed, and extracts exactly
+those. Re-record against a different target, or add a lesson that compiles something new
+with `-dp`, and this picks up whatever the new listings name.
 """
 
 from __future__ import annotations
@@ -26,9 +27,6 @@ sys.path.insert(0, str(ROOT))
 
 from gxray import asm, corpus_store, mdesc  # noqa: E402
 
-#: The recordings whose annotations decide what is worth extracting.
-ENTRIES = ["t09-final", "t09-sections", "t09-local"]
-
 #: Where the pinned GCC checkout is, and the description to start from. Includes are
 #: followed from there, which is how the mode iterators in `iterators.md` get read. The
 #: path is relative to the root of the checkout rather than to `gcc/`, so that what comes
@@ -41,10 +39,17 @@ TAG = "releases/gcc-16.2.0"
 
 
 def wanted() -> list[str]:
-    """Every pattern named by a `-dp` annotation in the corpus, in first use order."""
+    """Every pattern named by a `-dp` annotation in the corpus, in first use order.
+
+    Recordings with no assembly, and recordings whose assembly was taken without `-dp`,
+    contribute nothing and are skipped rather than reported. Most of the corpus is dumps.
+    """
     names: list[str] = []
-    for entry in ENTRIES:
-        for name in asm.parse(corpus_store.load(entry).asm, entry).patterns():
+    for entry in corpus_store.entries():
+        record = corpus_store.load(entry)
+        if not record.asm:
+            continue
+        for name in asm.parse(record.asm, entry).patterns():
             if name not in names:
                 names.append(name)
     return names
