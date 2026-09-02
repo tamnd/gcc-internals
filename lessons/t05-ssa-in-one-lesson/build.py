@@ -33,9 +33,10 @@ lesson.md(f"""
 
 {badge}
 
-Static Single Assignment is the idea the whole middle end of GCC is built on, and it is
-usually explained backwards. You get a definition, then a page about dominance frontiers,
-then an algorithm, and somewhere in there the reason anybody bothered goes missing.
+{term("SSA", "Static Single Assignment")} is the idea the whole middle end of GCC is built
+on, and it is usually explained backwards. You get a definition, then a page about dominance
+frontiers, then an algorithm, and somewhere in there the reason anybody bothered goes
+missing.
 
 This lesson does it the other way round. We take one eight line C function, look at what GCC
 actually turned it into, and read the answer off the page. By the end you will be able to
@@ -146,9 +147,9 @@ and after SSA it is a name like any other.
 Here is the payoff, and it is worth being concrete about it because it is easy to miss.
 
 Ask a question about the program: where does the value in `s_1` come from, and who uses it?
-Before SSA that question meant walking backwards through the control flow graph looking for
-writes to `s`, giving up wherever two paths join, and doing the same thing forwards for the
-uses. With SSA, {
+Before SSA that question meant walking backwards through the {term("control flow graph")}
+looking for writes to `s`, giving up wherever two paths join, and doing the same thing
+forwards for the uses. With SSA, {
     claim(
         "an SSA name knows the single statement that defines it and the full list of places it is used"
     )
@@ -165,9 +166,10 @@ for use in web["uses"]:
     print("           ", use)
 """)
 
-lesson.md("""
-One definition, two uses, no searching. Every optimisation in the middle end is built on
-being able to do that, and most of them are not much more than doing it repeatedly.
+lesson.md(f"""
+One {term("definition")}, two {term("use", "uses")}, no searching. Every optimisation in the
+middle end is built on being able to do that, and most of them are not much more than doing
+it repeatedly.
 
 Here is the same thing as a picture. The diagram is drawn from the dump you just printed, not
 from an illustration somebody made once and forgot to update.
@@ -191,10 +193,10 @@ lesson.md(f"""
 
 Now the part that makes SSA interesting rather than just tidy.
 
-Look at `<bb 4>`. Two blocks can reach it: `<bb 2>`, falling in from the code before the
-loop, and `<bb 3>`, coming round from the bottom of the loop body. So when control arrives at
-the top of `<bb 4>`, the current value of `s` is either `s_3` or `s_8`, depending on which
-way you came.
+Look at `<bb 4>`. The `bb` stands for {term("basic block")}, and two of them can reach this
+one: `<bb 2>`, falling in from the code before the loop, and `<bb 3>`, coming
+round from the bottom of the loop body. So when control arrives at the top of `<bb 4>`, the
+current value of `s` is either `s_3` or `s_8`, depending on which way you came.
 
 SSA does not allow that. A name has one definition. Two definitions arriving at one place is
 exactly the thing the rule forbids, and it happens at every join in every program with a
@@ -220,9 +222,9 @@ IR saying which value this name stands for on each path, and it will be gone bef
 is generated.
 
 {claim("a phi node has exactly one argument per incoming edge, and the arguments are positional")},
-matched up with the predecessors in order. That is why deleting an edge into a block means
-editing every phi in that block, and why a pass that rearranges control flow has to touch
-phis it otherwise has nothing to do with.
+matched up with the predecessors in order. That is why deleting an {term("edge")} into a
+block means editing every phi in that block, and why a pass that rearranges control flow has
+to touch phis it otherwise has nothing to do with.
 
 And all the phis in a block happen at once, conceptually, before any other statement in the
 block. That matters when two phis refer to each other, which happens after some loop
@@ -260,6 +262,9 @@ where that is is a question about {term("dominance")}.
 The rule for reading a dump is simpler than the algorithm for producing it. A definition is
 usable at a point if the block holding the definition dominates that point, meaning every
 path that gets there goes through the definition first. Where that fails, you need a phi.
+
+The cell below prints each block's {term("immediate dominator")}, which is the closest block
+every path has to go through on the way in.
 """)
 
 lesson.code("""
@@ -382,7 +387,7 @@ lesson.md(f"""
 The loop went from a header at `<bb 4>` with the body at `<bb 3>` to a single block branching
 to itself. That is loop rotation, and it is worth noticing that
 {claim("after optimization the back edge in l1 goes from bb 3 to itself")}, which is what a
-one block loop looks like in a CFG.
+one block {term("loop")} looks like in a CFG.
 """)
 
 lesson.code("""

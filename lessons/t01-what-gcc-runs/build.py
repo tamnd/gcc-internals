@@ -166,17 +166,17 @@ print("   ", shutil.which("cc1") or "not there")
     varies="The path is from the recorded run. Yours is under wherever your GCC was installed.",
 )
 
-lesson.md("""
+lesson.md(f"""
 That is deliberate. On a Unix system `libexec` is where you put programs that are meant to
 be run by other programs rather than by people. `cc1` takes one translation unit and a pile
 of options in a form nobody would want to type, and produces assembly text. It has no
 interest in linking, no idea about your other source files, and no useful behaviour if you
 run it by hand.
 
-There is one of these per language, built from the same middle end and the same back end
-with a different front end on the front: `cc1plus` for C++, `f951` for Fortran, `d21` for D.
-That is the most important structural fact about GCC and it is visible right here, in the
-name of a program in a directory.
+There is one of these per language, built from the same {term("middle end")} and the same
+{term("back end")} with a different {term("front end")} on the front: `cc1plus` for C++,
+`f951` for Fortran, `d21` for D. That is the most important structural fact about GCC and it
+is visible right here, in the name of a program in a directory.
 
 ## What the driver tells it
 """)
@@ -197,7 +197,8 @@ for arg in cc1.argv:
 lesson.md(f"""
 Exactly one of them is a flag from your command line. The rest are the driver filling in
 everything `cc1` needs and has no way to know: where the headers are, which processor to
-assume, which ABI, what to call the dump files, where to put the output.
+assume, which ABI, what to call the {term("dump file", "dump files")}, where to put the
+output.
 
 This is why an option you passed can turn up in a different form, or as three options, or
 not at all. The translation is done by {term("spec", "spec strings")}, which are templates

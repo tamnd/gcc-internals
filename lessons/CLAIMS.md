@@ -58,9 +58,9 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 
 | Claim | Proved by |
 | --- | --- |
-| no statement anywhere in the gimplified bench has more than one operator on it, and the GENERIC it came from has a line with seven | [`t03-11`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
-| the bench is seven functions of one line each, and gimplification turns them into between two and eleven statements | [`t03-13`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
-| neither the && nor the ?: leaves an operator behind, and what stands in for both of them is a condition, some labels, some gotos, and one variable written on two different paths | [`t03-18`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
+| no statement anywhere in the gimplified bench has more than one operator on it, and the GENERIC it came from has a line with seven | [`t03-12`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
+| the bench is seven functions of one line each, and gimplification turns them into between two and eleven statements | [`t03-14`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
+| neither the && nor the ?: leaves an operator behind, and what stands in for both of them is a condition, some labels, some gotos, and one variable written on two different paths | [`t03-19`](t03-gimple-is-c-with-the-fun-removed/t03.ipynb) |
 | one function does nearly all of this, and the switch at the middle of it has over a hundred cases, one per kind of tree node it might have to take apart | not observable from a notebook: the shape of gimplify_expr is a fact about the source tree, and this notebook has no copy of it. The citation is checked against the pinned tree on every push instead. |
 
 ## Three hundred and ninety-five passes

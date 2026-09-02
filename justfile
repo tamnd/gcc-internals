@@ -23,7 +23,7 @@ lint:
     ruff format --check .
 
 prose:
-    {{py}} -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md docs lessons blueprints corpora/programs
+    {{py}} -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints corpora/programs
 
 test:
     {{py}} -m pytest -q

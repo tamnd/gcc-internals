@@ -40,6 +40,11 @@ jobs:
       - name: the probe page really has an island in it
         run: grep -q "marimo-island" site/_build/probe/index.html
 
+      # The glossary page is a one line include of GLOSSARY.md, so a broken snippet path
+      # gives you a page that builds fine and has nothing on it.
+      - name: the glossary page really pulled the glossary in
+        run: grep -q 'id="phi-node"' site/_build/glossary/index.html
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site/_build

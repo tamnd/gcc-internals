@@ -35,10 +35,10 @@ lesson.md(f"""
 
 T01 ended at the door of {term("cc1")}. This lesson goes in.
 
-Inside `cc1` your function is never one thing. It is turned into a tree, then into a much
-flatter kind of tree, then into something that looks like machine code with the register
-numbers left blank, then into text an assembler can read. Four representations, one after
-another, and the source you wrote makes five.
+Inside `cc1` your function is never one thing. It is turned into a {term("tree")}, then into
+a much flatter kind of tree, then into something that looks like machine code with the
+register numbers left blank, then into text an assembler can read. Four representations, one
+after another, and the source you wrote makes five.
 
 People find this out slowly and in pieces, usually from an error message that mentions
 `_1 = n_3(D) + 1` when they have never written a variable called `_1`. Seeing all five at

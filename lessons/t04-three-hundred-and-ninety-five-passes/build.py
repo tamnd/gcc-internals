@@ -160,7 +160,10 @@ Two more fields decide the shape of everything else:
 That is {cite("gcc/tree-pass.h:103@releases/gcc-16.2.0")}, and the two comments are the
 important part. `next` runs whatever this pass's gate said. `sub` does not. Read
 {cite("gcc/passes.cc:2769@releases/gcc-16.2.0")} and you can see it in two lines: run the
-pass, and only if it returned true, recurse into its sub list.
+pass, and only if it returned true, recurse into its sub list. That loop, walking `next` and
+recursing into `sub`, is the {term("pass manager")} doing the part of its job you can see
+from a dump. Opening the dump, asking the gate and rechecking the IR afterwards all happen
+one call down, in `execute_one_pass`.
 
 So the pass list is a tree, not a list, and a pass with a gate can switch off a whole subtree.
 """)
