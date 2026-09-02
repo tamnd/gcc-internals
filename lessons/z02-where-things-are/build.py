@@ -578,8 +578,10 @@ QUESTIONS = [
     (
         "How many targets does GCC 16 support?",
         [
-            ("Forty nine, if you count directories under gcc/config with a machine "
-             "description", ""),
+            (
+                "Forty nine, if you count directories under gcc/config with a machine description",
+                "",
+            ),
             (
                 "Fifty two, the number of directories under gcc/config",
                 "Three of them are operating system support that a real port includes. "
