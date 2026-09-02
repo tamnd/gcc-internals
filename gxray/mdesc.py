@@ -340,10 +340,15 @@ class Machine:
     def _modes_that_make(self, pattern: Pattern, name: str) -> tuple[tuple[str, str], ...]:
         """Which members of the pattern's iterators turn its name into this one, if any.
 
-        Only `<mode>` holes are resolved, because that is the placeholder GCC uses in a
-        pattern name and it is the one whose possible values the reader knows. A name built
-        out of a code attribute, such as `<optab>si3`, needs the code iterators to be read
-        as well and this returns nothing for it rather than guessing.
+        Two kinds of hole are resolved. `<mode>` and `<MODE>` stand for the mode itself, and
+        anything else is looked up as a mode attribute, which is a table from a mode to a bit
+        of text. `*load_pair_<ldst_sz>` is the second kind: `ldst_sz` maps SI to `4` and DI
+        to `8`, so the pattern in the file is two patterns at run time and `-dp` prints one
+        of them as `*load_pair_4`.
+
+        A name built out of a code attribute, such as `<optab>si3`, needs the code iterators
+        to be read as well, which they are not. Those return nothing rather than a guess,
+        because a wrong answer here looks exactly like a right one.
 
         The regular expression is built out of the values themselves rather than a wildcard,
         because `*zero_extend<SHORT:mode><GPI:mode>2_aarch64` has two holes with nothing
@@ -352,15 +357,18 @@ class Machine:
         holes = list(PLACEHOLDER.finditer(pattern.name))
         options: list[list[tuple[str, str, str]]] = []
         for hole in holes:
-            if hole.group("attr") not in ("mode", "MODE"):
-                return ()
-            lower = hole.group("attr") == "mode"
+            attr = hole.group("attr")
             named = hole.group("iter")
-            here = [
-                (it, mode, mode.lower() if lower else mode)
-                for it in ([named] if named else list(pattern.iterators))
-                for mode in self.iterators.get(it, ())
-            ]
+            candidates = [named] if named else list(pattern.iterators)
+            here: list[tuple[str, str, str]] = []
+            for it in candidates:
+                for mode in self.iterators.get(it, ()):
+                    if attr == "mode":
+                        here.append((it, mode, mode.lower()))
+                    elif attr == "MODE":
+                        here.append((it, mode, mode))
+                    elif mode in self.attrs.get(attr, {}):
+                        here.append((it, mode, self.attrs[attr][mode]))
             if not here:
                 return ()
             options.append(here)
