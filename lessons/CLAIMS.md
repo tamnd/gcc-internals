@@ -8,7 +8,17 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-68 claims across 10 lessons, 4 of them not observable from a notebook.
+73 claims across 11 lessons, 4 of them not observable from a notebook.
+
+## C++ for people who will only ever read it
+
+| Claim | Proved by |
+| --- | --- |
+| every one of the seventeen constructs appears in the snippets this lesson reads | [`z01-06`](z01-cpp-for-reading/z01.ipynb) |
+| the tag that decides which arm of the union is live is a sixteen bit field | [`z01-10`](z01-cpp-for-reading/z01.ipynb) |
+| a GIMPLE subclass tells is-a.h what it is with a three line function and nothing else | [`z01-16`](z01-cpp-for-reading/z01.ipynb) |
+| as_a checks with an assert that a release build removes, and dyn_cast checks always | [`z01-20`](z01-cpp-for-reading/z01.ipynb) |
+| twelve of the forty lines of get_default_value carry a construct, of five kinds | [`z01-35`](z01-cpp-for-reading/z01.ipynb) |
 
 ## What does gcc actually run?
 

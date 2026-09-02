@@ -21,15 +21,28 @@ from pathlib import Path
 from .claims import render
 from .lesson import repository_root
 
+#: The eleven parts of the course, by the letter their lesson ids start with. Sorting the
+#: slugs alphabetically would read the beginner ramp last and the back end before the middle
+#: end, so the reading order is written down here rather than inferred. It is the order in
+#: `05-curriculum.md` and it does not change when a lesson is added.
+PARTS = "ZTBFGPDRISX"
+
+
+def course_order(builder: Path) -> tuple[int, str]:
+    """Where one lesson comes in the reading order, from the id its directory starts with."""
+    slug = builder.parent.name
+    part = PARTS.find(slug[0].upper())
+    return (part if part >= 0 else len(PARTS), slug)
+
 
 def builders(root: Path | None = None) -> list[Path]:
     """Every lesson builder, in the order the lessons are meant to be read.
 
-    Which is alphabetical, because the slugs start with the lesson id and the ids were
-    picked so that sorting them puts them in course order.
+    Within a part that is alphabetical, because the slugs start with the lesson id and the
+    numbers were picked to sort. Across parts it is `PARTS`, because the letters were not.
     """
     root = root or repository_root()
-    return sorted((root / "lessons").glob("*/build.py"))
+    return sorted((root / "lessons").glob("*/build.py"), key=course_order)
 
 
 def run(builder: Path, *args: str) -> subprocess.CompletedProcess[str]:
