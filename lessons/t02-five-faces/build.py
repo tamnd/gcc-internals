@@ -293,6 +293,14 @@ actually looks like, and the lesson wants you to see the edges rather than a cle
 version. Anything in this course that says "line 7 became this" means "GCC says line 7 became
 this", which is a slightly weaker statement and the true one.
 
+## The film
+
+The ladder above is one line at four levels, all four printed at once. What it cannot show is
+the order the lanes filled up in, which is the whole shape of the pipeline.
+[One line of C, growing a lane per level](https://tamnd.github.io/gcc-internals/films/#film-five-faces)
+is the same three lines from the same file, drawn a lane at a time as the compiler gets to
+them. Seventy two seconds, and it loops, so leave it running while you read the rest.
+
 ## Boss fight
 
 Three questions about the table you printed above. Work them out by reading it, not by running

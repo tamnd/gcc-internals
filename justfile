@@ -56,6 +56,12 @@ widgets:
 diagrams:
     {{py}} -m gxmanim draw --index --open
 
+# Every film, redrawn from the recorded dumps, plus the page that shows them.
+# These go to docs/assets/films and are committed, unlike the diagrams, because the book
+# needs real files on disk. Commit whatever this changes.
+films:
+    {{py}} -m gxmanim film --index --open
+
 # The hand composed Excalidraw scenes, the ones that explain an idea rather than show a dump.
 lesson-diagrams:
     #!/usr/bin/env bash

@@ -468,6 +468,16 @@ And the dominance query that the whole placement argument rests on is one functi
 {cite("gcc/dominance.cc:856@releases/gcc-16.2.0")}, which returns a block and is the thing
 passes call thousands of times.
 
+## The film
+
+A dominator tree is a shape and a picture is enough for it. The order a renamer walks that
+tree in is not a shape, and no dump anywhere records it, which is the one thing in this
+lesson that had to become a film.
+[Renaming a function, one block at a time, in dominator order](https://tamnd.github.io/gcc-internals/films/#film-dominator-order)
+lights one block at a time in the order the walk visits them. It uses the nine block function
+from the boss fight below rather than the one above, so watch it first and the boss fight
+will make more sense.
+
 ## Boss fight
 
 Here is a different function. Work out, on paper, before running anything:

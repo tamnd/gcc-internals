@@ -37,7 +37,7 @@ from gxray.asm import Line
 from gxray.asm import Listing as AsmFile
 from gxray.cfg import CFG, ENTRY
 from gxray.gimple import Function, Phi, Stmt
-from gxray.locs import LEVEL_NAMES, LEVELS, Ladder, strip_locs
+from gxray.locs import LEVEL_NAMES, Ladder, strip_locs
 from gxray.regalloc import Allocation
 from gxray.rtl import Insn, Rtx
 from gxray.tape import Cell as TapeCell
@@ -160,19 +160,33 @@ def flag_ladder(levels: dict[str, dict[str, bool]], title: str = "") -> Scene:
 # The ladder
 
 
+#: Small numbers as words, because `at 4 levels` in a title reads like a spreadsheet. A
+#: ladder normally has all four, and a film builds a partial one a lane at a time.
+COUNTED = {1: "one", 2: "two", 3: "three", 4: "four"}
+
+
+def _how_many_levels(n: int) -> str:
+    return f"{COUNTED.get(n, n)} level" + ("" if n == 1 else "s")
+
+
 def ir_ladder(ladder: Ladder, line: int, focus: str = "") -> Scene:
     """One source line, and what each level made of it, one lane per level.
 
     The lane for a level with nothing in it is still drawn. That is not tidiness, it is the
     most interesting thing the ladder has to say: `return s;` reaches RTL and disappears,
     because the value was already in the return register by then.
+
+    Which levels get a lane is the ladder's own `levels`, not the four this project usually
+    records. A ladder with two of them is a real ladder, either because the recording only
+    went that far or because a film is adding the lanes one at a time, and the title and the
+    caption both count what is actually there.
     """
     rung = ladder.rung(line)
     counts = rung.counts()
     scene = Scene(
-        title=f"{ladder.file} line {line}, at four levels",
+        title=f"{ladder.file} line {line}, at {_how_many_levels(len(ladder.levels))}",
         caption=f"{rung.source.strip()} became "
-        + ", ".join(f"{counts[lv]} {LEVEL_NAMES[lv]}" for lv in LEVELS),
+        + ", ".join(f"{counts[lv]} {LEVEL_NAMES[lv]}" for lv in ladder.levels),
     )
     source = Card(text=one_line(rung.source), role="focus", id="source")
     scene.add(Rung(name="C source", cards=(source,), id="rung-source"), LEFT, TOP)

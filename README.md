@@ -84,6 +84,7 @@ Outputs are never committed, so nothing in the repository proves a cell still ru
 | `just build-lessons` | rebuild every notebook from its `build.py` |
 | `just lessons` | fail if a committed notebook has drifted from its builder |
 | `just lesson-diagrams` | redraw every Excalidraw scene from its `diagram.py` |
+| `just films` | rebuild the six films and the page that lists them |
 | `just build-claims` | rebuild the claim ledger |
 | `just run-lessons` | execute every lesson top to bottom in a real kernel |
 | `just run-lessons --show` | the same, and print what each cell actually printed |
@@ -210,6 +211,8 @@ open("web.svg", "w").write(svg.document(scene))
 ```
 
 `just diagrams` rebuilds every diagram from the recorded dumps and opens a contact sheet with each one and its caption underneath. The renderer has no dependencies, so a diagram is a file CI can regenerate from the dump it came from, and when the pinned compiler moves the pictures move with it.
+
+Some things are not a shape. A control flow graph is a shape and gets a diagram, but the order the SSA renamer walks that graph in is a sequence, and the finished dump does not record it anywhere. Those get a film: a handful of scenes with a running time on each, rendered as one animated SVG that loops. There are six so far, listed on [the films](https://tamnd.github.io/gcc-internals/films/), and `just films` rebuilds them. They are animated SVG rather than video because SVG is text, so a film diffs, regenerates byte for byte, and can be checked by CI against the corpus it was drawn from. Every one of them falls back to a single readable frame when a reader has asked for no motion.
 
 ## A live notebook in the middle of a page
 

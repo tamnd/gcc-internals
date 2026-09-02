@@ -98,6 +98,14 @@ jobs:
           python -m gxray.glossary
           git diff --exit-code GLOSSARY.md
 
+      # The films are committed, unlike the diagrams, so this is the step that proves the
+      # committed ones are still what the recorded corpus draws. The page goes with them
+      # because its descriptions are the films' own alt text.
+      - name: the films and the films page match the corpus
+        run: |
+          python -m gxmanim film
+          git diff --exit-code docs/assets/films docs/films.md
+
   refcheck:
     name: citations and blueprints
     runs-on: ubuntu-latest

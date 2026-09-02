@@ -391,6 +391,14 @@ graph of this dump would produce nothing. There is no graph yet. T04 is about th
 this one sits at the front of, and the CFG lesson later in M2 is about the pass that comes
 next.
 
+## The film
+
+Every function on the bench, one after another, is
+[Seven C expressions, taken apart](https://tamnd.github.io/gcc-internals/films/#film-gimple-flattening).
+The line of C at the top stays one line the whole way through and the lane of GIMPLE
+underneath keeps getting longer, which is the point of this lesson in sixty three seconds.
+Watching them in order is worth more than the table, because the growth is the argument.
+
 ## Boss fight
 
 Hand gimplify this, on paper, before running anything:

@@ -596,6 +596,14 @@ is the reference version of this lesson. It has the allocno layout, the colourin
 written out, five invariants including the one about the trace disagreeing with the
 disposition, and the three configuration table with every number in it.
 
+## The film
+
+[Where the registers run out, on two machines](https://tamnd.github.io/gcc-internals/films/#film-pressure-ramp)
+adds the five bench functions to the pressure chart one at a time, on x86-64 first and then
+on aarch64. The moment the lanes cross the end of the register file and the spill marks start
+appearing is the moment this lesson is about, and it happens at a different function on each
+of the two machines. Same source, same flags, same compiler.
+
 ## Boss fight
 
 Predict, before you look. Five functions, x86-64 at `-O2`. Which of them put at least one

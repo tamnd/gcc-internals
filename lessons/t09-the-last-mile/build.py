@@ -605,6 +605,15 @@ is the reference version of this lesson. It has the annotation grammar written o
 output template forms with what each one compiles to, the compact alternative syntax GCC 16
 uses and what every symbol in it means, and the section selection rules as a table.
 
+## The film
+
+The chain from an insn to a line of assembly is five steps long, and this lesson walks it
+once by hand.
+[Twelve insns, twelve lines of assembly, one path](https://tamnd.github.io/gcc-internals/films/#film-emit-path)
+walks it twelve times, once for every real instruction in the function, so what you end up
+watching is the part that stays the same. Two of the twelve come out three cards long instead
+of five, and working out why before the caption tells you is a fair test of this lesson.
+
 ## Boss fight
 
 The reverse of the lesson. You get three lines of assembly with the annotation stripped off,

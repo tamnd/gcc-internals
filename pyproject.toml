@@ -49,10 +49,13 @@ select = ["E", "F", "I", "UP", "B"]
 # rather than a mistake, and it is the only thing about these files that is not ordinary
 # Python.
 "site/notebooks/*.py" = ["B018"]
-# These two are prose in a Python file, and prosecheck reads what they generate. A paragraph
-# is one line, the same rule the Markdown follows, because a sentence broken across source
-# lines is a sentence somebody has to reflow every time they edit it.
+# These are prose in a Python file, and prosecheck reads what they generate. A paragraph is
+# one line, the same rule the Markdown follows, because a sentence broken across source lines
+# is a sentence somebody has to reflow every time they edit it. `films.py` is mostly code and
+# only the page at the bottom of it is prose, which is the one thing here worth knowing when
+# a long line in it turns out to be a real one.
 "gxray/glossary.py" = ["E501"]
+"gxmanim/films.py" = ["E501"]
 "tools/nbbuild/claims.py" = ["E501"]
 "tools/nbbuild/cli.py" = ["E501"]
 # A lesson builder is the same thing: the long lines are paragraphs and URLs, not code. Every

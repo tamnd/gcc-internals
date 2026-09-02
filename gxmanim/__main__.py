@@ -1,4 +1,4 @@
-"""Every diagram, rebuilt from the recorded corpus.
+"""Every diagram and every film, rebuilt from the recorded corpus.
 
     python -m gxmanim draw
 
@@ -12,6 +12,13 @@ on the internet ended up describing GCC 4.
 
 writes a contact sheet next to the SVGs with each drawing and the words it says underneath,
 which is the page to look at when checking whether a picture is worth keeping.
+
+    python -m gxmanim film
+
+does the same for the films, which are the drawings that have an order in them. These go to
+`docs/assets/films` by default rather than to `build`, because unlike the diagrams they are
+committed: the book needs real files on disk, and a committed file that regenerates byte for
+byte is a file CI can prove is still true of the corpus.
 """
 
 from __future__ import annotations
@@ -20,7 +27,7 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxmanim import mobjects, svg
+from gxmanim import films, mobjects, svg
 from gxmanim.scene import Scene
 from gxray import cfg, corpus_store, gimple, locs, passes, tape
 
@@ -96,16 +103,22 @@ def sheet(drawings: dict[str, Scene], banner: str) -> str:
     return SHEET.format(banner=banner, figures="\n".join(figures))
 
 
-def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="python -m gxmanim", description=__doc__)
-    ap.add_argument("command", choices=["draw"], help="rebuild every diagram")
-    ap.add_argument("--entry", default="l1-O2", help="which recorded corpus entry to draw")
-    ap.add_argument("--out", default="build/diagrams")
-    ap.add_argument("--index", action="store_true", help="also write a contact sheet")
-    ap.add_argument("--open", action="store_true", help="open the contact sheet afterwards")
-    args = ap.parse_args(argv)
+def film_sheet(reels: dict, banner: str) -> str:
+    """The films on one page, each with the alt text under it.
 
-    out = Path(args.out)
+    The alt text rather than a caption, because the alt text is the part somebody has to
+    read and check, and the only way to check it is to have it sitting under the thing it
+    claims to describe.
+    """
+    figures = [
+        FIGURE.format(svg=svg.film(reel), name=name, caption=svg.esc(reel.alt))
+        for name, reel in reels.items()
+    ]
+    return SHEET.format(banner=banner, figures="\n".join(figures))
+
+
+def draw(args) -> int:
+    out = Path(args.out or "build/diagrams")
     out.mkdir(parents=True, exist_ok=True)
     drawings = scenes(args.entry)
     for name, scene in drawings.items():
@@ -123,6 +136,59 @@ def main(argv: list[str] | None = None) -> int:
         if args.open:
             webbrowser.open(page.resolve().as_uri())
     return 0
+
+
+def film(args) -> int:
+    """Build every film, and a poster frame for each, and say how long each one runs.
+
+    Printing as it goes rather than at the end, because six films is most of a minute of
+    loading recordings and parsing dumps and a command that prints nothing for that long
+    looks hung.
+    """
+    out = Path(args.out or films.DIRECTORY)
+    out.mkdir(parents=True, exist_ok=True)
+    reels = {}
+    for name, builder in films.BUILDERS.items():
+        reel = builder()
+        reels[name] = reel
+        (out / f"{name}.svg").write_text(svg.film_document(reel), encoding="utf-8")
+        (out / f"{name}-still.svg").write_text(svg.still(reel), encoding="utf-8")
+        print(f"{name}: {len(reel.shots)} shots, {reel.seconds():.0f} seconds")
+    print(f"wrote {len(reels)} films and {len(reels)} poster frames to {out}")
+
+    # Only when the films went where the page expects to find them. `--out somewhere-else`
+    # is for looking at a change before committing it, and rewriting the page to point at a
+    # scratch directory would be a surprise.
+    if not args.out:
+        Path(films.PAGE).write_text(films.markdown(reels), encoding="utf-8")
+        print(f"wrote {films.PAGE}")
+
+    if args.index or args.open:
+        # Not next to the films. The films live in `docs`, everything in `docs` is copied
+        # into the book, and an `index.html` in there would quietly become a page.
+        page = Path("build") / "films.html"
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(
+            film_sheet(reels, f"{len(reels)} films, rebuilt from the recorded corpus."),
+            encoding="utf-8",
+        )
+        print(f"wrote {page}")
+        if args.open:
+            webbrowser.open(page.resolve().as_uri())
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(prog="python -m gxmanim", description=__doc__)
+    ap.add_argument(
+        "command", choices=["draw", "film"], help="rebuild every diagram, or every film"
+    )
+    ap.add_argument("--entry", default="l1-O2", help="which recorded corpus entry to draw")
+    ap.add_argument("--out", default="", help="where to write, if not the usual place")
+    ap.add_argument("--index", action="store_true", help="also write a contact sheet")
+    ap.add_argument("--open", action="store_true", help="open the contact sheet afterwards")
+    args = ap.parse_args(argv)
+    return draw(args) if args.command == "draw" else film(args)
 
 
 if __name__ == "__main__":
