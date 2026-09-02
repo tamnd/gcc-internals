@@ -64,7 +64,8 @@
  * stale version of every paragraph on the page. The note about what pressing start does is
  * stale too, because it has already been pressed. */
 .island.is-live .island-static,
-.island.is-live .island-start .island-note {
+.island.is-live .island-start .island-note,
+.island.is-stuck .island-start .island-note {
   display: none;
 }
 
@@ -97,6 +98,35 @@ marimo-island > marimo-ui-element {
 
 .island.is-live {
   border-color: var(--md-primary-fg-color);
+}
+
+/* The runtime never arrived. The recorded output goes back to full strength, because it is
+ * now the only thing on offer and it is still correct. */
+.island.is-stuck .island-cells {
+  opacity: 1;
+}
+
+.island.is-stuck .island-status {
+  color: var(--md-default-fg-color);
+}
+
+/* Smaller and quieter than the start button. It is a way out of a failure, not the thing
+ * the reader came here to press. */
+.island-reload {
+  font: inherit;
+  font-size: 0.72rem;
+  color: var(--md-default-fg-color);
+  background: transparent;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  padding: 0.2rem 0.6rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.island-reload:hover {
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
 }
 
 /* A diagram is drawn at its own size and should not be blown up to the column width. */

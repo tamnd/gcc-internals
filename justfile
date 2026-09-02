@@ -269,8 +269,13 @@ setup-lessons:
 serve:
     mkdocs serve -f site/mkdocs.yml
 
-build-site:
+build-site: island-check
     mkdocs build --strict -f site/mkdocs.yml
+
+# A syntax error in island.js fails no build. The page renders, the button renders, and
+# pressing it does nothing, which is the worst way to find out.
+island-check:
+    node --check docs/assets/island.js
 
 # Rebuild every lesson notebook from its build.py, and the course index from the lessons.
 # The .ipynb files are generated, so this is the only thing that should ever write one.

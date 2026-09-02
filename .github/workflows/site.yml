@@ -30,6 +30,12 @@ jobs:
           python-version: "3.12"
       - run: pip install -e ".[dev,site]"
 
+      # A syntax error in island.js does not fail any build. The page renders, the button
+      # renders, and pressing it does nothing at all, which is the worst way to find out.
+      # Runners already have node, so this costs a second.
+      - name: island.js parses
+        run: node --check docs/assets/island.js
+
       # The island tests only have something to test when marimo is here.
       - run: python -m pytest -q tests/test_island.py
 

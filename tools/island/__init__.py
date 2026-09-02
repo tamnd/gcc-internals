@@ -5,13 +5,21 @@ it, and wakes up into a live reactive cell once the runtime loads. That is the w
 this project uses them: the page is readable and correct before anything starts, and the
 reader who wants to change a number gets a real Python kernel in the same place.
 
-Two things this module adds on top of what marimo gives you.
+Three things this module adds on top of what marimo gives you.
 
 The runtime does not start on page load. Marimo's head fragment pulls in the islands
 bundle, which pulls in Pyodide, which is tens of megabytes, and a compiler course whose
 front page costs thirty megabytes before you have read a sentence is a bad joke. So the
 head fragment goes into a `<template>` in the body instead, and `island.js` moves it into
 the head when the reader presses start. Nothing downloads until then.
+
+The connection is opened early even though the download is not. A cold browser pressing
+start has to find the CDN, shake hands with it, negotiate TLS, and only then begin the
+bundle, and marimo's own parent to worker timeout is running the whole time. A handshake
+carries no payload, so doing it on page load costs the reader nothing and gives the timeout
+back the second or so it was spending on DNS and TLS. The bundle URL rides on the button as
+a data attribute for the same reason, so `island.js` can warm it the moment the reader
+reaches for the button rather than the moment they press it.
 
 There is a real static fallback. A marimo island keeps its build time output in a data
 attribute for the runtime to pick up, which means a reader with no JavaScript sees an empty
@@ -39,6 +47,13 @@ MARKER = re.compile(r"^[ \t]*<!--[ \t]*island:[ \t]*(?P<path>[^\s>]+)[ \t]*-->[ 
 RANDOM_ID = re.compile(r"random-id='(?P<uuid>[0-9a-f-]{36})'")
 OBJECT_ID = re.compile(r"object-id='(?P<id>[^']*)'")
 
+# Everything the head fragment will fetch from somewhere else. Marimo writes the version of
+# its own bundle into these URLs, so reading them back out of the fragment is the only way
+# to warm the right ones without pinning a version in two places.
+ABSOLUTE = re.compile(r'(?:src|href)="(?P<url>https?://[^"]+)"')
+BUNDLE = re.compile(r'<script[^>]*\bsrc="(?P<url>https?://[^"]+)"', re.S)
+ORIGIN = re.compile(r"^(?P<origin>https?://[^/?#]+)")
+
 
 @dataclass(frozen=True)
 class Island:
@@ -49,12 +64,27 @@ class Island:
     head: str
     body: str
 
+    @property
+    def bundle(self) -> str:
+        """The islands bundle, the one download worth warming before the button is pressed."""
+        found = BUNDLE.search(self.head)
+        return found.group("url") if found else ""
+
     def embed(self, label: str = "Run this yourself") -> str:
         """The body, plus the button that starts the runtime, plus the head it will need."""
+        warm = "".join(
+            f'<link rel="preconnect" href="{html.escape(origin)}" crossorigin>\n'
+            for origin in origins(self.head)
+        )
+        carry = f' data-island-bundle="{html.escape(self.bundle)}"' if self.bundle else ""
         return (
             f'<div class="island" data-island="{html.escape(self.name)}">\n'
+            # These are live, not parked. A preconnect inside the template would be inert
+            # like everything else in there, and inert is the one thing it must not be.
+            f"{warm}"
             f'<template class="island-head">\n{self.head}\n</template>\n'
-            f'<p class="island-start"><button type="button" data-island-start>{label}</button>'
+            f'<p class="island-start"><button type="button" data-island-start{carry}>'
+            f"{label}</button>"
             '<span class="island-note">Starts Python in your browser. Nothing is installed'
             " and nothing leaves the page except the requests you make.</span></p>\n"
             '<noscript><p class="island-note">JavaScript is off, so what follows is the'
@@ -63,6 +93,21 @@ class Island:
             f'<div class="island-cells">\n{self.body}\n</div>\n'
             "</div>"
         )
+
+
+def origins(head: str) -> list[str]:
+    """Every distinct host the head fragment will fetch from, first appearance first.
+
+    Marimo already writes its own preconnects for the font host into the fragment, but the
+    fragment is parked in a template and a parked preconnect connects to nothing. These are
+    the same hosts, emitted where the browser will act on them.
+    """
+    found: list[str] = []
+    for url in ABSOLUTE.findall(head):
+        matched = ORIGIN.match(url)
+        if matched and matched.group("origin") not in found:
+            found.append(matched.group("origin"))
+    return found
 
 
 def stable_ids(markup: str) -> str:
@@ -131,4 +176,4 @@ def islands_in(markdown: str) -> list[str]:
     return MARKER.findall(markdown)
 
 
-__all__ = ["Island", "expand", "islands_in", "render", "stable_ids", "static_copy"]
+__all__ = ["Island", "expand", "islands_in", "origins", "render", "stable_ids", "static_copy"]
