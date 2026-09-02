@@ -110,6 +110,21 @@ corpus-t04:
 corpus-t06:
     {{py}} lessons/t06-what-o2-actually-turns-on/record.py {{gcc}}
 
+# The four targets T07 compares. Compiler Explorer, because nobody has four cross compilers
+# on their laptop, and 16.1.0 on all four because that is the newest version the site has
+# built for every one of them. A comparison with two variables in it is not a comparison, so
+# x86-64 steps down from 16.2 here even though the rest of the book uses 16.2.
+# This needs the network. Everything else T07 reads is already in l1-O2.
+corpus-t07:
+    {{py}} -m gxray record --backend ce --compiler-id cg161 --entry t07-x86-64 \
+        --file corpora/programs/l1.c --dump tree-optimized --dump rtl-expand -O2 -g
+    {{py}} -m gxray record --backend ce --compiler-id carm64g1610 --entry t07-aarch64 \
+        --file corpora/programs/l1.c --dump tree-optimized --dump rtl-expand -O2 -g
+    {{py}} -m gxray record --backend ce --compiler-id rv64-cgcc1610 --entry t07-riscv64 \
+        --file corpora/programs/l1.c --dump tree-optimized --dump rtl-expand -O2 -g
+    {{py}} -m gxray record --backend ce --compiler-id cppc64leg1610 --entry t07-power64le \
+        --file corpora/programs/l1.c --dump tree-optimized --dump rtl-expand -O2 -g
+
 # Rebuild the generated sections of every blueprint from GCC's own def files.
 blueprints:
     {{py}} -m tools.bpc build

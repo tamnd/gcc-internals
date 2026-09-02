@@ -62,13 +62,16 @@ function step(root, from, by) {
 // this never has to ask Python what a pass was.
 
 function applyFilters(root, view) {
-  for (const cell of root.querySelectorAll(".gx-cell")) {
+  for (const cell of root.querySelectorAll(".gx-cell, .gx-insn")) {
     const wrongPhase = view.phase && view.phase !== "all" && cell.dataset.phase !== view.phase;
     const unchanged = view.only === "changed" && cell.dataset.changed !== "1";
     // The flag diff filters by the level a switch first comes on at, and the same column
     // appears once per level, so this hides a whole column across every row at once.
     const wrongFirst = view.first && view.first !== "all" && cell.dataset.first !== view.first;
-    cell.hidden = Boolean(wrongPhase || unchanged || wrongFirst);
+    // The RTX tree filters an insn chain down to the entries that become instructions,
+    // which is a third of it and is what a reader means when they say "the code".
+    const wrongKind = view.kind && view.kind !== "all" && cell.dataset.kind !== view.kind;
+    cell.hidden = Boolean(wrongPhase || unchanged || wrongFirst || wrongKind);
   }
 }
 

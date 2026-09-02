@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-35 claims across 6 lessons, 4 of them not observable from a notebook.
+42 claims across 7 lessons, 4 of them not observable from a notebook.
 
 ## What does gcc actually run?
 
@@ -74,3 +74,15 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | -O3 to -Ofast is 11 differences, 5 switches on, 4 off and 2 values, and three of the four it turns off were the ones keeping the floating point arithmetic honest | [`t06-23`](t06-what-o2-actually-turns-on/t06.ipynb) |
 | -O1 plus all 48 switches produces 86 lines of assembly for L1, which is worse than -O1 at 54 and worse than -O2 at 56, and adding the 7 value changes makes it byte-identical to -O2 | [`t06-31`](t06-what-o2-actually-turns-on/t06.ipynb) |
 | L0 needs 1 of the 55 flags to match its -O2 output, L1 needs 4, and L2 needs 8 | [`t06-34`](t06-what-o2-actually-turns-on/t06.ipynb) |
+
+## Where GIMPLE becomes RTL
+
+| Claim | Proved by |
+| --- | --- |
+| L1 at expand is a chain of 40 entries and only 13 of them are instructions | [`t07-05`](t07-where-gimple-becomes-rtl/t07.ipynb) |
+| L1's whole function uses 13 different RTX codes, and 25 of the nodes are registers | [`t07-10`](t07-where-gimple-becomes-rtl/t07.ipynb) |
+| insn 21 reads as pseudo 102 becoming pseudo 102 plus pseudo 101 | [`t07-13`](t07-where-gimple-becomes-rtl/t07.ipynb) |
+| of the first ten entries in L1 exactly one is an instruction, six are for the debugger and three are markers | [`t07-20`](t07-where-gimple-becomes-rtl/t07.ipynb) |
+| L1 uses three pseudo registers, numbered 101 to 103, and two hard ones | [`t07-23`](t07-where-gimple-becomes-rtl/t07.ipynb) |
+| SI appears 30 times in L1, CC six times and DI twice | [`t07-26`](t07-where-gimple-becomes-rtl/t07.ipynb) |
+| the four targets agree on none of the ten things the table measures | [`t07-29`](t07-where-gimple-becomes-rtl/t07.ipynb) |

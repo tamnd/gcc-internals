@@ -14,8 +14,27 @@ import argparse
 import webbrowser
 from pathlib import Path
 
-from gxray import corpus_store, gimple, locs, options, passes
-from gxwidgets import FlagDiff, IRLadder, PassTape, PredictGate, SSAWeb, script
+from gxray import corpus_store, gimple, locs, options, passes, rtl
+from gxwidgets import (
+    FlagDiff,
+    IRLadder,
+    PassTape,
+    PredictGate,
+    RTXTree,
+    SSAWeb,
+    TargetCompare,
+    script,
+)
+
+#: The four back ends T07 puts side by side, in the order the lesson reads them. Two the
+#: reader has probably used, then two that make the point, because the point does not land
+#: until a machine with no flags register turns up.
+TARGETS = {
+    "x86-64": "t07-x86-64",
+    "aarch64": "t07-aarch64",
+    "riscv64": "t07-riscv64",
+    "power64le": "t07-power64le",
+}
 
 FIXTURE = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "l1-O2-passes.txt"
 
@@ -53,6 +72,23 @@ def flagdiff(entry: str = "t06-levels") -> FlagDiff | None:
     return FlagDiff(tables) if tables else None
 
 
+def targetcompare() -> TargetCompare | None:
+    """The four back ends, from four Compiler Explorer recordings.
+
+    Four entries rather than one, because one recording is one compiler and the whole widget
+    is about four of them. Missing is not an error here either, for the same reason.
+    """
+    listings, compilers = {}, {}
+    for name, entry in TARGETS.items():
+        try:
+            record = corpus_store.load(entry)
+        except FileNotFoundError:
+            continue
+        listings[name] = rtl.parse(record.dump_texts["rtl-expand"], name).only()
+        compilers[name] = record.target
+    return TargetCompare(listings, compilers) if listings else None
+
+
 def build(entry: str = "l1-O2") -> str:
     record = corpus_store.load(entry)
     # Only the tree dumps hold a function body the GIMPLE parser can read. The RTL one is
@@ -78,6 +114,7 @@ def build(entry: str = "l1-O2") -> str:
     widgets = [
         PassTape(pipeline, dumps=dumps, function=f.name, options=" ".join(record.args)),
         IRLadder(ladder),
+        RTXTree(rtl.parse(record.dump_texts["rtl-expand"], entry).only()),
         SSAWeb(f, name=SSAWeb(f).names[0]),
         PredictGate(
             "This loop runs three times and the trip count is a constant. "
@@ -104,6 +141,9 @@ def build(entry: str = "l1-O2") -> str:
     grid = flagdiff()
     if grid is not None:
         widgets.insert(1, grid)
+    four = targetcompare()
+    if four is not None:
+        widgets.append(four)
 
     banner = f"{record.compiler} for {record.target}, recorded {record.recorded}."
     return PAGE.format(

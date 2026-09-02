@@ -82,6 +82,8 @@ jobs:
           ! python lessons/t05-ssa-in-one-lesson/grade.py --phis 2 --most k --defaults no
           python lessons/t06-what-o2-actually-turns-on/grade.py --flags 4 --odd-one-out -freorder-blocks-algorithm=stc --switches-only 86
           ! python lessons/t06-what-o2-actually-turns-on/grade.py --flags 7 --odd-one-out -falign-loops=32:16 --switches-only 56
+          python lessons/t07-where-gimple-becomes-rtl/grade.py --answers A3 B1 C6 D2 E5 F4 --clobbers x86-64 --no-flags riscv64
+          ! python lessons/t07-where-gimple-becomes-rtl/grade.py --answers A1 B2 C3 D4 E5 F6 --clobbers aarch64 --no-flags power64le
 
       - name: the glossary matches the module that generates it
         run: |

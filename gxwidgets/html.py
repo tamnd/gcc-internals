@@ -238,6 +238,54 @@ STYLESHEET = f""":root {{
 .gx-flagdiff .gx-cell[data-on="1"] {{ background: var(--gx-added-fill);
   border-bottom-color: var(--gx-added-ink); }}
 
+.gx-insns {{ display: flex; flex-direction: column; gap: 2px; }}
+.gx-insn {{ display: grid; grid-template-columns: 3em 6.5em minmax(0, 1fr); gap: 10px;
+  align-items: center; text-align: left; font: inherit; font-size: 12px; cursor: pointer;
+  padding: 3px 6px; border: 1px solid transparent; border-radius: 4px;
+  background: var(--gx-neutral-fill); color: inherit; }}
+.gx-insn[aria-current="true"] {{ background: var(--gx-focus-fill); color: var(--gx-focus-ink);
+  border-color: currentColor; }}
+.gx-insn[hidden] {{ display: none; }}
+.gx-insn-code {{ font-family: {MONO}; color: var(--gx-unknown-ink); }}
+.gx-insn[aria-current="true"] .gx-insn-code {{ color: inherit; }}
+.gx-insn-p {{ font-family: {MONO}; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; }}
+
+.gx-facts {{ list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-wrap: wrap;
+  gap: 3px 14px; font-size: 12px; color: var(--gx-unknown-ink); }}
+.gx-facts code {{ font-family: {MONO}; color: var(--gx-neutral-ink); }}
+.gx-reading {{ margin: 0 0 8px; font-size: 13px; border-left: 3px solid var(--gx-focus-ink);
+  padding-left: 8px; }}
+.gx-rtx-row {{ display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline;
+  font-size: 12px; }}
+.gx-rtx-head {{ font-family: {MONO}; font-weight: 600; }}
+.gx-rtx-leaf {{ font-family: {MONO}; color: var(--gx-constant-ink);
+  background: var(--gx-constant-fill); border-radius: 3px; padding: 0 4px; }}
+.gx-rtx-mode {{ color: var(--gx-changed-ink); }}
+.gx-rtx-what {{ color: var(--gx-unknown-ink); }}
+.gx-rtx-flags {{ margin: 0 0 2px; font-size: 11px; color: var(--gx-unknown-ink); }}
+.gx-rtx-flag {{ font-family: {MONO}; }}
+.gx-rtx-kids {{ list-style: none; margin: 2px 0 0; padding: 0 0 0 14px;
+  border-left: 1px solid var(--gx-unknown-fill); display: grid; gap: 2px; }}
+
+.gx-targets {{ display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 6px; }}
+.gx-target {{ font: inherit; font-size: 12px; text-align: left; cursor: pointer;
+  padding: 4px 10px; border: 1px solid var(--gx-unknown-fill); border-radius: 4px;
+  background: var(--gx-neutral-fill); color: inherit; display: grid; gap: 1px; }}
+.gx-target[aria-current="true"] {{ background: var(--gx-focus-fill);
+  color: var(--gx-focus-ink); border-color: currentColor; }}
+.gx-target-name {{ font-family: {MONO}; font-weight: 600; }}
+.gx-target-sub {{ font-size: 11px; color: var(--gx-unknown-ink); }}
+.gx-target[aria-current="true"] .gx-target-sub {{ color: inherit; }}
+.gx-facts-table {{ border-collapse: collapse; font-size: 12px; margin: 0 0 8px;
+  display: block; overflow-x: auto; }}
+.gx-facts-table th, .gx-facts-table td {{ text-align: left; padding: 2px 10px 2px 0;
+  border-bottom: 1px solid var(--gx-neutral-fill); white-space: nowrap; }}
+.gx-facts-table th {{ color: var(--gx-unknown-ink); font-weight: 600; }}
+.gx-facts-table td {{ font-family: {MONO}; }}
+.gx-facts-table td.gx-same {{ color: var(--gx-unknown-ink); }}
+.gx-facts-table td.gx-differs {{ color: var(--gx-changed-ink); font-weight: 600; }}
+
 .gx-web {{ max-width: 100%; overflow-x: auto; color: var(--gx-focus-ink); }}
 .gx-web text {{ font-family: {MONO}; font-size: 12px; fill: var(--gx-neutral-ink); }}
 .gx-web .thread {{ fill: none; stroke: currentColor; stroke-width: 1.2; }}
