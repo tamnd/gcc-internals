@@ -22,7 +22,7 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - name: prose rules
-        run: python -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints containers corpora/programs
+        run: python -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints containers corpora/programs gxplug
 
       # The table in containers/README.md is generated from containers/matrix.toml, and a
       # hand edit to either one is how the two start describing different compilers.
@@ -243,9 +243,17 @@ jobs:
           sudo apt-get install -y gcc-16
           gcc-16 --version
 
+          # The plugin headers, so the tests marked needs_gcc_plugin run here rather than
+          # skipping. Tolerated if the PPA has not built them for this snapshot: those
+          # tests are gated properly by the plugin workflow, which builds gxplug against
+          # four real channels, and a missing package in a trunk PPA should not turn this
+          # job red for a reason that has nothing to do with the change under review.
+          sudo apt-get install -y gcc-16-plugin-dev \
+            || echo "no gcc-16-plugin-dev in the PPA today, the gxplug tests will skip"
+
       - run: pip install -e ".[dev]"
       - name: the tests that need a compiler
-        run: python -m pytest -q -m needs_gcc
+        run: python -m pytest -q -m "needs_gcc or needs_gcc_plugin"
 
       # A drift signal rather than an assertion. If the parser stops understanding a dump,
       # the count moves and the log says by how much.

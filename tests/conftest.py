@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import importlib.util
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,35 @@ FIXTURES = Path(__file__).parent / "fixtures"
 HAVE_GCC = shutil.which("gcc-16") is not None
 HAVE_MARIMO = importlib.util.find_spec("marimo") is not None
 HAVE_NBCLIENT = importlib.util.find_spec("nbclient") is not None
+
+
+def _gcc_with_plugin_headers() -> str | None:
+    """A GCC that can build a plugin, or None.
+
+    Two conditions, and they are separate. A GCC 16 without its plugin development package
+    has no `gcc-plugin.h` to compile against, and that is the ordinary case on a machine
+    that installed a compiler and nothing else. A GCC of any other version has the headers
+    but the wrong ABI, and `plugin_default_version_check` would refuse the result at load
+    time, so building against it proves nothing.
+    """
+    for name in ("gcc-16", "gcc"):
+        found = shutil.which(name)
+        if not found:
+            continue
+        version = subprocess.run(
+            [found, "-dumpfullversion"], capture_output=True, text=True, check=False
+        )
+        if not version.stdout.startswith("16."):
+            continue
+        where = subprocess.run(
+            [found, "-print-file-name=plugin"], capture_output=True, text=True, check=False
+        )
+        if (Path(where.stdout.strip()) / "include" / "gcc-plugin.h").exists():
+            return found
+    return None
+
+
+GCC_PLUGIN = _gcc_with_plugin_headers()
 
 
 LESSONS = Path(__file__).resolve().parent.parent / "lessons"
@@ -78,13 +108,28 @@ def setjmp_graph() -> str:
     return fixture("setjmp-O1-optimized-graph.dot")
 
 
+@pytest.fixture(scope="session")
+def gcc_plugin() -> str:
+    """The compiler the plugin tests build against.
+
+    Only reached by a test marked `needs_gcc_plugin`, which has already been skipped when
+    there is no such compiler, so the assert is a statement about the marker and not a
+    thing that can fire in a normal run.
+    """
+    assert GCC_PLUGIN is not None
+    return GCC_PLUGIN
+
+
 def pytest_collection_modifyitems(config, items):
     no_gcc = pytest.mark.skip(reason="no gcc-16 on PATH")
+    no_plugin = pytest.mark.skip(reason="no gcc-16 with plugin headers, try gcc-16-plugin-dev")
     no_marimo = pytest.mark.skip(reason="marimo is not installed, try pip install -e '.[site]'")
     no_kernel = pytest.mark.skip(reason="nbclient is missing, try pip install -e '.[lessons]'")
     for item in items:
         if "needs_gcc" in item.keywords and not HAVE_GCC:
             item.add_marker(no_gcc)
+        if "needs_gcc_plugin" in item.keywords and GCC_PLUGIN is None:
+            item.add_marker(no_plugin)
         if "needs_marimo" in item.keywords and not HAVE_MARIMO:
             item.add_marker(no_marimo)
         if "needs_nbclient" in item.keywords and not HAVE_NBCLIENT:
