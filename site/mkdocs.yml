@@ -93,6 +93,7 @@ nav:
     - BP-BUILD, configuring and building the compiler: blueprints/BP-BUILD.md
     - BP-BOOTSTRAP, building the compiler with itself: blueprints/BP-BOOTSTRAP.md
     - BP-DEBUGGING, stopping the compiler and looking at it: blueprints/BP-DEBUGGING.md
+    - BP-TESTSUITE, running GCC's own tests: blueprints/BP-TESTSUITE.md
   - How this is built:
     - The pinned tree and citations: pinned-tree.md
     - Can a browser compile C here: probe.md

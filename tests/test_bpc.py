@@ -18,7 +18,7 @@ from pathlib import Path
 import pytest
 
 from tools import bpc
-from tools.bpc import Blueprint, BpcError, bootstrap, buildsys, gccsrc
+from tools.bpc import Blueprint, BpcError, bootstrap, buildsys, gccsrc, testsuite
 from tools.bpc import coverage as ledger
 from tools.bpc import plugin as plugin_gen
 from tools.bpc.gccsrc import SourceError
@@ -1011,3 +1011,168 @@ def test_a_build_config_is_named_the_way_configure_takes_it():
     assert len(names) == 19
     assert all(n.startswith("bootstrap-") for n in names)
     assert "bootstrap-lto" in names
+
+
+# The test suite reader
+
+
+EXP_FILE = dedent(
+    """
+    # Copyright (C) 2002-2026 Free Software Foundation, Inc.
+
+    load_lib dg.exp
+
+    # Like dg-options, but adds to the default options rather than replacing
+    # them.  A second sentence that the table does not want.
+
+    proc dg-additional-options { args } {
+        upvar dg-extra-tool-flags extra-tool-flags
+    }
+
+    proc dg-scan { name testcase output_file orig_args } {
+        set pattern [lindex $orig_args 0]
+    }
+
+    # Set variable VARNAME to LINENR
+    proc dg-line { linenr varname } {
+        upvar dg-line-record dg-line-record
+    }
+
+    proc scan-assembler-times { args } {
+        dg-scan "scan-assembler-times" [testname-for-summary] $output $args
+    }
+
+    proc scan-assembler-dem-not { args } {
+        dg-scan "scan-assembler-dem-not" [testname-for-summary] $output $args
+    }
+    """
+)
+
+
+def write_exp(directory: Path, text: str = EXP_FILE) -> Path:
+    lib = directory / "testsuite" / "lib"
+    lib.mkdir(parents=True, exist_ok=True)
+    path = lib / "gcc-dg.exp"
+    path.write_text(text, encoding="utf-8")
+    return path
+
+
+def test_a_procs_comment_is_the_block_above_it_and_the_summary_is_one_sentence(tmp_path: Path):
+    found = {p.name: p for p in testsuite.procs(write_exp(tmp_path))}
+    assert found["dg-additional-options"].summary == (
+        "Like dg-options, but adds to the default options rather than replacing them."
+    )
+    assert "second sentence" in found["dg-additional-options"].comment
+
+
+def test_a_proc_with_no_comment_above_it_gets_an_empty_summary(tmp_path: Path):
+    """An empty cell is the honest rendering. Twelve procedures in the real tree have one."""
+    found = {p.name: p for p in testsuite.procs(write_exp(tmp_path))}
+    assert found["dg-scan"].summary == ""
+    assert found["dg-scan"].comment == ""
+
+
+def test_a_comment_with_no_full_stop_in_it_is_the_whole_summary(tmp_path: Path):
+    found = {p.name: p for p in testsuite.procs(write_exp(tmp_path))}
+    assert found["dg-line"].summary == "Set variable VARNAME to LINENR"
+
+
+def test_a_directive_is_one_that_takes_the_line_number_dejagnu_hands_it(tmp_path: Path):
+    """`dg-scan` is a helper the harness calls itself, and it is spelled the same way."""
+    found = {p.name: p for p in testsuite.procs(write_exp(tmp_path))}
+    assert found["dg-additional-options"].is_directive is True
+    assert found["dg-line"].is_directive is True
+    assert found["dg-scan"].is_directive is False
+    assert [d.name for d in testsuite.directives(tmp_path)] == [
+        "dg-additional-options",
+        "dg-line",
+    ]
+
+
+def test_a_name_defined_in_two_files_is_one_directive(tmp_path: Path):
+    """`dg-modules` is defined by the Algol 68 harness and again by its torture harness."""
+    write_exp(tmp_path)
+    other = tmp_path / "testsuite" / "lib" / "other-dg.exp"
+    other.write_text("proc dg-line { linenr varname } {\n}\n", encoding="utf-8")
+    assert [d.name for d in testsuite.directives(tmp_path)].count("dg-line") == 1
+
+
+def test_the_longer_variant_suffix_comes_off_before_the_shorter_one_inside_it():
+    """`-dem-not` has to be stripped whole, or `-not` takes half of it and leaves `-dem`."""
+    assert testsuite.family("scan-assembler-dem-not") == "scan-assembler"
+    assert testsuite.family("scan-tree-dump-times") == "scan-tree-dump"
+    assert testsuite.family("scan-assembler") == "scan-assembler"
+
+
+def test_the_two_families_that_spell_their_negation_in_the_middle_are_mapped():
+    assert testsuite.family("scan-not-weak") == "scan-weak"
+    assert testsuite.family("scan-not-hidden") == "scan-hidden"
+
+
+def test_an_empty_lib_directory_is_a_failure_and_not_an_empty_table(tmp_path: Path):
+    (tmp_path / "testsuite" / "lib").mkdir(parents=True)
+    with pytest.raises(SourceError, match="no procedures"):
+        testsuite.harness(tmp_path)
+
+
+@needs_tree
+def test_the_helpers_that_look_like_directives_are_not_counted_as_directives():
+    """The six `dg-` procedures in the harness that a test file may not write.
+
+    They are the reason the rule is about the first parameter rather than about the name.
+    """
+    every = {d.name for d in testsuite.directives(bpc.GCC_ROOT)}
+    named = {p.name for p in testsuite.harness(bpc.GCC_ROOT) if p.name.startswith("dg-")}
+    assert named - every == {
+        "dg-pch",
+        "dg-flags-pch",
+        "dg-additional-files-options",
+        "dg-scan",
+        "dg-scan-symbol-section",
+        "dg-effective-target-value",
+    }
+
+
+@needs_tree
+def test_the_directives_dejagnu_owns_are_not_in_this_tree():
+    """Section 1 of `BP-TESTSUITE` names these seven as DejaGnu's, so they must not be here."""
+    every = {p.name for p in testsuite.harness(bpc.GCC_ROOT)}
+    assert every.isdisjoint(
+        {"dg-do", "dg-options", "dg-error", "dg-warning", "dg-bogus", "dg-excess-errors"}
+    )
+    assert "dg-output" not in every and "dg-output-file" in every
+
+
+@needs_tree
+def test_dg_final_is_the_one_dejagnu_directive_gcc_replaces():
+    assert "dg-final" in {d.name for d in testsuite.directives(bpc.GCC_ROOT)}
+
+
+@needs_tree
+def test_every_scan_procedure_in_the_tree_has_something_saying_what_it_reads():
+    """The generator raises rather than printing a blank cell, so this is the guard for it."""
+    assert "scan-tree-dump" in testsuite.dg_final_scans(bpc.GCC_ROOT)
+    assert "scan-assembler" in testsuite.dg_final_scans(bpc.GCC_ROOT)
+
+
+@needs_tree
+def test_the_torture_list_is_the_six_sets_the_blueprint_multiplies_everything_by():
+    text = testsuite.torture_options(bpc.GCC_ROOT)
+    assert "**6 option sets**" in text
+    assert "| `-O0` |" in text and "| `-Os` |" in text
+
+
+@needs_tree
+def test_a_check_target_knows_which_directories_dejagnu_will_find_for_it():
+    by_name = {t.name: t for t in testsuite.tools(bpc.GCC_ROOT)}
+    assert by_name["gcc"].directories[:2] == ("gcc.c-torture", "gcc.dg")
+    assert "g++.old-deja" in by_name["g++"].directories
+    assert by_name["gcc"].exps > 100
+
+
+@needs_tree
+def test_the_targets_that_are_not_parallelized_say_so_rather_than_reading_as_zero():
+    by_name = {t.name: t for t in testsuite.tools(bpc.GCC_ROOT)}
+    assert by_name["gcc"].parallel == 10000
+    assert by_name["cobol"].parallel == 0
+    assert "not parallelized" in testsuite.check_targets(bpc.GCC_ROOT)
