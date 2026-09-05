@@ -241,3 +241,44 @@ why = "It needs valgrind found at configure time and runs every subprocess under
 [[inventory.checking-categories.rule]]
 match = "*"
 status = "mentioned"
+
+# The --with-build-config fragments. Each one is a makefile included by every stage of a
+# bootstrap, and between them they are how a bootstrap is made to prove something other
+# than that the compiler is deterministic. A reader who wants the bootstrap to catch a
+# specific class of bug picks from this list, so the book has to say which ones it means.
+[inventory.build-configs]
+what = "--with-build-config fragments"
+source = "config/"
+provider = "build-configs"
+
+# The two that turn the comparison into a check that -g does not change generated code.
+# BP-BOOTSTRAP section 7 says what that proves and why -gtoggle exists because of it.
+[[inventory.build-configs.rule]]
+match = "bootstrap-debug"
+status = "covered"
+
+[[inventory.build-configs.rule]]
+match = "bootstrap-debug-lean"
+status = "covered"
+
+# The one that changes what the stages are compiled with rather than what they check, and
+# the only one this project's build matrix could plausibly grow a configuration for.
+[[inventory.build-configs.rule]]
+match = "bootstrap-lto"
+status = "covered"
+
+[[inventory.build-configs.rule]]
+match = "bootstrap-debug-ckovw"
+status = "out of scope"
+why = "It forces GCC_COMPARE_DEBUG on for every host and target compilation, and its own comment says it is only meaningful alongside bootstrap-debug-lean and bootstrap-debug-lib in a full bootstrap. That is three fragments and the target libraries as well, hours past what the boot configuration already costs, to check a property BP-BOOTSTRAP can state without running it."
+
+[[inventory.build-configs.rule]]
+match = "bootstrap-native"
+status = "out of scope"
+why = "It adds -march=native, so the compiler it builds runs on the machine that built it and nowhere else. Every image this project publishes has to run on both of GitHub's runner generations, so nothing here can use it and no lesson can reproduce a result from it."
+
+# The rest are in BP-BOOTSTRAP's generated table with GCC's own one line description and
+# what each of them changes, which is enough to choose one and not enough to teach it.
+[[inventory.build-configs.rule]]
+match = "*"
+status = "mentioned"

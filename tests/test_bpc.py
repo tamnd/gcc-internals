@@ -18,7 +18,7 @@ from pathlib import Path
 import pytest
 
 from tools import bpc
-from tools.bpc import Blueprint, BpcError, buildsys, gccsrc
+from tools.bpc import Blueprint, BpcError, bootstrap, buildsys, gccsrc
 from tools.bpc import coverage as ledger
 from tools.bpc import plugin as plugin_gen
 from tools.bpc.gccsrc import SourceError
@@ -566,7 +566,7 @@ def test_an_inventory_that_names_both_is_refused_too(tmp_path):
 
 def test_an_unknown_provider_lists_the_ones_that_exist(tmp_path):
     text = LEDGER.replace('macro = "DEFGSCODE"', 'provider = "back-ends"')
-    with pytest.raises(BpcError, match="Known: checking-categories, front-ends"):
+    with pytest.raises(BpcError, match="Known: build-configs, checking-categories, front-ends"):
         ledger.load(write_ledger(tmp_path, text))
 
 
@@ -883,3 +883,112 @@ def test_a_pipe_never_reaches_a_table_cell():
             continue
         widths = {len(row.split("|")) for row in rows}
         assert widths == {len(rows[0].split("|"))}, "a stray pipe makes one row wider"
+
+
+# The bootstrap reader
+
+
+def test_a_definition_ends_at_its_own_brace_and_not_a_nested_one():
+    """`Makefile.def` has no nesting today, so a reader that stops at the first `}` looks
+    correct until somebody adds one and every declaration after it is silently dropped."""
+    found = bootstrap.definitions("a = { x=1 ; y={ z=2 ; } ; };\nb = { q=3 ; };\n")
+    assert [d.name for d in found] == ["a", "b"]
+    assert found[1].one("q") == "3"
+
+
+def test_a_semicolon_inside_a_string_does_not_end_a_field():
+    found = bootstrap.definitions('a = { doc="one ; two" ; id=3 ; };\n')
+    assert found[0].one("doc") == "one ; two"
+    assert found[0].one("id") == "3"
+
+
+def test_a_comment_is_dropped_and_a_slash_in_a_string_is_not():
+    """`//` starts a comment in autogen and also appears inside quoted flag values."""
+    text = 'a = { flags="-I// -g" ; }; // why this exists\nb = { id=1 ; };\n'
+    found = bootstrap.definitions(text)
+    assert found[0].one("flags") == "-I// -g"
+    assert [d.name for d in found] == ["a", "b"]
+
+
+def test_a_field_that_appears_twice_keeps_both():
+    """A module can be declared with several `extra_make_flags`, and taking the last would
+    quietly halve what the table says the build does."""
+    found = bootstrap.definitions("a = { f=1 ; f=2 ; };\n")
+    assert found[0].fields["f"] == ["1", "2"]
+    assert found[0].has("f")
+    assert not found[0].has("g")
+
+
+def test_a_stage_name_with_letters_in_it_is_read_whole():
+    """`STAGEtrain_GENERATOR_CFLAGS` splits into `train` and `GENERATOR_CFLAGS`, and a
+    pattern that is not greedy enough invents a stage called `train_GENERATOR`."""
+    m = bootstrap.FLAG.match("STAGEtrain_GENERATOR_CFLAGS = -O0")
+    assert m is not None
+    assert m.group("stage") == "train"
+    assert m.group("what") == "GENERATOR_CFLAGS"
+
+
+def test_a_commented_out_assignment_is_not_something_a_fragment_does():
+    """`bootstrap-debug-ckovw.mk` carries two of them, and counting them would say the
+    fragment sets `BOOT_CFLAGS` when it does not."""
+    found = bootstrap.ASSIGNS.findall("# BOOT_CFLAGS += -x\nTFLAGS := -y\noverride Z = 1\n")
+    assert found == ["TFLAGS", "Z"]
+
+
+def test_a_fragment_with_no_comment_says_so_rather_than_inventing_one():
+    assert bootstrap.sentence("") == "the fragment carries no comment"
+    assert bootstrap.sentence("One thing. And another.") == "One thing"
+    assert bootstrap.sentence("Trailing period.") == "Trailing period"
+
+
+@needs_tree
+def test_every_stage_after_the_first_is_built_by_another_one():
+    found = bootstrap.stages(bpc.GCC_ROOT)
+    assert len(found) == 9
+    assert found[0].one("id") == "1"
+    assert not found[0].has("prev")
+    assert all(s.has("prev") for s in found[1:])
+
+
+@needs_tree
+def test_only_the_two_stages_that_can_compare_anything_do():
+    """A comparison needs two stages built from one source by one set of rules, which first
+    exists at stage three. Stage two has nothing legitimate to be compared against."""
+    comparing = [s.one("id") for s in bootstrap.stages(bpc.GCC_ROOT) if s.has("compare_target")]
+    assert comparing == ["3", "4"]
+
+
+@needs_tree
+def test_less_than_half_the_host_modules_are_inside_the_stage_loop():
+    inside, outside = bootstrap.modules(bpc.GCC_ROOT)
+    assert len(inside) == 25
+    assert len(inside) + len(outside) == 54
+    assert "gcc" in inside and "libiberty" in inside
+    assert "gdb" in outside
+
+
+@needs_tree
+def test_the_exclusions_are_the_ones_that_apply_everywhere():
+    """The AIX line is inside a case on the target, so a reader that took every assignment
+    would tell everyone that libgomp is forgiven on their machine too."""
+    found = bootstrap.exclusions(bpc.GCC_ROOT)
+    assert len(found) == 6
+    assert found[0] == "gcc/cc*-checksum$(objext)"
+    assert not any("libgomp" in p for p in found)
+
+
+@needs_tree
+def test_the_fragment_that_replaces_the_comparison_says_that_is_what_it_changes():
+    by_name = {c.name: c for c in bootstrap.build_configs(bpc.GCC_ROOT)}
+    assert "the comparison itself" in by_name["bootstrap-debug"].changes()
+    assert by_name["bootstrap-O3"].changes() == "`BOOT_CFLAGS`, so every stage"
+
+
+@needs_tree
+def test_a_build_config_is_named_the_way_configure_takes_it():
+    """The ledger classifies these, and a name a reader cannot paste into a configure line
+    is a name they have to translate before it is any use."""
+    names = bootstrap.config_names(bpc.GCC_ROOT)
+    assert len(names) == 19
+    assert all(n.startswith("bootstrap-") for n in names)
+    assert "bootstrap-lto" in names
