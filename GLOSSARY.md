@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [target hook](#target-hook) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stamp file](#stamp-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -569,3 +569,47 @@ Also written pseudo op. Taught in T09. See also [section](#section), [final](#fi
 `.text` is code, `.data` is initialised writable data, `.bss` is data that starts out zero and takes no space in the file, and `.rodata` is read only. Which one a variable lands in is not a style question. `categorize_decl_for_section` decides it from whether the variable is constant, whether its initialiser is all zeros, and whether it needs a relocation, and the answer changes how many bytes the binary is and whether writing to it faults.
 
 Also written `.text`, `.bss`, `.rodata`. Taught in T09. See also [assembler directive](#assembler-directive), [final](#final). In the source: [`gcc/varasm.cc:7368@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/varasm.cc#L7368).
+
+## Building the compiler
+
+Words you need to configure GCC and read what the build tells you afterwards. B01 is the lesson, and these five are the ones that are used constantly and defined nowhere.
+
+### out of tree build
+
+**Running `configure` from an empty directory somewhere else, which is how GCC is meant to be built.**
+
+Nothing stops you running `./configure` inside the source tree, and the first thing it does is scatter object files, generated sources and a `host-<triple>` directory among the checked in ones. GCC does not fully clean up after that, and the top level `configure` refuses to do an out of tree build afterwards from the same source, so the mistake is one you make once and then live with or re-clone. Build in a sibling directory and the source tree stays a source tree, `git status` stays readable, and you can have a checking build and a release build of the same source at the same time.
+
+Also written separate build directory, `srcdir`. Taught in B01. See also [stamp file](#stamp-file), [generated file](#generated-file). In the source: [`configure.ac:222@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/configure.ac#L222).
+
+### target triple
+
+**`cpu-company-system`, the three part name for a machine, and GCC needs up to three of them at once.**
+
+`x86_64-pc-linux-gnu` and `aarch64-apple-darwin24` are triples, and `config.sub` turns whatever you typed into the canonical spelling. The reason there are three of them is that a compiler is a program that runs somewhere and emits code for somewhere else, so `--build` is where it is being compiled, `--host` is where it will run, and `--target` is what it will emit code for. All three the same is a native build. Host and target differing is a cross compiler. All three differing is a Canadian cross, which exists and which you should not attempt first.
+
+Also written configuration name, `--build`, `--host`, `--target`. Taught in B01. See also [cross compiler](#cross-compiler), [port](#port). In the source: [`gcc/doc/install.texi:867@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/doc/install.texi#L867).
+
+### cross compiler
+
+**A GCC whose host and target are different machines, which is one configure flag and a great deal of consequence.**
+
+`--target=riscv64-unknown-elf` and you have a compiler that runs on your laptop and emits RISC-V. What follows is the part people are not ready for. The compiler needs a C library for the target and there is not one on your machine, so either you point it at one or you use a bare metal target that gets away with `newlib`. The programs it produces cannot be run, so the test suite needs a simulator. And the installed binaries are prefixed with the triple, so the thing you type is `riscv64-unknown-elf-gcc` and not `gcc`. For reading a back end that last part is a feature, because the target you are studying is not the one you are typing on.
+
+Also written `--target`, canadian cross. Taught in B01. See also [target triple](#target-triple), [port](#port). In the source: [`configure.ac:213@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/configure.ac#L213).
+
+### stamp file
+
+**An empty file whose only content is its timestamp, standing in for something make cannot depend on directly.**
+
+A build directory is full of files called `s-something` with nothing in them. They exist because a generator program writes several outputs at once and make wants one target per rule, and because GCC writes generated sources through `move-if-change`, which deliberately leaves a file's timestamp alone when its content did not change. The stamp is what records that the generator ran. Deleting one forces a regeneration, and a stale one is the reason a build sometimes ignores an edit you made to a machine description.
+
+Also written `s-` file, `move-if-change`, `$(STAMP)`. Taught in B01. See also [generated file](#generated-file), [out of tree build](#out-of-tree-build). In the source: [`gcc/Makefile.in:2803@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/Makefile.in#L2803).
+
+### bootstrap
+
+**Building GCC three times, each stage compiled by the one before, and comparing the last two.**
+
+Stage one is built by whatever compiler you already have, stage two by stage one, and stage three by stage two. Stages two and three are then compared object file by object file, and they have to be identical, because they are the same source compiled by two compilers that are supposed to be the same compiler. That comparison is the strongest self test GCC has and it catches things nothing else does. It also costs four hours, which is why `--disable-bootstrap` exists and why every configuration in this project except one uses it. B02 is the lesson that takes it apart.
+
+Also written `--enable-bootstrap`, stage comparison, three stage build. Taught in B01. See also [stamp file](#stamp-file), [checking build](#checking-build). In the source: [`Makefile.def:749@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/Makefile.def#L749).

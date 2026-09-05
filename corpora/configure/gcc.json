@@ -1,0 +1,204 @@
+{
+ "tag": "releases/gcc-16.2.0",
+ "commit": "78d4ac73dd391005b895a6148cd9831e28e1208b",
+ "version": "16.2.0",
+ "languages": [
+  {
+   "name": "ada",
+   "directory": "ada",
+   "compiler": "gnat1",
+   "default": false,
+   "boot": true,
+   "libs": [
+    "libada"
+   ]
+  },
+  {
+   "name": "algol68",
+   "directory": "algol68",
+   "compiler": "a681",
+   "default": false,
+   "boot": false,
+   "libs": [
+    "libga68"
+   ]
+  },
+  {
+   "name": "c",
+   "directory": "c",
+   "compiler": "cc1",
+   "default": true,
+   "boot": false,
+   "libs": []
+  },
+  {
+   "name": "cobol",
+   "directory": "cobol",
+   "compiler": "cobol1",
+   "default": false,
+   "boot": false,
+   "libs": [
+    "libgcobol"
+   ]
+  },
+  {
+   "name": "c++",
+   "directory": "cp",
+   "compiler": "cc1plus",
+   "default": true,
+   "boot": false,
+   "libs": [
+    "libstdc++-v3"
+   ]
+  },
+  {
+   "name": "d",
+   "directory": "d",
+   "compiler": "d21",
+   "default": false,
+   "boot": true,
+   "libs": [
+    "libphobos",
+    "zlib",
+    "libbacktrace"
+   ]
+  },
+  {
+   "name": "fortran",
+   "directory": "fortran",
+   "compiler": "f951",
+   "default": true,
+   "boot": false,
+   "libs": [
+    "libgfortran",
+    "libbacktrace"
+   ]
+  },
+  {
+   "name": "go",
+   "directory": "go",
+   "compiler": "go1",
+   "default": false,
+   "boot": false,
+   "libs": [
+    "libgo",
+    "libffi",
+    "libbacktrace"
+   ]
+  },
+  {
+   "name": "jit",
+   "directory": "jit",
+   "compiler": "",
+   "default": false,
+   "boot": false,
+   "libs": []
+  },
+  {
+   "name": "lto",
+   "directory": "lto",
+   "compiler": "lto1",
+   "default": false,
+   "boot": false,
+   "libs": []
+  },
+  {
+   "name": "m2",
+   "directory": "m2",
+   "compiler": "cc1gm2",
+   "default": false,
+   "boot": false,
+   "libs": [
+    "libstdc++-v3",
+    "libgm2"
+   ]
+  },
+  {
+   "name": "objc",
+   "directory": "objc",
+   "compiler": "cc1obj",
+   "default": true,
+   "boot": false,
+   "libs": [
+    "libobjc"
+   ]
+  },
+  {
+   "name": "obj-c++",
+   "directory": "objcp",
+   "compiler": "cc1objplus",
+   "default": false,
+   "boot": false,
+   "libs": []
+  },
+  {
+   "name": "rust",
+   "directory": "rust",
+   "compiler": "crab1",
+   "default": false,
+   "boot": false,
+   "libs": [
+    "libgrust"
+   ]
+  }
+ ],
+ "checking": {
+  "levels": [
+   "no or none",
+   "release",
+   "yes",
+   "all"
+  ],
+  "flags": [
+   "assert",
+   "df",
+   "extra",
+   "fold",
+   "gc",
+   "gcac",
+   "gimple",
+   "misc",
+   "rtl",
+   "rtlflag",
+   "runtime",
+   "tree",
+   "types",
+   "valgrind"
+  ],
+  "default": "release",
+  "development": "yes,extra",
+  "release": true
+ },
+ "requires": [
+  {
+   "library": "gmp",
+   "hard": "4.2.3",
+   "good": "4.3.2",
+   "said": "4.2"
+  },
+  {
+   "library": "mpfr",
+   "hard": "3.1.0",
+   "good": "3.1.6",
+   "said": "3.1.0"
+  },
+  {
+   "library": "mpc",
+   "hard": "0.8.0",
+   "good": "0.8.1",
+   "said": "0.8.0"
+  }
+ ],
+ "knobs": [
+  {
+   "where": "the top level",
+   "enable": 28,
+   "with": 28
+  },
+  {
+   "where": "gcc/",
+   "enable": 57,
+   "with": 48
+  }
+ ]
+}

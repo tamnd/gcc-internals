@@ -713,6 +713,59 @@ TEXT = Group(
 )
 
 
+BUILDING = Group(
+    "Building the compiler",
+    "Words you need to configure GCC and read what the build tells you afterwards. B01 is the lesson, and these five are the ones that are used constantly and defined nowhere.",
+    (
+        Term(
+            name="out of tree build",
+            short="Running `configure` from an empty directory somewhere else, which is how GCC is meant to be built.",
+            long="Nothing stops you running `./configure` inside the source tree, and the first thing it does is scatter object files, generated sources and a `host-<triple>` directory among the checked in ones. GCC does not fully clean up after that, and the top level `configure` refuses to do an out of tree build afterwards from the same source, so the mistake is one you make once and then live with or re-clone. Build in a sibling directory and the source tree stays a source tree, `git status` stays readable, and you can have a checking build and a release build of the same source at the same time.",
+            cite="configure.ac:222@releases/gcc-16.2.0",
+            also=("separate build directory", "`srcdir`"),
+            see=("stamp file", "generated file"),
+            met="B01",
+        ),
+        Term(
+            name="target triple",
+            short="`cpu-company-system`, the three part name for a machine, and GCC needs up to three of them at once.",
+            long="`x86_64-pc-linux-gnu` and `aarch64-apple-darwin24` are triples, and `config.sub` turns whatever you typed into the canonical spelling. The reason there are three of them is that a compiler is a program that runs somewhere and emits code for somewhere else, so `--build` is where it is being compiled, `--host` is where it will run, and `--target` is what it will emit code for. All three the same is a native build. Host and target differing is a cross compiler. All three differing is a Canadian cross, which exists and which you should not attempt first.",
+            cite="gcc/doc/install.texi:867@releases/gcc-16.2.0",
+            also=("configuration name", "`--build`", "`--host`", "`--target`"),
+            see=("cross compiler", "port"),
+            met="B01",
+        ),
+        Term(
+            name="cross compiler",
+            short="A GCC whose host and target are different machines, which is one configure flag and a great deal of consequence.",
+            long="`--target=riscv64-unknown-elf` and you have a compiler that runs on your laptop and emits RISC-V. What follows is the part people are not ready for. The compiler needs a C library for the target and there is not one on your machine, so either you point it at one or you use a bare metal target that gets away with `newlib`. The programs it produces cannot be run, so the test suite needs a simulator. And the installed binaries are prefixed with the triple, so the thing you type is `riscv64-unknown-elf-gcc` and not `gcc`. For reading a back end that last part is a feature, because the target you are studying is not the one you are typing on.",
+            cite="configure.ac:213@releases/gcc-16.2.0",
+            also=("`--target`", "canadian cross"),
+            see=("target triple", "port"),
+            met="B01",
+        ),
+        Term(
+            name="stamp file",
+            short="An empty file whose only content is its timestamp, standing in for something make cannot depend on directly.",
+            long="A build directory is full of files called `s-something` with nothing in them. They exist because a generator program writes several outputs at once and make wants one target per rule, and because GCC writes generated sources through `move-if-change`, which deliberately leaves a file's timestamp alone when its content did not change. The stamp is what records that the generator ran. Deleting one forces a regeneration, and a stale one is the reason a build sometimes ignores an edit you made to a machine description.",
+            cite="gcc/Makefile.in:2803@releases/gcc-16.2.0",
+            also=("`s-` file", "`move-if-change`", "`$(STAMP)`"),
+            see=("generated file", "out of tree build"),
+            met="B01",
+        ),
+        Term(
+            name="bootstrap",
+            short="Building GCC three times, each stage compiled by the one before, and comparing the last two.",
+            long="Stage one is built by whatever compiler you already have, stage two by stage one, and stage three by stage two. Stages two and three are then compared object file by object file, and they have to be identical, because they are the same source compiled by two compilers that are supposed to be the same compiler. That comparison is the strongest self test GCC has and it catches things nothing else does. It also costs four hours, which is why `--disable-bootstrap` exists and why every configuration in this project except one uses it. B02 is the lesson that takes it apart.",
+            cite="Makefile.def:749@releases/gcc-16.2.0",
+            also=("`--enable-bootstrap`", "stage comparison", "three stage build"),
+            see=("stamp file", "checking build"),
+            met="B01",
+        ),
+    ),
+)
+
+
 GROUPS: tuple[Group, ...] = (
     READING,
     FINDING,
@@ -722,6 +775,7 @@ GROUPS: tuple[Group, ...] = (
     STATIC_SINGLE,
     REGISTERS,
     TEXT,
+    BUILDING,
 )
 
 #: Every term, flattened.
