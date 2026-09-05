@@ -515,9 +515,21 @@
    "hash": "5bce5cac0f6d20c8",
    "text": "A canonical configuration name has three parts, separated by dashes."
   },
+  "gcc/doc/sourcebuild.texi:1033@releases/gcc-16.2.0": {
+   "hash": "7ff3b276cdf2d39d",
+   "text": "@node Directives"
+  },
   "gcc/doc/sourcebuild.texi:1040@releases/gcc-16.2.0": {
    "hash": "e7944d0dedb7c8e7",
    "text": "The order in which test directives appear in a test can be important:"
+  },
+  "gcc/doc/sourcebuild.texi:1491@releases/gcc-16.2.0": {
+   "hash": "43501cc56154cd58",
+   "text": "@node Effective-Target Keywords"
+  },
+  "gcc/doc/sourcebuild.texi:919@releases/gcc-16.2.0": {
+   "hash": "40e0d88e413ef570",
+   "text": "@node Testsuites"
   },
   "gcc/dominance.cc:1125@releases/gcc-16.2.0": {
    "hash": "5ca962bf82eba31a",
@@ -1519,6 +1531,10 @@
    "hash": "dd0aa9ffee116580",
    "text": "extern struct gcc_target targetm;"
   },
+  "gcc/testsuite/gcc.dg/dg.exp:22@releases/gcc-16.2.0": {
+   "hash": "02ac3df6d47276ae",
+   "text": "# If a testcase doesn't have special options, use these."
+  },
   "gcc/testsuite/gcc.test-framework/test-framework.exp:20@releases/gcc-16.2.0": {
    "hash": "5cf62d8fa1b8217f",
    "text": "if { ![info exists env(CHECK_TEST_FRAMEWORK)] } {"
@@ -1535,6 +1551,14 @@
    "hash": "c743181a7a35b7a3",
    "text": "    # To confirm or deny suspicion that tests are skipped or executed"
   },
+  "gcc/testsuite/lib/gcc-dg.exp:1343@releases/gcc-16.2.0": {
+   "hash": "7a630fb8f6b71c88",
+   "text": "# Look for messages with 'note: ' prefixes."
+  },
+  "gcc/testsuite/lib/gcc-dg.exp:1359@releases/gcc-16.2.0": {
+   "hash": "9dda07eca6985e21",
+   "text": "proc dg-note { args } {"
+  },
   "gcc/testsuite/lib/gcc-dg.exp:238@releases/gcc-16.2.0": {
    "hash": "7f49d7c2304fc5bc",
    "text": "proc gcc-dg-test-1 { target_compile prog do_what extra_tool_flags } {"
@@ -1542,6 +1566,10 @@
   "gcc/testsuite/lib/gcc-dg.exp:320@releases/gcc-16.2.0": {
    "hash": "4061f48e7a5e5a56",
    "text": "    if [regexp -line -- {[Ii]nternal compiler error.*} $comp_output ice] {"
+  },
+  "gcc/testsuite/lib/gcc-dg.exp:736@releases/gcc-16.2.0": {
+   "hash": "16b2fff7bd4fedcd",
+   "text": "\t# Look for a loop within the source code - if we don't find one,"
   },
   "gcc/testsuite/lib/gcc-dg.exp:738@releases/gcc-16.2.0": {
    "hash": "f735d7cc532d6028",
@@ -1551,6 +1579,10 @@
    "hash": "86570d7844aa9659",
    "text": "proc gcc-dg-debug-runtest { target_compile trivial opt_opts testcases } {"
   },
+  "gcc/testsuite/lib/gcc-dg.exp:84@releases/gcc-16.2.0": {
+   "hash": "db2795c10472809d",
+   "text": "if [info exists TORTURE_OPTIONS] {"
+  },
   "gcc/testsuite/lib/gcc-dg.exp:85@releases/gcc-16.2.0": {
    "hash": "0c0b03c9f92a6406",
    "text": "    set DG_TORTURE_OPTIONS $TORTURE_OPTIONS"
@@ -1559,6 +1591,14 @@
    "hash": "67f8dd4b23d65aa8",
    "text": "    # Also note that -finline-functions is explicitly included in one of the"
   },
+  "gcc/testsuite/lib/gcc-dg.exp:94@releases/gcc-16.2.0": {
+   "hash": "d3d5587357362557",
+   "text": "    set DG_TORTURE_OPTIONS [list \\"
+  },
+  "gcc/testsuite/lib/prune.exp:22@releases/gcc-16.2.0": {
+   "hash": "d96aa8689569c886",
+   "text": "# format.  Note: You should not normally need to add more options here.  If you"
+  },
   "gcc/testsuite/lib/prune.exp:30@releases/gcc-16.2.0": {
    "hash": "e6e6af1a393ad3d4",
    "text": "set TEST_ALWAYS_FLAGS \"-fdiagnostics-plain-output $TEST_ALWAYS_FLAGS\""
@@ -1566,6 +1606,22 @@
   "gcc/testsuite/lib/prune.exp:32@releases/gcc-16.2.0": {
    "hash": "747f09665b1a7211",
    "text": "proc prune_gcc_output { text } {"
+  },
+  "gcc/testsuite/lib/prune.exp:56@releases/gcc-16.2.0": {
+   "hash": "bb18d3dc35089695",
+   "text": "    # Diagnostic inclusion stack"
+  },
+  "gcc/testsuite/lib/prune.exp:61@releases/gcc-16.2.0": {
+   "hash": "d6c771edafbd3e50",
+   "text": "    global prune_notes"
+  },
+  "gcc/testsuite/lib/scandump.exp:142@releases/gcc-16.2.0": {
+   "hash": "60a7394c73cab033",
+   "text": "    set testcase [testname-for-summary]"
+  },
+  "gcc/testsuite/lib/scandump.exp:148@releases/gcc-16.2.0": {
+   "hash": "1942e2a577581f39",
+   "text": "    set testname \"$testcase scan-[lindex $args 0]-dump-times $suf \\\"$printable_pattern\\\" [lindex $args 2]\""
   },
   "gcc/timevar.def:312@releases/gcc-16.2.0": {
    "hash": "1f18a74d6baf6459",

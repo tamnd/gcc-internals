@@ -30,6 +30,12 @@ written reason. There are three reasons and they are all limits of the API rathe
 shortcuts taken here: it cannot split a `-all` dump, it cannot produce a graph dump at all,
 and it always adds `-S`, so it can never show a driver chain that reaches the assembler.
 
+An offline experiment can still have sent requests, which sounds like a contradiction and is
+not. B04 compiles twelve GCC test files, several of which fail on purpose, so there is no one
+corpus entry with one dump for `online` to compare. Those experiments name a `cache` file,
+written by their own recorder, listing the entries they used, and that is what keeps
+`orphans` able to say that the registry accounts for the store exactly.
+
 CI never touches the live API. The online half runs against the committed cache with a
 sender that raises, so a cache miss is a build failure and populating the cache is a
 reviewed diff in a pull request rather than something that happens behind a green check.
@@ -37,6 +43,8 @@ reviewed diff in a pull request rather than something that happens behind a gree
 
 from __future__ import annotations
 
+import json
+import re
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -50,6 +58,11 @@ ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = Path(__file__).resolve().parent / "experiments.toml"
 
 KINDS = ("recorded", "paired", "offline")
+
+#: What a cache entry is called, which is what `tools.cecache.request_key` returns and what
+#: the store names its files. Checked rather than assumed, so a hand edited list of keys that
+#: are not keys fails here instead of silently justifying nothing.
+KEY = re.compile(r"[0-9a-f]{32}")
 
 #: What a paired experiment can compare, and what every one of them compares unless it says
 #: otherwise. `functions` is the set of function names in the dump, and the other four are
@@ -87,6 +100,10 @@ class Experiment:
     asm: bool = False
     raw_asm: bool = False
     chains: list[str] = field(default_factory=list)
+    #: A JSON file, relative to the repository root, with a `cache` list of the Compiler
+    #: Explorer entries this experiment's recorder used. Only for offline experiments, whose
+    #: requests are not one corpus entry and so cannot be worked out from the registry.
+    cache: str = ""
     why: str = ""
 
     def check(self) -> list[str]:
@@ -123,7 +140,34 @@ class Experiment:
                 )
         if self.corpus and not corpus_store.path_for(self.corpus).exists():
             problems.append(f"no corpus entry {self.corpus!r}")
+        if self.cache:
+            if self.kind != "offline":
+                problems.append(
+                    f"a {self.kind} experiment's requests are worked out from its corpus entry, "
+                    "so naming a cache file would be a second answer to the same question"
+                )
+            problems += self._cache_problems()
         return problems
+
+    def _cache_problems(self) -> list[str]:
+        target = ROOT / self.cache
+        if not target.is_file():
+            return [f"no cache file {self.cache!r}, so the entries it stands for are orphans"]
+        try:
+            listed = json.loads(target.read_text(encoding="utf-8")).get("cache")
+        except json.JSONDecodeError as exc:
+            return [f"{self.cache} is not readable as JSON: {exc}"]
+        if not listed:
+            return [f"{self.cache} has no cache list in it, so it justifies nothing"]
+        bad = [k for k in listed if not isinstance(k, str) or not KEY.fullmatch(k)]
+        return [f"{self.cache} lists {k!r}, which is not a cache key" for k in bad]
+
+    @property
+    def cached(self) -> set[str]:
+        """The entries the `cache` file names, or nothing when there is no such file."""
+        if not self.cache:
+            return set()
+        return set(json.loads((ROOT / self.cache).read_text(encoding="utf-8"))["cache"])
 
     def record(self) -> corpus_store.Record:
         return corpus_store.load(self.corpus)
@@ -300,7 +344,7 @@ def keys(x: Experiment) -> set[str]:
     re-recording a Compiler Explorer entry possible with the network off.
     """
     if x.kind == "offline":
-        return set()
+        return x.cached
     record = x.record()
     filters = dict(CE_RAW if x.raw_asm else CE_FILTERS)
     out = {request_key(x.compiler, PROBE, "-###", filters)}

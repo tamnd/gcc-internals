@@ -1,0 +1,90 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "<Compilation failed>"
+  }
+ ],
+ "code": 1,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-fdiagnostics-plain-output",
+  "-ansi",
+  "-pedantic-errors",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 81,
+ "filteredCount": 0,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {},
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.054027000442147255,
+ "stderr": [
+  {
+   "tag": {
+    "column": 1,
+    "file": "example.c",
+    "line": 6,
+    "severity": 3,
+    "text": "error: wrong number of arguments specified for 'assume_aligned' attribute"
+   },
+   "text": "<source>:6:1: error: wrong number of arguments specified for 'assume_aligned' attribute"
+  },
+  {
+   "tag": {
+    "column": 1,
+    "file": "example.c",
+    "line": 6,
+    "severity": 1,
+    "text": "note: expected between 1 and 2, found 0"
+   },
+   "text": "<source>:6:1: note: expected between 1 and 2, found 0"
+  },
+  {
+   "tag": {
+    "column": 1,
+    "file": "example.c",
+    "line": 7,
+    "severity": 3,
+    "text": "error: wrong number of arguments specified for 'assume_aligned' attribute"
+   },
+   "text": "<source>:7:1: error: wrong number of arguments specified for 'assume_aligned' attribute"
+  },
+  {
+   "tag": {
+    "column": 1,
+    "file": "example.c",
+    "line": 7,
+    "severity": 1,
+    "text": "note: expected between 1 and 2, found 3"
+   },
+   "text": "<source>:7:1: note: expected between 1 and 2, found 3"
+  },
+  {
+   "tag": {
+    "column": 1,
+    "file": "example.c",
+    "line": 8,
+    "severity": 2,
+    "text": "warning: 'assume_aligned' attribute argument i is not an integer constant [-Wattributes]"
+   },
+   "text": "<source>:8:1: warning: 'assume_aligned' attribute argument i is not an integer constant [-Wattributes]"
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

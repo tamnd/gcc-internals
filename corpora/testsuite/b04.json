@@ -1,0 +1,271 @@
+{
+ "recorded": "2026-09-06",
+ "tag": "releases/gcc-16.2.0",
+ "commit": "78d4ac73dd391005b895a6148cd9831e28e1208b",
+ "compiler": "gcc 16.2.0 (Compiler-Explorer-Build-gcc--binutils-2.44)",
+ "target": "x86_64-linux-gnu",
+ "cache": [
+  "2165d799148b4193e6ac3cc1e41fee56",
+  "253ddc30136c229301b25ff983e82c59",
+  "3b7bf7a8aa0244249d9fd4f56b01b7fa",
+  "601333bc2c264b66b0df64d4462bc3cf",
+  "60eebad1d7c4370c0548dc206c70b26a",
+  "62f42f0d2ff8f976681e649617c85d56",
+  "6be260f61b0bdd7a03f169ce873950d4",
+  "7c7c970e9488e4bb54cd14307bbed506",
+  "906d58dd1596363f80a3b050884d08df",
+  "9f4b00ea51f07595c466297884097370",
+  "ec5b370615af00f0f2561b87794236dc",
+  "feded2677aff4cb36cb66975aa68b30e",
+  "ff59f9d5b46cb7723811b85c64292d83"
+ ],
+ "survey": {
+  "files": 122535,
+  "exp": 550,
+  "scanned": 63624,
+  "walked": {
+   "gcc.dg": 18895,
+   "gcc.c-torture": 3918,
+   "gcc.target/i386": 9526,
+   "c-c++-common": 3358,
+   "gcc.misc-tests": 74,
+   "gcc.test-framework": 51
+  },
+  "total": 35822,
+  "kinds": 73,
+  "written": 311386,
+  "directives": {
+   "dg-final": 112903,
+   "dg-do": 47118,
+   "dg-options": 41368,
+   "dg-error": 31364,
+   "dg-warning": 28205,
+   "dg-require-effective-target": 16000,
+   "dg-additional-options": 10610,
+   "dg-skip-if": 5261,
+   "dg-add-options": 4548,
+   "dg-message": 3972,
+   "dg-bogus": 3120,
+   "dg-output": 1567,
+   "dg-begin-multiline-output": 985,
+   "dg-end-multiline-output": 985,
+   "dg-note": 769,
+   "dg-line": 274,
+   "dg-prune-output": 267,
+   "dg-lto-do": 192,
+   "dg-regexp": 153,
+   "dg-lto-options": 152,
+   "dg-shouldfail": 144,
+   "dg-additional-sources": 123,
+   "dg-require-ifunc": 94,
+   "dg-optimized": 86,
+   "dg-require-alias": 81,
+   "dg-final-use-not-autofdo": 79,
+   "dg-require-profiling": 78,
+   "dg-remove-options": 73,
+   "dg-excess-errors": 66,
+   "dg-require-weak": 61,
+   "dg-extra-ld-options": 60,
+   "dg-xfail-if": 50,
+   "dg-require-visibility": 48,
+   "dg-require-stack-size": 43,
+   "dg-enable-nn-line-numbers": 41,
+   "dg-set-compiler-env-var": 39,
+   "dg-xfail-run-if": 37,
+   "dg-bfin-options": 37,
+   "dg-final-use-autofdo": 37,
+   "dg-require-iconv": 31,
+   "dg-timeout-factor": 31,
+   "dg-final-use": 22,
+   "dg-prms-id": 18,
+   "dg-set-target-env-var": 18,
+   "dg-missed": 17,
+   "dg-require-stack-check": 15,
+   "dg-allow-blank-lines-in-output": 14,
+   "dg-csky-options": 14,
+   "dg-require-named-sections": 12,
+   "dg-require-dll": 12,
+   "dg-require-linker-plugin": 10,
+   "dg-ice": 10,
+   "dg-require-ascii-locale": 9,
+   "dg-locus": 9,
+   "dg-timeout": 9,
+   "dg-check-dot": 7,
+   "dg-require-fork": 6,
+   "dg-suppress-ld-options": 5,
+   "dg-do-if": 4,
+   "dg-require-weak-override": 3,
+   "dg-require-python-h": 3,
+   "dg-require-dot": 3,
+   "dg-output-file": 2,
+   "dg-additional-files": 2,
+   "dg-require-compat-dfp": 2,
+   "dg-bfin-processors": 1,
+   "dg-lto-message": 1,
+   "dg-keep-saved-temps": 1,
+   "dg-compile": 1,
+   "dg-require-gc-sections": 1,
+   "dg-lto-warning": 1,
+   "dg-final-generate": 1,
+   "dg-require-host-local": 1
+  },
+  "handled": [
+   "dg-additional-options",
+   "dg-bogus",
+   "dg-do",
+   "dg-error",
+   "dg-excess-errors",
+   "dg-final",
+   "dg-message",
+   "dg-note",
+   "dg-options",
+   "dg-prune-output",
+   "dg-warning"
+  ]
+ },
+ "tests": {
+  "flex": {
+   "path": "gcc/testsuite/gcc.dg/c99-flex-array-1.c",
+   "text": "/* Test for invalid uses of flexible array members.  */\n/* { dg-do compile } */\n/* { dg-options \"-std=iso9899:1999 -pedantic-errors\" } */\n\nstruct s1 { int x[]; }; /* { dg-error \"no named members\" \"members\" } */\nstruct s2 { int :1; int x[]; }; /* { dg-error \"no named members\" \"members\" } */\nstruct s3 { int x[]; int y; }; /* { dg-error \"not at end\" \"not at end\" } */\nstruct s4 { int x; int y[]; };\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-std=iso9899:1999",
+    "-pedantic-errors"
+   ],
+   "returncode": 1,
+   "stderr": "<source>:5:17: error: flexible array member in a struct with no named members is a GCC extension [-Wpedantic]\n<source>:6:25: error: flexible array member in a struct with no named members is a GCC extension [-Wpedantic]\n<source>:7:17: error: flexible array member not at end of struct",
+   "dump": ""
+  },
+  "assume": {
+   "path": "gcc/testsuite/gcc.dg/attr-assume_aligned-2.c",
+   "text": "/* { dg-do compile } */\n\nint i;\nvoid *f1 (void) __attribute__((assume_aligned (32)));\nvoid *f2 (void) __attribute__((assume_aligned (16, 4)));\nvoid *f3 (void) __attribute__((assume_aligned)); /* { dg-error \"wrong number of arguments specified\" } */\nvoid *f4 (void) __attribute__((assume_aligned (32, 16, 8))); /* { dg-error \"wrong number of arguments specified\" } */\nvoid *f5 (void) __attribute__((assume_aligned (i))); /* { dg-warning \"integer constant\" } */\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-ansi",
+    "-pedantic-errors"
+   ],
+   "returncode": 1,
+   "stderr": "<source>:6:1: error: wrong number of arguments specified for 'assume_aligned' attribute\n<source>:6:1: note: expected between 1 and 2, found 0\n<source>:7:1: error: wrong number of arguments specified for 'assume_aligned' attribute\n<source>:7:1: note: expected between 1 and 2, found 3\n<source>:8:1: warning: 'assume_aligned' attribute argument i is not an integer constant [-Wattributes]",
+   "dump": ""
+  },
+  "fre": {
+   "path": "gcc/testsuite/gcc.dg/tree-ssa/ssa-fre-6.c",
+   "text": "/* { dg-do compile } */\n/* { dg-options \"-O -fdump-tree-fre1-details\" } */\n\n int i; int foo(void) { i = 2; int j = i * 2; int k = i + 2; return j == k; }\n/* { dg-final { scan-tree-dump-times \"Replaced \" 6 \"fre1\" } } */\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-O",
+    "-fdump-tree-fre1-details"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": "\n;; Function foo (foo, funcdef_no=0, decl_uid=2960, cgraph_uid=2, symbol_order=1)\n\nProcessing block 0: BB2\nValue numbering stmt = # DEBUG BEGIN_STMT\nValue numbering stmt = i = 2;\nRHS 2 simplified to 2\nNo store match\nValue numbering store i to 2\nSetting value number of .MEM_5 to .MEM_5 (changed)\nValue numbering stmt = # DEBUG BEGIN_STMT\nValue numbering stmt = i.0_1 = i;\nSetting value number of i.0_1 to 2 (changed)\nReplaced i with 2 in all uses of i.0_1 = i;\nValue numbering stmt = j_6 = i.0_1 * 2;\nMatch-and-simplified i.0_1 * 2 to 4\nRHS i.0_1 * 2 simplified to 4\nSetting value number of j_6 to 4 (changed)\nReplaced i.0_1 * 2 with 4 in all uses of j_6 = i.0_1 * 2;\nValue numbering stmt = # DEBUG j => j_6\nValue numbering stmt = # DEBUG BEGIN_STMT\nValue numbering stmt = i.1_2 = i;\nSetting value number of i.1_2 to 2 (changed)\nReplaced i with 2 in all uses of i.1_2 = i;\nValue numbering stmt = k_7 = i.1_2 + 2;\nMatch-and-simplified i.1_2 + 2 to 4\nRHS i.1_2 + 2 simplified to 4\nSetting value number of k_7 to 4 (changed)\nReplaced i.1_2 + 2 with 4 in all uses of k_7 = i.1_2 + 2;\nValue numbering stmt = # DEBUG k => k_7\nValue numbering stmt = # DEBUG BEGIN_STMT\nValue numbering stmt = _3 = j_6 == k_7;\nMatch-and-simplified j_6 == k_7 to 1\nRHS j_6 == k_7 simplified to 1\nSetting value number of _3 to 1 (changed)\nReplaced j_6 == k_7 with 1 in all uses of _3 = j_6 == k_7;\nValue numbering stmt = _8 = (int) _3;\nMatch-and-simplified (int) _3 to 1\nRHS (int) _3 simplified to 1\nSetting value number of _8 to 1 (changed)\nReplaced (int) _3 with 1 in all uses of _8 = (int) _3;\nValue numbering stmt = return _8;\nmarking destination block 1 reachable\nRPO iteration over 1 blocks visited 1 blocks in total discovering 1 executable blocks iterating 1.0 times, a block was visited max. 1 times\nRPO tracked 7 values available at 0 locations and 7 lattice elements\nRemoving dead stmt _8 = (int) _3;\nRemoving dead stmt _3 = j_6 == k_7;\nRemoving dead stmt k_7 = i.1_2 + 2;\nRemoving dead stmt i.1_2 = i;\nRemoving dead stmt j_6 = i.0_1 * 2;\nRemoving dead stmt i.0_1 = i;\nint foo ()\n{\n  int k;\n  int j;\n\n  <bb 2> :\n  # DEBUG BEGIN_STMT\n  i = 2;\n  # DEBUG BEGIN_STMT\n  # DEBUG j => 4\n  # DEBUG BEGIN_STMT\n  # DEBUG k => 4\n  # DEBUG BEGIN_STMT\n  return 1;\n\n}\n\n"
+  },
+  "bogus": {
+   "path": "gcc/testsuite/gcc.dg/pr87309.c",
+   "text": "/* { dg-do compile } */\n/* { dg-options \"-fopt-info-vec-optimized -O3\" } */\n\nvoid a() {} /* { dg-bogus \"note\" } */\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-fopt-info-vec-optimized",
+    "-O3"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  },
+  "noloop": {
+   "path": "gcc/testsuite/gcc.dg/torture/pr78517.c",
+   "text": "/* PR middle-end/78517 */\n/* { dg-do compile } */\nchar a;\nint fn1() { return a == '[' ? a : 0; }\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-O2"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  },
+  "flex-c90": {
+   "path": "gcc/testsuite/gcc.dg/c99-flex-array-1.c",
+   "text": "/* Test for invalid uses of flexible array members.  */\n/* { dg-do compile } */\n/* { dg-options \"-std=iso9899:1999 -pedantic-errors\" } */\n\nstruct s1 { int x[]; }; /* { dg-error \"no named members\" \"members\" } */\nstruct s2 { int :1; int x[]; }; /* { dg-error \"no named members\" \"members\" } */\nstruct s3 { int x[]; int y; }; /* { dg-error \"not at end\" \"not at end\" } */\nstruct s4 { int x; int y[]; };\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-ansi",
+    "-pedantic-errors"
+   ],
+   "returncode": 1,
+   "stderr": "<source>:5:17: error: ISO C90 does not support flexible array members [-Wpedantic]\n<source>:5:17: error: flexible array member in a struct with no named members is a GCC extension [-Wpedantic]\n<source>:6:25: error: ISO C90 does not support flexible array members [-Wpedantic]\n<source>:6:25: error: flexible array member in a struct with no named members is a GCC extension [-Wpedantic]\n<source>:7:17: error: ISO C90 does not support flexible array members [-Wpedantic]\n<source>:7:17: error: flexible array member not at end of struct\n<source>:8:24: error: ISO C90 does not support flexible array members [-Wpedantic]",
+   "dump": ""
+  },
+  "torture-0": {
+   "path": "gcc/testsuite/gcc.dg/torture/pr122599-1.c",
+   "text": "/* { dg-do compile } */\n/* PR tree-optimization/122599 */\n\nvoid f(int *x, unsigned n) {\n  for (int i = 0; i < 5; i++)\n    while ((int)--n >= 0)\n      x[0] = 0;\n}\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-O0"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  },
+  "torture-1": {
+   "path": "gcc/testsuite/gcc.dg/torture/pr122599-1.c",
+   "text": "/* { dg-do compile } */\n/* PR tree-optimization/122599 */\n\nvoid f(int *x, unsigned n) {\n  for (int i = 0; i < 5; i++)\n    while ((int)--n >= 0)\n      x[0] = 0;\n}\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-O1"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  },
+  "torture-2": {
+   "path": "gcc/testsuite/gcc.dg/torture/pr122599-1.c",
+   "text": "/* { dg-do compile } */\n/* PR tree-optimization/122599 */\n\nvoid f(int *x, unsigned n) {\n  for (int i = 0; i < 5; i++)\n    while ((int)--n >= 0)\n      x[0] = 0;\n}\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-O2"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  },
+  "torture-3": {
+   "path": "gcc/testsuite/gcc.dg/torture/pr122599-1.c",
+   "text": "/* { dg-do compile } */\n/* PR tree-optimization/122599 */\n\nvoid f(int *x, unsigned n) {\n  for (int i = 0; i < 5; i++)\n    while ((int)--n >= 0)\n      x[0] = 0;\n}\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-O3",
+    "-fomit-frame-pointer",
+    "-funroll-loops",
+    "-fpeel-loops",
+    "-ftracer",
+    "-finline-functions"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  },
+  "torture-4": {
+   "path": "gcc/testsuite/gcc.dg/torture/pr122599-1.c",
+   "text": "/* { dg-do compile } */\n/* PR tree-optimization/122599 */\n\nvoid f(int *x, unsigned n) {\n  for (int i = 0; i < 5; i++)\n    while ((int)--n >= 0)\n      x[0] = 0;\n}\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-O3",
+    "-g"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  },
+  "torture-5": {
+   "path": "gcc/testsuite/gcc.dg/torture/pr122599-1.c",
+   "text": "/* { dg-do compile } */\n/* PR tree-optimization/122599 */\n\nvoid f(int *x, unsigned n) {\n  for (int i = 0; i < 5; i++)\n    while ((int)--n >= 0)\n      x[0] = 0;\n}\n",
+   "args": [
+    "-fdiagnostics-plain-output",
+    "-Os"
+   ],
+   "returncode": 0,
+   "stderr": "",
+   "dump": ""
+  }
+ }
+}

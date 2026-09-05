@@ -368,3 +368,20 @@ rest of the corpus is not. The half of the lesson that is not a recording is \
 corpora/replay/counters.json, fifty real compilations at fifty debug counter limits, and the \
 bisection over them runs when the reader runs the cell.\
 """
+
+[[experiment]]
+id = "b04-testsuite"
+kind = "offline"
+question = "How does the harness decide that a test passed, and how do you run one test out of forty thousand?"
+lessons = ["b04-the-test-suite"]
+cache = "corpora/testsuite/b04.json"
+why = """
+Offline in the registry's sense and not in the ordinary one. The twelve compilations behind \
+this lesson are real Compiler Explorer responses, committed in the cache and listed in the \
+cache field above, and running lessons/b04-the-test-suite/record.py sends every one of them \
+again. What they are not is one corpus entry with one dump, which is what the online check \
+compares, because they are twelve different files with twelve different command lines and \
+three of them fail to compile on purpose. So the check that keeps them honest is the \
+recorder's own, which asserts every behavioural fact the notebook states, and it runs against \
+the recording in the test suite of this repository without a network.\
+"""
