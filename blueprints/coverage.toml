@@ -108,3 +108,68 @@ status = "covered"
 [[inventory.gimple-layouts.rule]]
 match = "GSS_*"
 status = "mentioned"
+
+[inventory.plugin-events]
+what = "plugin events"
+source = "gcc/plugin.def"
+macro = "DEFEVENT"
+
+# The events `BP-PLUGIN` describes with their call site, their data and what an observer can
+# do with them. These are the ones a reader of this book will actually register for, because
+# they are the ones that see the pipeline.
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_PASS_EXECUTION"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_OVERRIDE_GATE"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_NEW_PASS"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_PASS_MANAGER_SETUP"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_INFO"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_ALL_PASSES_*"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_START_UNIT"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_FINISH_UNIT"
+status = "covered"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_FINISH"
+status = "covered"
+
+# The garbage collector's own events. A plugin that allocates GC memory needs all four and
+# none of them can be explained without `BP-GGC`, which does not exist yet. They are named
+# in section 7 of `BP-PLUGIN` with what fires them and nothing about what to do inside one.
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_GGC_*"
+status = "mentioned"
+
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_REGISTER_GGC_ROOTS"
+status = "mentioned"
+
+# Everything left is a front end event, an IPA bracket, or one of the two registration
+# moments for attributes and pragmas. Each is in the generated table in section 2.1 with its
+# call site and the type of its data, which is more than GCC writes down anywhere, and none
+# of them is explained. Explaining them needs a blueprint about GENERIC and one about the
+# call graph, and both are ahead of this one.
+[[inventory.plugin-events.rule]]
+match = "PLUGIN_*"
+status = "mentioned"

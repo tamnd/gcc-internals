@@ -20,6 +20,7 @@ import pytest
 from tools import bpc
 from tools.bpc import Blueprint, BpcError, gccsrc
 from tools.bpc import coverage as ledger
+from tools.bpc import plugin as plugin_gen
 from tools.bpc.gccsrc import SourceError
 
 HAVE_TREE = (bpc.GCC_ROOT / "gimple.def").is_file()
@@ -589,3 +590,85 @@ def test_every_code_a_cast_accepts_is_a_code_that_exists():
 def test_the_blueprints_in_the_repository_are_built_and_well_formed():
     assert bpc.check() == []
     assert ledger.problems() == []
+
+
+# The plugin event scanner
+
+
+def test_a_call_on_one_line_is_found_with_its_data_expression(tmp_path: Path):
+    (tmp_path / "x.cc").write_text(
+        "void f () { invoke_plugin_callbacks (PLUGIN_FINISH_UNIT, NULL); }\n", encoding="utf-8"
+    )
+    found = plugin_gen.sites(tmp_path)
+    assert found["PLUGIN_FINISH_UNIT"] == [("x.cc", 1, "NULL")]
+
+
+def test_a_call_split_across_two_lines_is_still_one_call(tmp_path: Path):
+    """c-opts.cc writes the only two line call in the tree, and a line based scan misses it."""
+    (tmp_path / "x.cc").write_text(
+        dedent(
+            """
+            void f ()
+            {
+              invoke_plugin_callbacks
+                (PLUGIN_INCLUDE_FILE,
+                 const_cast<char*> (NAME (m)));
+            }
+            """
+        ),
+        encoding="utf-8",
+    )
+    found = plugin_gen.sites(tmp_path)
+    assert found["PLUGIN_INCLUDE_FILE"] == [("x.cc", 3, "const_cast<char*> (NAME (m))")]
+
+
+def test_the_dispatcher_itself_is_not_a_call_site(tmp_path: Path):
+    (tmp_path / "plugin.cc").write_text(
+        "int g () { invoke_plugin_callbacks (PLUGIN_FINISH, NULL); }\n", encoding="utf-8"
+    )
+    assert plugin_gen.sites(tmp_path) == {}
+
+
+def test_a_front_end_call_is_reported_under_its_directory(tmp_path: Path):
+    (tmp_path / "c").mkdir()
+    (tmp_path / "c" / "c-decl.cc").write_text(
+        "void f () { invoke_plugin_callbacks (PLUGIN_FINISH_DECL, decl); }\n", encoding="utf-8"
+    )
+    found = plugin_gen.sites(tmp_path)
+    assert found["PLUGIN_FINISH_DECL"] == [("c/c-decl.cc", 1, "decl")]
+
+
+def test_data_passed_by_address_is_said_to_be_by_address():
+    assert plugin_gen.data_type("NULL") == "none"
+    assert plugin_gen.data_type("&gate_status") == "`gate_status`, by address"
+    assert plugin_gen.data_type("pass") == "`pass`"
+
+
+@needs_tree
+def test_every_event_is_either_fired_or_one_of_the_three_pseudo_events():
+    """The check that catches a new event nobody has classified.
+
+    A row reading "no call site found" in the generated table means either GCC added an
+    event and has not wired it up, or the scanner stopped recognising a call. Both are
+    worth a build failure, and neither is visible by reading the table.
+    """
+    names = {e.name for e in plugin_gen.events(bpc.GCC_ROOT)}
+    fired = set(plugin_gen.sites(bpc.GCC_ROOT))
+    assert fired <= names, fired - names
+    assert names - fired == set(plugin_gen.PSEUDO)
+
+
+@needs_tree
+def test_the_event_numbering_is_the_order_of_the_file():
+    events = plugin_gen.events(bpc.GCC_ROOT)
+    assert [e.index for e in events] == list(range(len(events)))
+    assert events[0].name == "PLUGIN_START_PARSE_FUNCTION"
+    assert all(e.name.startswith("PLUGIN_") for e in events)
+
+
+@needs_tree
+def test_the_two_events_this_project_relies_on_fire_from_the_pass_manager():
+    found = plugin_gen.sites(bpc.GCC_ROOT)
+    assert [f for f, _, _ in found["PLUGIN_PASS_EXECUTION"]] == ["passes.cc"]
+    assert [d for _, _, d in found["PLUGIN_PASS_EXECUTION"]] == ["pass"]
+    assert [d for _, _, d in found["PLUGIN_OVERRIDE_GATE"]] == ["&gate_status"]

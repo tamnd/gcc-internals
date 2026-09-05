@@ -3,6 +3,10 @@
  "pinned": "releases/gcc-16.2.0",
  "context_lines": 2,
  "citations": {
+  "gcc/attribs.cc:338@releases/gcc-16.2.0": {
+   "hash": "dbeb2cb1078e38ff",
+   "text": "  invoke_plugin_callbacks (PLUGIN_ATTRIBUTES, NULL);"
+  },
   "gcc/basic-block.h:117@releases/gcc-16.2.0": {
    "hash": "05175d55535c1aa8",
    "text": "struct GTY((chain_next (\"%h.next_bb\"), chain_prev (\"%h.prev_bb\"))) basic_block_def {"
@@ -38,6 +42,10 @@
   "gcc/c-family/c-opts.cc:1419@releases/gcc-16.2.0": {
    "hash": "4de52375ef4441f9",
    "text": "c_common_parse_file (void)"
+  },
+  "gcc/c-family/c-pragma.cc:1885@releases/gcc-16.2.0": {
+   "hash": "c3e35ae22c26daf3",
+   "text": "  invoke_plugin_callbacks (PLUGIN_PRAGMAS, NULL);"
   },
   "gcc/c/c-parser.cc:31269@releases/gcc-16.2.0": {
    "hash": "7c397c5b5864c371",
@@ -203,6 +211,10 @@
    "hash": "fb98a06d2f9e5c6d",
    "text": "combine_instructions (rtx_insn *f, unsigned int nregs)"
   },
+  "gcc/common.opt:2613@releases/gcc-16.2.0": {
+   "hash": "8c0720efcfee21b8",
+   "text": "fplugin="
+  },
   "gcc/common.opt:3220@releases/gcc-16.2.0": {
    "hash": "5f13812388f3b810",
    "text": "ftree-ccp"
@@ -319,9 +331,17 @@
    "hash": "c8096d3c3ff7f567",
    "text": "class pass_final : public rtl_opt_pass"
   },
+  "gcc/gcc.cc:10823@releases/gcc-16.2.0": {
+   "hash": "130322b91e663138",
+   "text": "  option = concat (\"-iplugindir=\", find_file (\"plugin\"), NULL);"
+  },
   "gcc/gcc.cc:1234@releases/gcc-16.2.0": {
    "hash": "ebb1ec3c29398f08",
    "text": "static const char *cc1_spec = CC1_SPEC OS_CC1_SPEC;"
+  },
+  "gcc/gcc.cc:1282@releases/gcc-16.2.0": {
+   "hash": "0a5e45f393d0ca8a",
+   "text": " %{!iplugindir*:%{fplugin*:%:find-plugindir()}}\\"
   },
   "gcc/gcc.cc:1339@releases/gcc-16.2.0": {
    "hash": "8b89b8c5655d703d",
@@ -422,6 +442,10 @@
   "gcc/genrecog.cc:21@releases/gcc-16.2.0": {
    "hash": "864e4facf74ebb15",
    "text": "/* This program is used to produce insn-recog.cc, which contains a"
+  },
+  "gcc/ggc-common.cc:118@releases/gcc-16.2.0": {
+   "hash": "02d2d7c8f8939b67",
+   "text": "  invoke_plugin_callbacks (PLUGIN_GGC_MARKING, NULL);"
   },
   "gcc/gimple-expr.cc:836@releases/gcc-16.2.0": {
    "hash": "42bc3cf0317ea2ed",
@@ -703,9 +727,21 @@
    "hash": "0441995f52e93963",
    "text": "expand_insn (enum insn_code icode, unsigned int nops,"
   },
+  "gcc/opts-global.cc:432@releases/gcc-16.2.0": {
+   "hash": "c31b25439a0a51e3",
+   "text": "\tcase OPT_fplugin_:"
+  },
+  "gcc/opts-global.cc:436@releases/gcc-16.2.0": {
+   "hash": "42261cfe2a8b5b5b",
+   "text": "\t  error (\"plugin support is disabled; configure with \""
+  },
   "gcc/opts.cc:1234@releases/gcc-16.2.0": {
    "hash": "3d8ebfd0f828d4fe",
    "text": "  if (!opts->x_optimize || opts->x_optimize_debug)"
+  },
+  "gcc/opts.cc:301@releases/gcc-16.2.0": {
+   "hash": "e084ce0b1152f2f5",
+   "text": "strip_off_ending (char *name, int len)"
   },
   "gcc/opts.cc:471@releases/gcc-16.2.0": {
    "hash": "8f6f21aaa284a687",
@@ -755,9 +791,25 @@
    "hash": "758920330303231a",
    "text": "is_pass_explicitly_enabled_or_disabled (opt_pass *pass,"
   },
+  "gcc/passes.cc:1342@releases/gcc-16.2.0": {
+   "hash": "32cf5ac12ec10166",
+   "text": "      invoke_plugin_callbacks (PLUGIN_NEW_PASS, new_pass);"
+  },
   "gcc/passes.cc:1480@releases/gcc-16.2.0": {
    "hash": "51646e5bb483387d",
    "text": "register_pass (struct register_pass_info *pass_info)"
+  },
+  "gcc/passes.cc:1499@releases/gcc-16.2.0": {
+   "hash": "750f368a564351fd",
+   "text": "pass_manager::register_pass (struct register_pass_info *pass_info)"
+  },
+  "gcc/passes.cc:1503@releases/gcc-16.2.0": {
+   "hash": "177f11deaf69c291",
+   "text": "  /* The checks below could fail in buggy plugins.  Existing GCC"
+  },
+  "gcc/passes.cc:1534@releases/gcc-16.2.0": {
+   "hash": "418821a94580123e",
+   "text": "       \"pass %qs not found but is referenced by new pass %qs\","
   },
   "gcc/passes.cc:1577@releases/gcc-16.2.0": {
    "hash": "255a55abd6bb89aa",
@@ -790,6 +842,10 @@
   "gcc/passes.cc:2579@releases/gcc-16.2.0": {
    "hash": "874fd72273323b29",
    "text": "execute_one_pass (opt_pass *pass)"
+  },
+  "gcc/passes.cc:2631@releases/gcc-16.2.0": {
+   "hash": "4ce501372af64f0a",
+   "text": "  invoke_plugin_callbacks (PLUGIN_PASS_EXECUTION, pass);"
   },
   "gcc/passes.cc:2675@releases/gcc-16.2.0": {
    "hash": "be2315d6c6cf0d6b",
@@ -895,6 +951,162 @@
    "hash": "bc750d58492694fc",
    "text": "\t  NEXT_PASS (pass_remove_cgraph_callee_edges);"
   },
+  "gcc/plugin.cc:1007@releases/gcc-16.2.0": {
+   "hash": "d5e15bb6d9a8357f",
+   "text": "plugin_default_version_check (struct plugin_gcc_version *gcc_version,"
+  },
+  "gcc/plugin.cc:1043@releases/gcc-16.2.0": {
+   "hash": "ac5b6b08ed253871",
+   "text": "default_plugin_dir_name (void)"
+  },
+  "gcc/plugin.cc:1047@releases/gcc-16.2.0": {
+   "hash": "8107393be4e54405",
+   "text": "\t\t \"%<-iplugindir%> option not passed from the gcc driver\");"
+  },
+  "gcc/plugin.cc:104@releases/gcc-16.2.0": {
+   "hash": "fdff1904e4eadc6a",
+   "text": "struct callback_info"
+  },
+  "gcc/plugin.cc:113@releases/gcc-16.2.0": {
+   "hash": "c9d37e3f47027be2",
+   "text": "static struct callback_info *plugin_callbacks_init[PLUGIN_EVENT_FIRST_DYNAMIC];"
+  },
+  "gcc/plugin.cc:160@releases/gcc-16.2.0": {
+   "hash": "2e01b536264a5728",
+   "text": "  strip_off_ending (base_name, strlen (base_name));"
+  },
+  "gcc/plugin.cc:204@releases/gcc-16.2.0": {
+   "hash": "d3bfc7a1f9093b75",
+   "text": "      static const char plugin_ext[] = \".dylib\";"
+  },
+  "gcc/plugin.cc:214@releases/gcc-16.2.0": {
+   "hash": "1471346206c80af9",
+   "text": "\t   \"inaccessible plugin file %s expanded from short plugin name %s: %m\","
+  },
+  "gcc/plugin.cc:236@releases/gcc-16.2.0": {
+   "hash": "a267d01b9c0b587e",
+   "text": "\terror (\"plugin %qs was specified with different paths: %qs and %qs\","
+  },
+  "gcc/plugin.cc:296@releases/gcc-16.2.0": {
+   "hash": "35846c5d8f413332",
+   "text": "\t     \"missing %<-<key>[=<value>]%>\","
+  },
+  "gcc/plugin.cc:338@releases/gcc-16.2.0": {
+   "hash": "1de92027dad476a9",
+   "text": "      if (plugin->argc > 0)"
+  },
+  "gcc/plugin.cc:359@releases/gcc-16.2.0": {
+   "hash": "e9778830279a20c6",
+   "text": "    error (\"plugin %s should be specified before %<-fplugin-arg-%s%> \""
+  },
+  "gcc/plugin.cc:391@releases/gcc-16.2.0": {
+   "hash": "5bf83c681ec1db72",
+   "text": "get_named_event_id (const char *name, enum insert_option insert)"
+  },
+  "gcc/plugin.cc:458@releases/gcc-16.2.0": {
+   "hash": "2684a70ad2d92b09",
+   "text": "      case PLUGIN_PASS_MANAGER_SETUP:"
+  },
+  "gcc/plugin.cc:459@releases/gcc-16.2.0": {
+   "hash": "dd7e9456305431ac",
+   "text": "\tgcc_assert (!callback);"
+  },
+  "gcc/plugin.cc:472@releases/gcc-16.2.0": {
+   "hash": "6530b27142ef26f7",
+   "text": "\tif (event < PLUGIN_EVENT_FIRST_DYNAMIC || event >= event_last)"
+  },
+  "gcc/plugin.cc:474@releases/gcc-16.2.0": {
+   "hash": "31dad391bcfa7b3f",
+   "text": "\t    error (\"unknown callback event registered by plugin %s\","
+  },
+  "gcc/plugin.cc:506@releases/gcc-16.2.0": {
+   "hash": "37b11dc5aded0ca1",
+   "text": "              error (\"plugin %s registered a null callback function \""
+  },
+  "gcc/plugin.cc:514@releases/gcc-16.2.0": {
+   "hash": "6a68a2e9819bd332",
+   "text": "          new_callback->next = plugin_callbacks[event];"
+  },
+  "gcc/plugin.cc:546@releases/gcc-16.2.0": {
+   "hash": "9341db1b4ab1b30a",
+   "text": "invoke_plugin_callbacks_full (int event, void *gcc_data)"
+  },
+  "gcc/plugin.cc:556@releases/gcc-16.2.0": {
+   "hash": "7957eb7bba0492c4",
+   "text": "\tgcc_assert (event >= PLUGIN_EVENT_FIRST_DYNAMIC);"
+  },
+  "gcc/plugin.cc:55@releases/gcc-16.2.0": {
+   "hash": "dec9f0ac799e2524",
+   "text": "# define DEFEVENT(NAME) GCC_PLUGIN_STRINGIFY1 (NAME),"
+  },
+  "gcc/plugin.cc:596@releases/gcc-16.2.0": {
+   "hash": "3c735a762c2877de",
+   "text": "        gcc_assert (false);"
+  },
+  "gcc/plugin.cc:630@releases/gcc-16.2.0": {
+   "hash": "91bd7d6e1b047b82",
+   "text": "try_init_one_plugin (struct plugin_name_args *plugin)"
+  },
+  "gcc/plugin.cc:692@releases/gcc-16.2.0": {
+   "hash": "de7650830617d45d",
+   "text": "try_init_one_plugin (struct plugin_name_args *plugin)"
+  },
+  "gcc/plugin.cc:716@releases/gcc-16.2.0": {
+   "hash": "e1b04ee5a1c4bbf3",
+   "text": "\t\t \"plugin %s is not licensed under a GPL-compatible license:\""
+  },
+  "gcc/plugin.cc:738@releases/gcc-16.2.0": {
+   "hash": "d042a48384209bbc",
+   "text": "  /* leak dl_handle on purpose to ensure the plugin is loaded for the"
+  },
+  "gcc/plugin.cc:753@releases/gcc-16.2.0": {
+   "hash": "3ca658f85bed1f28",
+   "text": "init_one_plugin (void **slot, void * ARG_UNUSED (info))"
+  },
+  "gcc/plugin.cc:772@releases/gcc-16.2.0": {
+   "hash": "d88c2f4a99952429",
+   "text": "initialize_plugins (void)"
+  },
+  "gcc/plugin.cc:782@releases/gcc-16.2.0": {
+   "hash": "86d3df81559683e9",
+   "text": "  htab_traverse_noresize (plugin_name_args_tab, init_one_plugin, NULL);"
+  },
+  "gcc/plugin.cc:996@releases/gcc-16.2.0": {
+   "hash": "df5740881a86dc4c",
+   "text": "      fnotice (stderr, \"*** WARNING *** there are active plugins, do not report\""
+  },
+  "gcc/plugin.h:153@releases/gcc-16.2.0": {
+   "hash": "f1cdd28a83b226c7",
+   "text": "extern int plugin_is_GPL_compatible;"
+  },
+  "gcc/plugin.h:188@releases/gcc-16.2.0": {
+   "hash": "78c2aa4e81a101d9",
+   "text": "invoke_plugin_callbacks (int event ATTRIBUTE_UNUSED,"
+  },
+  "gcc/plugin.h:26@releases/gcc-16.2.0": {
+   "hash": "48d5612c4d8e470f",
+   "text": "enum plugin_event"
+  },
+  "gcc/plugin.h:42@releases/gcc-16.2.0": {
+   "hash": "91605e5e54e8b697",
+   "text": "struct plugin_argument"
+  },
+  "gcc/plugin.h:50@releases/gcc-16.2.0": {
+   "hash": "96d51eee1de59085",
+   "text": "struct plugin_info"
+  },
+  "gcc/plugin.h:58@releases/gcc-16.2.0": {
+   "hash": "e0808850f3a040e8",
+   "text": "struct plugin_gcc_version"
+  },
+  "gcc/plugin.h:68@releases/gcc-16.2.0": {
+   "hash": "beec52a8cb1ffb30",
+   "text": "struct plugin_name_args"
+  },
+  "gcc/plugin.h:95@releases/gcc-16.2.0": {
+   "hash": "8cef663f1a9d5273",
+   "text": "typedef int (*plugin_init_func) (struct plugin_name_args *plugin_info,"
+  },
   "gcc/poly-int.h:374@releases/gcc-16.2.0": {
    "hash": "9a97de5b8705c3ec",
    "text": "/* A class containing polynomial integers.  The polynomial has N coefficients"
@@ -966,6 +1178,18 @@
   "gcc/target.h:337@releases/gcc-16.2.0": {
    "hash": "dd0aa9ffee116580",
    "text": "extern struct gcc_target targetm;"
+  },
+  "gcc/timevar.def:312@releases/gcc-16.2.0": {
+   "hash": "1f18a74d6baf6459",
+   "text": "DEFTIMEVAR (TV_PLUGIN_INIT           , \"plugin initialization\")"
+  },
+  "gcc/toplev.cc:1037@releases/gcc-16.2.0": {
+   "hash": "34d6996ac03696cb",
+   "text": "  warn_if_plugins ();"
+  },
+  "gcc/toplev.cc:2361@releases/gcc-16.2.0": {
+   "hash": "10fbf5b656d32029",
+   "text": "  initialize_plugins ();"
   },
   "gcc/toplev.cc:449@releases/gcc-16.2.0": {
    "hash": "212540f0d47231aa",
@@ -1094,6 +1318,14 @@
   "gcc/tree-pass.h:240@releases/gcc-16.2.0": {
    "hash": "78c56868081ddba0",
    "text": "#define TODO_do_not_ggc_collect\t\t(1 << 1)"
+  },
+  "gcc/tree-pass.h:328@releases/gcc-16.2.0": {
+   "hash": "374930007695ca32",
+   "text": "enum pass_positioning_ops"
+  },
+  "gcc/tree-pass.h:335@releases/gcc-16.2.0": {
+   "hash": "ba661a2a31d2245f",
+   "text": "struct register_pass_info"
   },
   "gcc/tree-pass.h:39@releases/gcc-16.2.0": {
    "hash": "f83f09f6815a3382",

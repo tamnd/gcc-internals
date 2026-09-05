@@ -39,7 +39,14 @@ def test_the_index_lists_every_blueprint_with_its_status():
     for bp in FOUND:
         assert f"[{bp.id}](blueprints/{bp.id}.md)" in text
         assert bp.header("Status")
-    assert "9 of 58 written: 1 complete, 1 partial, 7 stub." in text
+    # Counted from the blueprints rather than written down, because a hardcoded tally is a
+    # test that fails on the day somebody does the thing the tally is measuring.
+    counts: dict[str, int] = {}
+    for bp in FOUND:
+        counts[bp.header("Status")] = counts.get(bp.header("Status"), 0) + 1
+    said = ", ".join(f"{n} {k}" for k, n in sorted(counts.items()))
+    assert f"{len(FOUND)} of 58 written: {said}." in text
+    assert sum(counts.values()) == len(FOUND) < 58
 
 
 def test_the_index_says_what_each_blueprint_is_for_in_its_own_words():
