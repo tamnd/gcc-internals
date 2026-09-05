@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-113 claims across 15 lessons, 4 of them not observable from a notebook.
+125 claims across 16 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -197,3 +197,20 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | the match counter fires 49 times compiling nine lines of C at -O2, and those 49 transformations produce exactly two distinct assembly outputs | [`b03-46`](b03-the-debugger/b03.ipynb) |
 | five probes are enough to find one transformation out of forty nine, and the answer agrees with sweeping every limit one at a time | [`b03-50`](b03-the-debugger/b03.ipynb) |
 | the bisected number and a conditional breakpoint together name the transformation, the file it lives in and the pass that asked for it | [`b03-52`](b03-the-debugger/b03.ipynb) |
+
+## Forty thousand tests, and how to run one of them
+
+| Claim | Proved by |
+| --- | --- |
+| a native x86-64 run of the C test suite walks over thirty five thousand C files, which is a quarter of the files in the testsuite directory, because the rest belong to other languages and other architectures | [`b04-04`](b04-the-test-suite/b04.ipynb) |
+| seventy three kinds of directive are written across the suite, four of them account for most of the usage, and the model in this lesson handles eleven | [`b04-06`](b04-the-test-suite/b04.ipynb) |
+| dg-options replaces the directory default rather than adding to it, so the flexible array test is compiled without the -ansi its directory would have given it, and dg-additional-options is the directive for wanting the other behaviour | [`b04-16`](b04-the-test-suite/b04.ipynb) |
+| one compilation of a nine line file produces four results, one per dg-error and one more that no directive in the file asked for | [`b04-20`](b04-the-test-suite/b04.ipynb) |
+| under the wrong standard every one of the file's three directives still passes and the test fails anyway, on the one struct its author deliberately left legal | [`b04-22`](b04-the-test-suite/b04.ipynb) |
+| the assume_aligned test prints five diagnostics, accounts for three of them, and passes, because the two it ignores are notes and nothing in the file used dg-note | [`b04-28`](b04-the-test-suite/b04.ipynb) |
+| dg-bogus passes when the compiler says nothing, and the test it comes from is a regression test for a note GCC used to print and should not have | [`b04-30`](b04-the-test-suite/b04.ipynb) |
+| the fre1 dump of a five line function contains the word Replaced exactly six times, which is what the test asks for, and the directive names the dump fre1 even though the flag that produced it was spelled -fdump-tree-fre1-details | [`b04-34`](b04-the-test-suite/b04.ipynb) |
+| the same file is compiled six times under torture, and a file with no loop in it is compiled with the same six sets minus the two loop flags, chosen by searching the text of the file for for or while | [`b04-42`](b04-the-test-suite/b04.ipynb) |
+| a RUNTESTFLAGS filter matches the base name of a test and not its path, so a glob of pr*.c selects files in every directory the named .exp walks | [`b04-44`](b04-the-test-suite/b04.ipynb) |
+| when every process walks the same list every test runs exactly once, and when one process walks a list that is one file shorter, one test is never run and another runs twice, and nothing reports either | [`b04-48`](b04-the-test-suite/b04.ipynb) |
+| two runs whose summary blocks are identical can differ in four separate tests, and the one that matters most is a test that stopped being run, which no count can show you because the total was made up again by a different test | [`b04-54`](b04-the-test-suite/b04.ipynb) |

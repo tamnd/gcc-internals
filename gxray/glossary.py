@@ -820,6 +820,67 @@ BUILDING = Group(
 )
 
 
+TESTING = Group(
+    "Testing the compiler",
+    "Words you need to read a GCC test, work out what command line it will be compiled with, and tell a real regression from a test that quietly stopped running. B04 is the lesson.",
+    (
+        Term(
+            name="DejaGnu",
+            short="The Tcl and expect framework GCC's test suite is written in, and the reason a test is a C file with comments in it.",
+            long='`make check` runs `runtest`, which is DejaGnu, which loads a `.exp` file per directory and hands it a list of files. The `.exp` is a Tcl program, so a directory of tests is a program that decides how to compile them rather than a list of cases. What GCC adds on top is `lib/gcc-dg.exp` and its neighbours, about six thousand lines that turn `{ dg-error "..." }` comments into verdicts. Nothing here is a library you can call: the harness needs `expect`, a build tree and a compiler that was built minutes ago, which is why it is the one part of GCC that a reader cannot try out casually.',
+            cite="gcc/doc/sourcebuild.texi:919@releases/gcc-16.2.0",
+            also=("`runtest`", "`.exp` file", "`make check`"),
+            see=("directive", "excess errors"),
+            met="B04",
+        ),
+        Term(
+            name="directive",
+            short="A `{ dg-something ... }` in a comment, which is the whole language a GCC test is written in.",
+            long='`{ dg-do compile }` says what to do with the file, `{ dg-options "-O2" }` says what to compile it with, and `{ dg-error "expected" }` says a message will appear on the line the comment is written on. Seventy three kinds exist and a normal test uses three or four. Two of them cause more confusion than the rest together: `dg-options` replaces the directory\'s default flags rather than adding to them, and `dg-additional-options` is the one that adds. A directive the harness does not know is not an error, it is a comment, so a typo in a directive name is a test that silently checks nothing.',
+            cite="gcc/doc/sourcebuild.texi:1033@releases/gcc-16.2.0",
+            also=("`dg-error`", "`dg-options`", "`dg-do`"),
+            see=("DejaGnu", "effective target"),
+            met="B04",
+        ),
+        Term(
+            name="excess errors",
+            short="The rule that makes a test fail for output nobody asked about, which is what stops a test from only checking what it mentions.",
+            long='Every diagnostic the compiler printed is matched against the file\'s expectations, each one satisfying at most one, and whatever is left over is pruned and then reported as excess errors. That is what makes a GCC test subtractive rather than additive: a file with three `dg-error` directives is not saying "these three appear", it is saying "these three and nothing else". It is also why a test can pass every one of its own directives and still fail, and why the excess errors line is the one to read first in a failure.',
+            cite="gcc/testsuite/lib/prune.exp:32@releases/gcc-16.2.0",
+            also=("`prune_gcc_output`", "`dg-excess-errors`"),
+            see=("directive", "sum file"),
+            met="B04",
+        ),
+        Term(
+            name="torture options",
+            short="Six sets of optimisation flags, and a torture test is the same file compiled once with each of them.",
+            long="`DG_TORTURE_OPTIONS` is `-O0`, `-O1`, `-O2`, a long `-O3` line, `-O3 -g` and `-Os`, and `gcc-dg-runtest` walks a directory once per set. So `gcc.dg/torture` holding four hundred files means two thousand four hundred compilations, which is why that directory costs what it does. Whether a file gets the two loop flags is decided by looking for the text `for` or `while` in it, with a glob loose enough that `format(` counts, and nobody has tightened it because the cost of a false positive is one extra flag.",
+            cite="gcc/testsuite/lib/gcc-dg.exp:94@releases/gcc-16.2.0",
+            also=("`DG_TORTURE_OPTIONS`", "`gcc-dg-runtest`", "`-funroll-loops`"),
+            see=("optimization level", "DejaGnu"),
+            met="B04",
+        ),
+        Term(
+            name="effective target",
+            short="A named question about the machine, asked before a test runs, that decides whether it runs at all.",
+            long="`{ dg-require-effective-target lp64 }` means skip this file unless pointers are sixty four bits. Several hundred of these are defined in `target-supports.exp`, and a great many are answered by compiling a small program and seeing whether it worked, so the answer depends on the compiler under test rather than on a table. This is the mechanism behind the most common surprise in a `.sum`: a test that passed yesterday and is absent today has usually not been broken, it has stopped being applicable, and a summary block cannot tell you that, because the total went down by one and something else made it up again.",
+            cite="gcc/doc/sourcebuild.texi:1491@releases/gcc-16.2.0",
+            also=("`dg-require-effective-target`", "`target-supports.exp`", "`dg-skip-if`"),
+            see=("directive", "sum file"),
+            met="B04",
+        ),
+        Term(
+            name="sum file",
+            short="The one line per result summary a test run leaves behind, and the only thing worth comparing between two runs.",
+            long="A line is a state and a name, `PASS: gcc.dg/pr1234.c (test for excess errors)`, and one test file produces several of them. Five of the thirteen states make a run red and the other eight are information, and `XFAIL` in particular means a known failure that failed as expected. The right way to read one is against a previous one: a `PASS` that became a `FAIL` is a regression, and a name that is in the old file and not the new one is a test that stopped being run, which the summary block at the bottom cannot show you and which is the more dangerous of the two.",
+            also=("`.sum`", "`.log`", "`XFAIL`"),
+            see=("excess errors", "effective target"),
+            met="B04",
+        ),
+    ),
+)
+
+
 GROUPS: tuple[Group, ...] = (
     READING,
     FINDING,
@@ -830,6 +891,7 @@ GROUPS: tuple[Group, ...] = (
     REGISTERS,
     TEXT,
     BUILDING,
+    TESTING,
 )
 
 #: Every term, flattened.

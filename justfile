@@ -231,6 +231,17 @@ corpus-b02:
 corpus-b03 build docker="":
     {{py}} lessons/b03-the-debugger/record.py --build {{build}} --docker {{docker}}
 
+# B04 takes twelve real test files out of the pinned tree, works out the command line the
+# harness would compile each one with, and sends them all through Compiler Explorer, writing
+# corpora/testsuite/b04.json. Three of the twelve fail on purpose, which is why this is not a
+# gxray record recipe: that one raises when a compilation fails. It also counts the suite and
+# cuts nine spans of Tcl into corpora/source/b04.json, so it needs the submodule.
+#
+# `just corpus-b04 --check` re-asserts every fact the lesson states against what is already
+# committed, without compiling anything, which is what the test suite calls.
+corpus-b04 *args:
+    {{py}} lessons/b04-the-test-suite/record.py {{args}}
+
 # Every Tier 0 experiment, run out of the corpus and then out of the cached Compiler Explorer
 # responses, and checked against each other. No network either way. See tools/tier0 for what
 # the three kinds of experiment are and why a recorded one is compared byte for byte while a

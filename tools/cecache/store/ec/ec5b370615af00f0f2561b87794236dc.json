@@ -1,0 +1,297 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"foo\":"
+  },
+  {
+   "labels": [
+    {
+     "name": "\"i\"",
+     "range": {
+      "endCol": 30,
+      "startCol": 27
+     }
+    }
+   ],
+   "source": {
+    "column": 27,
+    "file": null,
+    "line": 4
+   },
+   "text": "        mov     DWORD PTR \"i\"[rip], 2"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 77,
+    "file": null,
+    "line": 4
+   },
+   "text": "        mov     eax, 1"
+  },
+  {
+   "labels": [],
+   "source": {
+    "column": 77,
+    "file": null,
+    "line": 4
+   },
+   "text": "        ret"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"i\":"
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "        .zero   4"
+  }
+ ],
+ "asmSize": 3346,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-fdiagnostics-plain-output",
+  "-O",
+  "-fdump-tree-fre1-details",
+  "-fdump-tree-fre1-details=stderr",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 68,
+ "filteredCount": 205,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {
+  "\"foo\"": 1,
+  "\"i\"": 5
+ },
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.10108000040054321,
+ "stderr": [
+  {
+   "text": ""
+  },
+  {
+   "text": ";; Function foo (foo, funcdef_no=0, decl_uid=2960, cgraph_uid=2, symbol_order=1)"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "Processing block 0: BB2"
+  },
+  {
+   "text": "Value numbering stmt = # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "Value numbering stmt = i = 2;"
+  },
+  {
+   "text": "RHS 2 simplified to 2"
+  },
+  {
+   "text": "No store match"
+  },
+  {
+   "text": "Value numbering store i to 2"
+  },
+  {
+   "text": "Setting value number of .MEM_5 to .MEM_5 (changed)"
+  },
+  {
+   "text": "Value numbering stmt = # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "Value numbering stmt = i.0_1 = i;"
+  },
+  {
+   "text": "Setting value number of i.0_1 to 2 (changed)"
+  },
+  {
+   "text": "Replaced i with 2 in all uses of i.0_1 = i;"
+  },
+  {
+   "text": "Value numbering stmt = j_6 = i.0_1 * 2;"
+  },
+  {
+   "text": "Match-and-simplified i.0_1 * 2 to 4"
+  },
+  {
+   "text": "RHS i.0_1 * 2 simplified to 4"
+  },
+  {
+   "text": "Setting value number of j_6 to 4 (changed)"
+  },
+  {
+   "text": "Replaced i.0_1 * 2 with 4 in all uses of j_6 = i.0_1 * 2;"
+  },
+  {
+   "text": "Value numbering stmt = # DEBUG j => j_6"
+  },
+  {
+   "text": "Value numbering stmt = # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "Value numbering stmt = i.1_2 = i;"
+  },
+  {
+   "text": "Setting value number of i.1_2 to 2 (changed)"
+  },
+  {
+   "text": "Replaced i with 2 in all uses of i.1_2 = i;"
+  },
+  {
+   "text": "Value numbering stmt = k_7 = i.1_2 + 2;"
+  },
+  {
+   "text": "Match-and-simplified i.1_2 + 2 to 4"
+  },
+  {
+   "text": "RHS i.1_2 + 2 simplified to 4"
+  },
+  {
+   "text": "Setting value number of k_7 to 4 (changed)"
+  },
+  {
+   "text": "Replaced i.1_2 + 2 with 4 in all uses of k_7 = i.1_2 + 2;"
+  },
+  {
+   "text": "Value numbering stmt = # DEBUG k => k_7"
+  },
+  {
+   "text": "Value numbering stmt = # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "Value numbering stmt = _3 = j_6 == k_7;"
+  },
+  {
+   "text": "Match-and-simplified j_6 == k_7 to 1"
+  },
+  {
+   "text": "RHS j_6 == k_7 simplified to 1"
+  },
+  {
+   "text": "Setting value number of _3 to 1 (changed)"
+  },
+  {
+   "text": "Replaced j_6 == k_7 with 1 in all uses of _3 = j_6 == k_7;"
+  },
+  {
+   "text": "Value numbering stmt = _8 = (int) _3;"
+  },
+  {
+   "text": "Match-and-simplified (int) _3 to 1"
+  },
+  {
+   "text": "RHS (int) _3 simplified to 1"
+  },
+  {
+   "text": "Setting value number of _8 to 1 (changed)"
+  },
+  {
+   "text": "Replaced (int) _3 with 1 in all uses of _8 = (int) _3;"
+  },
+  {
+   "text": "Value numbering stmt = return _8;"
+  },
+  {
+   "text": "marking destination block 1 reachable"
+  },
+  {
+   "text": "RPO iteration over 1 blocks visited 1 blocks in total discovering 1 executable blocks iterating 1.0 times, a block was visited max. 1 times"
+  },
+  {
+   "text": "RPO tracked 7 values available at 0 locations and 7 lattice elements"
+  },
+  {
+   "text": "Removing dead stmt _8 = (int) _3;"
+  },
+  {
+   "text": "Removing dead stmt _3 = j_6 == k_7;"
+  },
+  {
+   "text": "Removing dead stmt k_7 = i.1_2 + 2;"
+  },
+  {
+   "text": "Removing dead stmt i.1_2 = i;"
+  },
+  {
+   "text": "Removing dead stmt j_6 = i.0_1 * 2;"
+  },
+  {
+   "text": "Removing dead stmt i.0_1 = i;"
+  },
+  {
+   "text": "int foo ()"
+  },
+  {
+   "text": "{"
+  },
+  {
+   "text": "  int k;"
+  },
+  {
+   "text": "  int j;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "  <bb 2> :"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  i = 2;"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG j => 4"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  # DEBUG k => 4"
+  },
+  {
+   "text": "  # DEBUG BEGIN_STMT"
+  },
+  {
+   "text": "  return 1;"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": "}"
+  },
+  {
+   "text": ""
+  },
+  {
+   "text": ""
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}
