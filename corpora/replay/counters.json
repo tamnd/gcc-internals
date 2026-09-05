@@ -1,0 +1,282 @@
+{
+ "total": 49,
+ "variants": [
+  "\t.arch armv8-a\n\t.file\t\"l1.c\"\n\t.text\n\t.align\t2\n\t.p2align 5,,15\n\t.global\tf\n\t.type\tf, %function\nf:\n.LFB0:\n\t.cfi_startproc\n\tmov\tw2, w0\n\tcmp\tw0, 0\n\tble\t.L4\n\tmov\tw1, 0\n\tmov\tw0, 0\n\t.p2align 5,,15\n.L3:\n\tadd\tw0, w0, w1\n\tadd\tw1, w1, 1\n\tcmp\tw2, w1\n\tbne\t.L3\n\tret\n\t.p2align 2,,3\n.L4:\n\tmov\tw0, 0\n\tret\n\t.cfi_endproc\n.LFE0:\n\t.size\tf, .-f\n\t.ident\t\"GCC: (GNU) 16.2.0\"\n\t.section\t.note.GNU-stack,\"\",@progbits\n",
+  "\t.arch armv8-a\n\t.file\t\"l1.c\"\n\t.text\n\t.align\t2\n\t.p2align 5,,15\n\t.global\tf\n\t.type\tf, %function\nf:\n.LFB0:\n\t.cfi_startproc\n\tmov\tw2, w0\n\tcmp\tw0, 0\n\tble\t.L4\n\tmov\tw1, 0\n\tmov\tw0, 0\n\t.p2align 5,,15\n.L3:\n\tadd\tw0, w0, w1\n\tadd\tw1, w1, 1\n\tcmp\tw1, w2\n\tbne\t.L3\n\tret\n\t.p2align 2,,3\n.L4:\n\tmov\tw0, 0\n\tret\n\t.cfi_endproc\n.LFE0:\n\t.size\tf, .-f\n\t.ident\t\"GCC: (GNU) 16.2.0\"\n\t.section\t.note.GNU-stack,\"\",@progbits\n"
+ ],
+ "trials": [
+  {
+   "limit": 0,
+   "variant": 1,
+   "stderr": ""
+  },
+  {
+   "limit": 1,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 1 reached for match.***"
+  },
+  {
+   "limit": 2,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 2 reached for match.***"
+  },
+  {
+   "limit": 3,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 3 reached for match.***"
+  },
+  {
+   "limit": 4,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 4 reached for match.***"
+  },
+  {
+   "limit": 5,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 5 reached for match.***"
+  },
+  {
+   "limit": 6,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 6 reached for match.***"
+  },
+  {
+   "limit": 7,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 7 reached for match.***"
+  },
+  {
+   "limit": 8,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 8 reached for match.***"
+  },
+  {
+   "limit": 9,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 9 reached for match.***"
+  },
+  {
+   "limit": 10,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 10 reached for match.***"
+  },
+  {
+   "limit": 11,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 11 reached for match.***"
+  },
+  {
+   "limit": 12,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 12 reached for match.***"
+  },
+  {
+   "limit": 13,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 13 reached for match.***"
+  },
+  {
+   "limit": 14,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 14 reached for match.***"
+  },
+  {
+   "limit": 15,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 15 reached for match.***"
+  },
+  {
+   "limit": 16,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 16 reached for match.***"
+  },
+  {
+   "limit": 17,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 17 reached for match.***"
+  },
+  {
+   "limit": 18,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 18 reached for match.***"
+  },
+  {
+   "limit": 19,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 19 reached for match.***"
+  },
+  {
+   "limit": 20,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 20 reached for match.***"
+  },
+  {
+   "limit": 21,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 21 reached for match.***"
+  },
+  {
+   "limit": 22,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 22 reached for match.***"
+  },
+  {
+   "limit": 23,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 23 reached for match.***"
+  },
+  {
+   "limit": 24,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 24 reached for match.***"
+  },
+  {
+   "limit": 25,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 25 reached for match.***"
+  },
+  {
+   "limit": 26,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 26 reached for match.***"
+  },
+  {
+   "limit": 27,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 27 reached for match.***"
+  },
+  {
+   "limit": 28,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 28 reached for match.***"
+  },
+  {
+   "limit": 29,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 29 reached for match.***"
+  },
+  {
+   "limit": 30,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 30 reached for match.***"
+  },
+  {
+   "limit": 31,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 31 reached for match.***"
+  },
+  {
+   "limit": 32,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 32 reached for match.***"
+  },
+  {
+   "limit": 33,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 33 reached for match.***"
+  },
+  {
+   "limit": 34,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 34 reached for match.***"
+  },
+  {
+   "limit": 35,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 35 reached for match.***"
+  },
+  {
+   "limit": 36,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 36 reached for match.***"
+  },
+  {
+   "limit": 37,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 37 reached for match.***"
+  },
+  {
+   "limit": 38,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 38 reached for match.***"
+  },
+  {
+   "limit": 39,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 39 reached for match.***"
+  },
+  {
+   "limit": 40,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 40 reached for match.***"
+  },
+  {
+   "limit": 41,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 41 reached for match.***"
+  },
+  {
+   "limit": 42,
+   "variant": 1,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 42 reached for match.***"
+  },
+  {
+   "limit": 43,
+   "variant": 0,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 43 reached for match.***"
+  },
+  {
+   "limit": 44,
+   "variant": 0,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 44 reached for match.***"
+  },
+  {
+   "limit": 45,
+   "variant": 0,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 45 reached for match.***"
+  },
+  {
+   "limit": 46,
+   "variant": 0,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 46 reached for match.***"
+  },
+  {
+   "limit": 47,
+   "variant": 0,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 47 reached for match.***"
+  },
+  {
+   "limit": 48,
+   "variant": 0,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 48 reached for match.***"
+  },
+  {
+   "limit": 49,
+   "variant": 0,
+   "stderr": "***dbgcnt: lower limit 1 reached for match.***\n***dbgcnt: upper limit 49 reached for match.***"
+  }
+ ],
+ "listing": "  counter name                  counter value     closed intervals\n-----------------------------------------------------------------\n  asan_use_after_scope          0                 unset\n  auto_inc_dec                  0                 unset\n  back_thread1                  0                 unset\n  back_thread2                  0                 unset\n  back_threadfull1              0                 unset\n  back_threadfull2              0                 unset\n  ccp                           41                unset\n  cfg_cleanup                   16                unset\n  cprop                         3                 unset\n  cse2_move2add                 1                 unset\n  dce                           0                 unset\n  dce_fast                      1                 unset\n  dce_ud                        1                 unset\n  delete_trivial_dead           0                 unset\n  devirt                        0                 unset\n  df_byte_scan                  0                 unset\n  dom_unreachable_edges         0                 unset\n  dse                           0                 unset\n  dse1                          1                 unset\n  dse2                          1                 unset\n  ext_dce                       0                 unset\n  form_fma                      0                 unset\n  gcse2_delete                  0                 unset\n  gimple_unroll                 0                 unset\n  global_alloc_at_func          0                 unset\n  global_alloc_at_reg           0                 unset\n  graphite_scop                 0                 unset\n  hoist                         0                 unset\n  hoist_insn                    0                 unset\n  ia64_sched2                   0                 unset\n  if_after_combine              1                 unset\n  if_after_reload               1                 unset\n  if_conversion                 1                 unset\n  if_conversion_tree            0                 unset\n  if_to_switch                  0                 unset\n  ipa_attr                      1                 unset\n  ipa_cp_bits                   0                 unset\n  ipa_cp_values                 0                 unset\n  ipa_cp_vr                     0                 unset\n  ipa_mod_ref                   0                 unset\n  ipa_mod_ref_pta               0                 unset\n  ipa_sra_params                0                 unset\n  ipa_sra_retvalues             0                 unset\n  ira_move                      0                 unset\n  ivopts_loop                   1                 unset\n  late_combine                  1                 unset\n  lim                           0                 unset\n  local_alloc_for_sched         0                 unset\n  loop_unswitch                 0                 unset\n  match                         49                unset\n  merged_ipa_icf                0                 unset\n  phiopt_edge_range             0                 unset\n  postreload_cse                1                 unset\n  pre                           1                 unset\n  pre_insn                      0                 unset\n  prefetch                      0                 unset\n  registered_jump_thread        0                 unset\n  sched2_func                   1                 unset\n  sched_breakdep                0                 unset\n  sched_func                    0                 unset\n  sched_insn                    44                unset\n  sched_region                  11                unset\n  sel_sched_cnt                 0                 unset\n  sel_sched_insn_cnt            0                 unset\n  sel_sched_region_cnt          0                 unset\n  sms_sched_loop                0                 unset\n  split_for_sched2              0                 unset\n  store_merging                 0                 unset\n  store_motion                  0                 unset\n  stv_conversion                0                 unset\n  tail_call                     3                 unset\n  tree_sra                      2                 unset\n  treepre_insert                2                 unset\n  vect_loop                     0                 unset\n  vect_slp                      0                 unset",
+ "recorded": "2026-09-06",
+ "tag": "releases/gcc-16.2.0",
+ "commit": "78d4ac73dd391005b895a6148cd9831e28e1208b",
+ "host": "aarch64-unknown-linux-gnu, Linux 6.8.0-117-generic aarch64",
+ "compiler": "xgcc (GCC) 16.2.0",
+ "counter": "match",
+ "flags": [
+  "-S",
+  "-O2"
+ ],
+ "program": "l1.c",
+ "source": "/* L1: a loop with an induction variable and an accumulator.\n   Enough for SSA to be interesting, small enough to read the whole dump. */\nint f (int n)\n{\n  int s = 0;\n  for (int i = 0; i < n; i++)\n    s += i;\n  return s;\n}\n",
+ "culprit": [
+  "#0  dbg_cnt (index=match) at /src/gcc/dbgcnt.cc:66",
+  "#1  0x00000000029fc7c8 in generic_simplify_CONVERT_EXPR (loc=0, code=NOP_EXPR, type=<integer_type 0xe5efe0e1c5e8 int>, _p0=<nop_expr 0xe5efe0d810c0>) at generic-match-3.cc:3783",
+  "#2  0x0000000002a65060 in generic_simplify (loc=0, code=NOP_EXPR, type=<integer_type 0xe5efe0e1c5e8 int>, _p0=<nop_expr 0xe5efe0d810c0>) at generic-match-5.cc:3436",
+  "#3  0x000000000155f830 in fold_unary_loc (loc=0, code=NOP_EXPR, type=<integer_type 0xe5efe0e1c5e8 int>, op0=<nop_expr 0xe5efe0d810c0>) at /src/gcc/fold-const.cc:9251",
+  "#4  0x00000000015767dc in fold_build1_loc (loc=0, code=NOP_EXPR, type=<integer_type 0xe5efe0e1c5e8 int>, op0=<nop_expr 0xe5efe0d810c0>) at /src/gcc/fold-const.cc:13901",
+  "#5  0x0000000001541d7c in fold_convert_loc (loc=0, type=<integer_type 0xe5efe0e1c5e8 int>, arg=<nop_expr 0xe5efe0d810c0>) at /src/gcc/fold-const.cc:2667",
+  "#6  0x0000000001e22e7c in may_eliminate_iv (data=0xffffff7a6180, use=0x290c68c0, cand=0x29152090, bound=0xffffff7a5eb0, comp=0xffffff7a5ea8) at /src/gcc/tree-ssa-loop-ivopts.cc:5466",
+  "#7  0x0000000001e23168 in determine_group_iv_cost_cond (data=0xffffff7a6180, group=0x291fd800, cand=0x29152090) at /src/gcc/tree-ssa-loop-ivopts.cc:5531"
+ ]
+}

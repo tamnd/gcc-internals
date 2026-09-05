@@ -13,6 +13,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-BOOTSTRAP](blueprints/BP-BOOTSTRAP.md) | building the compiler with itself | partial | 2 of 9 | no |
 | [BP-BUILD](blueprints/BP-BUILD.md) | configuring and building the compiler | partial | 2 of 9 | yes |
 | [BP-CFG](blueprints/BP-CFG.md) | blocks and edges | stub | none | no |
+| [BP-DEBUGGING](blueprints/BP-DEBUGGING.md) | stopping the compiler and looking at it | complete | 2 of 9 | no |
 | [BP-DRIVER](blueprints/BP-DRIVER.md) | the program that runs the other programs | stub | none | yes |
 | [BP-EXPAND](blueprints/BP-EXPAND.md) | GIMPLE becomes RTL | stub | none | yes |
 | [BP-FINAL](blueprints/BP-FINAL.md) | turning insns into text | stub | none | yes |
@@ -23,7 +24,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-RTL](blueprints/BP-RTL.md) | the RTL expression representation | stub | none | yes |
 | [BP-SSA](blueprints/BP-SSA.md) | one definition per name | stub | none | no |
 
-12 of 58 written: 1 complete, 4 partial, 7 stub.
+13 of 58 written: 2 complete, 4 partial, 7 stub.
 
 ## What each one is for
 
@@ -38,6 +39,10 @@ This document specifies what happens between a source tree and a working `cc1`. 
 ### [BP-CFG](blueprints/BP-CFG.md), blocks and edges
 
 This is a stub. It holds the data structures, the two fixed blocks, how a GIMPLE sequence becomes a graph, and what dominance is computed by and when it is valid. The pass level detail is not here: loop discovery, profile propagation, hot and cold partitioning, and the RTL side of the hooks are named and not specified. Section 2.3 could be generated from `gcc/cfg-flags.def`, which is a `.def` file with exactly the shape `bpc` reads, and that is the obvious first thing to do when this stub is promoted.
+
+### [BP-DEBUGGING](blueprints/BP-DEBUGGING.md), stopping the compiler and looking at it
+
+This document specifies the interfaces GCC provides for inspecting a compiler while it is running, and the two non interactive substitutes for doing so. It covers the `.gdbinit` that `configure` writes, the twenty six commands and four Python commands in it, the seventeen pretty printers, the debug counters behind `-fdbg-cnt`, and the pass selection options that decide what runs at all.
 
 ### [BP-DRIVER](blueprints/BP-DRIVER.md), the program that runs the other programs
 

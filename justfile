@@ -218,6 +218,19 @@ corpus-b01:
 corpus-b02:
     {{py}} lessons/b02-the-bootstrap/record.py
 
+# B03 is the one recipe here that needs a machine nobody has: a GCC built with -O0 -g3, which
+# is the dbg configuration, and a gdb, which rules out macOS entirely. So it takes the build
+# directory as an argument and will drive it through docker exec if you name a container. It
+# writes corpora/replay/cc1.json, a real gdb session of twenty six commands with every byte of
+# output kept, corpora/replay/counters.json, fifty compilations of one program at every limit
+# of the match debug counter, and eight source spans into corpora/source/b03.json. It checks
+# every behavioural fact the lesson states before it writes anything, because a transcript
+# cannot be regenerated and diffed the way the other corpora can.
+#
+#     just corpus-b03 /work/build/gcc b03
+corpus-b03 build docker="":
+    {{py}} lessons/b03-the-debugger/record.py --build {{build}} --docker {{docker}}
+
 # Every Tier 0 experiment, run out of the corpus and then out of the cached Compiler Explorer
 # responses, and checked against each other. No network either way. See tools/tier0 for what
 # the three kinds of experiment are and why a recorded one is compared byte for byte while a

@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-100 claims across 14 lessons, 4 of them not observable from a notebook.
+113 claims across 15 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -179,3 +179,21 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | one unforgiven difference is enough to fail the comparison, and what it prints does not say what differed or where | [`b02-35`](b02-the-bootstrap/b02.ipynb) |
 | the bootstrap is the most expensive configuration this project builds, by a factor of five over the next one | [`b02-40`](b02-the-bootstrap/b02.ipynb) |
 | a native build bootstraps by default and a cross build does not, and neither of those is a flag you passed | [`b02-47`](b02-the-bootstrap/b02.ipynb) |
+
+## A debugger on the compiler, and the counter for when you cannot have one
+
+| Claim | Proved by |
+| --- | --- |
+| a GCC built so a debugger can see into it is the second most expensive configuration this project builds, and it produces a cc1 of three hundred megabytes | [`b03-04`](b03-the-debugger/b03.ipynb) |
+| the command line the driver builds for one C file at -O2 has sixteen arguments on it, and you typed three of them | [`b03-08`](b03-the-debugger/b03.ipynb) |
+| a debugger started in a GCC build tree has four breakpoints set before the reader types a single command | [`b03-18`](b03-the-debugger/b03.ipynb) |
+| gdb ends up with more pretty printers registered than gdbhooks.py names, because four of them are registered in a loop | [`b03-22`](b03-the-debugger/b03.ipynb) |
+| the most common way a first session goes wrong is a warning rather than an error, and the symptom is that every command in this lesson does not exist | [`b03-26`](b03-the-debugger/b03.ipynb) |
+| compiling nine lines of C at -O2 executes 351 passes, which is why a plain breakpoint on the pass manager is not usable | [`b03-28`](b03-the-debugger/b03.ipynb) |
+| a conditional breakpoint on the pass name stops inside the pass manager with the pass object in hand, and the pass printer names it | [`b03-30`](b03-the-debugger/b03.ipynb) |
+| the pretty printers turn every pointer in this section into something readable, and without them each one of these prints a hexadecimal address | [`b03-34`](b03-the-debugger/b03.ipynb) |
+| the same function printed either side of one pass shows exactly what that pass did, which for ccp on this program is two assignments and a return value | [`b03-36`](b03-the-debugger/b03.ipynb) |
+| break-on-pass takes a class name rather than a pass name, and given a pass name it produces a breakpoint that can never fire and says nothing about it | [`b03-40`](b03-the-debugger/b03.ipynb) |
+| the match counter fires 49 times compiling nine lines of C at -O2, and those 49 transformations produce exactly two distinct assembly outputs | [`b03-46`](b03-the-debugger/b03.ipynb) |
+| five probes are enough to find one transformation out of forty nine, and the answer agrees with sweeping every limit one at a time | [`b03-50`](b03-the-debugger/b03.ipynb) |
+| the bisected number and a conditional breakpoint together name the transformation, the file it lives in and the pass that asked for it | [`b03-52`](b03-the-debugger/b03.ipynb) |

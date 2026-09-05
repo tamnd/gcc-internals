@@ -383,6 +383,10 @@
    "hash": "5f13812388f3b810",
    "text": "ftree-ccp"
   },
+  "gcc/common.opt:3988@releases/gcc-16.2.0": {
+   "hash": "ac7b7caa220fd1a3",
+   "text": "wrapper"
+  },
   "gcc/common/common-target.h:28@releases/gcc-16.2.0": {
    "hash": "235af03be673d0ca",
    "text": "enum opt_levels"
@@ -438,6 +442,46 @@
   "gcc/configure.ac:661@releases/gcc-16.2.0": {
    "hash": "6c9dc43586ea51c5",
    "text": "for check in release $ac_checking_flags"
+  },
+  "gcc/configure.ac:7402@releases/gcc-16.2.0": {
+   "hash": "f52a422b8e9ef86f",
+   "text": "# Create .gdbinit."
+  },
+  "gcc/configure.ac:7404@releases/gcc-16.2.0": {
+   "hash": "97df6aa3ee42517c",
+   "text": "echo \"dir .\" > .gdbinit"
+  },
+  "gcc/configure.ac:7419@releases/gcc-16.2.0": {
+   "hash": "f10de83bb5bc3f15",
+   "text": "# Put a breakpoint on __asan_report_error to help with debugging buffer"
+  },
+  "gcc/configure.ac:7423@releases/gcc-16.2.0": {
+   "hash": "07597b53c560bf31",
+   "text": "  echo \"source ${srcdir}/gdbasan.in\" >> .gdbinit"
+  },
+  "gcc/dbgcnt.cc:111@releases/gcc-16.2.0": {
+   "hash": "921715c7fd606a3c",
+   "text": "static int"
+  },
+  "gcc/dbgcnt.cc:140@releases/gcc-16.2.0": {
+   "hash": "44c28e218a6bda2c",
+   "text": "\t  error (\"Interval overlap of %<-fdbg-cnt=%s%>: [%u, %u] and \""
+  },
+  "gcc/dbgcnt.cc:196@releases/gcc-16.2.0": {
+   "hash": "526122f8243c07ca",
+   "text": "      low = high == 0 ? 0 : 1;"
+  },
+  "gcc/dbgcnt.cc:235@releases/gcc-16.2.0": {
+   "hash": "45cf271998af69d1",
+   "text": "dbg_cnt_list_all_counters (void)"
+  },
+  "gcc/dbgcnt.cc:268@releases/gcc-16.2.0": {
+   "hash": "9bead1f0b25a30bd",
+   "text": "test_sorted_dbg_counters ()"
+  },
+  "gcc/dbgcnt.cc:63@releases/gcc-16.2.0": {
+   "hash": "8ce555db7f83b3ff",
+   "text": "bool"
   },
   "gcc/doc/install.texi:867@releases/gcc-16.2.0": {
    "hash": "5bce5cac0f6d20c8",
@@ -583,6 +627,10 @@
    "hash": "f2d6261634456fae",
    "text": "execute (void)"
   },
+  "gcc/gcc.cc:3290@releases/gcc-16.2.0": {
+   "hash": "017c67d9f62f5988",
+   "text": "  if (wrapper_string)"
+  },
   "gcc/gcc.cc:5854@releases/gcc-16.2.0": {
    "hash": "13a14bba332c15da",
    "text": "do_spec (const char *spec)"
@@ -622,6 +670,42 @@
   "gcc/gcc.cc:9398@releases/gcc-16.2.0": {
    "hash": "79747d5e7f35a2c6",
    "text": "lookup_compiler (const char *name, size_t length, const char *language)"
+  },
+  "gcc/gdbhooks.py:619@releases/gcc-16.2.0": {
+   "hash": "ed930ef1ff37cd9c",
+   "text": "def build_pretty_printer():"
+  },
+  "gcc/gdbhooks.py:700@releases/gcc-16.2.0": {
+   "hash": "b9d6d4563c90d30d",
+   "text": "class PassNames:"
+  },
+  "gcc/gdbhooks.py:753@releases/gcc-16.2.0": {
+   "hash": "f0b3acd169b4b477",
+   "text": "    def invoke(self, arg, from_tty):"
+  },
+  "gcc/gdbhooks.py:754@releases/gcc-16.2.0": {
+   "hash": "a0384befe5cb7c74",
+   "text": "        sym = '(anonymous namespace)::%s::execute' % arg"
+  },
+  "gcc/gdbinit.in:299@releases/gcc-16.2.0": {
+   "hash": "ad209ee3db021e8b",
+   "text": "document break-on-diagnostic"
+  },
+  "gcc/gdbinit.in:316@releases/gcc-16.2.0": {
+   "hash": "5191d3498bec5a5f",
+   "text": "python import imp; imp.reload(gdbhooks)"
+  },
+  "gcc/gdbinit.in:341@releases/gcc-16.2.0": {
+   "hash": "814e1e797f9f66a0",
+   "text": "# Put breakpoints at exit and fancy_abort in case abort is mapped"
+  },
+  "gcc/gdbinit.in:349@releases/gcc-16.2.0": {
+   "hash": "2be7b451d358c12c",
+   "text": "# Don't let abort actually run, as it will make"
+  },
+  "gcc/gdbinit.in:83@releases/gcc-16.2.0": {
+   "hash": "4f704001e08281e5",
+   "text": "define pt"
   },
   "gcc/genmatch.cc:911@releases/gcc-16.2.0": {
    "hash": "3914db87d88d8a23",
@@ -1042,6 +1126,14 @@
   "gcc/passes.cc:2579@releases/gcc-16.2.0": {
    "hash": "874fd72273323b29",
    "text": "execute_one_pass (opt_pass *pass)"
+  },
+  "gcc/passes.cc:2597@releases/gcc-16.2.0": {
+   "hash": "6ed29ae991afc32c",
+   "text": "  current_pass = pass;"
+  },
+  "gcc/passes.cc:2620@releases/gcc-16.2.0": {
+   "hash": "f53faf5be56cee2b",
+   "text": "      return false;"
   },
   "gcc/passes.cc:2631@releases/gcc-16.2.0": {
    "hash": "4ce501372af64f0a",
