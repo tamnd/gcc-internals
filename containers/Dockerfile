@@ -70,8 +70,11 @@ RUN set -eux; \
       rm -rf /var/lib/apt/lists/*; \
     fi
 
-# GCC will not configure in its own source directory and says so, which is the one thing
-# every first time builder gets wrong.
+# A separate build directory. GCC does allow configuring inside its own source tree, and
+# BP-BUILD section 6 says what the check everybody misremembers actually refuses, which is
+# an out of tree build from a source tree somebody already built in. Keeping them apart is
+# still what this image wants, because the dbg stage copies /usr/src/gcc out for the
+# debugger and an in-tree build would put every object file in that copy.
 WORKDIR /usr/src/build
 RUN set -eux; \
     /usr/src/gcc/configure ${CONFIGURE_FLAGS} \

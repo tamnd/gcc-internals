@@ -3,6 +3,54 @@
  "pinned": "releases/gcc-16.2.0",
  "context_lines": 2,
  "citations": {
+  "configure.ac:222@releases/gcc-16.2.0": {
+   "hash": "f30d5b3c48d011c9",
+   "text": "# Be sure to cover against remnants of an in-tree build."
+  },
+  "gcc/Makefile.in:1972@releases/gcc-16.2.0": {
+   "hash": "c49c740ce330701f",
+   "text": "BACKEND = $(EXTRA_BACKEND_OBJS) libbackend.a main.o libcommon-target.a \\"
+  },
+  "gcc/Makefile.in:2136@releases/gcc-16.2.0": {
+   "hash": "60db2b05edbef4e4",
+   "text": "tm.h: cs-tm.h ; @true"
+  },
+  "gcc/Makefile.in:2157@releases/gcc-16.2.0": {
+   "hash": "bb4b9d6f27937837",
+   "text": "cs-tm.h: Makefile"
+  },
+  "gcc/Makefile.in:2278@releases/gcc-16.2.0": {
+   "hash": "03bd4e4bbeaa2212",
+   "text": "all.internal: start.encap rest.encap doc selftest"
+  },
+  "gcc/Makefile.in:2294@releases/gcc-16.2.0": {
+   "hash": "a914a99d41342332",
+   "text": "native: gengtype$(exeext)"
+  },
+  "gcc/Makefile.in:2334@releases/gcc-16.2.0": {
+   "hash": "a78c2afdea3fdd01",
+   "text": "libbackend.a: $(OBJS)"
+  },
+  "gcc/Makefile.in:2803@releases/gcc-16.2.0": {
+   "hash": "a93423152472487d",
+   "text": "$(simple_generated_h:insn-%.h=s-%): s-%: build/gen%$(build_exeext)"
+  },
+  "gcc/Makefile.in:29@releases/gcc-16.2.0": {
+   "hash": "789fc0ac91834943",
+   "text": "all: @ALL@"
+  },
+  "gcc/Makefile.in:3210@releases/gcc-16.2.0": {
+   "hash": "d47db957a207c949",
+   "text": "generated_files = config.h tm.h $(TM_P_H) $(TM_D_H) $(TM_JIT_H) $(TM_H) \\"
+  },
+  "gcc/Makefile.in:4116@releases/gcc-16.2.0": {
+   "hash": "0a264a713b511f57",
+   "text": "install-strip: override INSTALL_PROGRAM = $(INSTALL_STRIP_PROGRAM)"
+  },
+  "gcc/Makefile.in:4934@releases/gcc-16.2.0": {
+   "hash": "98efef2a34b67831",
+   "text": "$(ALL_HOST_OBJS) : | $(generated_files)"
+  },
   "gcc/attribs.cc:338@releases/gcc-16.2.0": {
    "hash": "dbeb2cb1078e38ff",
    "text": "  invoke_plugin_callbacks (PLUGIN_ATTRIBUTES, NULL);"
@@ -46,6 +94,10 @@
   "gcc/c-family/c-pragma.cc:1885@releases/gcc-16.2.0": {
    "hash": "c3e35ae22c26daf3",
    "text": "  invoke_plugin_callbacks (PLUGIN_PRAGMAS, NULL);"
+  },
+  "gcc/c/Make-lang.in:86@releases/gcc-16.2.0": {
+   "hash": "7c20d8a7b3e8dcc2",
+   "text": "cc1$(exeext): $(C_OBJS) cc1-checksum.o $(BACKEND) $(LIBDEPS)"
   },
   "gcc/c/c-parser.cc:31269@releases/gcc-16.2.0": {
    "hash": "7c397c5b5864c371",
@@ -231,6 +283,14 @@
    "hash": "ae2ee40bb1f9c0ea",
    "text": "    { OPT_LEVELS_2_PLUS, OPT_mearly_ra_, NULL, AARCH64_EARLY_RA_ALL },"
   },
+  "gcc/config.gcc:306@releases/gcc-16.2.0": {
+   "hash": "2635b4ac69a85021",
+   "text": "# Unsupported targets list.  Do not put an entry in this list unless"
+  },
+  "gcc/config.gcc:350@releases/gcc-16.2.0": {
+   "hash": "6fd8f5a85c9bdb32",
+   "text": "\techo \"*** Configuration ${target}${target_min} not supported\" 1>&2"
+  },
   "gcc/config/aarch64/aarch64.md:2965@releases/gcc-16.2.0": {
    "hash": "a27939b4ee11cf96",
    "text": "(define_insn \"add<mode>3_compare0\""
@@ -254,6 +314,10 @@
   "gcc/config/i386/i386.h:991@releases/gcc-16.2.0": {
    "hash": "69bbb0299eba4c24",
    "text": "#define FIRST_PSEUDO_REGISTER FIRST_PSEUDO_REG"
+  },
+  "gcc/configure.ac:661@releases/gcc-16.2.0": {
+   "hash": "6c9dc43586ea51c5",
+   "text": "for check in release $ac_checking_flags"
   },
   "gcc/dominance.cc:1125@releases/gcc-16.2.0": {
    "hash": "5ca962bf82eba31a",
@@ -710,6 +774,14 @@
   "gcc/match.pd:239@releases/gcc-16.2.0": {
    "hash": "9ec0017abb2fc0c7",
    "text": "    (non_lvalue @0)))"
+  },
+  "gcc/mkconfig.sh:66@releases/gcc-16.2.0": {
+   "hash": "92e91afabc1eac99",
+   "text": "# Postpone including defaults.h until after the insn-*"
+  },
+  "gcc/mkconfig.sh:97@releases/gcc-16.2.0": {
+   "hash": "6391512052a61433",
+   "text": "#if defined IN_GCC && !defined GENERATOR_FILE && !defined USED_FOR_TARGET"
   },
   "gcc/optabs.cc:1501@releases/gcc-16.2.0": {
    "hash": "dc3d25bcf32153f6",
@@ -1170,6 +1242,14 @@
   "gcc/ssa-iterators.h:71@releases/gcc-16.2.0": {
    "hash": "477d9b0c0ff36fb5",
    "text": "#define FOR_EACH_IMM_USE_FAST(DEST, ITER, SSAVAR)\t\t\\"
+  },
+  "gcc/system.h:706@releases/gcc-16.2.0": {
+   "hash": "c09c44a58315fad9",
+   "text": "#ifndef GENERATOR_FILE"
+  },
+  "gcc/system.h:954@releases/gcc-16.2.0": {
+   "hash": "bb2ec993984fffa2",
+   "text": " #pragma GCC poison ASM_OPEN_PAREN ASM_CLOSE_PAREN\t\t\t\\"
   },
   "gcc/target.def:4728@releases/gcc-16.2.0": {
    "hash": "fb01c32eb89f1656",

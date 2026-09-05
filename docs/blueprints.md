@@ -10,6 +10,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 
 | | What it specifies | Status | Generated sections | Target dependent |
 |---|---|---|---|---|
+| [BP-BUILD](blueprints/BP-BUILD.md) | configuring and building the compiler | partial | 2 of 9 | yes |
 | [BP-CFG](blueprints/BP-CFG.md) | blocks and edges | stub | none | no |
 | [BP-DRIVER](blueprints/BP-DRIVER.md) | the program that runs the other programs | stub | none | yes |
 | [BP-EXPAND](blueprints/BP-EXPAND.md) | GIMPLE becomes RTL | stub | none | yes |
@@ -21,9 +22,13 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-RTL](blueprints/BP-RTL.md) | the RTL expression representation | stub | none | yes |
 | [BP-SSA](blueprints/BP-SSA.md) | one definition per name | stub | none | no |
 
-10 of 58 written: 1 complete, 2 partial, 7 stub.
+11 of 58 written: 1 complete, 3 partial, 7 stub.
 
 ## What each one is for
+
+### [BP-BUILD](blueprints/BP-BUILD.md), configuring and building the compiler
+
+This document specifies what happens between a source tree and a working `cc1`. It covers the single stage build, meaning `configure` followed by `make`, and it covers the part of that which is specific to GCC rather than generic to autoconf.
 
 ### [BP-CFG](blueprints/BP-CFG.md), blocks and edges
 
