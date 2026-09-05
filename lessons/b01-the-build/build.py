@@ -528,7 +528,9 @@ make install-strip
 `-j` matters more here than almost anywhere. GCC's build parallelises well and the difference
 between one job and eight is close to the difference between an evening and a coffee. `install-strip`
 rather than `install` because the debug info in an installed release compiler is several
-gigabytes you will not read.
+gigabytes you will not read. Build it to step through instead, as B03 does, and you want the
+other one: stripping a compiler you built with `-g3` throws away the only reason you built it
+that way, and nothing tells you until a debugger does.
 
 What happens first is the part worth knowing.
 

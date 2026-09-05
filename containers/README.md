@@ -9,8 +9,8 @@ The rule that shapes all of this: **no job in this project compiles GCC except t
 | Config | What it is | Build | Size | Arches | Built |
 |---|---|---|---|---|---|
 | `rel` | The fast development loop. Optimized, no bootstrap, and the one most jobs want. | 22 min | 1.2 GB | amd64, arm64 | weekly and on a patch change |
-| `chk` | Every internal consistency check GCC has, turned on. | 47 min | 4 GB | amd64, arm64 | weekly and on a patch change |
-| `dbg` | Unoptimized with full debug info, for the lessons that step through GCC in gdb. | 35 min | 6 GB | amd64, arm64 | weekly and on a patch change |
+| `chk` | Every internal consistency check GCC has, turned on. | 47 min | 4.6 GB | amd64, arm64 | weekly and on a patch change |
+| `dbg` | Unoptimized with full debug info, for the lessons that step through GCC in gdb. | 35 min | 7 GB | amd64, arm64 | weekly and on a patch change |
 | `boot` | The full three stage bootstrap, with the stage two against stage three comparison. | 240 min | 8 GB | amd64, arm64 | weekly |
 | `cross` | A riscv64-unknown-elf cross compiler with newlib, for the back end lessons. | 18 min | 1.5 GB | amd64, arm64 | weekly and on a patch change |
 | `plug` | A stock distribution GCC with gxplug built against it, and nothing compiled from source. | 5 min | 1.7 GB | amd64, arm64 | weekly and on a patch change |
@@ -91,7 +91,9 @@ Anything in `patches/` is applied to the source tree inside the image and nowher
 
 ## What the images cost
 
-Twenty two gigabytes per architecture if you kept all six, which is why the retention policy is the last four weekly builds plus every image a released version of the site refers to. `dbg` is six gigabytes on its own, because it keeps the GCC source tree in the image: a debugger needs the sources its debug info points at, and B03 is unteachable without them.
+Twenty four gigabytes per architecture if you kept all six, which is why the retention policy is the last four weekly builds plus every image a released version of the site refers to. `dbg` is seven gigabytes on its own, because it keeps the GCC source tree in the image and does not strip the compiler: a debugger needs both the symbol table and the sources the debug info points at, and B03 is unteachable without them.
+
+`chk` and `dbg` are the two images that keep their symbols. Everything else is installed with `install-strip`, and `tools.matrix` refuses a configuration that compiles with `-g` and then strips it, because that combination is green in every job and only fails in a reader's terminal.
 
 The sizes in the table are estimates apart from `plug`, which was built and weighed. Nothing has been pushed yet, so nothing has a registry size. The times are measured: they come from the first run of this matrix on GitHub hosted runners with a cold cache, amd64, which is the slower of the two architectures on every configuration. `boot` is the exception and is still a guess, because it does not run on a pull request and there has not been a scheduled run.
 
