@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-92 claims across 13 lessons, 4 of them not observable from a notebook.
+100 claims across 14 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -166,3 +166,16 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | a dozen of the files the compiler is compiled from are written during the build by programs the build compiles and runs first | [`b01-39`](b01-the-build/b01.ipynb) |
 | a built GCC carries the configure line it was built with and prints it back when you run it with -v | [`b01-46`](b01-the-build/b01.ipynb) |
 | ten of this project's twelve published images can be pulled by digest, which is a name nobody can move | [`b01-51`](b01-the-build/b01.ipynb) |
+
+## Building it three times, and the one thing that proves
+
+| Claim | Proved by |
+| --- | --- |
+| GCC declares nine bootstrap stages and exactly two of them compare their output against anything | [`b02-05`](b02-the-bootstrap/b02.ipynb) |
+| fewer than half of GCC's host modules are inside the bootstrap loop, and the ones that are include the libraries the compiler links against | [`b02-11`](b02-the-bootstrap/b02.ipynb) |
+| the same source compiled by the same compiler with the same flags produces different object files if the directory is named differently | [`b02-17`](b02-the-bootstrap/b02.ipynb) |
+| the compare rule says nothing at all about a file that exists in the later stage and not in the earlier one | [`b02-29`](b02-the-bootstrap/b02.ipynb) |
+| a forgiven difference is still found, and the rule can say exactly which pattern forgave it | [`b02-33`](b02-the-bootstrap/b02.ipynb) |
+| one unforgiven difference is enough to fail the comparison, and what it prints does not say what differed or where | [`b02-35`](b02-the-bootstrap/b02.ipynb) |
+| the bootstrap is the most expensive configuration this project builds, by a factor of five over the next one | [`b02-40`](b02-the-bootstrap/b02.ipynb) |
+| a native build bootstraps by default and a cross build does not, and neither of those is a flag you passed | [`b02-47`](b02-the-bootstrap/b02.ipynb) |

@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stamp file](#stamp-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -572,7 +572,7 @@ Also written `.text`, `.bss`, `.rodata`. Taught in T09. See also [assembler dire
 
 ## Building the compiler
 
-Words you need to configure GCC and read what the build tells you afterwards. B01 is the lesson, and these five are the ones that are used constantly and defined nowhere.
+Words you need to configure GCC, build it, and read what it tells you afterwards. B01 and B02 are the lessons, and these are the words those two use constantly and that nothing in the tree defines.
 
 ### out of tree build
 
@@ -613,3 +613,27 @@ Also written `s-` file, `move-if-change`, `$(STAMP)`. Taught in B01. See also [g
 Stage one is built by whatever compiler you already have, stage two by stage one, and stage three by stage two. Stages two and three are then compared object file by object file, and they have to be identical, because they are the same source compiled by two compilers that are supposed to be the same compiler. That comparison is the strongest self test GCC has and it catches things nothing else does. It also costs four hours, which is why `--disable-bootstrap` exists and why every configuration in this project except one uses it. B02 is the lesson that takes it apart.
 
 Also written `--enable-bootstrap`, stage comparison, three stage build. Taught in B01. See also [stamp file](#stamp-file), [checking build](#checking-build). In the source: [`Makefile.def:749@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/Makefile.def#L749).
+
+### stage comparison
+
+**The check at the end of a bootstrap: every object file of stage three has to equal stage two's, byte for byte.**
+
+Thirty four lines of shell in `Makefile.tpl`, and the strongest self test GCC has. It walks stage three's object files, skips any stage two does not have, ignores the first sixteen bytes of each, and fails the build if any pair differs. What it proves is that the compiler is a fixed point: compiling its own source with itself does not change it. What it does not prove is that the fixed point is correct, because a bug that behaves the same way every time survives it. It also cannot see six named files, which are excluded on purpose because they legitimately differ.
+
+Also written `make compare`, `.bad_compare`, compare exclusions. Taught in B02. See also [bootstrap](#bootstrap), [build config](#build-config). In the source: [`Makefile.tpl:1824@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/Makefile.tpl#L1824).
+
+### bubbling
+
+**GCC's word for driving the stages as a dependency chain, so a fix only rebuilds the stages after it.**
+
+`stage3-bubble` depends on `stage2-bubble` depends on `stage1-bubble`, so asking for the last one asks for all of them, and make decides what actually needs doing. The point is not the ordering, which a shell script could manage. The point is that after you fix a bug in the compiler and re-run, the stages that are still valid are skipped, which is the difference between a four hour rebuild and a forty minute one. The `-lean` stamp files in the middle are how a stage records that it is still good.
+
+Also written `stageN-bubble`, `-lean`. Taught in B02. See also [bootstrap](#bootstrap), [stamp file](#stamp-file). In the source: [`Makefile.tpl:1797@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/Makefile.tpl#L1797).
+
+### build config
+
+**A makefile fragment in `config/` that changes how the bootstrap stages are built, named on the configure line.**
+
+`--with-build-config=bootstrap-lto` and the stages are built with link time optimisation. There are nineteen of them and they combine, space separated. `bootstrap-debug` is on by default and is the one worth knowing: it compares stage two and stage three a second time with debug info stripped from both, which catches the specific bug where adding `-g` changes the code a compiler generates. `bootstrap-ubsan` and `bootstrap-asan` build the compiler under a sanitizer, are very slow, and find real things.
+
+Also written `--with-build-config`, `config/bootstrap-*.mk`. Taught in B02. See also [stage comparison](#stage-comparison), [bootstrap](#bootstrap). In the source: [`configure.ac:3303@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/configure.ac#L3303).

@@ -338,3 +338,17 @@ emitted, so the evidence is corpora/configure/gcc.json and containers/matrix.tom
 recorded from files that CI already reads, which is what makes a configure line printed in \
 the notebook a configure line that ran this week.\
 """
+
+[[experiment]]
+id = "b02-bootstrap"
+kind = "offline"
+question = "What does building the compiler three times prove, and what does it miss?"
+lessons = ["b02-the-bootstrap"]
+why = """
+Offline for a reason that is different from the other four. The subject here is not a source \
+tree, it is a four hour build whose interesting outcome almost never happens, and no \
+experiment this course can run would produce one. So corpora/bootstrap/gcc.json carries six \
+pairs of real object files with one comparison outcome induced into each, and the notebook \
+runs GCC's own compare rule over them. The rule is real, the object files are real, and the \
+scale is six instead of thirty thousand, which the lesson says where it matters.\
+"""

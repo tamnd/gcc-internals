@@ -20,7 +20,7 @@ It does not prove the compiler is correct. Three stages of a compiler that has a
 
 The reason it works at all is that the compiler is a fixed point. Source that has been compiled by a correct compiler and then used to compile itself should produce the same output as the original. Stage two and stage three are that fixed point tested at one iteration.
 
-What this document does not cover: what a single stage does, which is `BP-BUILD`; the test suite, which is `BP-TESTSUITE`; and the target libraries, which are built once each and are not part of any comparison.
+What this document does not cover: what a single stage does, which is `BP-BUILD`; the test suite, which is `BP-TESTSUITE`; and what any individual target library contains. Nine of the target libraries, `libgcc` and `libstdc++-v3` among them, are marked `bootstrap=true` and so are rebuilt in every stage and compared along with everything else; the other seventeen are built once against the final compiler.
 
 The unit of this document is the top level of the tree. Nothing in `gcc/` knows a bootstrap is happening.
 

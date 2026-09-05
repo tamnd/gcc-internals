@@ -180,6 +180,20 @@ def modules(root: Path) -> tuple[list[str], list[str]]:
     return inside, outside
 
 
+def target_modules(root: Path) -> tuple[list[str], list[str]]:
+    """The target libraries rebuilt in every stage, and the ones built once.
+
+    Separate from `modules` because a target library is a different animal: it is compiled by
+    the stage's own compiler, for the target machine, rather than by the compiler doing the
+    building. The ones marked `bootstrap=true` are staged and therefore compared, which is
+    the only reason the comparison has anything to say about generated target code at all.
+    """
+    every = [d for d in definitions(read(top(root) / DEFINITIONS)) if d.name == "target_modules"]
+    inside = [d.one("module") for d in every if d.one("bootstrap") == "true"]
+    outside = [d.one("module") for d in every if d.one("bootstrap") != "true"]
+    return inside, outside
+
+
 def flags(root: Path) -> dict[str, list[tuple[str, str, str]]]:
     """Every per stage flag assignment in the template, keyed by stage.
 
