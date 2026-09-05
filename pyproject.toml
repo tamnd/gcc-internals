@@ -7,7 +7,10 @@ license = "GPL-3.0-or-later"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6"]
+# PyYAML is here for the tests that read the workflows. The build matrix is described in
+# containers/matrix.toml and the workflow is meant to ask rather than to know, and the only
+# way to check that it still does is to parse it.
+dev = ["pytest>=8", "ruff>=0.6", "pyyaml>=6"]
 # Only needed to show a widget live in a notebook. Everything else works without it.
 notebook = ["anywidget>=0.9"]
 # Only needed to build the book. Marimo is here because the pages build their islands from

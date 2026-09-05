@@ -290,9 +290,24 @@ Nine of the fifty eight exist. A stub has all nine sections and says in the head
 | [BP-REGALLOC](blueprints/BP-REGALLOC.md) | IRA and LRA, and what a register class actually constrains | stub |
 | [BP-FINAL](blueprints/BP-FINAL.md) | the last pass, and how an insn becomes a line of assembly | stub |
 
+## Six compilers, and only one job that builds them
+
+From Part II onward a reader stops borrowing a compiler and starts owning one, and the lessons need more than one kind. `rel` is the fast one, `chk` has every internal consistency check GCC has turned on, `dbg` is unoptimized with full debug info because a debugger at `-O2` shows you a function whose locals are gone and whose lines run backwards, `boot` is the full three stage bootstrap, `cross` targets riscv64-unknown-elf so the back end lessons have a machine the reader is not sitting at, and `plug` is a distribution's own GCC with the plugin built against it.
+
+All six are described in [`containers/matrix.toml`](containers/matrix.toml) and nowhere else. The workflow asks what to run, the Dockerfile is handed its configure flags, and the table in [`containers/README.md`](containers/README.md) is generated, because configure flags in a Dockerfile plus a job list in a workflow plus times and sizes in a README is three copies of one fact and the second one is stale by the end of the first week.
+
+```console
+$ just matrix-show chk
+chk, Every internal consistency check GCC has, turned on.
+```
+
+The rule underneath it is that no job in this project compiles GCC except the matrix job. A full weekly run is about twelve machine hours across the two architectures and `boot` is eight of them, which is why it is the one configuration that never runs on a push. Everything else pulls an image by digest, so a green run cannot quietly have been testing a compiler nobody published.
+
+`plug` is the row that matters most to a reader, and it is the only one that does not build anything. It installs Debian's `gcc-16`, which is 16.2.0, the same release the citations resolve against, and builds the plugin against that. If the plugin loads only into a compiler we built ourselves then the plugin does not work, and the way to keep that honest is to have one image that never builds one.
+
 ## Status
 
-M1 is done and the book publishes at [tamnd.github.io/gcc-internals](https://tamnd.github.io/gcc-internals/) on every merge to main. Twelve lessons, six films, nine blueprints, the glossary, and the live probe page. M0 is still underway, because the parts of it that are left are a six configuration GCC build matrix, a compiler plugin on two distribution channels, and three beginner testers, none of which are things a merge can finish.
+M1 is done and the book publishes at [tamnd.github.io/gcc-internals](https://tamnd.github.io/gcc-internals/) on every merge to main. Twelve lessons, six films, nine blueprints, the glossary, and the live probe page. M0 is still underway. The build matrix exists and the plugin image is verified against Debian's packaged GCC 16.2.0, so what is left of it is the plugin itself and three beginner testers, neither of which is a thing a merge can finish.
 
 See the [milestones](https://github.com/tamnd/gcc-internals/milestones) for the plan and the [open questions](https://github.com/tamnd/gcc-internals/issues?q=is%3Aissue+label%3Akind%2Fopen-question) for what could still change it.
 

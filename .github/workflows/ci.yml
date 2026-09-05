@@ -22,7 +22,12 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - name: prose rules
-        run: python -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints corpora/programs
+        run: python -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints containers corpora/programs
+
+      # The table in containers/README.md is generated from containers/matrix.toml, and a
+      # hand edit to either one is how the two start describing different compilers.
+      - name: the build matrix table matches the build matrix
+        run: python -m tools.matrix table --check
 
   test:
     name: tests
