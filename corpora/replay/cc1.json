@@ -1,0 +1,190 @@
+{
+ "recorded": "2026-09-06",
+ "tag": "releases/gcc-16.2.0",
+ "commit": "78d4ac73dd391005b895a6148cd9831e28e1208b",
+ "host": "aarch64-unknown-linux-gnu, Linux 6.8.0-117-generic aarch64",
+ "gdb": "GNU gdb (Ubuntu 15.1-1ubuntu1~24.04.1) 15.1",
+ "configure": "/src/configure --prefix=/opt/gcc --disable-bootstrap --disable-multilib --disable-nls --enable-languages=c --enable-checking=yes --with-system-zlib CFLAGS='-O0 -g3' CXXFLAGS='-O0 -g3'",
+ "binary": "cc1",
+ "bytes": 332350200,
+ "program": "l1.c",
+ "source": "/* L1: a loop with an induction variable and an accumulator.\n   Enough for SSA to be interesting, small enough to read the whole dump. */\nint f (int n)\n{\n  int s = 0;\n  for (int i = 0; i < n; i++)\n    s += i;\n  return s;\n}\n",
+ "argv": [
+  "-quiet",
+  "-imultiarch",
+  "aarch64-linux-gnu",
+  "-iprefix",
+  "/work/build/gcc/../lib/gcc/aarch64-unknown-linux-gnu/16.2.0/",
+  "/tmp/l1.c",
+  "-quiet",
+  "-dumpbase",
+  "l1.c",
+  "-dumpbase-ext",
+  ".c",
+  "-mlittle-endian",
+  "-mabi=lp64",
+  "-O2",
+  "-o",
+  "/dev/null"
+ ],
+ "startup": "Breakpoint 1 at 0x3cbdf04: file /src/gcc/diagnostics/context.cc, line 1780.\nBreakpoint 2 at 0x3cae5b0: file /src/gcc/diagnostic-global-context.cc, line 777.\nBreakpoint 3 at 0xff5e10\nBreakpoint 4 at 0xff6360\nFile tree.h will be skipped when stepping.\nFile is-a.h will be skipped when stepping.\nFile line-map.h will be skipped when stepping.\nFile timevar.h will be skipped when stepping.\nFunction rtx_expr_list::next will be skipped when stepping.\nFunction rtx_expr_list::element will be skipped when stepping.\nFunction rtx_insn_list::next will be skipped when stepping.\nFunction rtx_insn_list::insn will be skipped when stepping.\nFunction rtx_sequence::len will be skipped when stepping.\nFunction rtx_sequence::element will be skipped when stepping.\nFunction rtx_sequence::insn will be skipped when stepping.\nFunction INSN_UID will be skipped when stepping.\nFunction PREV_INSN will be skipped when stepping.\nFunction SET_PREV_INSN will be skipped when stepping.\nFunction NEXT_INSN will be skipped when stepping.\nFunction SET_NEXT_INSN will be skipped when stepping.\nFunction BLOCK_FOR_INSN will be skipped when stepping.\nFunction PATTERN will be skipped when stepping.\nFunction INSN_LOCATION will be skipped when stepping.\nFunction INSN_HAS_LOCATION will be skipped when stepping.\nFunction JUMP_LABEL_AS_INSN will be skipped when stepping.\nSuccessfully loaded GDB hooks for GCC",
+ "declined": "warning: File \"/work/build/gcc/.gdbinit\" auto-loading has been declined by your `auto-load safe-path' set to \"$debugdir:$datadir/auto-load\".\nTo enable execution of this file add\n\tadd-auto-load-safe-path /work/build/gcc/.gdbinit\nline to your configuration file \"/root/.config/gdb/gdbinit\".\nTo completely disable this security protection add\n\tset auto-load safe-path /\nline to your configuration file \"/root/.config/gdb/gdbinit\".\nFor more information about this security protection see the\n\"Auto-loading safe path\" section in the GDB manual.  E.g., run from the shell:\n\tinfo \"(gdb)Auto-loading safe path\"",
+ "steps": [
+  {
+   "group": "what the compiler's gdbinit already did",
+   "command": "info breakpoints",
+   "why": "Four breakpoints are set before the reader types anything, and gdbinit set them.",
+   "output": "Num     Type           Disp Enb Address            What\n1       breakpoint     keep y   0x0000000003cbdf04 in fancy_abort(char const*, int, char const*) at /src/gcc/diagnostics/context.cc:1780\n2       breakpoint     keep y   0x0000000003cae5b0 in internal_error(char const*, ...) at /src/gcc/diagnostic-global-context.cc:777\n3       breakpoint     keep y   0x0000000000ff5e10 <exit@plt>\n4       breakpoint     keep y   0x0000000000ff6360 <abort@plt>"
+  },
+  {
+   "group": "what the compiler's gdbinit already did",
+   "command": "info skip",
+   "why": "The skip list, which is why `step` does not vanish into a tree accessor.",
+   "output": "Num   Enb Glob File                 RE Function\n1     y      n tree.h                n <none>\n2     y      n is-a.h                n <none>\n3     y      n line-map.h            n <none>\n4     y      n timevar.h             n <none>\n5     y      n <none>                n rtx_expr_list::next\n6     y      n <none>                n rtx_expr_list::element\n7     y      n <none>                n rtx_insn_list::next\n8     y      n <none>                n rtx_insn_list::insn\n9     y      n <none>                n rtx_sequence::len\n10    y      n <none>                n rtx_sequence::element\n11    y      n <none>                n rtx_sequence::insn\n12    y      n <none>                n INSN_UID\n13    y      n <none>                n PREV_INSN\n14    y      n <none>                n SET_PREV_INSN\n15    y      n <none>                n NEXT_INSN\n16    y      n <none>                n SET_NEXT_INSN\n17    y      n <none>                n BLOCK_FOR_INSN\n18    y      n <none>                n PATTERN\n19    y      n <none>                n INSN_LOCATION\n20    y      n <none>                n INSN_HAS_LOCATION\n21    y      n <none>                n JUMP_LABEL_AS_INSN"
+  },
+  {
+   "group": "what the compiler's gdbinit already did",
+   "command": "info pretty-printer global gcc",
+   "why": "Twenty one printers, four more than gdbhooks.py registers by name, from the loop.",
+   "output": "global pretty-printers:\n  gcc\n    ana::exploded_node\n    ana::supernode\n    basic_block\n    cgraph_edge\n    complex_mode\n    dw_die_ref\n    edge\n    gimple\n    ipa_ref\n    opt_mode\n    opt_mode\n    opt_pass\n    pod_mode\n    pod_mode\n    rtx_def\n    scalar_float_mode\n    scalar_int_mode\n    scalar_mode\n    symtab_node\n    tree\n    vec"
+  },
+  {
+   "group": "how often a pass runs",
+   "command": "break execute_one_pass",
+   "why": "Every pass execution goes through this one function, so it is the place to count.",
+   "output": "Breakpoint 5 at 0x1a0d5d0: file /src/gcc/passes.cc, line 2580."
+  },
+  {
+   "group": "how often a pass runs",
+   "command": "ignore $bpnum 1000000",
+   "why": "Counting rather than stopping. A million is a number no compilation will reach.",
+   "output": ""
+  },
+  {
+   "group": "how often a pass runs",
+   "command": "run -quiet -imultiarch aarch64-linux-gnu -iprefix /work/build/gcc/../lib/gcc/aarch64-unknown-linux-gnu/16.2.0/ /tmp/l1.c -quiet -dumpbase l1.c -dumpbase-ext .c -mlittle-endian -mabi=lp64 -O2 -o /dev/null",
+   "why": "The compilation runs to the end and stops in exit, which gdbinit put a breakpoint on.",
+   "output": "warning: Error disabling address space randomization: Operation not permitted\n[Thread debugging using libthread_db enabled]\nUsing host libthread_db library \"/lib/aarch64-linux-gnu/libthread_db.so.1\".\n\nBreakpoint 3, 0x0000e83e7c53f2f4 in exit () from /lib/aarch64-linux-gnu/libc.so.6"
+  },
+  {
+   "group": "how often a pass runs",
+   "command": "info breakpoints",
+   "why": "The hit count. This is how many times a pass ran for nine lines of C.",
+   "output": "Num     Type           Disp Enb Address            What\n1       breakpoint     keep y   0x0000000003cbdf04 in fancy_abort(char const*, int, char const*) at /src/gcc/diagnostics/context.cc:1780\n2       breakpoint     keep y   0x0000000003cae5b0 in internal_error(char const*, ...) at /src/gcc/diagnostic-global-context.cc:777\n3       breakpoint     keep y   0x0000e83e7c53f2f4 <exit+4>\n\tbreakpoint already hit 1 time\n4       breakpoint     keep y   0x0000e83e7c527d10 <abort+4>\n5       breakpoint     keep y   0x0000000001a0d5d0 in execute_one_pass(opt_pass*) at /src/gcc/passes.cc:2580\n\tbreakpoint already hit 351 times\n\tignore next 999649 hits"
+  },
+  {
+   "group": "stopping on the pass you care about",
+   "command": "delete",
+   "why": "The counting breakpoint has done its work, and so has the one in exit.",
+   "output": ""
+  },
+  {
+   "group": "stopping on the pass you care about",
+   "command": "break execute_one_pass if $_streq(pass->name, \"ccp\")",
+   "why": "The condition is on the pass name, which is a field of the pass gdb already has.",
+   "output": "Breakpoint 6 at 0x1a0d5d0: file /src/gcc/passes.cc, line 2580."
+  },
+  {
+   "group": "stopping on the pass you care about",
+   "command": "run",
+   "why": "Second run in the same process. The compiler starts over, the breakpoint does not.",
+   "output": "warning: Error disabling address space randomization: Operation not permitted\n[Thread debugging using libthread_db enabled]\nUsing host libthread_db library \"/lib/aarch64-linux-gnu/libthread_db.so.1\".\n\nBreakpoint 6, execute_one_pass (pass=<opt_pass* 0xbb47130 \"ccp\"(42)>) at /src/gcc/passes.cc:2580\n2580\t{"
+  },
+  {
+   "group": "stopping on the pass you care about",
+   "command": "print pass",
+   "why": "The opt_pass printer, which prints the name and the static pass number and nothing else.",
+   "output": "$1 = <opt_pass* 0xbb47130 \"ccp\"(42)>"
+  },
+  {
+   "group": "stopping on the pass you care about",
+   "command": "backtrace 6",
+   "why": "Six frames is the whole of the pass manager: one pass, inside a list, inside an IPA pass.",
+   "output": "#0  execute_one_pass (pass=<opt_pass* 0xbb47130 \"ccp\"(42)>) at /src/gcc/passes.cc:2580\n#1  0x0000000001a0def0 in execute_pass_list_1 (pass=<opt_pass* 0xbb47130 \"ccp\"(42)>) at /src/gcc/passes.cc:2769\n#2  0x0000000001a0df34 in execute_pass_list_1 (pass=<opt_pass* 0xbb47010 \"early_optimizations\"(40)>) at /src/gcc/passes.cc:2770\n#3  0x0000000001a0dfa4 in execute_pass_list (fn=0xe09a35fe19c0, pass=<opt_pass* 0xbb46e10 \"fixup_cfg\"(37)>) at /src/gcc/passes.cc:2780\n#4  0x0000000001a0b0cc in do_per_function_toporder (callback=0x1a0df5c <execute_pass_list(function*, opt_pass*)>, data=0xbb46e10) at /src/gcc/passes.cc:1785\n#5  0x0000000001a0eea4 in execute_ipa_pass_list (pass=<opt_pass* 0xbb46db0 \"opt_local_passes\"(36)>) at /src/gcc/passes.cc:3123"
+  },
+  {
+   "group": "looking at the function",
+   "command": "print cfun->decl",
+   "why": "The tree printer. A tree is a tagged pointer and this is what makes it readable.",
+   "output": "$2 = <function_decl 0xe09a35530200 f>"
+  },
+  {
+   "group": "looking at the function",
+   "command": "ptc cfun->decl",
+   "why": "The tree code alone, which is the one question worth asking about an unfamiliar tree.",
+   "output": "FUNCTION_DECL"
+  },
+  {
+   "group": "looking at the function",
+   "command": "pdn cfun->decl",
+   "why": "The name, through two macros. No inferior call, so this one works in a core dump.",
+   "output": "(const unsigned char *) 0xe09a35733518 \"f\""
+  },
+  {
+   "group": "looking at the function",
+   "command": "pcfun",
+   "why": "The whole function, in the same syntax the dump files use, printed by the compiler.",
+   "output": "int f (int n)\n{\n  int i;\n  int s;\n  int _6;\n\n  <bb 2> :\n  s_3 = 0;\n  i_4 = 0;\n  goto <bb 4>; [INV]\n\n  <bb 3> :\n  s_8 = s_1 + i_2;\n  i_9 = i_2 + 1;\n\n  <bb 4> :\n  # s_1 = PHI <s_3(2), s_8(3)>\n  # i_2 = PHI <i_4(2), i_9(3)>\n  if (i_2 < n_5(D))\n    goto <bb 3>; [INV]\n  else\n    goto <bb 5>; [INV]\n\n  <bb 5> :\n  _6 = s_1;\n  return _6;\n\n}\n\n\nvoid"
+  },
+  {
+   "group": "looking at the function",
+   "command": "print cfun->cfg->x_n_basic_blocks",
+   "why": "Six blocks, two of which are the entry and exit that every function has.",
+   "output": "$3 = 6"
+  },
+  {
+   "group": "looking at the function",
+   "command": "print (*cfun->cfg->x_basic_block_info)[3]",
+   "why": "Indexing the block vector. The vec printer keeps the expression short.",
+   "output": "$4 = (basic_block_def *&) @0xe09a35522de8: <basic_block 0xe09a35571240 (3)>"
+  },
+  {
+   "group": "looking at the function",
+   "command": "pgq ((*cfun->cfg->x_basic_block_info)[3])->il.gimple.seq",
+   "why": "The statements in that block, which is the loop body and is two statements long.",
+   "output": "s_8 = s_1 + i_2;\ni_9 = i_2 + 1;"
+  },
+  {
+   "group": "looking at the function",
+   "command": "print ((*cfun->cfg->x_basic_block_info)[3])->preds",
+   "why": "The edges into it. The edge printer prints the block numbers rather than pointers.",
+   "output": "$5 = 0xe09a35526820 = {<edge 0xe09a3556d428 (4 -> 3)>}"
+  },
+  {
+   "group": "watching the pass work",
+   "command": "finish",
+   "why": "Run the pass to its end and come back. The return value is whether it ran at all.",
+   "output": "0x0000000001a0def0 in execute_pass_list_1 (pass=<opt_pass* 0xbb47130 \"ccp\"(42)>) at /src/gcc/passes.cc:2769\n2769\t      if (execute_one_pass (pass) && pass->sub)\nValue returned is $6 = true"
+  },
+  {
+   "group": "watching the pass work",
+   "command": "pcfun",
+   "why": "The same function after ccp. Two assignments gone, two PHI arguments now constants.",
+   "output": "void\n\nint f (int n)\n{\n  int i;\n  int s;\n\n  <bb 2> :\n  goto <bb 4>; [INV]\n\n  <bb 3> :\n  s_8 = s_1 + i_2;\n  i_9 = i_2 + 1;\n\n  <bb 4> :\n  # s_1 = PHI <0(2), s_8(3)>\n  # i_2 = PHI <0(2), i_9(3)>\n  if (i_2 < n_5(D))\n    goto <bb 3>; [INV]\n  else\n    goto <bb 5>; [INV]\n\n  <bb 5> :\n  return s_1;\n\n}"
+  },
+  {
+   "group": "when it does not do what you meant",
+   "command": "break-on-pass ccp",
+   "why": "The argument is a class name, not a pass name, and a wrong one is a pending breakpoint.",
+   "output": "Function \"(anonymous namespace)::ccp::execute\" not defined.\nBreakpoint 7 ((anonymous namespace)::ccp::execute) pending."
+  },
+  {
+   "group": "when it does not do what you meant",
+   "command": "break-on-pass pass_ccp",
+   "why": "The class name. Now it resolves, to the execute method in the anonymous namespace.",
+   "output": "Breakpoint 8 at 0x1da5638: file /src/gcc/tree-ssa-ccp.cc, line 3072."
+  },
+  {
+   "group": "when it does not do what you meant",
+   "command": "reload-gdbhooks",
+   "why": "A command in the pinned tree that cannot work on any Python newer than 3.11.",
+   "output": "Python Exception <class 'ModuleNotFoundError'>: No module named 'imp'\nError occurred in Python: No module named 'imp'"
+  },
+  {
+   "group": "when it does not do what you meant",
+   "command": "kill",
+   "why": "The compilation is abandoned. Nothing was written, which is what -o /dev/null implies.",
+   "output": "[Inferior 1 (process 39737) killed]"
+  }
+ ]
+}

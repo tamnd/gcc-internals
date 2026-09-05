@@ -715,7 +715,7 @@ TEXT = Group(
 
 BUILDING = Group(
     "Building the compiler",
-    "Words you need to configure GCC, build it, and read what it tells you afterwards. B01 and B02 are the lessons, and these are the words those two use constantly and that nothing in the tree defines.",
+    "Words you need to configure GCC, build it, run it under a debugger, and read what it tells you afterwards. B01, B02 and B03 are the lessons, and these are the words those three use constantly and that nothing in the tree defines.",
     (
         Term(
             name="out of tree build",
@@ -788,6 +788,33 @@ BUILDING = Group(
             also=("`--with-build-config`", "`config/bootstrap-*.mk`"),
             see=("stage comparison", "bootstrap"),
             met="B02",
+        ),
+        Term(
+            name="debug counter",
+            short="A counter inside a pass that makes its transformations refusable one at a time, so a bad one can be bisected.",
+            long="`dbg_cnt (ccp)` returns true the first N times it is called and false afterwards, where N comes from `-fdbg-cnt=ccp:N`, and the pass is written to skip the transformation when it returns false. Seventy five of them exist, listed in `dbgcnt.def` and printed by `-fdbg-cnt-list`. The point is bisection: if a program is miscompiled with a pass on and correct with it off, halving N repeatedly finds the smallest limit that still produces bad code, and that number is one specific transformation rather than a pass with four thousand of them. The count is over the whole compilation, not per function, so the number is only meaningful for the exact command line that produced it.",
+            cite="gcc/dbgcnt.cc:63@releases/gcc-16.2.0",
+            also=("`-fdbg-cnt`", "`-fdbg-cnt-list`", "`dbgcnt.def`"),
+            see=("pass", "gate"),
+            met="B03",
+        ),
+        Term(
+            name="pretty printer",
+            short="A Python class in `gdbhooks.py` that teaches gdb to print one of GCC's types as something readable.",
+            long="Without them, `print stmt` in a debugger attached to `cc1` prints a pointer, and `print cfun->decl` prints a tagged union with forty members. With them, the first prints the GIMPLE statement and the second prints `<function_decl 0x... f>`. Seventeen are registered by name and a loop adds four more, and `gdbinit.in` loads the module that does it. A printer reads the same fields a human would read, in Python, without calling into the compiler, which is why one works on a core dump and why one can be wrong in a way the compiler is not.",
+            cite="gcc/gdbhooks.py:619@releases/gcc-16.2.0",
+            also=("`gdbhooks.py`", "`info pretty-printer`"),
+            see=("tree", "current function"),
+            met="B03",
+        ),
+        Term(
+            name="inferior call",
+            short="Making the debugged program run one of its own functions, on demand, from the debugger prompt.",
+            long="Most of GCC's twenty six gdb shorthands are one of these. `pt` is `call debug_tree ($arg0)`, so printing a tree means running GCC's own printing code inside the stopped compiler and letting it write to stderr. That is what makes the output identical to a dump file, and it is also the reason the trick has teeth: the call needs a live process with a working stack, it can allocate, and if the function it runs hits an assertion the debugger stops inside a call it made itself and says so. `set unwindonsignal on`, which `gdbinit.in` sets, is what stops that leaving the process wedged.",
+            cite="gcc/gdbinit.in:83@releases/gcc-16.2.0",
+            also=("`call`", "`pt`", "`pcfun`"),
+            see=("pretty printer", "cc1"),
+            met="B03",
         ),
     ),
 )

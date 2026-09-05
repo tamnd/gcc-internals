@@ -352,3 +352,19 @@ pairs of real object files with one comparison outcome induced into each, and th
 runs GCC's own compare rule over them. The rule is real, the object files are real, and the \
 scale is six instead of thirty thousand, which the lesson says where it matters.\
 """
+
+[[experiment]]
+id = "b03-debugger"
+kind = "offline"
+question = "What does the compiler look like from inside a debugger, and what do you do when you cannot have one?"
+lessons = ["b03-the-debugger"]
+why = """
+Offline for a stronger reason than any of the other five have: the subject cannot be run by \
+the reader at all. A gdb session against cc1 needs a compiler built with -O0 -g3, which is a \
+three hundred megabyte binary out of a six gigabyte build, and it needs a gdb, which does not \
+exist on macOS. So corpora/replay/cc1.json is a recorded session, twenty six commands with \
+every byte of output kept, and the lesson says twice that a transcript is dated in a way the \
+rest of the corpus is not. The half of the lesson that is not a recording is \
+corpora/replay/counters.json, fifty real compilations at fifty debug counter limits, and the \
+bisection over them runs when the reader runs the cell.\
+"""

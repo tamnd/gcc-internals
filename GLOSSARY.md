@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -572,7 +572,7 @@ Also written `.text`, `.bss`, `.rodata`. Taught in T09. See also [assembler dire
 
 ## Building the compiler
 
-Words you need to configure GCC, build it, and read what it tells you afterwards. B01 and B02 are the lessons, and these are the words those two use constantly and that nothing in the tree defines.
+Words you need to configure GCC, build it, run it under a debugger, and read what it tells you afterwards. B01, B02 and B03 are the lessons, and these are the words those three use constantly and that nothing in the tree defines.
 
 ### out of tree build
 
@@ -637,3 +637,27 @@ Also written `stageN-bubble`, `-lean`. Taught in B02. See also [bootstrap](#boot
 `--with-build-config=bootstrap-lto` and the stages are built with link time optimisation. There are nineteen of them and they combine, space separated. `bootstrap-debug` is on by default and is the one worth knowing: it compares stage two and stage three a second time with debug info stripped from both, which catches the specific bug where adding `-g` changes the code a compiler generates. `bootstrap-ubsan` and `bootstrap-asan` build the compiler under a sanitizer, are very slow, and find real things.
 
 Also written `--with-build-config`, `config/bootstrap-*.mk`. Taught in B02. See also [stage comparison](#stage-comparison), [bootstrap](#bootstrap). In the source: [`configure.ac:3303@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/configure.ac#L3303).
+
+### debug counter
+
+**A counter inside a pass that makes its transformations refusable one at a time, so a bad one can be bisected.**
+
+`dbg_cnt (ccp)` returns true the first N times it is called and false afterwards, where N comes from `-fdbg-cnt=ccp:N`, and the pass is written to skip the transformation when it returns false. Seventy five of them exist, listed in `dbgcnt.def` and printed by `-fdbg-cnt-list`. The point is bisection: if a program is miscompiled with a pass on and correct with it off, halving N repeatedly finds the smallest limit that still produces bad code, and that number is one specific transformation rather than a pass with four thousand of them. The count is over the whole compilation, not per function, so the number is only meaningful for the exact command line that produced it.
+
+Also written `-fdbg-cnt`, `-fdbg-cnt-list`, `dbgcnt.def`. Taught in B03. See also [pass](#pass), [gate](#gate). In the source: [`gcc/dbgcnt.cc:63@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/dbgcnt.cc#L63).
+
+### pretty printer
+
+**A Python class in `gdbhooks.py` that teaches gdb to print one of GCC's types as something readable.**
+
+Without them, `print stmt` in a debugger attached to `cc1` prints a pointer, and `print cfun->decl` prints a tagged union with forty members. With them, the first prints the GIMPLE statement and the second prints `<function_decl 0x... f>`. Seventeen are registered by name and a loop adds four more, and `gdbinit.in` loads the module that does it. A printer reads the same fields a human would read, in Python, without calling into the compiler, which is why one works on a core dump and why one can be wrong in a way the compiler is not.
+
+Also written `gdbhooks.py`, `info pretty-printer`. Taught in B03. See also [tree](#tree), [current function](#current-function). In the source: [`gcc/gdbhooks.py:619@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gdbhooks.py#L619).
+
+### inferior call
+
+**Making the debugged program run one of its own functions, on demand, from the debugger prompt.**
+
+Most of GCC's twenty six gdb shorthands are one of these. `pt` is `call debug_tree ($arg0)`, so printing a tree means running GCC's own printing code inside the stopped compiler and letting it write to stderr. That is what makes the output identical to a dump file, and it is also the reason the trick has teeth: the call needs a live process with a working stack, it can allocate, and if the function it runs hits an assertion the debugger stops inside a call it made itself and says so. `set unwindonsignal on`, which `gdbinit.in` sets, is what stops that leaving the process wedged.
+
+Also written `call`, `pt`, `pcfun`. Taught in B03. See also [pretty printer](#pretty-printer), [cc1](#cc1). In the source: [`gcc/gdbinit.in:83@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gdbinit.in#L83).
