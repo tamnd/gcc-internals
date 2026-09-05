@@ -80,6 +80,7 @@ testpaths = ["tests"]
 filterwarnings = ["error"]
 markers = [
   "needs_gcc: drives a real gcc-16 and is skipped when there is not one on PATH",
+  "needs_gcc_plugin: builds gxplug, so it needs a gcc-16 with its plugin headers as well",
   "needs_network: talks to Compiler Explorer, never run in CI",
   "needs_marimo: builds a real island and needs the site extra installed",
   "needs_nbclient: runs a lesson in a real kernel and needs the lessons extra installed",

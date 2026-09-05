@@ -1,0 +1,196 @@
+name: plugin
+
+# gxplug, built against every GCC a reader might plausibly have, and checked against the
+# one promise the whole design rests on: adding -fplugin=gxplug.so changes nothing about
+# the code GCC produces.
+#
+# A plugin is the most fragile thing in this project. It compiles against GCC's private
+# headers, it is loaded by dlopen into a compiler it was not linked against, and it fails
+# by segfaulting in the middle of somebody's lesson rather than by refusing to build. The
+# only defence is to keep building it in as many places as possible, on both architectures,
+# and to check the guarantee every time rather than asserting it in a document.
+#
+# Four channels, which is the answer to open question 4 in the design notes:
+#
+#   debian     a distribution package, gcc-16 with gcc-16-plugin-dev
+#   fedora     a different distribution, packaged differently, gcc-plugin-devel
+#   homebrew   macOS, where the plugin has to be linked with -undefined dynamic_lookup and
+#              gmp.h is not on the default include path
+#   source     the compiler this project builds itself, pulled from the build matrix
+#
+# The four disagree about where the headers are, what the compiler is called, and how a
+# shared object gets its undefined symbols resolved. Every one of those differences is
+# probed for in gxplug/Makefile, and this is what proves the probes work.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "gxplug/**"
+      - "gxray/plug.py"
+      - "tests/test_plug.py"
+      - ".github/workflows/plugin.yml"
+  pull_request:
+    paths:
+      - "gxplug/**"
+      - "gxray/plug.py"
+      - "tests/test_plug.py"
+      - ".github/workflows/plugin.yml"
+  workflow_dispatch:
+
+# The source channel pulls an image the build matrix published, and a package in GHCR is
+# private until somebody makes it otherwise.
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build:
+    name: ${{ matrix.channel }} on ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    container: ${{ matrix.container }}
+    timeout-minutes: 15
+
+    # fail-fast off because the interesting result is which channels broke, not that one
+    # did. A change that breaks Fedora and nothing else is a different bug from one that
+    # breaks everything, and cancelling the rest hides the difference.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - channel: debian
+            arch: amd64
+            runner: ubuntu-24.04
+            container: debian:sid
+          - channel: debian
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            container: debian:sid
+          - channel: fedora
+            arch: amd64
+            runner: ubuntu-24.04
+            container: fedora:rawhide
+          - channel: fedora
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            container: fedora:rawhide
+          # GitHub's macOS runners are arm64 only now, so Intel Homebrew cannot be built
+          # here. The one thing that differs between the two is the prefix, /usr/local
+          # against /opt/homebrew, and the Makefile asks `brew --prefix` rather than
+          # naming either. test_plug.py asserts that it keeps asking.
+          - channel: homebrew
+            arch: arm64
+            runner: macos-15
+            container: ""
+          - channel: source
+            arch: amd64
+            runner: ubuntu-24.04
+            container: ghcr.io/tamnd/gcc-internals/rel:amd64
+          - channel: source
+            arch: arm64
+            runner: ubuntu-24.04-arm
+            container: ghcr.io/tamnd/gcc-internals/rel:arm64
+
+    steps:
+      # Before the checkout, not after. A bare debian:sid has no git, and actions/checkout
+      # without one silently falls back to downloading a tarball over the REST API, which
+      # works until the day it does not.
+      - name: install a compiler and its plugin headers
+        shell: bash
+        run: |
+          set -eux
+          case "${{ matrix.channel }}" in
+            debian)
+              apt-get update
+              apt-get install --no-install-recommends -y \
+                ca-certificates diffutils g++-16 gcc-16 gcc-16-plugin-dev git make python3
+              echo "GXPLUG_GCC=gcc-16" >> "$GITHUB_ENV"
+              ;;
+            fedora)
+              dnf install -y --setopt=install_weak_deps=False \
+                diffutils gcc gcc-c++ gcc-plugin-devel git make python3
+              echo "GXPLUG_GCC=gcc" >> "$GITHUB_ENV"
+              ;;
+            homebrew)
+              brew install gcc
+              # Whichever major version the formula is on today. The plugin ABI only has
+              # to match the compiler that loads it, and that is the same one either way,
+              # so pinning a version here would break the job for no benefit.
+              found=$(ls "$(brew --prefix)"/bin/gcc-1* 2>/dev/null | sort -V | tail -1)
+              test -n "$found"
+              echo "GXPLUG_GCC=$found" >> "$GITHUB_ENV"
+              ;;
+            source)
+              # The image is ubuntu:24.04 with our own GCC ahead of everything on PATH,
+              # and its plugin headers went in with make install. It has no python3,
+              # because nothing a compiler image does needs one.
+              apt-get update
+              apt-get install --no-install-recommends -y python3
+              rm -rf /var/lib/apt/lists/*
+              echo "GXPLUG_GCC=gcc" >> "$GITHUB_ENV"
+              ;;
+          esac
+
+      - uses: actions/checkout@v4
+
+      # Printed on every run, passing or not. When a channel breaks it is nearly always
+      # because a probe resolved somewhere unexpected, and the first question is always
+      # which compiler and which headers this job actually found.
+      - name: what the probes decided
+        shell: bash
+        run: |
+          "$GXPLUG_GCC" --version | head -1
+          make -C gxplug probe GCC="$GXPLUG_GCC"
+
+      - name: build
+        shell: bash
+        run: make -C gxplug GCC="$GXPLUG_GCC"
+
+      # The guarantee. Same source, compiled twice, assembly compared byte for byte.
+      - name: the plugin changes nothing about the generated code
+        shell: bash
+        run: make -C gxplug check GCC="$GXPLUG_GCC"
+
+      # A build that produces no events is a plugin that loaded and did nothing, which the
+      # byte comparison above would happily call a pass.
+      - name: the stream is real, and reaches RTL
+        shell: bash
+        run: |
+          set -eux
+          printf 'int f(int n){int s=0;for(int i=0;i<n;i++)s+=i*i;return s;}\n' > t.c
+          "$GXPLUG_GCC" -O2 -S -fplugin=./gxplug/gxplug.so \
+            -fplugin-arg-gxplug-out=events.ndjson t.c -o t.s
+          wc -l events.ndjson
+          grep -q '"pass":"expand"' events.ndjson
+          grep -q '"insns":[0-9]' events.ndjson
+          grep -q '"statements":[0-9]' events.ndjson
+
+      # The reader for the stream, run against what this channel's compiler just emitted
+      # rather than against a recording. Loaded by path rather than as `from gxray import
+      # plug`, because importing the package pulls in every other module and their
+      # dependencies, and this step is meant to prove the reader works, not that pip does.
+      - name: the reader understands this channel's stream
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import importlib.util
+          import sys
+
+          spec = importlib.util.spec_from_file_location("plug", "gxray/plug.py")
+          plug = importlib.util.module_from_spec(spec)
+          # Registered before it is executed, not after. @dataclass looks its own class up
+          # in sys.modules while the module body is still running, and on Python 3.14 a
+          # module that is not there yet fails with an AttributeError about NoneType that
+          # says nothing at all about the real cause.
+          sys.modules["plug"] = plug
+          spec.loader.exec_module(plug)
+
+          stream = plug.load("events.ndjson")
+          runs = stream.runs
+          changed = [r for r in runs if r.changed]
+          print(f"{len(stream.events)} events, {len(runs)} runs, {len(changed)} changed something")
+          assert stream.functions == ["f"], stream.functions
+          assert any(r.name == "expand" for r in runs), "never reached RTL"
+          assert all(r.end is not None for r in runs), "a pass started and never finished"
+          assert 0 < len(changed) < len(runs)
+          PY

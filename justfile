@@ -23,7 +23,7 @@ lint:
     ruff format --check .
 
 prose:
-    {{py}} -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints containers corpora/programs
+    {{py}} -m tools.prosecheck README.md CONTRIBUTING.md LICENSE.md GLOSSARY.md docs lessons blueprints containers corpora/programs gxplug
 
 test:
     {{py}} -m pytest -q
@@ -280,6 +280,43 @@ image id:
       --build-arg SMOKE="$smoke" \
       --build-arg EXTRA_PACKAGES="$pkgs" \
       -t "gcc-internals/{{id}}" .
+
+# Build gxplug against {{gcc}}. Needs that compiler's plugin headers, which most
+# distributions package separately. See gxplug/README.md.
+plugin:
+    make -C gxplug GCC={{gcc}}
+
+# Which compiler, which headers, and what the two portability probes decided. The first
+# thing to run when a build fails somewhere unfamiliar.
+plugin-probe:
+    make -C gxplug probe GCC={{gcc}}
+
+# The guarantee: same program, compiled with and without the plugin, assembly compared byte
+# for byte. If this fails, nothing built on gxplug can be trusted.
+plugin-check:
+    make -C gxplug check GCC={{gcc}}
+
+# Write a stream for one file and say what is in it. `just plugin-run corpora/programs/l1.c`
+plugin-run FILE OPT="-O2": plugin
+    #!/usr/bin/env bash
+    set -euo pipefail
+    out=$(mktemp -t gxplug.XXXXXX)
+    trap 'rm -f "$out" "$out.s"' EXIT
+    {{gcc}} {{OPT}} -S -fplugin=./gxplug/gxplug.so \
+      -fplugin-arg-gxplug-out="$out" {{FILE}} -o "$out.s"
+    {{py}} - "$out" <<'PY'
+    import sys
+    from gxray import plug
+
+    stream = plug.load(sys.argv[1])
+    runs = stream.runs
+    changed = [r for r in runs if r.changed]
+    print(f"{len(stream.events)} events, {len(runs)} passes ran, {len(changed)} left a mark")
+    print("functions:", ", ".join(stream.functions))
+    print(f"{stream.seconds:.4f} seconds inside passes")
+    for run in sorted(changed, key=lambda r: r.seconds or 0, reverse=True)[:10]:
+        print(f"  {run.seconds or 0:8.6f}  {run.name}")
+    PY
 
 # The pinned GCC tree, about 1.3 GB shallow. Only refcheck needs it.
 gcc-src:

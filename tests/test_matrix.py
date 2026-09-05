@@ -217,9 +217,34 @@ def test_a_readme_with_no_markers_says_so_rather_than_writing_nothing():
         matrix.rewrite("# no markers here\n", "table")
 
 
-def test_the_lockfile_is_read_even_when_it_is_empty():
-    """It is empty until the first full matrix run publishes, and that is not a crash."""
-    assert matrix.digests() == {}
+def test_the_lockfile_is_read_even_when_it_is_empty(tmp_path):
+    """A lockfile with no images in it is a state, not a crash.
+
+    It is what a fresh clone of this project would have before the first matrix run
+    publishes anything, and `digests` has to return an empty mapping rather than raise.
+    Written against a temporary file and not the committed one, because the committed one
+    stopped being empty the moment the matrix first published and a test that reads it is
+    a test that expires.
+    """
+    empty = tmp_path / "images.lock.json"
+    empty.write_text('{"images": {}}', encoding="utf-8")
+    assert matrix.digests(empty) == {}
+
+
+def test_a_lockfile_that_is_not_there_at_all_is_also_not_a_crash(tmp_path):
+    assert matrix.digests(tmp_path / "nothing.json") == {}
+
+
+def test_the_committed_lockfile_is_readable_and_pins_by_digest():
+    """Whatever is in it, every entry has to be a digest.
+
+    This is the half of the lockfile check that can run without knowing whether a full
+    weekly run has happened yet. `lock_problems` is the half that knows, and issue #61 is
+    about making it blocking once all twelve images exist.
+    """
+    for name, digest in matrix.digests().items():
+        assert digest.startswith("sha256:"), name
+        assert len(digest) == len("sha256:") + 64, name
 
 
 def test_an_image_the_matrix_no_longer_builds_is_the_dangerous_one():

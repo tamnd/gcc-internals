@@ -39,7 +39,11 @@ WORKDIR /usr/src/gxplug
 # The plugin builds here rather than being copied in, because a plugin binary is only valid
 # against the compiler it was compiled against and an image that shipped one built anywhere
 # else would be shipping a segfault.
-RUN if [ -f Makefile ]; then make; else echo "gxplug has no Makefile yet, image has the toolchain only"; fi
+#
+# `make check` and not `make`. The image is what a reader pulls to follow a lesson, so it
+# has to ship a plugin that has been shown not to change the code, not one that merely
+# compiled. It costs a couple of seconds on a five minute build.
+RUN make && make check
 
 LABEL org.opencontainers.image.source="https://github.com/tamnd/gcc-internals"
 LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
