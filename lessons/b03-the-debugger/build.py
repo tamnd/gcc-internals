@@ -742,8 +742,10 @@ narrowed = bisect.narrow()
 print(narrowed.report())
 print()
 print(f"{len(narrowed.probes)} probes, against {len(bisect.trials)} compilations in the sweep")
-print(f"the exhaustive answer is {bisect.first_good}, and every limit above it is good: "
-      f"{bisect.monotone}")
+print(
+    f"the exhaustive answer is {bisect.first_good}, and every limit above it is good: "
+    f"{bisect.monotone}"
+)
 """)
 
 lesson.md(f"""
