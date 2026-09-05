@@ -1,0 +1,41 @@
+{
+  // The escape hatch for B01. A GCC 16.2 that somebody else already built, plus this
+  // repository's tooling, in one click and no compiler on your own machine.
+  //
+  // The image is pinned by digest rather than by tag. A tag is a name that can be moved
+  // and a digest is not, and the whole point of not building GCC yourself is being sure
+  // which GCC you got. The digest comes from containers/images.lock.json, which the build
+  // matrix workflow writes, and tests/test_devcontainer.py fails if the two disagree.
+  //
+  // This project publishes one image per architecture rather than a manifest list, so the
+  // digest below is the amd64 one. Codespaces is amd64 and so is most CI. On an arm64
+  // machine, change both the tag and the digest to the arm64 row of the lock file, or
+  // Docker will run this under emulation and every build in it will be slow.
+  //
+  // To read GCC rather than run it, swap `rel` for `chk`, which has every internal
+  // consistency check turned on. To step through it in gdb, swap it for `dbg`, which is
+  // unoptimized, keeps its sources, and is six gigabytes. Both need that image's own
+  // digest, and `python -m tools.matrix show chk` prints what each one was configured
+  // with.
+  "name": "gcc-internals, GCC 16.2 rel",
+  "image": "ghcr.io/tamnd/gcc-internals/rel@sha256:d619ccd04f3206822ccd50f2a70b3fcc0de98652f66a08bc13bd5f37be7290dc",
+
+  // The image is Ubuntu with a compiler in /opt/gcc and nothing else. Python comes from a
+  // feature rather than from the image because adding it to the image would mean
+  // rebuilding six compilers to install an interpreter.
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  "postCreateCommand": "pip install -e '.[dev]' && gcc --version | head -1",
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-toolsai.jupyter", "charliermarsh.ruff"],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-83 claims across 12 lessons, 4 of them not observable from a notebook.
+92 claims across 13 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -152,3 +152,17 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | five tree passes changed the squares, and one of them only renumbered them | [`t10-28`](t10-the-whole-map/t10.ipynb) |
 | combine is the pass that turned the multiply and the add into one insn | [`t10-31`](t10-the-whole-map/t10.ipynb) |
 | the fused insn is printed by a pattern called maddsi and the file says which | [`t10-34`](t10-the-whole-map/t10.ipynb) |
+
+## A compiler of your own, in five minutes or four hours
+
+| Claim | Proved by |
+| --- | --- |
+| the cheapest way to a GCC 16 is one docker pull and five minutes, and the most expensive is a bootstrap at four hours | [`b01-04`](b01-the-build/b01.ipynb) |
+| configure has two version thresholds for each of the three libraries it requires, and a separate phrase for landing between them | [`b01-10`](b01-the-build/b01.ipynb) |
+| the top level configure refuses an out of tree build from a source tree that somebody has already built in | [`b01-17`](b01-the-build/b01.ipynb) |
+| the rel configuration passes seven flags, out of the hundred and sixty one the two configure scripts between them offer | [`b01-20`](b01-the-build/b01.ipynb) |
+| four of GCC's fourteen front ends are built by a configure line that says nothing about languages | [`b01-26`](b01-the-build/b01.ipynb) |
+| an empty file called DEV-PHASE is what makes the default checking level release rather than yes and extra | [`b01-33`](b01-the-build/b01.ipynb) |
+| a dozen of the files the compiler is compiled from are written during the build by programs the build compiles and runs first | [`b01-39`](b01-the-build/b01.ipynb) |
+| a built GCC carries the configure line it was built with and prints it back when you run it with -v | [`b01-46`](b01-the-build/b01.ipynb) |
+| ten of this project's twelve published images can be pulled by digest, which is a name nobody can move | [`b01-51`](b01-the-build/b01.ipynb) |

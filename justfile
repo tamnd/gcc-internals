@@ -200,6 +200,15 @@ corpus-z01:
 corpus-z02:
     {{py}} lessons/z02-where-things-are/record.py
 
+# B01 records what ./configure decides, which is the third thing in the tree that a notebook
+# cannot go and look at. It writes corpora/configure/gcc.json, which is the front end table, the
+# checking levels, the library minimums and the option counts, and corpora/source/b01.json,
+# which is eleven spans of the two configure.ac files and gcc/Makefile.in. It needs the
+# submodule. The front end and checking parsers are tools.bpc.buildsys, the same reader
+# BP-BUILD generates its tables from, so the lesson and the blueprint cannot disagree.
+corpus-b01:
+    {{py}} lessons/b01-the-build/record.py
+
 # Every Tier 0 experiment, run out of the corpus and then out of the cached Compiler Explorer
 # responses, and checked against each other. No network either way. See tools/tier0 for what
 # the three kinds of experiment are and why a recorded one is compared byte for byte while a

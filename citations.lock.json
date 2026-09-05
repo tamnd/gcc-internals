@@ -3,6 +3,10 @@
  "pinned": "releases/gcc-16.2.0",
  "context_lines": 2,
  "citations": {
+  "Makefile.def:749@releases/gcc-16.2.0": {
+   "hash": "f8fb898fec49683f",
+   "text": "bootstrap_stage = { id=1 ; };"
+  },
   "Makefile.tpl:1733@releases/gcc-16.2.0": {
    "hash": "1a7f22ef3ac5417a",
    "text": "unstage = if [ -f stage_last ]; then [ -f stage_current ] || $(MAKE) `cat stage_last`-start || exit 1; else :; fi"
@@ -55,9 +59,29 @@
    "hash": "1ba511192e6c34fa",
    "text": "if test \"$enable_bootstrap:$GXX\" = \"yes:yes\"; then"
   },
+  "configure.ac:1790@releases/gcc-16.2.0": {
+   "hash": "db102c9bc9c2c6bf",
+   "text": "  # Check for the recommended and required versions of GMP."
+  },
+  "configure.ac:1880@releases/gcc-16.2.0": {
+   "hash": "f8399cc674a7e493",
+   "text": "# The library versions listed in the error message below should match"
+  },
+  "configure.ac:213@releases/gcc-16.2.0": {
+   "hash": "60ffdd059bac9a09",
+   "text": "is_cross_compiler="
+  },
   "configure.ac:222@releases/gcc-16.2.0": {
    "hash": "f30d5b3c48d011c9",
    "text": "# Be sure to cover against remnants of an in-tree build."
+  },
+  "configure.ac:2310@releases/gcc-16.2.0": {
+   "hash": "ae5b5f321c71fee9",
+   "text": "      *)"
+  },
+  "configure.ac:2407@releases/gcc-16.2.0": {
+   "hash": "5f7a2e1e4edce4c2",
+   "text": "  new_enable_languages=,c,"
   },
   "configure.ac:4344@releases/gcc-16.2.0": {
    "hash": "ea3ba2a935c0bf17",
@@ -383,9 +407,21 @@
    "hash": "69bbb0299eba4c24",
    "text": "#define FIRST_PSEUDO_REGISTER FIRST_PSEUDO_REG"
   },
+  "gcc/configure.ac:640@releases/gcc-16.2.0": {
+   "hash": "728faf0b6e8a2c65",
+   "text": "# Enable expensive internal checks"
+  },
+  "gcc/configure.ac:646@releases/gcc-16.2.0": {
+   "hash": "c376b0d1668644e9",
+   "text": "AC_ARG_ENABLE(checking,"
+  },
   "gcc/configure.ac:661@releases/gcc-16.2.0": {
    "hash": "6c9dc43586ea51c5",
    "text": "for check in release $ac_checking_flags"
+  },
+  "gcc/doc/install.texi:867@releases/gcc-16.2.0": {
+   "hash": "5bce5cac0f6d20c8",
+   "text": "A canonical configuration name has three parts, separated by dashes."
   },
   "gcc/dominance.cc:1125@releases/gcc-16.2.0": {
    "hash": "5ca962bf82eba31a",
@@ -546,6 +582,10 @@
   "gcc/gcc.cc:7293@releases/gcc-16.2.0": {
    "hash": "2effc14662256a40",
    "text": "handle_braces (const char *p)"
+  },
+  "gcc/gcc.cc:7728@releases/gcc-16.2.0": {
+   "hash": "bcc6f7655f7c1d57",
+   "text": ""
   },
   "gcc/gcc.cc:8305@releases/gcc-16.2.0": {
    "hash": "da146c315a778de1",
@@ -1095,6 +1135,10 @@
    "hash": "d5e15bb6d9a8357f",
    "text": "plugin_default_version_check (struct plugin_gcc_version *gcc_version,"
   },
+  "gcc/plugin.cc:1012@releases/gcc-16.2.0": {
+   "hash": "4269ae3ebcee8a0c",
+   "text": ""
+  },
   "gcc/plugin.cc:1043@releases/gcc-16.2.0": {
    "hash": "ac5b6b08ed253871",
    "text": "default_plugin_dir_name (void)"
@@ -1306,6 +1350,10 @@
   "gcc/rtl.h:4146@releases/gcc-16.2.0": {
    "hash": "ff1c2929691bffeb",
    "text": "#define LAST_VIRTUAL_REGISTER\t\t((FIRST_VIRTUAL_REGISTER) + 5)"
+  },
+  "gcc/rust/config-lang.in:27@releases/gcc-16.2.0": {
+   "hash": "a70a81273e6fc639",
+   "text": "language=\"rust\""
   },
   "gcc/ssa-iterators.h:71@releases/gcc-16.2.0": {
    "hash": "477d9b0c0ff36fb5",

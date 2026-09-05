@@ -325,3 +325,16 @@ Recorded with -fdump-tree-all and -fdump-rtl-all together, for the same reason t
 and with the same consequence. The API returns the lot on stderr in one undelimited blob. \
 The t10-ladder entry next to it is the paired half of this lesson.\
 """
+
+[[experiment]]
+id = "b01-configure"
+kind = "offline"
+question = "What does ./configure decide, and which of those decisions did you make?"
+lessons = ["b01-the-build"]
+why = """
+The first experiment of Part II and the third offline one, for the same reason as z01 and \
+z02. The subject is the source tree and the build matrix rather than anything a compiler \
+emitted, so the evidence is corpora/configure/gcc.json and containers/matrix.toml. Both are \
+recorded from files that CI already reads, which is what makes a configure line printed in \
+the notebook a configure line that ran this week.\
+"""
