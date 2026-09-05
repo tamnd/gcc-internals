@@ -401,12 +401,12 @@ lesson.code("""
 print(f"{'word':<10}{'program':<12}{'directory':<14}{'default':<10}{'target libraries'}")
 for one in build.languages:
     state = "yes" if one.default else "opt in"
-    print(f"{one.name:<10}{one.compiler or '-':<12}gcc/{one.directory:<10}{state:<10}"
-          f"{', '.join(one.libs)}")
+    row = f"{one.name:<10}{one.compiler or '-':<12}gcc/{one.directory:<10}{state:<10}"
+    print(row + ", ".join(one.libs))
 
 print()
-print(f"{len(build.languages)} front ends, {len(build.default_languages)} on by default: "
-      f"{', '.join(build.default_languages)}")
+defaults = ", ".join(build.default_languages)
+print(f"{len(build.languages)} front ends, {len(build.default_languages)} by default: {defaults}")
 """)
 
 lesson.md(f"""
@@ -493,12 +493,13 @@ The flag itself, and the part people misread.
 """)
 
 lesson.code("""
-print(cuts["default"].numbered({
+notes = {
     653: "and none of the next six lines runs at all if you passed the flag yourself",
     655: "is_release empty means a development branch, so yes,extra",
     658: "and this is what a release tag gets",
     661: "release is prepended to whatever you passed",
-}))
+}
+print(cuts["default"].numbered(notes))
 """)
 
 lesson.md(f"""
@@ -566,8 +567,11 @@ stamp = cuts["stamp"]
 print(stamp.about)
 print(f"{stamp.span}  ({stamp.citation})")
 print()
-print(stamp.numbered({2806: "leaves the timestamp alone if the content did not change",
-                      2807: "so this empty file is what records that the generator ran"}))
+notes = {
+    2806: "leaves the timestamp alone if the content did not change",
+    2807: "so this empty file is what records that the generator ran",
+}
+print(stamp.numbered(notes))
 """)
 
 lesson.md("""
