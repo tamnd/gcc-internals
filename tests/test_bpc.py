@@ -18,7 +18,7 @@ from pathlib import Path
 import pytest
 
 from tools import bpc
-from tools.bpc import Blueprint, BpcError, gccsrc
+from tools.bpc import Blueprint, BpcError, buildsys, gccsrc
 from tools.bpc import coverage as ledger
 from tools.bpc import plugin as plugin_gen
 from tools.bpc.gccsrc import SourceError
@@ -402,7 +402,8 @@ def test_an_end_marker_naming_the_wrong_block_is_an_error():
 
 
 def test_an_unknown_generator_lists_the_ones_that_exist(registered):
-    with pytest.raises(BpcError, match="Registered generators: example"):
+    """The list is sorted, so what comes before `example` depends on what exists today."""
+    with pytest.raises(BpcError, match=r"Registered generators: .*\bexample\b"):
         bpc.render("nope", Path("."))
 
 
@@ -549,6 +550,50 @@ def test_a_missing_ledger_says_where_it_was_looking(tmp_path):
         ledger.load(tmp_path / "nope.toml")
 
 
+def test_an_inventory_that_names_neither_a_macro_nor_a_provider_is_refused(tmp_path):
+    """Where the list of items comes from is the whole point of an inventory, so it is not
+    something the ledger is allowed to leave out."""
+    text = LEDGER.replace('macro = "DEFGSCODE"\n', "")
+    with pytest.raises(BpcError, match="exactly one of"):
+        ledger.load(write_ledger(tmp_path, text))
+
+
+def test_an_inventory_that_names_both_is_refused_too(tmp_path):
+    text = LEDGER.replace('macro = "DEFGSCODE"', 'macro = "DEFGSCODE"\nprovider = "front-ends"')
+    with pytest.raises(BpcError, match="exactly one of"):
+        ledger.load(write_ledger(tmp_path, text))
+
+
+def test_an_unknown_provider_lists_the_ones_that_exist(tmp_path):
+    text = LEDGER.replace('macro = "DEFGSCODE"', 'provider = "back-ends"')
+    with pytest.raises(BpcError, match="Known: checking-categories, front-ends"):
+        ledger.load(write_ledger(tmp_path, text))
+
+
+@needs_tree
+def test_a_provider_supplies_the_items_and_the_rules_work_the_same_way(tmp_path):
+    """The two mechanisms differ in where the list comes from and nowhere else."""
+    text = dedent(
+        """
+        [inventory.front-ends]
+        what = "front ends"
+        source = "gcc/*/config-lang.in"
+        provider = "front-ends"
+
+        [[inventory.front-ends.rule]]
+        match = "c"
+        status = "covered"
+
+        [[inventory.front-ends.rule]]
+        match = "*"
+        status = "mentioned"
+        """
+    )
+    (report,) = ledger.report(bpc.GCC_ROOT, write_ledger(tmp_path, text))
+    assert report.counts == {"covered": 1, "mentioned": 13}
+    assert report.unclassified == []
+
+
 # The real tree
 
 
@@ -672,3 +717,169 @@ def test_the_two_events_this_project_relies_on_fire_from_the_pass_manager():
     assert [f for f, _, _ in found["PLUGIN_PASS_EXECUTION"]] == ["passes.cc"]
     assert [d for _, _, d in found["PLUGIN_PASS_EXECUTION"]] == ["pass"]
     assert [d for _, _, d in found["PLUGIN_OVERRIDE_GATE"]] == ["&gate_status"]
+
+
+# The build system reader
+
+
+def test_a_backslash_continuation_makes_one_logical_line():
+    """A makefile rule is written over four lines and is one rule, and a reader that goes
+    line by line sees four things none of which parse."""
+    text = "A = one \\\n    two \\\n    three\nB = four\n"
+    assert buildsys.logical_lines(text) == ["A = one     two     three", "B = four", ""]
+
+
+def test_a_substitution_reference_expands_word_by_word():
+    names = {"files": "insn-attr.h insn-codes.h"}
+    assert buildsys.expand("$(files:insn-%.h=s-%)", names) == "s-attr s-codes"
+
+
+def test_a_suffix_substitution_is_the_other_form_and_both_are_needed():
+    assert buildsys.substitute("foo.cc", ".cc", ".o") == "foo.o"
+    assert buildsys.substitute("foo.cc", "%.cc", "s-%") == "s-foo"
+
+
+def test_an_unknown_variable_expands_to_nothing_because_that_is_what_make_does():
+    assert buildsys.expand("a $(nope) b", {}) == "a  b"
+
+
+def test_a_variable_defined_in_terms_of_itself_is_reported_rather_than_hung_on():
+    with pytest.raises(SourceError, match="after 20 rounds"):
+        buildsys.expand("$(a)", {"a": "$(a)"})
+
+
+def test_a_variable_assignment_is_not_a_rule_head():
+    assert buildsys.split_head("CFLAGS = -O2 -g") is None
+    assert buildsys.split_head("CFLAGS := -O2") is None
+    assert buildsys.split_head("\tcommand: here") is None
+
+
+def test_a_static_pattern_rule_comes_back_as_three_fields():
+    """`targets: pattern: prerequisites` is how seven generator rules are written once, and
+    the middle field is what says what `$*` will stand for."""
+    head = buildsys.split_head("$(gen:insn-%.h=s-%): s-%: build/gen%")
+    assert head is not None
+    assert [f.strip() for f in head] == ["$(gen:insn-%.h=s-%)", "s-%", "build/gen%"]
+
+
+def test_a_target_list_with_an_equals_inside_it_is_still_a_rule():
+    """The `=` of a substitution reference is not the `=` of an assignment."""
+    assert buildsys.split_head("$(a:x=y): dep") is not None
+
+
+def test_a_comment_inside_a_recipe_does_not_end_the_recipe():
+    """s-gtype writes two commands with an explanation between them at column zero."""
+    lines = buildsys.logical_lines(
+        "s-gtype: build/gengtype\n\tfirst\n# why the second one exists\n\tsecond\n"
+    )
+    found = buildsys.rules(lines, {})
+    assert len(found) == 1
+    assert [line.strip() for line in found[0].recipe] == ["first", "second"]
+
+
+def test_the_stem_is_what_the_percent_matched():
+    assert buildsys.stem_of("s-attr-common", "s-%") == "attr-common"
+    assert buildsys.stem_of("insn-codes.h", "insn-%.h") == "codes"
+
+
+def test_a_foreach_leaves_its_own_punctuation_on_the_last_output():
+    """The split outputs are written inside a $(foreach ...) and the count is an autoconf
+    substitution, so neither the semicolon nor the number is part of a filename."""
+    assert buildsys.tidy("insn-emit-$(id).cc;)") == "insn-emit-N.cc"
+
+
+@needs_tree
+def test_every_generator_program_the_makefile_names_is_classified():
+    found = buildsys.programs(bpc.GCC_ROOT)
+    assert len(found) > 25
+    assert all(what for _, what in found)
+    assert ("recog", "the RTL reader") in found
+    assert ("match", "nothing extra") in found
+    # The names are stems, so `gengenrtl` is `genrtl` and that is not a typo.
+    assert ("genrtl", "error reporting") in found
+
+
+@needs_tree
+def test_the_generator_that_writes_another_generator_is_not_confused_with_it():
+    """genconditions writes build/gencondmd.cc and gencondmd writes insn-conditions.md.
+    Attributing an output by the program name that appears next to it gets both wrong."""
+    writes = buildsys.outputs(bpc.GCC_ROOT)
+    assert writes["conditions"] == ["build/gencondmd.cc"]
+    assert writes["condmd"] == ["insn-conditions.md"]
+
+
+@needs_tree
+def test_the_seven_generators_written_as_one_pattern_rule_are_all_found():
+    """These are the ones a line by line reader misses entirely, because their rule names
+    none of them."""
+    writes = buildsys.outputs(bpc.GCC_ROOT)
+    for stem, out in [
+        ("attr", "insn-attr.h"),
+        ("attr-common", "insn-attr-common.h"),
+        ("codes", "insn-codes.h"),
+        ("config", "insn-config.h"),
+        ("flags", "insn-flags.h"),
+        ("target-def", "insn-target-def.h"),
+        ("constants", "insn-constants.h"),
+        ("enums", "insn-enums.cc"),
+    ]:
+        assert writes[stem] == [out], stem
+
+
+@needs_tree
+def test_ada_is_read_through_the_file_it_sources():
+    """The outer config-lang.in sets a language and sources the rest. A reader that stops
+    at the outer file says Ada has no compiler, which is wrong."""
+    ada = next(d for d in buildsys.declarations(bpc.GCC_ROOT) if d.directory == "ada")
+    assert ada.get("compilers") == "gnat1$(exeext)"
+    assert ada.get("build_by_default") == "no"
+
+
+@needs_tree
+def test_a_requirement_set_inside_a_shell_if_is_recorded_as_conditional():
+    """Ada requires C and C++ only when it is not being cross built."""
+    ada = next(d for d in buildsys.declarations(bpc.GCC_ROOT) if d.directory == "ada")
+    assert ada.get("lang_requires") == "c c++"
+    assert "lang_requires" in ada.conditional
+    cpp = next(d for d in buildsys.declarations(bpc.GCC_ROOT) if d.directory == "cp")
+    assert cpp.conditional == set()
+
+
+@needs_tree
+def test_release_checking_is_applied_before_anything_the_user_asked_for():
+    """`--enable-checking=rtl` is release plus rtl, and a reader who thinks otherwise
+    benchmarks the wrong compiler."""
+    turns_on, macros, _ = buildsys.checking(bpc.GCC_ROOT)
+    assert turns_on["release"] == {"assert_checking", "runtime_checking"}
+    assert turns_on["rtl"] == {"rtl_checking"}
+    assert turns_on["release"] & turns_on["rtl"] == set()
+    assert macros["rtl_checking"] == "ENABLE_RTL_CHECKING"
+
+
+@needs_tree
+def test_the_only_two_words_that_turn_everything_off_are_no_and_none():
+    turns_on, _, _ = buildsys.checking(bpc.GCC_ROOT)
+    assert turns_on["no|none"] == set()
+    assert all(turns_on[level] for level in buildsys.LEVELS if level != "no|none")
+
+
+@needs_tree
+def test_the_valgrind_macro_is_found_even_though_it_is_not_the_next_line():
+    """It looks for the binary first, so a scan that only reads the following line reports
+    the one category with no macro, which would be a lie about what it does."""
+    _, macros, _ = buildsys.checking(bpc.GCC_ROOT)
+    assert macros["valgrind_checking"] == "ENABLE_VALGRIND_CHECKING"
+
+
+@needs_tree
+def test_a_pipe_never_reaches_a_table_cell():
+    """`no|none` is one case arm and two words, and a pipe inside a Markdown cell ends it."""
+    assert buildsys.label("no|none") == "`no` or `none`"
+    text = buildsys.build_checking(bpc.GCC_ROOT)
+    assert "no|none" not in text
+    for block in text.split("\n\n"):
+        rows = block.splitlines()
+        if not all(row[:1] == "|" for row in rows):
+            continue
+        widths = {len(row.split("|")) for row in rows}
+        assert widths == {len(rows[0].split("|"))}, "a stray pipe makes one row wider"

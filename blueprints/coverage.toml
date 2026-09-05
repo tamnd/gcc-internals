@@ -173,3 +173,71 @@ status = "mentioned"
 [[inventory.plugin-events.rule]]
 match = "PLUGIN_*"
 status = "mentioned"
+
+# The front ends. This is the inventory that most needs stating, because a course about GCC
+# that teaches C and calls itself a course about GCC is making a claim it has not earned.
+# GCC's middle end is shared and its front ends are not, and twelve of the fourteen below
+# are never opened here.
+[inventory.front-ends]
+what = "front ends"
+source = "gcc/*/config-lang.in"
+provider = "front-ends"
+
+[[inventory.front-ends.rule]]
+match = "c"
+status = "covered"
+
+[[inventory.front-ends.rule]]
+match = "c++"
+status = "covered"
+
+[[inventory.front-ends.rule]]
+match = "lto"
+status = "mentioned"
+
+# Named in BP-BUILD's generated table with its compiler and its default, and never opened.
+# Each of these is a language front end of between twenty thousand and half a million lines,
+# and covering one properly means teaching that language's semantics first.
+[[inventory.front-ends.rule]]
+match = "*"
+status = "out of scope"
+why = "This course teaches the middle end and the back end through C and C++, which are the two front ends every reader can already read. Another front end would add a language to learn before the compiler, and would teach nothing about the shared pipeline that C does not already teach."
+
+# The --enable-checking categories. These decide what the compiler verifies about its own
+# IR at run time, which is the difference between a pass bug that fails a test and one that
+# silently miscompiles, so the book has to say which of them it relies on.
+[inventory.checking-categories]
+what = "--enable-checking categories"
+source = "gcc/configure.ac"
+provider = "checking-categories"
+
+[[inventory.checking-categories.rule]]
+match = "misc"
+status = "covered"
+
+[[inventory.checking-categories.rule]]
+match = "extra"
+status = "covered"
+
+[[inventory.checking-categories.rule]]
+match = "rtl"
+status = "covered"
+
+[[inventory.checking-categories.rule]]
+match = "tree"
+status = "covered"
+
+[[inventory.checking-categories.rule]]
+match = "gimple"
+status = "covered"
+
+[[inventory.checking-categories.rule]]
+match = "valgrind"
+status = "out of scope"
+why = "It needs valgrind found at configure time and runs every subprocess under it, which GCC itself calls extremely expensive. The build matrix has no configuration that could afford it. It is named in BP-BUILD's generated table with its cost and never used."
+
+# The rest are in the generated table with the macro each one defines and what GCC says it
+# costs, which is enough to choose one, and not enough to call them explained.
+[[inventory.checking-categories.rule]]
+match = "*"
+status = "mentioned"

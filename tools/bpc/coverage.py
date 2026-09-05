@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import fnmatch
 import tomllib
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -36,6 +37,25 @@ from tools.bpc.gccsrc import parse_def, read
 
 LEDGER = BLUEPRINTS / "coverage.toml"
 STATUSES = ("covered", "mentioned", "out of scope")
+
+
+def providers() -> dict[str, Callable[[Path], list[str]]]:
+    """Inventories that do not come from an X macro file.
+
+    Most of what the book could cover is enumerated by a `.def` file, and those inventories
+    say which macro to read. Two are not. The front ends are fourteen shell fragments and
+    the checking categories are the arms of a case statement in configure, and both are
+    things a reader can reasonably ask whether the book covers. Imported here rather than at
+    the top because `buildsys` imports the generator decorator from the package above this.
+    """
+    from tools.bpc import buildsys
+
+    return {
+        "front-ends": lambda root: [d.get("language") for d in buildsys.declarations(root)],
+        "checking-categories": lambda root: sorted(
+            k for k in buildsys.checking(root)[0] if k not in buildsys.LEVELS
+        ),
+    }
 
 
 @dataclass
@@ -52,11 +72,14 @@ class Inventory:
     name: str
     what: str
     source: str
-    macro: str
+    macro: str = ""
+    provider: str = ""
     rules: list[Rule] = field(default_factory=list)
 
     def items(self, root: Path) -> list[str]:
-        return [e.name for e in parse_def(read(root / self.source_name), self.macro)]
+        if self.macro:
+            return [e.name for e in parse_def(read(root / self.source_name), self.macro)]
+        return providers()[self.provider](root)
 
     @property
     def source_name(self) -> str:
@@ -92,12 +115,22 @@ def load(path: Path | None = None) -> list[Inventory]:
                     f"{path}: rule {rule.match!r} puts something out of scope without saying "
                     f"why. A reason is the only thing that makes an exclusion honest."
                 )
+        macro, from_ = entry.get("macro", ""), entry.get("provider", "")
+        if bool(macro) == bool(from_):
+            raise BpcError(
+                f"{path}: inventory {name!r} must set exactly one of `macro` and `provider`. "
+                f"An X macro file names the macro, anything else names a provider."
+            )
+        if from_ and from_ not in providers():
+            known = ", ".join(sorted(providers())) or "none"
+            raise BpcError(f"{path}: inventory {name!r} wants provider {from_!r}. Known: {known}")
         inventories.append(
             Inventory(
                 name=name,
                 what=entry["what"],
                 source=entry["source"],
-                macro=entry["macro"],
+                macro=macro,
+                provider=from_,
                 rules=rules,
             )
         )
