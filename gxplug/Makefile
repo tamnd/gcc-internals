@@ -42,6 +42,12 @@ ifeq ($(GMP_PROBE),no)
   endif
 endif
 
+# A plugin is C++, and the `gcc` driver knows what to do with a .cc file, so this looks
+# like it works right up to the point where it tries to exec a cc1plus that only the g++
+# package ships. Asking here turns "No such file or directory" into a sentence that names
+# the package.
+CXX_PROBE := $(shell echo 'int main(){}' | $(CXX_FOR_PLUGIN) -x c++ -fsyntax-only - >/dev/null 2>&1 && echo yes || echo no)
+
 # Darwin resolves a plugin's undefined symbols out of cc1 at dlopen time, and the linker
 # has to be told that is acceptable. ELF platforms do this by default and passing the flag
 # there is an error, so it is conditional.
@@ -68,6 +74,13 @@ $(PLUGIN): $(SRC)
 	  echo "gxplug:   Homebrew        already included with the gcc formula"; \
 	  exit 1; \
 	}
+	@test "$(CXX_PROBE)" = yes || { \
+	  echo "gxplug: $(CXX_FOR_PLUGIN) cannot compile C++, and a plugin is C++"; \
+	  echo "gxplug: install the matching C++ compiler, not another C one"; \
+	  echo "gxplug:   Debian/Ubuntu   apt install g++-16"; \
+	  echo "gxplug:   Fedora          dnf install gcc-c++"; \
+	  exit 1; \
+	}
 	$(CXX_FOR_PLUGIN) $(GXPLUG_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -shared $(LDFLAGS_PLUGIN) -o $@ $(SRC)
 
 # What the probes decided, for when a build fails somewhere unfamiliar and the first
@@ -78,6 +91,7 @@ probe:
 	@echo "plugin headers  $(PLUGIN_INCLUDE)"
 	@echo "gcc-plugin.h    $$(test -f '$(PLUGIN_INCLUDE)/gcc-plugin.h' && echo present || echo MISSING)"
 	@echo "uname           $(UNAME_S)"
+	@echo "compiles c++    $(CXX_PROBE)"
 	@echo "gmp.h on path   $(GMP_PROBE)"
 	@echo "CPPFLAGS        $(GXPLUG_CPPFLAGS) $(CPPFLAGS)"
 	@echo "link flags      $(LDFLAGS_PLUGIN)"

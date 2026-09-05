@@ -27,11 +27,18 @@ HAVE_NBCLIENT = importlib.util.find_spec("nbclient") is not None
 def _gcc_with_plugin_headers() -> str | None:
     """A GCC that can build a plugin, or None.
 
-    Two conditions, and they are separate. A GCC 16 without its plugin development package
-    has no `gcc-plugin.h` to compile against, and that is the ordinary case on a machine
-    that installed a compiler and nothing else. A GCC of any other version has the headers
-    but the wrong ABI, and `plugin_default_version_check` would refuse the result at load
-    time, so building against it proves nothing.
+    Three conditions, and they are separate.
+
+    A GCC of any version other than 16 has the wrong ABI. `plugin_default_version_check`
+    would refuse the result at load time, so building against it proves nothing.
+
+    A GCC 16 without its plugin development package has no `gcc-plugin.h` to compile
+    against, and that is the ordinary case on a machine that installed a compiler and
+    nothing else.
+
+    A GCC 16 that cannot compile C++ is the one that looks fine until it is not. A plugin
+    is C++, the `gcc` driver knows perfectly well what to do with a `.cc` file, and it
+    goes all the way to trying to exec a `cc1plus` that only the `g++` package ships.
     """
     for name in ("gcc-16", "gcc"):
         found = shutil.which(name)
@@ -45,7 +52,16 @@ def _gcc_with_plugin_headers() -> str | None:
         where = subprocess.run(
             [found, "-print-file-name=plugin"], capture_output=True, text=True, check=False
         )
-        if (Path(where.stdout.strip()) / "include" / "gcc-plugin.h").exists():
+        if not (Path(where.stdout.strip()) / "include" / "gcc-plugin.h").exists():
+            continue
+        cxx = subprocess.run(
+            [found, "-x", "c++", "-fsyntax-only", "-"],
+            input="int main(){}\n",
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if cxx.returncode == 0:
             return found
     return None
 

@@ -174,9 +174,15 @@ jobs:
         run: |
           python3 - <<'PY'
           import importlib.util
+          import sys
 
           spec = importlib.util.spec_from_file_location("plug", "gxray/plug.py")
           plug = importlib.util.module_from_spec(spec)
+          # Registered before it is executed, not after. @dataclass looks its own class up
+          # in sys.modules while the module body is still running, and on Python 3.14 a
+          # module that is not there yet fails with an AttributeError about NoneType that
+          # says nothing at all about the real cause.
+          sys.modules["plug"] = plug
           spec.loader.exec_module(plug)
 
           stream = plug.load("events.ndjson")

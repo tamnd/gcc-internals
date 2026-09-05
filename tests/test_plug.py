@@ -239,9 +239,16 @@ def built_plugin(gcc_plugin) -> Path:
     # The developer's environment is left intact on purpose. An inherited CPPFLAGS
     # pointing at another toolchain's headers is a real failure mode, and one the Makefile
     # is written to survive, so building under it is the more honest test.
-    subprocess.run(
-        ["make", "-C", str(GXPLUG), f"GCC={gcc_plugin}"], check=True, capture_output=True
+    #
+    # The output is captured so a passing run stays quiet, and printed in full when the
+    # build fails. `check=True` on its own reports an exit status and throws away the
+    # compiler error that explains it, which turns a one line diagnosis into a round trip
+    # through CI.
+    built = subprocess.run(
+        ["make", "-C", str(GXPLUG), f"GCC={gcc_plugin}"], capture_output=True, text=True
     )
+    if built.returncode != 0:
+        pytest.fail(f"building gxplug failed\n{built.stdout}\n{built.stderr}")
     return GXPLUG / "gxplug.so"
 
 
