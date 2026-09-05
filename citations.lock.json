@@ -3,9 +3,77 @@
  "pinned": "releases/gcc-16.2.0",
  "context_lines": 2,
  "citations": {
+  "Makefile.tpl:1733@releases/gcc-16.2.0": {
+   "hash": "1a7f22ef3ac5417a",
+   "text": "unstage = if [ -f stage_last ]; then [ -f stage_current ] || $(MAKE) `cat stage_last`-start || exit 1; else :; fi"
+  },
+  "Makefile.tpl:1745@releases/gcc-16.2.0": {
+   "hash": "01b876bd86fb0bcb",
+   "text": "LEAN = false"
+  },
+  "Makefile.tpl:1751@releases/gcc-16.2.0": {
+   "hash": "06a01757b9bee6a8",
+   "text": "# directory names are different, we need to link the gcc directory for"
+  },
+  "Makefile.tpl:1767@releases/gcc-16.2.0": {
+   "hash": "f6c620e08857d74c",
+   "text": "stage[+id+]-start::"
+  },
+  "Makefile.tpl:1784@releases/gcc-16.2.0": {
+   "hash": "6dba1e1a7fab5a79",
+   "text": "stage[+id+]-end:: [+ FOR host_modules +][+ IF bootstrap +]"
+  },
+  "Makefile.tpl:1800@releases/gcc-16.2.0": {
+   "hash": "a0d2bacacf3a3e4e",
+   "text": ".PHONY: stage[+id+]-bubble"
+  },
+  "Makefile.tpl:1815@releases/gcc-16.2.0": {
+   "hash": "3c3e3831812f104b",
+   "text": "\t$(MAKE) $(RECURSE_FLAGS_TO_PASS) [+compare-target+][+ ENDIF compare-target +]"
+  },
+  "Makefile.tpl:1824@releases/gcc-16.2.0": {
+   "hash": "0feb7eb05d158c7a",
+   "text": "[+compare-target+]:"
+  },
+  "Makefile.tpl:279@releases/gcc-16.2.0": {
+   "hash": "55f14f89c209b27f",
+   "text": "POSTSTAGE1_HOST_EXPORTS = \\"
+  },
+  "Makefile.tpl:548@releases/gcc-16.2.0": {
+   "hash": "63973da0f13423e8",
+   "text": "STAGE1_CFLAGS = @stage1_cflags@"
+  },
+  "config/acx.m4:474@releases/gcc-16.2.0": {
+   "hash": "18479b6ac934c098",
+   "text": "AC_DEFUN([ACX_PROG_CMP_IGNORE_INITIAL],"
+  },
+  "configure.ac:1549@releases/gcc-16.2.0": {
+   "hash": "c38a9910e0abbc87",
+   "text": "case \"$have_compiler:$host:$target:$enable_bootstrap\" in"
+  },
+  "configure.ac:1583@releases/gcc-16.2.0": {
+   "hash": "1ba511192e6c34fa",
+   "text": "if test \"$enable_bootstrap:$GXX\" = \"yes:yes\"; then"
+  },
   "configure.ac:222@releases/gcc-16.2.0": {
    "hash": "f30d5b3c48d011c9",
    "text": "# Be sure to cover against remnants of an in-tree build."
+  },
+  "configure.ac:4344@releases/gcc-16.2.0": {
+   "hash": "ea3ba2a935c0bf17",
+   "text": "stage1_cflags=\"-g\""
+  },
+  "configure.ac:4368@releases/gcc-16.2.0": {
+   "hash": "2079f4c66061714d",
+   "text": "      stage1_checking=--enable-checking=yes,types;;"
+  },
+  "configure.ac:4405@releases/gcc-16.2.0": {
+   "hash": "eabd512017899fd6",
+   "text": "compare_exclusions=\"gcc/cc*-checksum\\$(objext) | gcc/ada/*tools/*\""
+  },
+  "configure.ac:4410@releases/gcc-16.2.0": {
+   "hash": "0ed782e7d61bff4c",
+   "text": "case \"$target\" in"
   },
   "gcc/Makefile.in:1972@releases/gcc-16.2.0": {
    "hash": "c49c740ce330701f",

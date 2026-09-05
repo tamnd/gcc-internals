@@ -241,7 +241,7 @@ def _register_generators() -> None:
     """
     # `buildsys` and not `build`, because importing `tools.bpc.build` would bind the
     # submodule to the name `build` on this package and shadow the function above it.
-    from tools.bpc import buildsys, gimple, plugin  # noqa: F401
+    from tools.bpc import bootstrap, buildsys, gimple, plugin  # noqa: F401
 
 
 def _first_difference(have: str, want: str) -> str:
