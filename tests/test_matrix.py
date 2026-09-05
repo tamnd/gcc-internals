@@ -151,7 +151,7 @@ def test_a_job_carries_everything_the_build_needs_and_nothing_it_has_to_look_up(
     assert job["image"] == "ghcr.io/tamnd/gcc-internals/chk:amd64"
     assert "--enable-checking=all,rtl,extra" in job["flags"]
     assert job["cflags"] == "-O0 -g"
-    assert job["install"] == "install-strip"
+    assert job["install"] == "install", "a checking build with no symbol table has no backtrace"
 
 
 def test_asking_for_a_trigger_that_does_not_exist_says_so():
@@ -187,6 +187,26 @@ def test_a_configuration_that_builds_gcc_and_never_installs_it_is_rejected(tmp_p
     path = write(tmp_path, ONE.replace('install = "install-strip"', 'install = ""'))
     with pytest.raises(matrix.MatrixError, match="never installs it"):
         matrix.load(path)
+
+
+def test_a_configuration_built_with_debug_info_and_then_stripped_is_rejected(tmp_path):
+    """The defect this rule exists for, which shipped once and was found by a reader."""
+    path = write(tmp_path, ONE.replace('cflags = "-O2"', 'cflags = "-O0 -g3"'))
+    with pytest.raises(matrix.MatrixError, match="then stripped"):
+        matrix.load(path)
+
+
+def test_a_build_that_asked_for_no_debug_info_may_strip_all_it_likes(tmp_path):
+    """`-g0` is a request for nothing, so stripping takes nothing away."""
+    path = write(tmp_path, ONE.replace('cflags = "-O2"', 'cflags = "-O2 -g0"'))
+    assert matrix.load(path)["rel"].debugging is False
+
+
+def test_the_two_images_a_debugger_is_pointed_at_keep_their_symbols():
+    """Read off the real matrix rather than a fixture, because this is the fact that broke."""
+    assert {c.id for c in FOUND.configs if c.debugging} == {"chk", "dbg"}
+    assert FOUND["chk"].install == "install" and FOUND["dbg"].install == "install"
+    assert [c.id for c in FOUND.configs if "strip" in c.install] == ["rel", "boot", "plug"]
 
 
 def test_the_same_id_twice_is_caught(tmp_path):

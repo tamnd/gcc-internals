@@ -90,6 +90,16 @@ class Config:
         return bool(self.make)
 
     @property
+    def debugging(self) -> bool:
+        """Whether this image is meant to be opened in a debugger.
+
+        Which is a question about the flags and not about the name. `-g` in any of its
+        forms says the build was asked to keep debug info, and a configuration that asked
+        for it and then threw it away is a configuration that wasted the four hours.
+        """
+        return any(one.startswith("-g") and one != "-g0" for one in self.cflags.split())
+
+    @property
     def flags(self) -> list[str]:
         """Every configure flag, shared ones first, in the order the build passes them."""
         if not self.from_source:
@@ -229,6 +239,14 @@ def validate(found: Matrix) -> list[str]:
             problems.append(f"{config.id} builds GCC and says nothing about optimization")
         if config.from_source and not config.install:
             problems.append(f"{config.id} builds GCC and never installs it")
+        if config.debugging and "strip" in config.install:
+            # How this was found: the published dbg image shipped a stripped cc1 for three
+            # weeks, because `install-strip` is in `[common]` and nothing said the one
+            # configuration built for a debugger has to override it. The symptom is not an
+            # error anywhere near the cause. The build is green, the image is smaller than
+            # it should be in a way nobody notices, and the failure arrives as `No symbol
+            # table is loaded` in a reader's terminal.
+            problems.append(f"{config.id} is built with {config.cflags} and then stripped")
         if config.from_source and not config.smoke:
             # A compiler that came out of a four hour build and cannot compile anything is
             # a thing to discover in the build and not two jobs later.

@@ -330,9 +330,9 @@ The build prints the generator runs as bare command lines, so the transition fro
 
 A no change rebuild after a successful build runs every generator and compiles nothing. Timed on the `rel` configuration in this project's matrix it is under a minute against a build of twenty two.
 
-`--enable-checking=all` roughly doubles the wall clock of the compiler it produces, and produces a compiler that is between three and four times the size on disk. The `chk` and `rel` rows of `containers/matrix.toml` are the measured numbers on this project's runners: 47 minutes against 22, and 4.0 GB against 1.2.
+`--enable-checking=all` roughly doubles the wall clock of the compiler it produces, and produces a compiler that is several times the size on disk. The `chk` and `rel` rows of `containers/matrix.toml` are 47 minutes against 22, which is measured on this project's runners, and 4.6 GB against 1.2, which is estimated.
 
-`make install-strip` at `gcc/Makefile.in:4116@releases/gcc-16.2.0` runs `install` with `INSTALL_PROGRAM` overridden to strip, so the installed binaries have no symbol table. This is the difference between the `rel` image at 1.2 GB and the `dbg` image at 6.0 GB, along with `dbg` keeping the source tree.
+`make install-strip` at `gcc/Makefile.in:4116@releases/gcc-16.2.0` runs `install` with `INSTALL_PROGRAM` overridden to strip, so the installed binaries have no symbol table. It is the default in this project's matrix and the two configurations built with `-g` override it, because a compiler built with debug info and then stripped debugs no better than one built without any, and nothing about the build says so: it succeeds, the image is smaller than it should be, and the first sign of trouble is a debugger reporting no symbol table hours later. Most of the difference between the `rel` image at 1.2 GB and the `dbg` image at 7.0 GB is elsewhere, in `-O0 -g3` and in `dbg` keeping the source tree the debug info points at.
 
 A corpus entry recording any of this is not yet written. The observations above come from the build matrix rather than from the golden corpus, and this section is `partial` for that reason.
 

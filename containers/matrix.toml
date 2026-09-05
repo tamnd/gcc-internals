@@ -16,7 +16,9 @@
 # of this matrix, and they are the amd64 leg because it is the slower of the two every
 # time. `boot` is the one number still estimated, because it never runs on a pull request
 # and there has not been a scheduled run yet. The gigabytes are estimates except for
-# `plug`, which was built and weighed.
+# `plug`, which was built and weighed. `chk` and `dbg` went up when they stopped being
+# stripped, by a guess at the size of the debug info rather than by a measurement, so they
+# are the two least reliable numbers in the table until the next weekly run.
 
 # The tag the whole project is pinned to. Same one refcheck resolves citations against, and
 # it has to stay that way, because a lesson that cites 16.2.0 and runs against 16.3.0 is a
@@ -29,6 +31,11 @@ registry = "ghcr.io/tamnd/gcc-internals"
 # should not have to diff forty characters of boilerplate to find the four that matter.
 [common]
 languages = "c,c++"
+# Stripping is the default because a symbol table is most of the size of an installed GCC
+# and four of the six images have no use for one. The two built with `-g` override it, and
+# `tools.matrix.validate` refuses a configuration that asks for debug info and then throws
+# it away, because that combination is green everywhere and only fails in a reader's
+# terminal, several commands into a session, as `No symbol table is loaded`.
 install = "install-strip"
 # The build that produced a compiler which cannot compile hello world has failed, and the
 # image is the right place to find that out rather than the job that pulled it. A cross
@@ -61,11 +68,16 @@ purpose = "Every internal consistency check GCC has, turned on."
 configure = ["--disable-bootstrap", "--enable-checking=all,rtl,extra"]
 cflags = "-O0 -g"
 make = "all"
+# Unstripped, for the backtrace. When a checking assertion fires, GCC prints one, and it
+# reads the compiler's own debug info to do it. Stripped, the same crash reports a column
+# of hexadecimal addresses, which is the least useful form of the most useful output this
+# image produces.
+install = "install"
 arches = ["amd64", "arm64"]
 weekly = true
 on_patches = true
 minutes = 47
-gigabytes = 4.0
+gigabytes = 4.6
 why = "This is the build that catches a plugin corrupting the IR, and it is what the conformance harness runs against. A pass that only misbehaves under checking is the normal case, not the rare one."
 
 [[config]]
@@ -74,11 +86,14 @@ purpose = "Unoptimized with full debug info, for the lessons that step through G
 configure = ["--disable-bootstrap", "--enable-checking=yes"]
 cflags = "-O0 -g3"
 make = "all"
+# Unstripped, for the obvious reason. A cc1 built with -g3 and then stripped debugs
+# exactly as badly as one built with -g0, and it is the whole reason this row exists.
+install = "install"
 arches = ["amd64", "arm64"]
 weekly = true
 on_patches = true
 minutes = 35
-gigabytes = 6.0
+gigabytes = 7.0
 why = "At -O2 a debugger shows you a function whose locals have been optimized away and whose lines jump backwards. B03 is unteachable without -O0 -g3, and -g3 rather than -g because the macros are half of what you want to look at."
 
 [[config]]
