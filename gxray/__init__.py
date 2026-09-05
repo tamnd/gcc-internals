@@ -21,6 +21,7 @@ from gxray import (
     asm,
     build,
     chain,
+    configure,
     dumps,
     gimple,
     layout,
@@ -32,6 +33,7 @@ from gxray import (
     regalloc,
     rtl,
     source,
+    toolchain,
 )
 from gxray import corpus as corpus_store
 from gxray.build import banner
@@ -65,6 +67,7 @@ __all__ = [
     "build",
     "chain",
     "ce",
+    "configure",
     "corpus",
     "corpus_store",
     "dumps",
@@ -79,4 +82,5 @@ __all__ = [
     "regalloc",
     "rtl",
     "source",
+    "toolchain",
 ]
