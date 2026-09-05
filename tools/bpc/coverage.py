@@ -43,18 +43,20 @@ def providers() -> dict[str, Callable[[Path], list[str]]]:
     """Inventories that do not come from an X macro file.
 
     Most of what the book could cover is enumerated by a `.def` file, and those inventories
-    say which macro to read. Two are not. The front ends are fourteen shell fragments and
-    the checking categories are the arms of a case statement in configure, and both are
-    things a reader can reasonably ask whether the book covers. Imported here rather than at
-    the top because `buildsys` imports the generator decorator from the package above this.
+    say which macro to read. Three are not. The front ends are fourteen shell fragments, the
+    checking categories are the arms of a case statement in configure, and the build
+    configurations are makefile fragments in a directory, and all three are things a reader
+    can reasonably ask whether the book covers. Imported here rather than at the top because
+    those modules import the generator decorator from the package above this.
     """
-    from tools.bpc import buildsys
+    from tools.bpc import bootstrap, buildsys
 
     return {
         "front-ends": lambda root: [d.get("language") for d in buildsys.declarations(root)],
         "checking-categories": lambda root: sorted(
             k for k in buildsys.checking(root)[0] if k not in buildsys.LEVELS
         ),
+        "build-configs": bootstrap.config_names,
     }
 
 

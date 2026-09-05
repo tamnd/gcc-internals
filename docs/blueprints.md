@@ -10,6 +10,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 
 | | What it specifies | Status | Generated sections | Target dependent |
 |---|---|---|---|---|
+| [BP-BOOTSTRAP](blueprints/BP-BOOTSTRAP.md) | building the compiler with itself | partial | 2 of 9 | no |
 | [BP-BUILD](blueprints/BP-BUILD.md) | configuring and building the compiler | partial | 2 of 9 | yes |
 | [BP-CFG](blueprints/BP-CFG.md) | blocks and edges | stub | none | no |
 | [BP-DRIVER](blueprints/BP-DRIVER.md) | the program that runs the other programs | stub | none | yes |
@@ -22,9 +23,13 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-RTL](blueprints/BP-RTL.md) | the RTL expression representation | stub | none | yes |
 | [BP-SSA](blueprints/BP-SSA.md) | one definition per name | stub | none | no |
 
-11 of 58 written: 1 complete, 3 partial, 7 stub.
+12 of 58 written: 1 complete, 4 partial, 7 stub.
 
 ## What each one is for
+
+### [BP-BOOTSTRAP](blueprints/BP-BOOTSTRAP.md), building the compiler with itself
+
+This document specifies the three stage bootstrap: what a stage is, what order the stages run in, and what the comparison between the last two of them proves. It is the top level of the tree driving `gcc/` several times, so `BP-BUILD` is what each stage does and this is what makes there be more than one.
 
 ### [BP-BUILD](blueprints/BP-BUILD.md), configuring and building the compiler
 
