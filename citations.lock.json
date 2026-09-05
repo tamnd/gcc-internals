@@ -15,6 +15,10 @@
    "hash": "01b876bd86fb0bcb",
    "text": "LEAN = false"
   },
+  "Makefile.tpl:1747@releases/gcc-16.2.0": {
+   "hash": "b4212668ff87a07c",
+   "text": "# We name the build directories for the various stages \"stage1-gcc\","
+  },
   "Makefile.tpl:1751@releases/gcc-16.2.0": {
    "hash": "06a01757b9bee6a8",
    "text": "# directory names are different, we need to link the gcc directory for"
@@ -26,6 +30,10 @@
   "Makefile.tpl:1784@releases/gcc-16.2.0": {
    "hash": "6dba1e1a7fab5a79",
    "text": "stage[+id+]-end:: [+ FOR host_modules +][+ IF bootstrap +]"
+  },
+  "Makefile.tpl:1797@releases/gcc-16.2.0": {
+   "hash": "8a7e418305e73d1e",
+   "text": "# Bubble a bug fix through all the stages up to stage [+id+].  They are"
   },
   "Makefile.tpl:1800@releases/gcc-16.2.0": {
    "hash": "a0d2bacacf3a3e4e",
@@ -39,6 +47,10 @@
    "hash": "0feb7eb05d158c7a",
    "text": "[+compare-target+]:"
   },
+  "Makefile.tpl:278@releases/gcc-16.2.0": {
+   "hash": "418ef1a3dbafbad6",
+   "text": "# Similar, for later GCC stages."
+  },
   "Makefile.tpl:279@releases/gcc-16.2.0": {
    "hash": "55f14f89c209b27f",
    "text": "POSTSTAGE1_HOST_EXPORTS = \\"
@@ -46,6 +58,10 @@
   "Makefile.tpl:548@releases/gcc-16.2.0": {
    "hash": "63973da0f13423e8",
    "text": "STAGE1_CFLAGS = @stage1_cflags@"
+  },
+  "config/acx.m4:468@releases/gcc-16.2.0": {
+   "hash": "d70bdfef94dd9a50",
+   "text": "dnl 'make compare' can be significantly faster, if cmp itself can"
   },
   "config/acx.m4:474@releases/gcc-16.2.0": {
    "hash": "18479b6ac934c098",
@@ -82,6 +98,10 @@
   "configure.ac:2407@releases/gcc-16.2.0": {
    "hash": "5f7a2e1e4edce4c2",
    "text": "  new_enable_languages=,c,"
+  },
+  "configure.ac:3303@releases/gcc-16.2.0": {
+   "hash": "7ee06ae5d189ce15",
+   "text": "AC_ARG_WITH([build-config],"
   },
   "configure.ac:4344@releases/gcc-16.2.0": {
    "hash": "ea3ba2a935c0bf17",

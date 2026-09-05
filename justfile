@@ -209,6 +209,15 @@ corpus-z02:
 corpus-b01:
     {{py}} lessons/b01-the-build/record.py
 
+# B02 records the bootstrap: nine stages, the module split, the six compare exclusions and the
+# nineteen build configs, into corpora/bootstrap/gcc.json, plus nine spans of Makefile.tpl,
+# configure.ac and config/acx.m4 into corpora/source/b02.json. It also compiles six pairs of
+# object files with a real GCC 16, inducing one comparison outcome per pair, so the notebook
+# can run GCC's own compare rule over something instead of describing it. Needs the submodule
+# and a gcc-16 on PATH, and it checks that each induced difference really happened.
+corpus-b02:
+    {{py}} lessons/b02-the-bootstrap/record.py
+
 # Every Tier 0 experiment, run out of the corpus and then out of the cached Compiler Explorer
 # responses, and checked against each other. No network either way. See tools/tier0 for what
 # the three kinds of experiment are and why a recorded one is compared byte for byte while a

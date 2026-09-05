@@ -19,6 +19,7 @@ because a notebook wants the short name for the thing it actually calls.
 
 from gxray import (
     asm,
+    bootstrap,
     build,
     chain,
     configure,
@@ -64,6 +65,7 @@ __all__ = [
     "Result",
     "asm",
     "banner",
+    "bootstrap",
     "build",
     "chain",
     "ce",

@@ -715,7 +715,7 @@ TEXT = Group(
 
 BUILDING = Group(
     "Building the compiler",
-    "Words you need to configure GCC and read what the build tells you afterwards. B01 is the lesson, and these five are the ones that are used constantly and defined nowhere.",
+    "Words you need to configure GCC, build it, and read what it tells you afterwards. B01 and B02 are the lessons, and these are the words those two use constantly and that nothing in the tree defines.",
     (
         Term(
             name="out of tree build",
@@ -761,6 +761,33 @@ BUILDING = Group(
             also=("`--enable-bootstrap`", "stage comparison", "three stage build"),
             see=("stamp file", "checking build"),
             met="B01",
+        ),
+        Term(
+            name="stage comparison",
+            short="The check at the end of a bootstrap: every object file of stage three has to equal stage two's, byte for byte.",
+            long="Thirty four lines of shell in `Makefile.tpl`, and the strongest self test GCC has. It walks stage three's object files, skips any stage two does not have, ignores the first sixteen bytes of each, and fails the build if any pair differs. What it proves is that the compiler is a fixed point: compiling its own source with itself does not change it. What it does not prove is that the fixed point is correct, because a bug that behaves the same way every time survives it. It also cannot see six named files, which are excluded on purpose because they legitimately differ.",
+            cite="Makefile.tpl:1824@releases/gcc-16.2.0",
+            also=("`make compare`", "`.bad_compare`", "compare exclusions"),
+            see=("bootstrap", "build config"),
+            met="B02",
+        ),
+        Term(
+            name="bubbling",
+            short="GCC's word for driving the stages as a dependency chain, so a fix only rebuilds the stages after it.",
+            long="`stage3-bubble` depends on `stage2-bubble` depends on `stage1-bubble`, so asking for the last one asks for all of them, and make decides what actually needs doing. The point is not the ordering, which a shell script could manage. The point is that after you fix a bug in the compiler and re-run, the stages that are still valid are skipped, which is the difference between a four hour rebuild and a forty minute one. The `-lean` stamp files in the middle are how a stage records that it is still good.",
+            cite="Makefile.tpl:1797@releases/gcc-16.2.0",
+            also=("`stageN-bubble`", "`-lean`"),
+            see=("bootstrap", "stamp file"),
+            met="B02",
+        ),
+        Term(
+            name="build config",
+            short="A makefile fragment in `config/` that changes how the bootstrap stages are built, named on the configure line.",
+            long="`--with-build-config=bootstrap-lto` and the stages are built with link time optimisation. There are nineteen of them and they combine, space separated. `bootstrap-debug` is on by default and is the one worth knowing: it compares stage two and stage three a second time with debug info stripped from both, which catches the specific bug where adding `-g` changes the code a compiler generates. `bootstrap-ubsan` and `bootstrap-asan` build the compiler under a sanitizer, are very slow, and find real things.",
+            cite="configure.ac:3303@releases/gcc-16.2.0",
+            also=("`--with-build-config`", "`config/bootstrap-*.mk`"),
+            see=("stage comparison", "bootstrap"),
+            met="B02",
         ),
     ),
 )

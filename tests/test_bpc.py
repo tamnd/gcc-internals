@@ -968,6 +968,25 @@ def test_less_than_half_the_host_modules_are_inside_the_stage_loop():
 
 
 @needs_tree
+def test_a_third_of_the_target_libraries_are_inside_the_stage_loop():
+    """Including libgcc, which is the only generated target code a comparison ever sees."""
+    inside, outside = bootstrap.target_modules(bpc.GCC_ROOT)
+    assert len(inside) == 9
+    assert len(inside) + len(outside) == 26
+    assert "libgcc" in inside and "libstdc++-v3" in inside
+    assert "newlib" in outside
+
+
+@needs_tree
+def test_the_host_and_target_module_lists_do_not_overlap():
+    """`zlib` is in both files under one name, and they are two different builds of it."""
+    host, _ = bootstrap.modules(bpc.GCC_ROOT)
+    target, _ = bootstrap.target_modules(bpc.GCC_ROOT)
+    assert "zlib" in host and "zlib" in target
+    assert "gcc" in host and "gcc" not in target
+
+
+@needs_tree
 def test_the_exclusions_are_the_ones_that_apply_everywhere():
     """The AIX line is inside a case on the target, so a reader that took every assignment
     would tell everyone that libgomp is forgiven on their machine too."""
