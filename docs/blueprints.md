@@ -16,11 +16,12 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-FINAL](blueprints/BP-FINAL.md) | turning insns into text | stub | none | yes |
 | [BP-GIMPLE](blueprints/BP-GIMPLE.md) | the GIMPLE statement representation | partial | 2 of 9 | no |
 | [BP-PIPELINE](blueprints/BP-PIPELINE.md) | the shape of a compilation | complete | none | no |
+| [BP-PLUGIN](blueprints/BP-PLUGIN.md) | the plugin mechanism | partial | 2 of 9 | no |
 | [BP-REGALLOC](blueprints/BP-REGALLOC.md) | giving out the machine's registers | stub | none | yes |
 | [BP-RTL](blueprints/BP-RTL.md) | the RTL expression representation | stub | none | yes |
 | [BP-SSA](blueprints/BP-SSA.md) | one definition per name | stub | none | no |
 
-9 of 58 written: 1 complete, 1 partial, 7 stub.
+10 of 58 written: 1 complete, 2 partial, 7 stub.
 
 ## What each one is for
 
@@ -47,6 +48,10 @@ Section 2 is generated from `gcc/gimple.def`, `gcc/gsstruct.def` and `gcc/gimple
 ### [BP-PIPELINE](blueprints/BP-PIPELINE.md), the shape of a compilation
 
 This document specifies the control flow of one compilation: which components run, in which order, what each one hands the next, and where the pass manager begins and ends. It is the map every other blueprint hangs off. Where another document owns a component, this one states the boundary and the handover and stops.
+
+### [BP-PLUGIN](blueprints/BP-PLUGIN.md), the plugin mechanism
+
+Sections 1, 2, 4, 6, 7 and 9 are written. Section 3 covers loading, registration, dispatch and pass insertion, and stops short of the front end events, which fire from four places each and want a document that knows what a declaration is. Section 5 has the command line surface and the diagnostics and no corpus entry behind it yet, which is marked where it applies. Section 8 lists the DejaGnu suite and does not yet say which test proves which invariant.
 
 ### [BP-REGALLOC](blueprints/BP-REGALLOC.md), giving out the machine's registers
 

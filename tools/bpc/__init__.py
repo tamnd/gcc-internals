@@ -239,7 +239,7 @@ def _register_generators() -> None:
     This is at the bottom rather than the top because a generator module imports
     `generator` from here, and the decorator has to exist before the module runs.
     """
-    from tools.bpc import gimple  # noqa: F401
+    from tools.bpc import gimple, plugin  # noqa: F401
 
 
 def _first_difference(have: str, want: str) -> str:

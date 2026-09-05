@@ -89,6 +89,7 @@ nav:
     - BP-RTL, the RTL expression representation: blueprints/BP-RTL.md
     - BP-REGALLOC, giving out the machine's registers: blueprints/BP-REGALLOC.md
     - BP-FINAL, turning insns into text: blueprints/BP-FINAL.md
+    - BP-PLUGIN, the plugin mechanism: blueprints/BP-PLUGIN.md
   - How this is built:
     - The pinned tree and citations: pinned-tree.md
     - Can a browser compile C here: probe.md

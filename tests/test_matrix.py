@@ -229,6 +229,9 @@ def test_the_lockfile_is_read_even_when_it_is_empty(tmp_path):
     empty = tmp_path / "images.lock.json"
     empty.write_text('{"images": {}}', encoding="utf-8")
     assert matrix.digests(empty) == {}
+    # And the other empty shape, a run that published nothing and wrote no `images` key.
+    empty.write_text("{}", encoding="utf-8")
+    assert matrix.digests(empty) == {}
 
 
 def test_a_lockfile_that_is_not_there_at_all_is_also_not_a_crash(tmp_path):
