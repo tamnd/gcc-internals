@@ -61,7 +61,13 @@ endif
 PLUGIN := gxplug.so
 SRC := src/gxplug.cc
 
-.PHONY: all check probe clean
+# The five plugins B05 is built on. Two work, one changes the generated code on purpose,
+# and two are refused at load time on purpose. They are built with exactly the flags above,
+# because a reader's own plugin will be too.
+EXAMPLE_SRC := $(wildcard examples/*.cc)
+EXAMPLES := $(EXAMPLE_SRC:.cc=.so)
+
+.PHONY: all check probe clean examples examples-check
 
 all: $(PLUGIN)
 
@@ -117,5 +123,47 @@ check: $(PLUGIN)
 	test "$$events" -gt 0 || { echo "gxplug: FAIL, no events emitted"; exit 1; }; \
 	echo "gxplug: assembly identical with and without the plugin, $$events events"
 
+# The examples, built the same way. No header probe here: if the main plugin built, these
+# will, and if it did not the reader has already been told which package to install.
+examples: $(EXAMPLES)
+
+examples/%.so: examples/%.cc $(PLUGIN)
+	$(CXX_FOR_PLUGIN) $(GXPLUG_CPPFLAGS) $(CPPFLAGS) $(CXXFLAGS) -shared $(LDFLAGS_PLUGIN) -o $@ $<
+
+# Each example does what B05 says it does. hello and countpass leave the assembly alone,
+# gate changes it, and the two broken ones are refused before they run a line.
+#
+# The program is an array traversal rather than the accumulator `check` uses, because the
+# pass being switched off is ivopts and a loop with no memory reference in it gives ivopts
+# nothing to rewrite. The two halves of the gate result are checked separately: how many
+# times the pass was refused, which catches a pass name that matched nothing, and whether
+# the assembly moved, which catches a pass whose absence makes no difference. They fail for
+# different reasons and the messages have to say which.
+examples-check: examples
+	@set -e; \
+	tmp=$$(mktemp -d); \
+	trap 'rm -rf "$$tmp"' EXIT; \
+	printf 'int f (int *a, int n) { int s = 0; for (int i = 0; i < n; i++) s += a[i]; return s; }\n' > "$$tmp/t.c"; \
+	$(GCC) -O2 -S "$$tmp/t.c" -o "$$tmp/plain.s"; \
+	for one in hello countpass; do \
+	  $(GCC) -O2 -S -fplugin=./examples/$$one.so "$$tmp/t.c" -o "$$tmp/$$one.s" 2>/dev/null; \
+	  cmp -s "$$tmp/plain.s" "$$tmp/$$one.s" \
+	    || { echo "examples: FAIL, $$one changed the generated code"; exit 1; }; \
+	  echo "examples: $$one loaded and changed nothing"; \
+	done; \
+	$(GCC) -O2 -S -fplugin=./examples/gate.so -fplugin-arg-gate-off=ivopts \
+	  "$$tmp/t.c" -o "$$tmp/gate.s" 2>"$$tmp/gate.err"; \
+	grep -q 'refused ivopts 0 time' "$$tmp/gate.err" \
+	  && { echo "examples: FAIL, no pass called ivopts was ever asked, so nothing was tested"; \
+	       cat "$$tmp/gate.err"; exit 1; }; \
+	cmp -s "$$tmp/plain.s" "$$tmp/gate.s" \
+	  && { echo "examples: FAIL, ivopts was switched off and the assembly did not move"; exit 1; }; \
+	echo "examples: gate switched a pass off and the assembly moved"; \
+	for one in nolicence wrongver; do \
+	  ! $(GCC) -O2 -S -fplugin=./examples/$$one.so "$$tmp/t.c" -o "$$tmp/$$one.s" 2>/dev/null \
+	    || { echo "examples: FAIL, $$one was supposed to be refused"; exit 1; }; \
+	  echo "examples: $$one was refused, as it should be"; \
+	done
+
 clean:
-	rm -f $(PLUGIN)
+	rm -f $(PLUGIN) $(EXAMPLES)

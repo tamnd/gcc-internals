@@ -392,3 +392,169 @@ def test_the_makefile_check_target_passes(built_plugin, gcc_plugin):
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "assembly identical" in result.stdout
+
+
+# --- the examples, and the recording of them ------------------------------------------
+
+EXAMPLES = GXPLUG / "examples"
+SESSION = plug.load_session()
+
+
+def test_the_five_examples_are_all_there():
+    """B05 names five plugins and the Makefile builds whatever is in this directory.
+
+    A source file added here without a section in the lesson is a plugin nobody reads, and
+    one removed is a lesson that talks about a file that is gone.
+    """
+    found = sorted(path.stem for path in EXAMPLES.glob("*.cc"))
+    assert found == ["countpass", "gate", "hello", "nolicence", "wrongver"]
+
+
+@pytest.mark.parametrize("name", ["hello", "countpass", "gate", "wrongver"])
+def test_every_example_that_is_meant_to_load_says_it_is_GPL_compatible(name):
+    """Four of the five carry the symbol. The fifth is the lesson about the symbol."""
+    text = (EXAMPLES / f"{name}.cc").read_text(encoding="utf-8")
+    assert "int plugin_is_GPL_compatible;" in text
+
+
+def test_the_refused_example_really_is_missing_the_symbol():
+    text = (EXAMPLES / "nolicence.cc").read_text(encoding="utf-8")
+    # The symbol appears once, inside the comment that says it is the missing line.
+    assert text.count("int plugin_is_GPL_compatible;") == 1
+    assert "int plugin_is_GPL_compatible;  */" in text
+
+
+def test_the_recorded_session_is_the_one_the_lesson_describes():
+    assert SESSION.compiler.startswith("gcc-16")
+    assert "16.2.0" in SESSION.compiler
+    assert len(SESSION.invocations) == 11
+    assert SESSION.stream.runs
+
+
+def test_a_recording_that_is_not_there_says_which_ones_are():
+    with pytest.raises(plug.PlugError, match="no recording called 'nope'"):
+        SESSION["nope"]
+
+
+def test_a_missing_corpus_names_the_recorder(tmp_path):
+    with pytest.raises(plug.PlugError, match="record.py"):
+        plug.load_session(root=tmp_path)
+
+
+def test_the_passive_examples_left_the_assembly_alone():
+    """The same promise gxplug makes, checked for the two examples that also make it."""
+    plain = SESSION["plain"].asm
+    assert plain
+    for name in ("hello", "countpass"):
+        assert SESSION[name].asm == plain, name
+
+
+def test_the_gate_example_did_not():
+    """And the one that is not passive, because a demonstration that changes nothing is not one."""
+    assert SESSION["gated"].asm != SESSION["plain"].asm
+    assert len(SESSION.diff("plain", "gated")) > 10
+
+
+def test_diffing_a_recording_with_no_assembly_says_so():
+    with pytest.raises(plug.PlugError, match="did not keep its assembly"):
+        SESSION.diff("plain", "badarg")
+
+
+@pytest.mark.parametrize("name", ["nolicence", "wrongver", "missing", "badarg"])
+def test_every_refusal_is_a_failed_compilation_and_not_a_warning(name):
+    """A plugin that cannot load stops the build. Nothing here is skipped with a warning."""
+    one = SESSION[name]
+    assert one.refused
+    assert one.said
+
+
+def test_the_recorded_corpus_carries_nobody_s_home_directory():
+    """Scrubbing, checked. A corpus is read by strangers in a notebook."""
+    text = (REPO / "corpora" / "plug" / "b05.json").read_text(encoding="utf-8")
+    assert "/Users/" not in text
+    assert "/home/" not in text
+    assert "/opt/homebrew" not in text
+
+
+@needs_plugin_gcc
+def test_the_examples_do_what_the_lesson_says_they_do(gcc_plugin):
+    """The Makefile target, from the entry point a reader would type.
+
+    Five plugins built and loaded: two that change nothing, one that changes the assembly
+    on purpose, and two that are refused. If this fails, B05 is describing plugins that no
+    longer work on this compiler.
+    """
+    result = subprocess.run(
+        ["make", "-C", str(GXPLUG), "examples-check", f"GCC={gcc_plugin}"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "gate switched a pass off and the assembly moved" in result.stdout
+
+
+# ---------------------------------------------------------------------------
+# The boss fight.
+#
+# Three of B05's eight answers are computed out of the corpus rather than written down, so
+# they cannot drift away from the compiler the lesson was recorded against. What can drift
+# is the marking: an `accepts` list that no longer covers the phrasing the notebook uses is
+# a question nobody can get right, and there is no other check for that.
+
+GRADE = REPO / "lessons" / "b05-the-plugin" / "grade.py"
+
+
+def _grader():
+    """B05's grade.py, loaded by path.
+
+    Every lesson has a module called `grade`, so importing by name would hand back whichever
+    one got there first.
+    """
+    import importlib.util
+    import sys
+
+    spec = importlib.util.spec_from_file_location("grade_b05", GRADE)
+    module = importlib.util.module_from_spec(spec)
+    # Registered before it is executed, not after. @dataclass looks its own class up in
+    # sys.modules while the module body is still running, and on 3.14 a module that is not
+    # there yet fails with an AttributeError about NoneType that names no cause.
+    sys.modules["grade_b05"] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_the_grader_computes_its_numbers_out_of_the_corpus():
+    """Not written down. Five version fields and the changed-run count, both derived."""
+    asked = _grader().questions()
+    assert len(asked) == 8
+    assert asked[1].answer == "5"
+
+    runs = SESSION.stream.runs
+    assert asked[7].answer == str(sum(1 for one in runs if one.changed))
+
+
+def test_the_grader_marks_the_answers_the_lesson_leads_you_to():
+    module = _grader()
+    said = [
+        "plugin_is_GPL_compatible",
+        "5",
+        "configuration_arguments",
+        "gcc_assert",
+        "cddce",
+        "every instance",
+        "todo flags",
+        module.questions()[7].answer,
+    ]
+    for question, answer in zip(module.questions(), said, strict=True):
+        assert module.marks(question, answer), question.ask
+
+
+def test_the_grader_is_lenient_about_wording_and_strict_about_the_answer():
+    module = _grader()
+    asked = module.questions()
+    assert module.marks(asked[0], "  The plugin_is_GPL_compatible;  ")
+    assert module.marks(asked[2], "the configure command line")
+    assert module.marks(asked[4], '"cddce"')
+    assert not module.marks(asked[4], "cddce1")
+    assert not module.marks(asked[5], "the first instance")
+    assert not module.marks(asked[7], "247")

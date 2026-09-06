@@ -151,6 +151,15 @@ jobs:
         shell: bash
         run: make -C gxplug check GCC="$GXPLUG_GCC"
 
+      # The five plugins B05 is written around, built and loaded on this channel too. The
+      # lesson shows a recording made on one machine, so this is what stops it describing
+      # plugins that only work where they were written. It also covers the three things
+      # gxplug itself never exercises: a pass inserted into the pipeline, a gate overridden
+      # from outside, and a plugin being refused at load time on purpose.
+      - name: the five example plugins do what B05 says they do
+        shell: bash
+        run: make -C gxplug examples-check GCC="$GXPLUG_GCC"
+
       # A build that produces no events is a plugin that loaded and did nothing, which the
       # byte comparison above would happily call a pass.
       - name: the stream is real, and reaches RTL

@@ -250,3 +250,149 @@ def parse(text: str) -> Stream:
 
 def load(path: str | Path) -> Stream:
     return parse(Path(path).read_text(encoding="utf-8"))
+
+
+# ---------------------------------------------------------------------------
+# The recorded half.
+#
+# Everything above works on a stream a reader produced. Nothing below needs a compiler at
+# all: it reads what lessons/b05-the-plugin/record.py wrote after building five plugins
+# against a real GCC 16.2 and loading each one. A reader on Colab has the plugin sources,
+# because they are in this repository, and no way to build them, because a plugin needs
+# GCC's private headers and a matching compiler. This is how they see the output anyway.
+
+CORPUS = Path(__file__).resolve().parent.parent / "corpora" / "plug"
+
+#: The five plugins B05 is built on. Read out of the working tree rather than copied into a
+#: corpus, so what the notebook shows is what the `plugin` workflow builds on four compilers.
+EXAMPLES = Path(__file__).resolve().parent.parent / "gxplug" / "examples"
+
+
+class PlugError(Exception):
+    pass
+
+
+def example(name: str) -> str:
+    """The source of one of the example plugins."""
+    path = EXAMPLES / f"{name}.cc"
+    if not path.is_file():
+        have = ", ".join(sorted(p.stem for p in EXAMPLES.glob("*.cc")))
+        raise PlugError(f"no example called {name!r}. There is: {have}")
+    return path.read_text(encoding="utf-8")
+
+
+def body(name: str) -> str:
+    """The same source with its opening comment removed.
+
+    Every example starts with fifteen lines of why, which is right in a file somebody opens
+    on their own and wrong in a notebook that has just spent a paragraph saying the same
+    thing. The code starts at the first `#include`.
+    """
+    text = example(name)
+    where = text.find("#include")
+    return text[where:] if where >= 0 else text
+
+
+@dataclass(frozen=True)
+class Invocation:
+    """One recorded compilation: what was run, what came back, and what came out."""
+
+    name: str
+    about: str
+    argv: tuple[str, ...]
+    returncode: int
+    stdout: str
+    stderr: str
+    asm: str | None = None
+
+    @property
+    def command(self) -> str:
+        return " ".join(self.argv)
+
+    @property
+    def refused(self) -> bool:
+        """Did the compilation fail?
+
+        For four of the recordings this is the point. A plugin that is refused takes the
+        compilation down with it rather than being skipped, which is the right choice and
+        surprises people who expect a warning.
+        """
+        return self.returncode != 0
+
+    @property
+    def said(self) -> list[str]:
+        """The lines the plugin and the compiler printed, in order, stdout after stderr.
+
+        stderr first because that is where a plugin writes and where diagnostics go, and
+        because stdout is usually empty: the compilations are all `-S -o` something.
+        """
+        return [line for line in (self.stderr + self.stdout).splitlines() if line.strip()]
+
+
+@dataclass(frozen=True)
+class Session:
+    """Everything one recording run produced."""
+
+    recorded: str
+    compiler: str
+    target: str
+    probe: str
+    invocations: dict[str, Invocation]
+    stream_text: str
+    pipeline: dict
+
+    def __getitem__(self, name: str) -> Invocation:
+        try:
+            return self.invocations[name]
+        except KeyError:
+            known = ", ".join(sorted(self.invocations))
+            raise PlugError(f"no recording called {name!r}. There is: {known}") from None
+
+    @property
+    def stream(self) -> Stream:
+        """The gxplug event stream, parsed. The same object a live run would give you."""
+        return parse(self.stream_text)
+
+    def diff(self, before: str, after: str) -> list[str]:
+        """Unified diff of the assembly two recordings produced.
+
+        The one number the gate example rests on. Two recordings of the same program by
+        the same compiler, one of them with a pass switched off from outside.
+        """
+        import difflib
+
+        one, two = self[before], self[after]
+        if one.asm is None or two.asm is None:
+            raise PlugError(f"{before} or {after} did not keep its assembly")
+        return list(
+            difflib.unified_diff(
+                one.asm.splitlines(), two.asm.splitlines(), before, after, lineterm=""
+            )
+        )
+
+
+def load_session(name: str = "b05", root: Path | str | None = None) -> Session:
+    target = Path(root or CORPUS) / f"{name}.json"
+    if not target.is_file():
+        raise PlugError(f"{target} is not there. Run lessons/b05-the-plugin/record.py.")
+    raw = json.loads(target.read_text(encoding="utf-8"))
+    return Session(
+        recorded=raw["recorded"],
+        compiler=raw["compiler"],
+        target=raw["target"],
+        probe=raw["probe"],
+        stream_text=raw["stream"],
+        pipeline=raw["pipeline"],
+        invocations={
+            key: Invocation(
+                name=key,
+                about=one["about"],
+                argv=tuple(one["argv"]),
+                returncode=one["returncode"],
+                stdout=one["stdout"],
+                stderr=one["stderr"],
+                asm=one.get("asm"),
+            )
+            for key, one in raw["runs"].items()
+        },
+    )

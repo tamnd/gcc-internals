@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-125 claims across 16 lessons, 4 of them not observable from a notebook.
+132 claims across 17 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -214,3 +214,15 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | a RUNTESTFLAGS filter matches the base name of a test and not its path, so a glob of pr*.c selects files in every directory the named .exp walks | [`b04-44`](b04-the-test-suite/b04.ipynb) |
 | when every process walks the same list every test runs exactly once, and when one process walks a list that is one file shorter, one test is never run and another runs twice, and nothing reports either | [`b04-48`](b04-the-test-suite/b04.ipynb) |
 | two runs whose summary blocks are identical can differ in four separate tests, and the one that matters most is a test that stopped being run, which no count can show you because the total was made up again by a different test | [`b04-54`](b04-the-test-suite/b04.ipynb) |
+
+## Sixty lines of C++, and you are inside the compiler
+
+| Claim | Proved by |
+| --- | --- |
+| a plugin that only observes leaves the generated code byte for byte identical, which is checkable rather than assertable and is checked here for two of the five | [`b05-12`](b05-the-plugin/b05.ipynb) |
+| the default version check compares five fields including the full configure argument string, so two builds of the same GCC release configured differently have incompatible plugin ABIs and refuse each other's plugins | [`b05-20`](b05-the-plugin/b05.ipynb) |
+| registering a pass is spelled exactly like registering a callback, and is not one: PLUGIN_PASS_MANAGER_SETUP is handled inside register_callback and never fired, so the fourth argument is read immediately rather than handed back to you later | [`b05-32`](b05-the-plugin/b05.ipynb) |
+| a pass registered by a plugin is not a special case anywhere downstream: it appears in -fdump-passes between the two passes it was positioned against, and it gets its own numbered dump file under its own name, like every other pass | [`b05-42`](b05-the-plugin/b05.ipynb) |
+| a plugin can switch off one of GCC's own optimization passes for one function at a time, with no patch and no command line flag, and the generated code changes because of it | [`b05-48`](b05-the-plugin/b05.ipynb) |
+| the name in -fdump-tree-cddce1 is not a pass name: it is the pass called cddce plus the instance number the pass manager gave it, so asking for cddce1 by name matches nothing at all and reports nothing | [`b05-52`](b05-the-plugin/b05.ipynb) |
+| most passes that run leave nothing measurable behind: fewer than one in four of the runs on a nine line program change the statement count, the insn count, the block count or the property bits | [`b05-56`](b05-the-plugin/b05.ipynb) |

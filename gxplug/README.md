@@ -51,6 +51,27 @@ With no arguments the stream goes to stderr, so that adding the flag and nothing
 
 The second is how a notebook reads the stream without a temporary file. Giving both, or giving an argument that is not one of these, is an error and stops the compilation. A typo in a `-fplugin-arg-` name is otherwise the sort of thing that quietly does nothing for an hour.
 
+## The examples
+
+`examples/` holds the five plugins B05 is written around. They are not part of `gxplug` and nothing in `gxray` imports them. They exist because a lesson about writing a plugin has to show plugins, and because the three interesting things a plugin can do are all things `gxplug` deliberately does not.
+
+| Plugin | What it is for |
+|---|---|
+| `hello.cc` | the contract, in the smallest form that still works |
+| `countpass.cc` | a GIMPLE pass of your own, inserted after `ssa`, with its own dump file |
+| `gate.cc` | switching one of GCC's own passes off, which does change the generated code |
+| `nolicence.cc` | `hello.cc` with the GPL symbol deleted, so it is refused at load time |
+| `wrongver.cc` | a version check against a GCC that is not this one, so it refuses itself |
+
+```sh
+make examples GCC=gcc-16         # build all five
+make examples-check GCC=gcc-16   # build them, load them, and check each does what it claims
+```
+
+`examples-check` is the part that matters. It asserts that `hello` and `countpass` leave the assembly byte identical, that `gate` does not, and that the two broken ones fail the compilation rather than being skipped. The `plugin` workflow runs it on all four channels, which is what stops the lesson from describing plugins that work only where they were written.
+
+`gate.cc` takes the name of a pass, and the name it wants is the pass name and not the dump name. `-fdump-tree-cddce1` is the pass called `cddce` on its first instance, so `off=cddce1` matches nothing and reports nothing, which is why the plugin prints how many times it refused something.
+
 ## What a record looks like
 
 Two records per pass. A `pass-start` when the pass manager is about to run it, and a `pass-end` carrying the duration and the state the pass left behind.
