@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [TODO flags](#todo-flags) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [pass positioning](#pass-positioning) | [phi node](#phi-node) | [plugin](#plugin) | [plugin ABI](#plugin-abi) | [plugin event](#plugin-event) | [poly_int](#poly_int) | [port](#port) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [pseudo-event](#pseudo-event) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [torture options](#torture-options) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [TODO flags](#todo-flags) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [compiler table](#compiler-table) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [pass positioning](#pass-positioning) | [phi node](#phi-node) | [plugin](#plugin) | [plugin ABI](#plugin-abi) | [plugin event](#plugin-event) | [poly_int](#poly_int) | [port](#port) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [pseudo-event](#pseudo-event) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spec function](#spec-function) | [specs file](#specs-file) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [torture options](#torture-options) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -92,7 +92,7 @@ Also written `targetm`, `TARGET_*` macro, `target.def`. Taught in Z02. See also 
 
 ## Driving the compiler
 
-What actually runs when you type `gcc`, and how to make it show you its work. T01 and T04 are the lessons that cover this ground.
+What actually runs when you type `gcc`, and how to make it show you its work. T01, T04 and F01 are the lessons that cover this ground.
 
 ### driver
 
@@ -114,9 +114,33 @@ Taught in T01. See also [driver](#driver), [spec](#spec), [front end](#front-end
 
 **A small string language the driver uses to build the command lines it runs.**
 
-A spec is a template full of conditionals like `%{save-temps:...}` that expands into arguments. They are almost unreadable and you will not need to write one, but recognising the syntax stops `gcc -dumpspecs` from looking like line noise, and knowing they exist explains why an option you passed shows up in a completely different form in the `cc1` command line.
+A spec is a template full of conditionals like `%{save-temps:...}` that expands into arguments. `gcc -dumpspecs` prints all of them, which is the driver printing its own program: the decision about which programs to run is written in this language and not in C, and the C in `gcc/gcc.cc` is an interpreter for it. Recognising the syntax stops that output looking like line noise, and it explains why an option you passed shows up in a completely different form in the `cc1` command line.
 
-Taught in T01. See also [driver](#driver), [cc1](#cc1).
+Also written spec string, `-dumpspecs`. Taught in F01. See also [driver](#driver), [cc1](#cc1), [spec function](#spec-function), [specs file](#specs-file), [compiler table](#compiler-table). In the source: [`gcc/gcc.cc:473@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gcc.cc#L473).
+
+### spec function
+
+**A named C function a spec may call when substitution alone cannot answer the question.**
+
+Written `%:name(arguments)` inside a spec. There are twenty-one of them in GCC 16 and they are the language's escape hatch: `if-exists` cannot be expressed as a substitution because it has to look at the filesystem, and `version-compare` has to compare numbers. Each one is a row in `static_spec_functions` pairing a name with a C function, so the list is the exact boundary between what the little language can do and what it has to ask C for.
+
+Also written `%:`. Taught in F01. See also [spec](#spec), [driver](#driver). In the source: [`gcc/gcc.cc:1814@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gcc.cc#L1814).
+
+### compiler table
+
+**The driver's list of file suffixes, and which spec compiles each one.**
+
+Not the spec list. This is a separate array, `default_compilers`, where each row is a suffix like `.c` and the spec to run for it, and it is what turns a file name into a language. Most rows point at a second row named `@c` or `@c-header`, so the suffix decides the language and the language decides the commands. It is searched backwards, which is what lets a `-specs=` file add a row that wins over the built-in one, and adding a row is how a specs file teaches the driver a file extension it has never heard of.
+
+Also written `default_compilers`. Taught in F01. See also [spec](#spec), [driver](#driver), [specs file](#specs-file). In the source: [`gcc/gcc.cc:1458@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gcc.cc#L1458).
+
+### specs file
+
+**A text file of spec definitions the driver reads with -specs=, overwriting its own.**
+
+The format is the one `-dumpspecs` prints: a name between a star and a colon, then the spec on the lines below it. A name that is already defined is replaced, a `+` at the start of the value appends to what is there instead, and a name that does not begin with a star adds a row to the compiler table. This is the supported way to change what the driver runs without patching or rebuilding it, and it is how GCC's own `-static-libgcc` handling and several distributions' hardening defaults are shipped.
+
+Also written `-specs=`, `read_specs`. Taught in F01. See also [spec](#spec), [driver](#driver), [compiler table](#compiler-table). In the source: [`gcc/gcc.cc:2634@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/gcc.cc#L2634).
 
 ### collect2
 

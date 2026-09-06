@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-132 claims across 17 lessons, 4 of them not observable from a notebook.
+150 claims across 18 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -226,3 +226,26 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | a plugin can switch off one of GCC's own optimization passes for one function at a time, with no patch and no command line flag, and the generated code changes because of it | [`b05-48`](b05-the-plugin/b05.ipynb) |
 | the name in -fdump-tree-cddce1 is not a pass name: it is the pass called cddce plus the instance number the pass manager gave it, so asking for cddce1 by name matches nothing at all and reports nothing | [`b05-52`](b05-the-plugin/b05.ipynb) |
 | most passes that run leave nothing measurable behind: fewer than one in four of the runs on a nine line program change the statement count, the insn count, the block count or the property bits | [`b05-56`](b05-the-plugin/b05.ipynb) |
+
+## The driver is an interpreter
+
+| Claim | Proved by |
+| --- | --- |
+| gcc -dumpspecs prints tens of named blocks totalling thousands of characters | [`f01-04`](f01-the-spec-language/f01.ipynb) |
+| a name can appear twice in the dump and lookups take the last definition | [`f01-10`](f01-the-spec-language/f01.ipynb) |
+| every percent form in the spec language belongs to one of five families | [`f01-12`](f01-the-spec-language/f01.ipynb) |
+| conditionals are the second most common thing in a spec table, after plain text | [`f01-14`](f01-the-spec-language/f01.ipynb) |
+| a space in a spec is an instruction to end the current argument, not punctuation | [`f01-16`](f01-the-spec-language/f01.ipynb) |
+| gcc -S stops before the assembler because of a %{!S:...} in the invoke_as spec | [`f01-22`](f01-the-spec-language/f01.ipynb) |
+| compiling one C file reaches about a dozen specs, and every name they call is defined | [`f01-24`](f01-the-spec-language/f01.ipynb) |
+| the spec that compiles a C file is one string of about five hundred characters | [`f01-32`](f01-the-spec-language/f01.ipynb) |
+| the driver knows dozens of file suffixes and five of them are the ones it compiles as C | [`f01-38`](f01-the-spec-language/f01.ipynb) |
+| a spec may call a named C function, and GCC 16 has twenty one of them built in | [`f01-42`](f01-the-spec-language/f01.ipynb) |
+| a target can register spec functions of its own, and both recorded targets do | [`f01-46`](f01-the-spec-language/f01.ipynb) |
+| link_command is printed by -dumpspecs but is not one of the driver's static specs | [`f01-48`](f01-the-spec-language/f01.ipynb) |
+| two builds of the same GCC release have different spec tables, and neither is wrong | [`f01-50`](f01-the-spec-language/f01.ipynb) |
+| a two line specs file adds an argument to every cc1 the driver runs | [`f01-54`](f01-the-spec-language/f01.ipynb) |
+| editing one word in one spec makes the driver run a different program for the assembly step | [`f01-56`](f01-the-spec-language/f01.ipynb) |
+| deleting the !S guard from invoke_as makes gcc -S run the assembler | [`f01-58`](f01-the-spec-language/f01.ipynb) |
+| a specs file whose name has no star adds a row to the compiler table, teaching gcc a new suffix | [`f01-60`](f01-the-spec-language/f01.ipynb) |
+| every percent form in both recorded spec tables is one this reader can name | [`f01-66`](f01-the-spec-language/f01.ipynb) |
