@@ -329,6 +329,76 @@ DRIVING = Group(
 )
 
 
+PREPROCESSING = Group(
+    "Before the parser",
+    "The first program in the chain, and the one whose output every other lesson quietly assumes. F02 is the lesson.",
+    (
+        Term(
+            name="preprocessor",
+            short="The phase that runs before the parser, and the only one that works in tokens without types.",
+            long="It is not a separate program in a normal compilation. `cc1` contains libcpp and calls it for each token, so `gcc -E` is the same code with the output printed instead of parsed. The thing worth unlearning is that it edits text. It lexes your file into tokens, works on tokens, and prints tokens back out, and the printing step has to insert whitespace that was in no input file to stop two of them lexing as one. Everything people find surprising about macros follows from that.",
+            also=("libcpp", "`cpp`", "`-E`"),
+            cite="libcpp/init.cc:589@releases/gcc-16.2.0",
+            see=("token", "translation unit", "cc1"),
+            met="F02",
+        ),
+        Term(
+            name="token",
+            short="One lexical unit, with a type, a location and some flags. What the preprocessor deals in.",
+            long="A `cpp_token` is thirty two bytes on a 64-bit host: a location, a type from a list of about a hundred, a flag word, and a union holding the spelling. `PREV_WHITE` in those flags is the one to know, because it is where the space before a token lives; the space is a property of the token after it rather than a character in a buffer. A macro expanding to nothing can therefore still leave a space behind, and two tokens that arrive next to each other can still be printed apart.",
+            also=("`cpp_token`", "`PREV_WHITE`"),
+            cite="libcpp/include/cpplib.h:261@releases/gcc-16.2.0",
+            see=("preprocessor", "token pasting"),
+            met="F02",
+        ),
+        Term(
+            name="translation unit",
+            short="One source file with every #include pasted in and every macro expanded. What the parser sees.",
+            long="It is the unit C is defined in terms of, and it is much larger than the file you wrote. One `#include <stdio.h>` opens dozens of files, so a hundred line program is routinely tens of thousands of lines by the time the parser starts. This is the reason a compiler feels slow on small files, the reason a macro defined in one header can break a declaration in another, and the reason `gcc -E` is the first thing to run when a build error names a line you cannot find.",
+            also=("TU",),
+            see=("preprocessor", "include guard"),
+            met="F02",
+        ),
+        Term(
+            name="line marker",
+            short='A `# 42 "file.h" 2 3 4` line in preprocessed output, saying where the following text came from.',
+            long='Not a comment and not a directive. It is how the preprocessor hands the parser back the line numbers it destroyed by pasting files together, which is what makes an error inside a header point at the header. The digits after the filename are flags: 1 means entering a file, 2 means returning to one, 3 means a system header where warnings are suppressed, and 4 means the contents are to be wrapped in `extern "C"`. Flag 3 is the reason a warning in your code disappears when you move the same code into `/usr/include`.',
+            also=("`#line`", "linemarker"),
+            cite="gcc/c-family/c-ppoutput.cc:618@releases/gcc-16.2.0",
+            see=("preprocessor", "translation unit"),
+            met="F02",
+        ),
+        Term(
+            name="include guard",
+            short="The `#ifndef NAME / #define NAME / #endif` wrapper that stops a header being read twice.",
+            long="The interesting part is not the idiom, it is that libcpp recognises it. When a file's entire token stream is one conditional controlled by a macro, the file is remembered along with that macro's name, and the next `#include` of it is skipped without opening the file at all. The recognition is exact: one declaration after the `#endif` and the optimization is off, though a comment there costs nothing, because the check is over tokens and a comment is not one.",
+            also=("multiple inclusion guard", "`cmacro`", "`#pragma once`"),
+            cite="libcpp/files.cc:858@releases/gcc-16.2.0",
+            see=("preprocessor", "translation unit"),
+            met="F02",
+        ),
+        Term(
+            name="token pasting",
+            short="Two things that mean opposite things: the `##` operator, and the accident it is named after.",
+            long="`a ## b` is the operator, and it makes two tokens into one before the result is scanned for macros, which is why `CAT(PLUS, PLUS)` gives you the identifier `PLUSPLUS` and not `++`. The accident is what `cpp_avoid_paste` exists to prevent: when the preprocessor prints two adjacent tokens that would lex back as one, it puts a space between them that was in no input file. Both are the same fact seen from two sides, which is that the preprocessor's output is tokens and its printed form is a lossy rendering of them.",
+            also=("`##`", "`cpp_avoid_paste`"),
+            cite="libcpp/lex.cc:4728@releases/gcc-16.2.0",
+            see=("token", "preprocessor"),
+            met="F02",
+        ),
+        Term(
+            name="blue paint",
+            short="The mark that stops a macro expanding inside its own expansion, so `#define foo foo + 1` terminates.",
+            long="While a macro is being expanded, its name is disabled; any occurrence of it in the result is flagged `NO_EXPAND` and stays that way forever, even if it is later passed somewhere the macro is not being expanded. The standard's rule and libcpp's implementation are the reason `#define A B` and `#define B A` produce `A` rather than a hang. The name is from a 1980s comp.std.c thread about painting the identifier blue so it cannot be expanded again, and the source uses it.",
+            also=("`NO_EXPAND`", "painted blue", "self-reference"),
+            cite="libcpp/macro.cc:1590@releases/gcc-16.2.0",
+            see=("preprocessor", "token"),
+            met="F02",
+        ),
+    ),
+)
+
+
 SHAPES = Group(
     "The four shapes a function takes",
     "The same function, written down four different ways on its way to assembly. T02, T03 and T07 are the lessons.",
@@ -976,6 +1046,7 @@ GROUPS: tuple[Group, ...] = (
     READING,
     FINDING,
     DRIVING,
+    PREPROCESSING,
     SHAPES,
     CONTROL,
     STATIC_SINGLE,

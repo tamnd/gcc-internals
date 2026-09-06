@@ -1,0 +1,43 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"PLUS\""
+  },
+  {
+   "labels": [],
+   "source": null,
+   "text": "\"+\""
+  }
+ ],
+ "asmSize": 11,
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-fverbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-E",
+  "-P",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 44,
+ "filteredCount": 0,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {},
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.005068998783826828,
+ "stderr": [],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

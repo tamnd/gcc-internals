@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [TODO flags](#todo-flags) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [compiler table](#compiler-table) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [pass positioning](#pass-positioning) | [phi node](#phi-node) | [plugin](#plugin) | [plugin ABI](#plugin-abi) | [plugin event](#plugin-event) | [poly_int](#poly_int) | [port](#port) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [pseudo-event](#pseudo-event) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spec function](#spec-function) | [specs file](#specs-file) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [torture options](#torture-options) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [TODO flags](#todo-flags) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [blue paint](#blue-paint) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [compiler table](#compiler-table) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [include guard](#include-guard) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [line marker](#line-marker) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [pass positioning](#pass-positioning) | [phi node](#phi-node) | [plugin](#plugin) | [plugin ABI](#plugin-abi) | [plugin event](#plugin-event) | [poly_int](#poly_int) | [port](#port) | [preprocessor](#preprocessor) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [pseudo-event](#pseudo-event) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spec function](#spec-function) | [specs file](#specs-file) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [token](#token) | [token pasting](#token-pasting) | [torture options](#torture-options) | [translation unit](#translation-unit) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -221,6 +221,66 @@ Taught in T01. See also [front end](#front-end), [GIMPLE](#gimple), [back end](#
 It is generated, mostly. A target is described by a `.md` file full of patterns and a `.cc` file full of hooks, and a pile of build time programs turn those into the C that actually runs. This is why grepping for the function that emitted an instruction so often lands you in a file that does not exist in the source tree.
 
 Taught in T01. See also [RTL](#rtl), [middle end](#middle-end).
+
+## Before the parser
+
+The first program in the chain, and the one whose output every other lesson quietly assumes. F02 is the lesson.
+
+### preprocessor
+
+**The phase that runs before the parser, and the only one that works in tokens without types.**
+
+It is not a separate program in a normal compilation. `cc1` contains libcpp and calls it for each token, so `gcc -E` is the same code with the output printed instead of parsed. The thing worth unlearning is that it edits text. It lexes your file into tokens, works on tokens, and prints tokens back out, and the printing step has to insert whitespace that was in no input file to stop two of them lexing as one. Everything people find surprising about macros follows from that.
+
+Also written libcpp, `cpp`, `-E`. Taught in F02. See also [token](#token), [translation unit](#translation-unit), [cc1](#cc1). In the source: [`libcpp/init.cc:589@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/libcpp/init.cc#L589).
+
+### token
+
+**One lexical unit, with a type, a location and some flags. What the preprocessor deals in.**
+
+A `cpp_token` is thirty two bytes on a 64-bit host: a location, a type from a list of about a hundred, a flag word, and a union holding the spelling. `PREV_WHITE` in those flags is the one to know, because it is where the space before a token lives; the space is a property of the token after it rather than a character in a buffer. A macro expanding to nothing can therefore still leave a space behind, and two tokens that arrive next to each other can still be printed apart.
+
+Also written `cpp_token`, `PREV_WHITE`. Taught in F02. See also [preprocessor](#preprocessor), [token pasting](#token-pasting). In the source: [`libcpp/include/cpplib.h:261@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/libcpp/include/cpplib.h#L261).
+
+### translation unit
+
+**One source file with every #include pasted in and every macro expanded. What the parser sees.**
+
+It is the unit C is defined in terms of, and it is much larger than the file you wrote. One `#include <stdio.h>` opens dozens of files, so a hundred line program is routinely tens of thousands of lines by the time the parser starts. This is the reason a compiler feels slow on small files, the reason a macro defined in one header can break a declaration in another, and the reason `gcc -E` is the first thing to run when a build error names a line you cannot find.
+
+Also written TU. Taught in F02. See also [preprocessor](#preprocessor), [include guard](#include-guard).
+
+### line marker
+
+**A `# 42 "file.h" 2 3 4` line in preprocessed output, saying where the following text came from.**
+
+Not a comment and not a directive. It is how the preprocessor hands the parser back the line numbers it destroyed by pasting files together, which is what makes an error inside a header point at the header. The digits after the filename are flags: 1 means entering a file, 2 means returning to one, 3 means a system header where warnings are suppressed, and 4 means the contents are to be wrapped in `extern "C"`. Flag 3 is the reason a warning in your code disappears when you move the same code into `/usr/include`.
+
+Also written `#line`, linemarker. Taught in F02. See also [preprocessor](#preprocessor), [translation unit](#translation-unit). In the source: [`gcc/c-family/c-ppoutput.cc:618@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/c-family/c-ppoutput.cc#L618).
+
+### include guard
+
+**The `#ifndef NAME / #define NAME / #endif` wrapper that stops a header being read twice.**
+
+The interesting part is not the idiom, it is that libcpp recognises it. When a file's entire token stream is one conditional controlled by a macro, the file is remembered along with that macro's name, and the next `#include` of it is skipped without opening the file at all. The recognition is exact: one declaration after the `#endif` and the optimization is off, though a comment there costs nothing, because the check is over tokens and a comment is not one.
+
+Also written multiple inclusion guard, `cmacro`, `#pragma once`. Taught in F02. See also [preprocessor](#preprocessor), [translation unit](#translation-unit). In the source: [`libcpp/files.cc:858@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/libcpp/files.cc#L858).
+
+### token pasting
+
+**Two things that mean opposite things: the `##` operator, and the accident it is named after.**
+
+`a ## b` is the operator, and it makes two tokens into one before the result is scanned for macros, which is why `CAT(PLUS, PLUS)` gives you the identifier `PLUSPLUS` and not `++`. The accident is what `cpp_avoid_paste` exists to prevent: when the preprocessor prints two adjacent tokens that would lex back as one, it puts a space between them that was in no input file. Both are the same fact seen from two sides, which is that the preprocessor's output is tokens and its printed form is a lossy rendering of them.
+
+Also written `##`, `cpp_avoid_paste`. Taught in F02. See also [token](#token), [preprocessor](#preprocessor). In the source: [`libcpp/lex.cc:4728@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/libcpp/lex.cc#L4728).
+
+### blue paint
+
+**The mark that stops a macro expanding inside its own expansion, so `#define foo foo + 1` terminates.**
+
+While a macro is being expanded, its name is disabled; any occurrence of it in the result is flagged `NO_EXPAND` and stays that way forever, even if it is later passed somewhere the macro is not being expanded. The standard's rule and libcpp's implementation are the reason `#define A B` and `#define B A` produce `A` rather than a hang. The name is from a 1980s comp.std.c thread about painting the identifier blue so it cannot be expanded again, and the source uses it.
+
+Also written `NO_EXPAND`, painted blue, self-reference. Taught in F02. See also [preprocessor](#preprocessor), [token](#token). In the source: [`libcpp/macro.cc:1590@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/libcpp/macro.cc#L1590).
 
 ## The four shapes a function takes
 
