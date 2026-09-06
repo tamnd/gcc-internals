@@ -729,9 +729,11 @@ This is the end of M2. You can build GCC, bootstrap it, run it under a debugger,
 suite, and load code of your own into it. Everything from here on is about what the compiler
 does rather than how to get at it.
 
-M3 is GIMPLE properly: the twenty odd statement codes, what a `GIMPLE_ASSIGN` really holds,
-how the CFG is built and maintained, and the point in the pipeline where a function stops
-being a tree and starts being a program.
+M3 is the front end, and it starts before the parser. What the thing you type `gcc` at
+actually is and what it runs, the preprocessor, the C parser, GENERIC and the tree
+representation everything else is built on, types, the language hooks a front end has to
+fill in, and gimplification, which is where a function stops being a tree and starts being
+a program.
 """)
 
 raise SystemExit(lesson.save())
