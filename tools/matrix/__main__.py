@@ -5,7 +5,7 @@
     matrix table --check      fail when the README has fallen behind matrix.toml
     matrix show ID            one configuration, expanded, the way the build sees it
     matrix digests --check    fail when the lockfile and the matrix disagree
-    matrix record DIR         fold a directory of published digests into the lockfile
+    matrix record DIR         fold published digests into the lockfile and the devcontainer
 
 None of this needs Docker, a registry, or the pinned GCC tree. It reads one TOML file, so
 it runs in any job and on any laptop, which is the reason the matrix is a TOML file.
@@ -19,6 +19,7 @@ import sys
 from pathlib import Path
 
 from tools.matrix import (
+    DEVCONTAINER,
     LOCKFILE,
     README,
     TRIGGERS,
@@ -27,6 +28,7 @@ from tools.matrix import (
     load,
     lock_problems,
     record,
+    repin,
     table,
 )
 
@@ -105,13 +107,23 @@ def cmd_digests(args) -> int:
 
 
 def cmd_record(args) -> int:
-    """Fold a directory of `image digest` lines into the lockfile. Run by the workflow."""
+    """Fold a directory of `image digest` lines into the lockfile. Run by the workflow.
+
+    And then move the devcontainer's pin, because that file names a digest too and is the
+    one nothing in CI pulls, so nothing in CI notices when it goes stale until an unrelated
+    branch turns red.
+    """
     directory = Path(args.directory)
     if not directory.is_dir():
         print(f"matrix: there is no {directory} to read digests out of", file=sys.stderr)
         return 2
     have = record(directory)
     print(f"matrix: {LOCKFILE.name} now names {len(have)} image(s)")
+    moved = repin(have)
+    if moved:
+        print(f"matrix: {DEVCONTAINER.name} now pins {moved}")
+    else:
+        print(f"matrix: {DEVCONTAINER.name} already pins the image it should")
     return 0
 
 
