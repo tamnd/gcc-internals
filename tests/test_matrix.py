@@ -310,6 +310,89 @@ def test_a_digest_file_with_no_digest_in_it_is_an_error(tmp_path):
         matrix.record(incoming, tmp_path / "images.lock.json")
 
 
+DEVCONTAINER = """
+{
+  // A comment mentioning https://example.com, which is two slashes and not a comment.
+  "name": "gcc-internals, GCC 16.2 rel",
+  "image": "ghcr.io/x/rel@sha256:{old}",
+
+  "postCreateCommand": "pip install -e '.[dev]'"
+}
+"""
+
+
+def devcontainer(tmp_path, old: str = "a" * 64):
+    path = tmp_path / "devcontainer.json"
+    path.write_text(DEVCONTAINER.lstrip().replace("{old}", old), encoding="utf-8")
+    return path
+
+
+def test_recording_a_run_moves_the_pin_the_devcontainer_names(tmp_path):
+    """The lockfile and the devcontainer name one digest, so one command writes both."""
+    path = devcontainer(tmp_path)
+    now = matrix.repin({"ghcr.io/x/rel:amd64": "sha256:" + "c" * 64}, path)
+    assert now == "sha256:" + "c" * 64
+    assert f'"image": "ghcr.io/x/rel@{now}",' in path.read_text(encoding="utf-8")
+
+
+def test_repinning_leaves_every_line_that_is_not_the_pin_alone(tmp_path):
+    """Eighteen lines of that file are a comment explaining the pin to a reader, and a
+    round trip through `json` would throw all of them away to change sixty four characters."""
+    path = devcontainer(tmp_path)
+    was = path.read_text(encoding="utf-8").splitlines()
+    matrix.repin({"ghcr.io/x/rel:amd64": "sha256:" + "c" * 64}, path)
+    now = path.read_text(encoding="utf-8").splitlines()
+    assert len(was) == len(now)
+    assert [a for a in was if "image" not in a] == [b for b in now if "image" not in b]
+
+
+def test_a_pin_that_is_already_right_is_not_rewritten(tmp_path):
+    """So that the workflow's `git diff --quiet` means what it says."""
+    path = devcontainer(tmp_path, old="c" * 64)
+    was = path.read_text(encoding="utf-8")
+    assert matrix.repin({"ghcr.io/x/rel:amd64": "sha256:" + "c" * 64}, path) is None
+    assert path.read_text(encoding="utf-8") == was
+
+
+def test_the_pin_follows_the_image_the_file_already_names(tmp_path):
+    """An arm64 reader is told to swap this for `chk` or `dbg`, and the recorder has to
+    follow that rather than drag the file back to whatever it was written against."""
+    path = tmp_path / "devcontainer.json"
+    path.write_text('{\n  "image": "ghcr.io/x/dbg@sha256:' + "a" * 64 + '"\n}\n', encoding="utf-8")
+    locked = {
+        "ghcr.io/x/rel:amd64": "sha256:" + "b" * 64,
+        "ghcr.io/x/dbg:amd64": "sha256:" + "d" * 64,
+    }
+    assert matrix.repin(locked, path) == "sha256:" + "d" * 64
+
+
+def test_a_lockfile_with_no_row_for_that_image_says_so_rather_than_guessing(tmp_path):
+    with pytest.raises(matrix.MatrixError, match="not in the lockfile"):
+        matrix.repin({"ghcr.io/x/chk:amd64": "sha256:" + "b" * 64}, devcontainer(tmp_path))
+
+
+def test_a_devcontainer_with_no_image_line_is_an_error_and_not_a_silent_pass(tmp_path):
+    path = tmp_path / "devcontainer.json"
+    path.write_text('{ "name": "no image here" }\n', encoding="utf-8")
+    with pytest.raises(matrix.MatrixError, match="no .image. line"):
+        matrix.repin({"ghcr.io/x/rel:amd64": "sha256:" + "c" * 64}, path)
+
+
+def test_the_committed_devcontainer_pin_is_the_one_this_module_would_write():
+    """The regression that caused all of the above. The matrix published, the lockfile
+    moved, the pin did not, and main was red on a branch that had touched neither."""
+    assert matrix.repin(matrix.digests()) is None
+
+
+def test_the_workflow_commits_both_files_the_recorder_writes():
+    """A commit with the lockfile in it and not the devcontainer is the red main again."""
+    body = WORKFLOW.read_text(encoding="utf-8")
+    step = body[body.index("commit it if it moved") :]
+    added = next(line for line in step.splitlines() if line.strip().startswith("git add "))
+    assert "containers/images.lock.json" in added
+    assert ".devcontainer/devcontainer.json" in added
+
+
 def test_the_workflow_builds_the_configurations_this_file_describes():
     """The point of the whole exercise. The workflow asks, it does not know."""
     text = WORKFLOW.read_text(encoding="utf-8")

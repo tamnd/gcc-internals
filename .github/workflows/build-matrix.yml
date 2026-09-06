@@ -208,11 +208,11 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             python -m tools.matrix record digests
-            if git diff --quiet containers/images.lock.json; then
+            if git diff --quiet containers/images.lock.json .devcontainer/devcontainer.json; then
               echo "no image moved"
               exit 0
             fi
-            git add containers/images.lock.json
+            git add containers/images.lock.json .devcontainer/devcontainer.json
             git commit -m "Record the images the build matrix just published"
             if git push; then
               exit 0

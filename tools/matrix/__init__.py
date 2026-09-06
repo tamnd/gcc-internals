@@ -22,11 +22,13 @@ compiler nobody published.
     matrix table --check         fail when the README has fallen behind this file
     matrix show ID               one configuration, expanded, the way the build sees it
     matrix digests --check       fail when the lockfile names an image the matrix does not
+    matrix record DIR            write published digests into the lockfile and the devcontainer
 """
 
 from __future__ import annotations
 
 import json
+import re
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -36,9 +38,24 @@ CONTAINERS = REPO_ROOT / "containers"
 MATRIX = CONTAINERS / "matrix.toml"
 LOCKFILE = CONTAINERS / "images.lock.json"
 README = CONTAINERS / "README.md"
+DEVCONTAINER = REPO_ROOT / ".devcontainer" / "devcontainer.json"
 
 ARCHES = ("amd64", "arm64")
 TRIGGERS = ("push", "weekly")
+
+#: The devcontainer's `"image": "name@sha256:..."` line. Written as a pattern over the text
+#: rather than as a JSON edit because the file is JSON with comments in it, and the comments
+#: are eighteen lines explaining the pin to a reader. Round tripping through `json` would
+#: throw all of them away to change sixty four characters.
+PIN = re.compile(
+    r'^(?P<head>\s*"image":\s*")(?P<name>[^"@]+)(?P<digest>@sha256:[0-9a-f]{64})?"',
+    re.MULTILINE,
+)
+
+#: Which architecture's row the committed devcontainer pins. Codespaces is amd64, so this is
+#: the one that has to work unattended for a stranger. An arm64 reader is told in the file
+#: itself to swap it locally, and a local swap is not something a workflow has to preserve.
+PIN_ARCH = "amd64"
 
 # The table in containers/README.md, between these two markers. Generated, so a hand edit
 # to it is a hand edit that the next `just matrix-table` throws away, and saying so in the
@@ -349,6 +366,33 @@ def record(directory: Path, path: Path | None = None) -> dict[str, str]:
     return have
 
 
+def repin(locked: dict[str, str], path: Path | None = None) -> str | None:
+    """Point the devcontainer at the digest the lockfile now holds. The new one, or None.
+
+    The devcontainer is the only file outside the lockfile that names an image by digest,
+    and it is the one nothing in CI pulls, so nothing in CI notices when it goes stale. What
+    did notice was `tests/test_devcontainer.py`, one commit later, on somebody else's branch:
+    the matrix published ten new digests, the lockfile moved, the pin did not, and main was
+    red for a change that had nothing to do with any of it. A digest the matrix wrote and a
+    digest the devcontainer names are one fact, so one command writes both.
+    """
+    target = path or DEVCONTAINER
+    was = target.read_text(encoding="utf-8")
+    found = PIN.search(was)
+    if found is None:
+        raise MatrixError(f'{target.name} has no "image" line to pin to a digest')
+    name = found["name"]
+    want = locked.get(f"{name}:{PIN_ARCH}")
+    if want is None:
+        known = ", ".join(sorted(locked)) or "nothing at all"
+        raise MatrixError(f"{name}:{PIN_ARCH} is not in the lockfile, which names {known}")
+    if found["digest"] == f"@{want}":
+        return None
+    line = f'{found["head"]}{name}@{want}"'
+    target.write_text(was[: found.start()] + line + was[found.end() :], encoding="utf-8")
+    return want
+
+
 __all__ = [
     "Config",
     "Matrix",
@@ -358,6 +402,7 @@ __all__ = [
     "load",
     "lock_problems",
     "record",
+    "repin",
     "row",
     "runner",
     "table",
