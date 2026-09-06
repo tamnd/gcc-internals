@@ -185,9 +185,13 @@ def test_the_store_holds_nothing_nobody_asks_for():
     F02 adds seven. Its recorder sends eight keys, the x86-64 macro table, the five expansion
     demonstrations, one `-H` trace of `#include <stdio.h>`, and the same `cg162` probe, which
     somebody else had already paid for again.
+
+    F03 adds three. Its recorder sends four keys, the three programs it compiles twice so that
+    the lesson can claim two targets agree, and the `cg162` probe behind them, which by now is
+    the fourth lesson to have wanted it and the first to have paid nothing for it.
     """
     assert orphans(REGISTRY) == []
-    assert len(set().union(*(keys(x) for x in REGISTRY))) == 50
+    assert len(set().union(*(keys(x) for x in REGISTRY))) == 53
 
 
 def _ce_recording_recipes():

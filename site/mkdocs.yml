@@ -83,6 +83,7 @@ nav:
     - BP-PIPELINE, the shape of a compilation: blueprints/BP-PIPELINE.md
     - BP-DRIVER, the program that runs the other programs: blueprints/BP-DRIVER.md
     - BP-CPP, the preprocessor: blueprints/BP-CPP.md
+    - BP-CPARSE, the C parser: blueprints/BP-CPARSE.md
     - BP-GIMPLE, the GIMPLE statement representation: blueprints/BP-GIMPLE.md
     - BP-CFG, blocks and edges: blueprints/BP-CFG.md
     - BP-SSA, one definition per name: blueprints/BP-SSA.md

@@ -438,3 +438,23 @@ expansion demonstrations, and the -H trace of one #include <stdio.h>. What keeps
 honest is that recorder's own check, forty odd assertions that encode what the lesson says \
 about the committed recording, run before any prose exists and re-run on every push.\
 """
+
+[[experiment]]
+id = "f03-cparse"
+kind = "offline"
+question = "Where does the C parser put the caret, and what decides the rest of the sentence?"
+lessons = ["f03-four-tokens"]
+cache = "corpora/diag/f03.json"
+why = """
+Offline because the parser has no dump to compare. It produces GENERIC, which is F04's \
+subject, and the readout this lesson uses is the diagnostic, which the comparators here know \
+nothing about: they count basic blocks and phi nodes in a tree dump, and none of the fifteen \
+programs recorded for F03 gets far enough to have either. The travelling half is the cache \
+listed above, sent again by lessons/f03-four-tokens/record.py: three of the programs go \
+through an x86-64 Linux GCC of the same release, and the lesson's closing claim is that \
+their diagnostics come back character for character the same, which is checked rather than \
+asserted. What keeps the rest honest is that recorder's own check, thirty odd assertions \
+about the committed recording, plus tests/test_cparse.py, which compares the two tables the \
+lesson prints against the switch and the branch list they were transcribed from in the \
+pinned tree.\
+"""

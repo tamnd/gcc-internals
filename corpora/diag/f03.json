@@ -1,0 +1,856 @@
+{
+ "recorded": "2026-09-06",
+ "tag": "releases/gcc-16.2.0",
+ "compiler": "gcc-16 (Homebrew GCC 16.2.0) 16.2.0",
+ "target": "aarch64-apple-darwin24",
+ "cache": [
+  "2abc7c5ac5fcd1dfa3a01d67b8464971",
+  "54c4cc6a52013b9b4c21da0c7e74a9bd",
+  "b671a775fa867d6a251b39a9a885057d",
+  "feded2677aff4cb36cb66975aa68b30e"
+ ],
+ "cases": {
+  "brace": {
+   "about": "the next token is a close brace",
+   "flags": [],
+   "source": "int f(void) { return 1 }\n",
+   "text": "p.c: In function 'f':\np.c:1:23: error: expected ';' before '}' token\n    1 | int f(void) { return 1 }\n      |                       ^~\n      |                       ;\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ';' before '}' token",
+     "at": [
+      1,
+      23,
+      24
+     ],
+     "snippet": "int f(void) { return 1 }",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        1,
+        23,
+        23
+       ],
+       "insert": ";"
+      }
+     ],
+     "related": [
+      [
+       1,
+       24,
+       25
+      ]
+     ]
+    }
+   ],
+   "elsewhere": "p.c: In function 'f':\np.c:1:23: error: expected ';' before '}' token\n    1 | int f(void) { return 1 }\n      |                       ^~\n      |                       ;"
+  },
+  "name": {
+   "about": "the next token is an identifier",
+   "flags": [],
+   "source": "int f(void) { int a = 1 b; }\n",
+   "text": "p.c: In function 'f':\np.c:1:25: error: expected ',' or ';' before 'b'\n    1 | int f(void) { int a = 1 b; }\n      |                         ^\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ',' or ';' before 'b'",
+     "at": [
+      1,
+      25,
+      26
+     ],
+     "snippet": "int f(void) { int a = 1 b; }",
+     "function": "f"
+    }
+   ]
+  },
+  "number": {
+   "about": "the next token is a number",
+   "flags": [],
+   "source": "int f(void) { return 1 2; }\n",
+   "text": "p.c: In function 'f':\np.c:1:23: error: expected ';' before numeric constant\n    1 | int f(void) { return 1 2; }\n      |                       ^~\n      |                       ;\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ';' before numeric constant",
+     "at": [
+      1,
+      23,
+      24
+     ],
+     "snippet": "int f(void) { return 1 2; }",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        1,
+        23,
+        23
+       ],
+       "insert": ";"
+      }
+     ],
+     "related": [
+      [
+       1,
+       24,
+       25
+      ]
+     ]
+    }
+   ]
+  },
+  "string": {
+   "about": "the next token is a string",
+   "flags": [],
+   "source": "int f(void) { return 1 \"x\"; }\n",
+   "text": "p.c: In function 'f':\np.c:1:23: error: expected ';' before string constant\n    1 | int f(void) { return 1 \"x\"; }\n      |                       ^~~~\n      |                       ;\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ';' before string constant",
+     "at": [
+      1,
+      23,
+      24
+     ],
+     "snippet": "int f(void) { return 1 \"x\"; }",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        1,
+        23,
+        23
+       ],
+       "insert": ";"
+      }
+     ],
+     "related": [
+      [
+       1,
+       24,
+       27
+      ]
+     ]
+    }
+   ]
+  },
+  "char": {
+   "about": "the next token is a character constant",
+   "flags": [],
+   "source": "int f(void) { return 1 'c'; }\n",
+   "text": "p.c: In function 'f':\np.c:1:23: error: expected ';' before 'c'\n    1 | int f(void) { return 1 'c'; }\n      |                       ^~~~\n      |                       ;\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ';' before 'c'",
+     "at": [
+      1,
+      23,
+      24
+     ],
+     "snippet": "int f(void) { return 1 'c'; }",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        1,
+        23,
+        23
+       ],
+       "insert": ";"
+      }
+     ],
+     "related": [
+      [
+       1,
+       24,
+       27
+      ]
+     ]
+    }
+   ]
+  },
+  "keyword": {
+   "about": "the next token is a keyword",
+   "flags": [],
+   "source": "int f(void) { return 1 while (0); }\n",
+   "text": "p.c: In function 'f':\np.c:1:23: error: expected ';' before 'while'\n    1 | int f(void) { return 1 while (0); }\n      |                       ^~~~~~\n      |                       ;\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ';' before 'while'",
+     "at": [
+      1,
+      23,
+      24
+     ],
+     "snippet": "int f(void) { return 1 while (0); }",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        1,
+        23,
+        23
+       ],
+       "insert": ";"
+      }
+     ],
+     "related": [
+      [
+       1,
+       24,
+       29
+      ]
+     ]
+    }
+   ]
+  },
+  "pragma": {
+   "about": "the next token is a pragma, which is one token",
+   "flags": [],
+   "source": "int f(void) { return 1\n#pragma GCC unroll 2\n; }\n",
+   "text": "p.c: In function 'f':\np.c:1:23: error: expected ';' before '#pragma'\n    1 | int f(void) { return 1\n      |                       ^\n      |                       ;\n    2 | #pragma GCC unroll 2\n      |         ~~~            \n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ';' before '#pragma'",
+     "at": [
+      1,
+      23,
+      24
+     ],
+     "snippet": "int f(void) { return 1",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        1,
+        23,
+        23
+       ],
+       "insert": ";"
+      }
+     ],
+     "related": [
+      [
+       2,
+       9,
+       12
+      ]
+     ]
+    }
+   ]
+  },
+  "eof": {
+   "about": "there is no next token",
+   "flags": [],
+   "source": "int f(void) { return 1\n",
+   "text": "p.c: In function 'f':\np.c:1:23: error: expected ';' at end of input\n    1 | int f(void) { return 1\n      |                       ^\n      |                       ;\np.c:1:1: error: expected declaration or statement at end of input\n    1 | int f(void) { return 1\n      | ^~~\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ';' at end of input",
+     "at": [
+      1,
+      23,
+      24
+     ],
+     "snippet": "int f(void) { return 1",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        1,
+        23,
+        23
+       ],
+       "insert": ";"
+      }
+     ],
+     "related": [
+      [
+       2,
+       1,
+       0
+      ]
+     ]
+    },
+    {
+     "level": "error",
+     "message": "expected declaration or statement at end of input",
+     "at": [
+      1,
+      1,
+      4
+     ],
+     "snippet": "int f(void) { return 1",
+     "function": "f"
+    }
+   ]
+  },
+  "meaning-typedef": {
+   "about": "A is a type, so line 3 declares b",
+   "flags": [
+    "-Wall",
+    "-Wshadow"
+   ],
+   "source": "typedef int A;\nint b;\nvoid f(void) { A * b; }\n",
+   "text": "p.c: In function 'f':\np.c:3:20: warning: declaration of 'b' shadows a global declaration [-Wshadow]\n    3 | void f(void) { A * b; }\n      |                    ^\np.c:2:5: note: shadowed declaration is here\n    2 | int b;\n      |     ^\np.c:3:20: warning: unused variable 'b' [-Wunused-variable]\n    3 | void f(void) { A * b; }\n      |                    ^\n",
+   "diagnostics": [
+    {
+     "level": "warning",
+     "message": "declaration of 'b' shadows a global declaration",
+     "at": [
+      3,
+      20,
+      21
+     ],
+     "snippet": "void f(void) { A * b; }",
+     "function": "f",
+     "related": [
+      [
+       2,
+       5,
+       6
+      ]
+     ]
+    },
+    {
+     "level": "warning",
+     "message": "unused variable 'b'",
+     "at": [
+      3,
+      20,
+      21
+     ],
+     "snippet": "void f(void) { A * b; }",
+     "function": "f"
+    }
+   ],
+   "elsewhere": "p.c: In function 'f':\np.c:3:20: warning: declaration of 'b' shadows a global declaration [-Wshadow]\n    3 | void f(void) { A * b; }\n      |                    ^\np.c:2:5: note: shadowed declaration is here\n    2 | int b;\n      |     ^\np.c:3:20: warning: unused variable 'b' [-Wunused-variable]\n    3 | void f(void) { A * b; }\n      |                    ^"
+  },
+  "meaning-variable": {
+   "about": "A is a variable, so the same line 3 multiplies",
+   "flags": [
+    "-Wall",
+    "-Wshadow"
+   ],
+   "source": "int A;\nint b;\nvoid f(void) { A * b; }\n",
+   "text": "p.c: In function 'f':\np.c:3:18: warning: statement with no effect [-Wunused-value]\n    3 | void f(void) { A * b; }\n      |                ~~^~~\n",
+   "diagnostics": [
+    {
+     "level": "warning",
+     "message": "statement with no effect",
+     "at": [
+      3,
+      16,
+      21
+     ],
+     "snippet": "void f(void) { A * b; }",
+     "function": "f"
+    }
+   ],
+   "elsewhere": "p.c: In function 'f':\np.c:3:18: warning: statement with no effect [-Wunused-value]\n    3 | void f(void) { A * b; }\n      |                ~~^~~"
+  },
+  "scope-typedef": {
+   "about": "T is a type at file scope and a variable inside a for header that has closed",
+   "flags": [
+    "-Wall"
+   ],
+   "source": "typedef int T;\nvoid f(void)\n{\n  for (int T;;)\n    if (1)\n      ;\n  T *x;\n}\n",
+   "text": "p.c: In function 'f':\np.c:4:12: warning: unused variable 'T' [-Wunused-variable]\n    4 |   for (int T;;)\n      |            ^\np.c:7:6: warning: unused variable 'x' [-Wunused-variable]\n    7 |   T *x;\n      |      ^\n",
+   "diagnostics": [
+    {
+     "level": "warning",
+     "message": "unused variable 'T'",
+     "at": [
+      4,
+      12,
+      13
+     ],
+     "snippet": "  for (int T;;)",
+     "function": "f"
+    },
+    {
+     "level": "warning",
+     "message": "unused variable 'x'",
+     "at": [
+      7,
+      6,
+      7
+     ],
+     "snippet": "  T *x;",
+     "function": "f"
+    }
+   ]
+  },
+  "scope-variable": {
+   "about": "The same program with the two declarations of T swapped over",
+   "flags": [
+    "-Wall"
+   ],
+   "source": "int T;\nvoid f(void)\n{\n  for (typedef int T;;)\n    if (1)\n      ;\n  T *x;\n}\n",
+   "text": "p.c: In function 'f':\np.c:7:6: error: 'x' undeclared (first use in this function)\n    7 |   T *x;\n      |      ^\np.c:7:6: note: each undeclared identifier is reported only once for each function it appears in\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "'x' undeclared (first use in this function)",
+     "at": [
+      7,
+      6,
+      7
+     ],
+     "snippet": "  T *x;",
+     "function": "f",
+     "related": [
+      [
+       7,
+       6,
+       7
+      ]
+     ]
+    }
+   ]
+  },
+  "recovery": {
+   "about": "Three missing semicolons, and not three errors",
+   "flags": [],
+   "source": "void f(void)\n{\n  int a = 1\n  int b = 2\n  int c = 3\n}\n",
+   "text": "p.c: In function 'f':\np.c:4:3: error: expected ',' or ';' before 'int'\n    4 |   int b = 2\n      |   ^~~\np.c:6:1: error: expected declaration or statement at end of input\n    6 | }\n      | ^\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ',' or ';' before 'int'",
+     "at": [
+      4,
+      3,
+      6
+     ],
+     "snippet": "  int b = 2",
+     "function": "f"
+    },
+    {
+     "level": "error",
+     "message": "expected declaration or statement at end of input",
+     "at": [
+      6,
+      1,
+      2
+     ],
+     "snippet": "}",
+     "function": "f"
+    }
+   ]
+  },
+  "paren": {
+   "about": "A bracket that never closes, and the second place the message points",
+   "flags": [],
+   "source": "void g(void);\nvoid f(int x)\n{\n  if (x\n    g();\n}\n",
+   "text": "p.c: In function 'f':\np.c:4:8: error: expected ')' before 'g'\n    4 |   if (x\n      |      ~ ^\n      |        )\n    5 |     g();\n      |     ~   \np.c:6:1: error: expected expression before '}' token\n    6 | }\n      | ^\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "expected ')' before 'g'",
+     "at": [
+      4,
+      8,
+      9
+     ],
+     "snippet": "  if (x",
+     "function": "f",
+     "fixes": [
+      {
+       "at": [
+        4,
+        8,
+        8
+       ],
+       "insert": ")"
+      }
+     ],
+     "related": [
+      [
+       5,
+       5,
+       6
+      ],
+      [
+       4,
+       6,
+       7
+      ]
+     ]
+    },
+    {
+     "level": "error",
+     "message": "expected expression before '}' token",
+     "at": [
+      6,
+      1,
+      2
+     ],
+     "snippet": "}",
+     "function": "f"
+    }
+   ]
+  },
+  "conflict": {
+   "about": "The deepest the C parser ever looks ahead, and what it looks for",
+   "flags": [],
+   "source": "int f(void)\n{\n<<<<<<< HEAD\n  return 1;\n=======\n  return 2;\n>>>>>>> other\n}\n",
+   "text": "p.c: In function 'f':\np.c:3:1: error: version control conflict marker in file\n    3 | <<<<<<< HEAD\n      | ^~~~~~~\np.c:5:1: error: version control conflict marker in file\n    5 | =======\n      | ^~~~~~~\np.c:7:1: error: version control conflict marker in file\n    7 | >>>>>>> other\n      | ^~~~~~~\n",
+   "diagnostics": [
+    {
+     "level": "error",
+     "message": "version control conflict marker in file",
+     "at": [
+      3,
+      1,
+      8
+     ],
+     "snippet": "<<<<<<< HEAD",
+     "function": "f"
+    },
+    {
+     "level": "error",
+     "message": "version control conflict marker in file",
+     "at": [
+      5,
+      1,
+      8
+     ],
+     "snippet": "=======",
+     "function": "f"
+    },
+    {
+     "level": "error",
+     "message": "version control conflict marker in file",
+     "at": [
+      7,
+      1,
+      8
+     ],
+     "snippet": ">>>>>>> other",
+     "function": "f"
+    }
+   ]
+  }
+ },
+ "grammar": {
+  "functions": [
+   "c_parser_alignas_specifier",
+   "c_parser_alignof_expression",
+   "c_parser_all_labels",
+   "c_parser_asm_clobbers",
+   "c_parser_asm_definition",
+   "c_parser_asm_goto_operands",
+   "c_parser_asm_operands",
+   "c_parser_asm_statement",
+   "c_parser_asm_string_literal",
+   "c_parser_attribute_arguments",
+   "c_parser_balanced_token_sequence",
+   "c_parser_bc_name",
+   "c_parser_binary_expression",
+   "c_parser_braced_init",
+   "c_parser_c99_block_statement",
+   "c_parser_cast_expression",
+   "c_parser_check_balanced_raw_token_sequence",
+   "c_parser_check_literal_zero",
+   "c_parser_compound_literal_scspecs",
+   "c_parser_compound_statement",
+   "c_parser_compound_statement_nostart",
+   "c_parser_condition",
+   "c_parser_conditional_expression",
+   "c_parser_consume_pragma",
+   "c_parser_consume_token",
+   "c_parser_declaration_or_fndef",
+   "c_parser_declarator",
+   "c_parser_declspecs",
+   "c_parser_direct_declarator",
+   "c_parser_direct_declarator_inner",
+   "c_parser_do_statement",
+   "c_parser_else_body",
+   "c_parser_enum_specifier",
+   "c_parser_error",
+   "c_parser_error_richloc",
+   "c_parser_expr_list",
+   "c_parser_expr_no_commas",
+   "c_parser_expression",
+   "c_parser_expression_conv",
+   "c_parser_external_declaration",
+   "c_parser_for_statement",
+   "c_parser_generic_selection",
+   "c_parser_get_builtin_args",
+   "c_parser_gnu_attribute",
+   "c_parser_gnu_attribute_any_word",
+   "c_parser_gnu_attributes",
+   "c_parser_handle_directive_omp_attributes",
+   "c_parser_handle_musttail",
+   "c_parser_handle_statement_omp_attributes",
+   "c_parser_has_attribute_expression",
+   "c_parser_if_body",
+   "c_parser_if_statement",
+   "c_parser_initelt",
+   "c_parser_initializer",
+   "c_parser_initval",
+   "c_parser_label",
+   "c_parser_maxof_or_minof_expression",
+   "c_parser_maybe_reclassify_token",
+   "c_parser_next_token_is_qualifier",
+   "c_parser_next_token_starts_declspecs",
+   "c_parser_next_tokens_start_declaration",
+   "c_parser_next_tokens_start_typename",
+   "c_parser_nth_token_starts_std_attributes",
+   "c_parser_oacc_all_clauses",
+   "c_parser_oacc_cache",
+   "c_parser_oacc_clause_async",
+   "c_parser_oacc_clause_tile",
+   "c_parser_oacc_clause_wait",
+   "c_parser_oacc_compute",
+   "c_parser_oacc_compute_clause_self",
+   "c_parser_oacc_data",
+   "c_parser_oacc_data_clause",
+   "c_parser_oacc_data_clause_deviceptr",
+   "c_parser_oacc_declare",
+   "c_parser_oacc_enter_exit_data",
+   "c_parser_oacc_host_data",
+   "c_parser_oacc_loop",
+   "c_parser_oacc_routine",
+   "c_parser_oacc_shape_clause",
+   "c_parser_oacc_simple_clause",
+   "c_parser_oacc_single_int_clause",
+   "c_parser_oacc_update",
+   "c_parser_oacc_wait",
+   "c_parser_oacc_wait_list",
+   "c_parser_objc_alias_declaration",
+   "c_parser_objc_at_dynamic_declaration",
+   "c_parser_objc_at_property_declaration",
+   "c_parser_objc_at_synthesize_declaration",
+   "c_parser_objc_class_declaration",
+   "c_parser_objc_class_definition",
+   "c_parser_objc_class_instance_variables",
+   "c_parser_objc_diagnose_bad_element_prefix",
+   "c_parser_objc_keywordexpr",
+   "c_parser_objc_maybe_method_attributes",
+   "c_parser_objc_message_args",
+   "c_parser_objc_method_decl",
+   "c_parser_objc_method_definition",
+   "c_parser_objc_method_type",
+   "c_parser_objc_methodproto",
+   "c_parser_objc_methodprotolist",
+   "c_parser_objc_protocol_definition",
+   "c_parser_objc_protocol_refs",
+   "c_parser_objc_receiver",
+   "c_parser_objc_selector",
+   "c_parser_objc_selector_arg",
+   "c_parser_objc_synchronized_statement",
+   "c_parser_objc_try_catch_finally_statement",
+   "c_parser_objc_type_name",
+   "c_parser_omp_all_clauses",
+   "c_parser_omp_allocate",
+   "c_parser_omp_assume",
+   "c_parser_omp_assumes",
+   "c_parser_omp_assumption_clauses",
+   "c_parser_omp_atomic",
+   "c_parser_omp_barrier",
+   "c_parser_omp_begin",
+   "c_parser_omp_cancel",
+   "c_parser_omp_cancellation_point",
+   "c_parser_omp_clause_affinity",
+   "c_parser_omp_clause_aligned",
+   "c_parser_omp_clause_allocate",
+   "c_parser_omp_clause_bind",
+   "c_parser_omp_clause_branch",
+   "c_parser_omp_clause_cancelkind",
+   "c_parser_omp_clause_collapse",
+   "c_parser_omp_clause_copyin",
+   "c_parser_omp_clause_copyprivate",
+   "c_parser_omp_clause_default",
+   "c_parser_omp_clause_defaultmap",
+   "c_parser_omp_clause_depend",
+   "c_parser_omp_clause_destroy",
+   "c_parser_omp_clause_detach",
+   "c_parser_omp_clause_device",
+   "c_parser_omp_clause_device_type",
+   "c_parser_omp_clause_dist_schedule",
+   "c_parser_omp_clause_doacross",
+   "c_parser_omp_clause_doacross_sink",
+   "c_parser_omp_clause_dyn_groupprivate",
+   "c_parser_omp_clause_filter",
+   "c_parser_omp_clause_final",
+   "c_parser_omp_clause_firstprivate",
+   "c_parser_omp_clause_from_to",
+   "c_parser_omp_clause_full",
+   "c_parser_omp_clause_grainsize",
+   "c_parser_omp_clause_has_device_addr",
+   "c_parser_omp_clause_hint",
+   "c_parser_omp_clause_if",
+   "c_parser_omp_clause_indirect",
+   "c_parser_omp_clause_init",
+   "c_parser_omp_clause_init_modifiers",
+   "c_parser_omp_clause_interop",
+   "c_parser_omp_clause_is_device_ptr",
+   "c_parser_omp_clause_lastprivate",
+   "c_parser_omp_clause_linear",
+   "c_parser_omp_clause_map",
+   "c_parser_omp_clause_mergeable",
+   "c_parser_omp_clause_name",
+   "c_parser_omp_clause_nocontext",
+   "c_parser_omp_clause_nogroup",
+   "c_parser_omp_clause_nontemporal",
+   "c_parser_omp_clause_novariants",
+   "c_parser_omp_clause_nowait",
+   "c_parser_omp_clause_num_tasks",
+   "c_parser_omp_clause_num_teams",
+   "c_parser_omp_clause_num_threads",
+   "c_parser_omp_clause_order",
+   "c_parser_omp_clause_ordered",
+   "c_parser_omp_clause_orderedkind",
+   "c_parser_omp_clause_partial",
+   "c_parser_omp_clause_priority",
+   "c_parser_omp_clause_private",
+   "c_parser_omp_clause_proc_bind",
+   "c_parser_omp_clause_reduction",
+   "c_parser_omp_clause_safelen",
+   "c_parser_omp_clause_schedule",
+   "c_parser_omp_clause_shared",
+   "c_parser_omp_clause_simdlen",
+   "c_parser_omp_clause_thread_limit",
+   "c_parser_omp_clause_uniform",
+   "c_parser_omp_clause_untied",
+   "c_parser_omp_clause_use",
+   "c_parser_omp_clause_use_device_addr",
+   "c_parser_omp_clause_use_device_ptr",
+   "c_parser_omp_clause_uses_allocators",
+   "c_parser_omp_construct",
+   "c_parser_omp_context_selector",
+   "c_parser_omp_context_selector_specification",
+   "c_parser_omp_critical",
+   "c_parser_omp_declare",
+   "c_parser_omp_declare_mapper",
+   "c_parser_omp_declare_reduction",
+   "c_parser_omp_declare_simd",
+   "c_parser_omp_declare_target",
+   "c_parser_omp_depobj",
+   "c_parser_omp_directive_args",
+   "c_parser_omp_dispatch",
+   "c_parser_omp_dispatch_body",
+   "c_parser_omp_distribute",
+   "c_parser_omp_end",
+   "c_parser_omp_error",
+   "c_parser_omp_flush",
+   "c_parser_omp_for",
+   "c_parser_omp_for_loop",
+   "c_parser_omp_groupprivate",
+   "c_parser_omp_interop",
+   "c_parser_omp_iterators",
+   "c_parser_omp_loop",
+   "c_parser_omp_loop_nest",
+   "c_parser_omp_masked",
+   "c_parser_omp_master",
+   "c_parser_omp_metadirective",
+   "c_parser_omp_modifier_prefer_type",
+   "c_parser_omp_next_tokens_can_be_canon_loop",
+   "c_parser_omp_nothing",
+   "c_parser_omp_ordered",
+   "c_parser_omp_parallel",
+   "c_parser_omp_requires",
+   "c_parser_omp_scan_loop_body",
+   "c_parser_omp_scope",
+   "c_parser_omp_section_scan",
+   "c_parser_omp_sections",
+   "c_parser_omp_sections_scope",
+   "c_parser_omp_sequence_args",
+   "c_parser_omp_simd",
+   "c_parser_omp_single",
+   "c_parser_omp_structured_block",
+   "c_parser_omp_structured_block_sequence",
+   "c_parser_omp_target",
+   "c_parser_omp_target_data",
+   "c_parser_omp_target_enter_data",
+   "c_parser_omp_target_exit_data",
+   "c_parser_omp_target_update",
+   "c_parser_omp_task",
+   "c_parser_omp_taskgroup",
+   "c_parser_omp_taskloop",
+   "c_parser_omp_taskwait",
+   "c_parser_omp_taskyield",
+   "c_parser_omp_teams",
+   "c_parser_omp_threadprivate",
+   "c_parser_omp_tile",
+   "c_parser_omp_tile_sizes",
+   "c_parser_omp_unroll",
+   "c_parser_omp_var_list_parens",
+   "c_parser_omp_variable_list",
+   "c_parser_parameter_declaration",
+   "c_parser_paren_condition",
+   "c_parser_paren_selection_header",
+   "c_parser_parms_declarator",
+   "c_parser_parms_list_declarator",
+   "c_parser_parse_rtl_body",
+   "c_parser_peek_2nd_token",
+   "c_parser_peek_conflict_marker",
+   "c_parser_peek_nth_token",
+   "c_parser_peek_nth_token_raw",
+   "c_parser_peek_token",
+   "c_parser_postfix_expression",
+   "c_parser_postfix_expression_after_paren_type",
+   "c_parser_postfix_expression_after_primary",
+   "c_parser_pragma",
+   "c_parser_pragma_pch_preprocess",
+   "c_parser_pragma_unroll",
+   "c_parser_predefined_identifier",
+   "c_parser_require",
+   "c_parser_require_keyword",
+   "c_parser_selection_header",
+   "c_parser_set_error",
+   "c_parser_set_source_position_from_token",
+   "c_parser_simple_asm_expr",
+   "c_parser_sizeof_or_countof_expression",
+   "c_parser_skip_std_attribute_spec_seq",
+   "c_parser_skip_to_closing_brace",
+   "c_parser_skip_to_end_of_block_or_statement",
+   "c_parser_skip_to_end_of_parameter",
+   "c_parser_skip_to_pragma_eol",
+   "c_parser_skip_to_pragma_omp_end_declare_variant",
+   "c_parser_skip_until_found",
+   "c_parser_statement",
+   "c_parser_statement_after_labels",
+   "c_parser_static_assert_declaration",
+   "c_parser_static_assert_declaration_no_semi",
+   "c_parser_std_attribute",
+   "c_parser_std_attribute_list",
+   "c_parser_std_attribute_specifier",
+   "c_parser_std_attribute_specifier_sequence",
+   "c_parser_string_literal",
+   "c_parser_struct_declaration",
+   "c_parser_struct_or_union_specifier",
+   "c_parser_switch_statement",
+   "c_parser_tokens_buf",
+   "c_parser_transaction",
+   "c_parser_transaction_attributes",
+   "c_parser_transaction_cancel",
+   "c_parser_transaction_expression",
+   "c_parser_translation_unit",
+   "c_parser_type_name",
+   "c_parser_typeof_specifier",
+   "c_parser_unary_expression",
+   "c_parser_while_statement"
+  ]
+ },
+ "lookahead": {
+  "peeks": 729,
+  "seconds": 99,
+  "depths": {
+   "2": 2,
+   "3": 6,
+   "4": 3
+  },
+  "slots": 4
+ }
+}

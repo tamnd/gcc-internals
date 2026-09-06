@@ -1,0 +1,61 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "<Compilation failed>"
+  }
+ ],
+ "code": 1,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-fsyntax-only",
+  "-fdiagnostics-color=never",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 43,
+ "filteredCount": 0,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {},
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.04762199893593788,
+ "stderr": [
+  {
+   "text": "<source>: In function 'f':"
+  },
+  {
+   "tag": {
+    "column": 23,
+    "file": "example.c",
+    "line": 1,
+    "severity": 3,
+    "text": "error: expected ';' before '}' token"
+   },
+   "text": "<source>:1:23: error: expected ';' before '}' token"
+  },
+  {
+   "text": "    1 | int f(void) { return 1 }"
+  },
+  {
+   "text": "      |                       ^~"
+  },
+  {
+   "text": "      |                       ;"
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

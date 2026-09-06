@@ -399,6 +399,68 @@ PREPROCESSING = Group(
 )
 
 
+PARSING = Group(
+    "In the parser",
+    "The program that reads C, and the four token slots everything surprising about it comes out of. F03 is the lesson.",
+    (
+        Term(
+            name="parser",
+            short="The recursive descent code that turns a token stream into trees. It can see four tokens.",
+            long="GCC's C parser is written by hand rather than generated, and all of its memory of your program is a `c_parser` struct: four token slots, a few flags, and the symbol table it shares with the rest of the front end. There is no dump flag for it, because it has no output of its own to print. What it produces is GENERIC, and what you can watch it do is complain. Nearly everything surprising about a C error message follows from the size of that buffer and from the fact that the symbol table has to answer a question before the parse can continue.",
+            also=("`c_parser`", "recursive descent", "`cc1`"),
+            cite="gcc/c/c-parser.cc:191@releases/gcc-16.2.0",
+            see=("lookahead", "typedef name", "GENERIC"),
+            met="F03",
+        ),
+        Term(
+            name="lookahead",
+            short="How far ahead the parser can look before deciding what it is reading. In C, four tokens.",
+            long="`c_parser_peek_token` gives the next one, `c_parser_peek_2nd_token` the one after it, and `c_parser_peek_nth_token` reaches as far as the fourth. The buffer behind all three is `c_token tokens_buf[4]` and nothing widens it. Most of the peeking in the C parser is one token deep, and the deepest constant peek in the whole file is there to recognise a version control conflict marker, which is not a C construct at all. When a grammar needs to see further than four, the parser does not get more; it commits, and then recovers.",
+            also=("peek", "`tokens_buf`", "LL(k)"),
+            cite="gcc/c/c-parser.cc:572@releases/gcc-16.2.0",
+            see=("parser", "token", "error recovery"),
+            met="F03",
+        ),
+        Term(
+            name="typedef name",
+            short="An identifier that names a type, and the reason C cannot be parsed without a symbol table.",
+            long="`A * b;` declares `b` as a pointer if `A` is a typedef name and multiplies two variables if it is not, and no amount of looking at tokens will tell you which. The parser asks the symbol table instead, and the answer is written into the token as `CPP_KEYWORD` or `CPP_NAME` the first time that token is looked at. That moment can come too early: a token peeked while one scope was open and used after it closed is carrying a stale answer, which is what `c_parser_maybe_reclassify_token` exists to undo.",
+            also=("lexer hack", "`CPP_KEYWORD`", "`c_parser_maybe_reclassify_token`"),
+            cite="gcc/c/c-parser.cc:2326@releases/gcc-16.2.0",
+            see=("parser", "token", "lookahead"),
+            met="F03",
+        ),
+        Term(
+            name="diagnostic",
+            short="One complaint, with a message, a severity, a place, and often a suggested repair.",
+            long="A diagnostic is not a line of text. It is a structure with a primary location, any number of secondary ones, and any number of fix-it hints, and the text on your terminal is one rendering of it. `-fdiagnostics-format=sarif-stderr` is another, and it is the one to reach for when you want to read the structure rather than the prose. For the parser the message is finished by `c_parse_error`, which chooses one of thirteen endings from the type of the token the parser is looking at, which is why one missing semicolon can produce eight different sentences depending on what comes after it.",
+            also=("`-fdiagnostics-format`", "SARIF", "`c_parse_error`"),
+            cite="gcc/c-family/c-common.cc:7004@releases/gcc-16.2.0",
+            see=("fix-it hint", "parser", "pretty printer"),
+            met="F03",
+        ),
+        Term(
+            name="fix-it hint",
+            short="A machine applicable edit hung off a diagnostic, saying insert or delete or replace this text here.",
+            long="GCC does not suggest a repair for every mistake. For a missing token it suggests one only for the seven token types `get_missing_token_insertion_kind` knows, and the hint is what decides where the caret goes: two of the seven are inserted before the token that upset the parser and five after the token before it, and in the second case the caret moves back to the end of that previous token. That is why an error about a semicolon points at the line above the one you were reading. `-fdiagnostics-parseable-fixits` prints the hints in a form an editor can apply.",
+            also=("`fixit_hint`", "`rich_location`", "`-fdiagnostics-parseable-fixits`"),
+            cite="libcpp/include/rich-location.h:620@releases/gcc-16.2.0",
+            see=("diagnostic", "parser"),
+            met="F03",
+        ),
+        Term(
+            name="error recovery",
+            short="What the parser does after an error so that it can carry on and find the next one.",
+            long="A parser that stopped at the first mistake would make you compile a file once per typo, so after complaining it throws tokens away until it reaches one it can start again from, usually a semicolon or a closing brace at the right nesting depth. This is why three missing semicolons can come out as two errors rather than three, and why an error near the end of a file is sometimes a consequence of one near the top rather than a mistake of its own. The habit to build is to fix the first error and compile again.",
+            also=("resynchronise", "`c_parser_skip_until_found`"),
+            cite="gcc/c/c-parser.cc:1353@releases/gcc-16.2.0",
+            see=("parser", "diagnostic", "lookahead"),
+            met="F03",
+        ),
+    ),
+)
+
+
 SHAPES = Group(
     "The four shapes a function takes",
     "The same function, written down four different ways on its way to assembly. T02, T03 and T07 are the lessons.",
@@ -1047,6 +1109,7 @@ GROUPS: tuple[Group, ...] = (
     FINDING,
     DRIVING,
     PREPROCESSING,
+    PARSING,
     SHAPES,
     CONTROL,
     STATIC_SINGLE,
