@@ -1123,6 +1123,10 @@
    "hash": "32cf5ac12ec10166",
    "text": "      invoke_plugin_callbacks (PLUGIN_NEW_PASS, new_pass);"
   },
+  "gcc/passes.cc:1377@releases/gcc-16.2.0": {
+   "hash": "e2440f87e01d0e17",
+   "text": "/* Insert the pass at the proper position. Return true if the pass"
+  },
   "gcc/passes.cc:1480@releases/gcc-16.2.0": {
    "hash": "51646e5bb483387d",
    "text": "register_pass (struct register_pass_info *pass_info)"
@@ -1287,6 +1291,10 @@
    "hash": "bc750d58492694fc",
    "text": "\t  NEXT_PASS (pass_remove_cgraph_callee_edges);"
   },
+  "gcc/plugin.cc:1004@releases/gcc-16.2.0": {
+   "hash": "adaccefb6d38829e",
+   "text": "/* The default version check. Compares every field in VERSION. */"
+  },
   "gcc/plugin.cc:1007@releases/gcc-16.2.0": {
    "hash": "d5e15bb6d9a8357f",
    "text": "plugin_default_version_check (struct plugin_gcc_version *gcc_version,"
@@ -1294,6 +1302,10 @@
   "gcc/plugin.cc:1012@releases/gcc-16.2.0": {
    "hash": "4269ae3ebcee8a0c",
    "text": ""
+  },
+  "gcc/plugin.cc:1013@releases/gcc-16.2.0": {
+   "hash": "62d69450ab9d232d",
+   "text": "  if (strcmp (gcc_version->basever, plugin_version->basever))"
   },
   "gcc/plugin.cc:1043@releases/gcc-16.2.0": {
    "hash": "ac5b6b08ed253871",
@@ -1343,6 +1355,10 @@
    "hash": "5bf83c681ec1db72",
    "text": "get_named_event_id (const char *name, enum insert_option insert)"
   },
+  "gcc/plugin.cc:450@releases/gcc-16.2.0": {
+   "hash": "bcf5f3c03b95cac3",
+   "text": "void"
+  },
   "gcc/plugin.cc:458@releases/gcc-16.2.0": {
    "hash": "2684a70ad2d92b09",
    "text": "      case PLUGIN_PASS_MANAGER_SETUP:"
@@ -1379,6 +1395,10 @@
    "hash": "dec9f0ac799e2524",
    "text": "# define DEFEVENT(NAME) GCC_PLUGIN_STRINGIFY1 (NAME),"
   },
+  "gcc/plugin.cc:582@releases/gcc-16.2.0": {
+   "hash": "797c574a6f4323c9",
+   "text": "        {"
+  },
   "gcc/plugin.cc:596@releases/gcc-16.2.0": {
    "hash": "3c735a762c2877de",
    "text": "        gcc_assert (false);"
@@ -1391,9 +1411,21 @@
    "hash": "de7650830617d45d",
    "text": "try_init_one_plugin (struct plugin_name_args *plugin)"
   },
+  "gcc/plugin.cc:699@releases/gcc-16.2.0": {
+   "hash": "12f26bafa7944fcd",
+   "text": "  /* We use RTLD_NOW to accelerate binding and detect any mismatch"
+  },
+  "gcc/plugin.cc:713@releases/gcc-16.2.0": {
+   "hash": "2c32f30d11101c3a",
+   "text": "  /* Check the plugin license.  */"
+  },
   "gcc/plugin.cc:716@releases/gcc-16.2.0": {
    "hash": "e1b04ee5a1c4bbf3",
    "text": "\t\t \"plugin %s is not licensed under a GPL-compatible license:\""
+  },
+  "gcc/plugin.cc:731@releases/gcc-16.2.0": {
+   "hash": "cfd0fa2a390035aa",
+   "text": "  /* Call the plugin-provided initialization routine with the arguments.  */"
   },
   "gcc/plugin.cc:738@releases/gcc-16.2.0": {
    "hash": "d042a48384209bbc",
@@ -1414,6 +1446,10 @@
   "gcc/plugin.cc:996@releases/gcc-16.2.0": {
    "hash": "df5740881a86dc4c",
    "text": "      fnotice (stderr, \"*** WARNING *** there are active plugins, do not report\""
+  },
+  "gcc/plugin.def:20@releases/gcc-16.2.0": {
+   "hash": "468bf48d8250da5b",
+   "text": "/* Called before parsing the body of a function.  */"
   },
   "gcc/plugin.h:153@releases/gcc-16.2.0": {
    "hash": "f1cdd28a83b226c7",
@@ -1758,6 +1794,10 @@
   "gcc/tree-pass.h:235@releases/gcc-16.2.0": {
    "hash": "8480add6167edcd4",
    "text": "#define PROP_gimple \\"
+  },
+  "gcc/tree-pass.h:238@releases/gcc-16.2.0": {
+   "hash": "f9a020dff3f3bbd5",
+   "text": "/* To-do flags.  */"
   },
   "gcc/tree-pass.h:240@releases/gcc-16.2.0": {
    "hash": "78c56868081ddba0",

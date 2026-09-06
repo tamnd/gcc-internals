@@ -242,6 +242,21 @@ corpus-b03 build docker="":
 corpus-b04 *args:
     {{py}} lessons/b04-the-test-suite/record.py {{args}}
 
+# B05 builds gxplug and the five example plugins against a real GCC 16, loads each one, and
+# keeps every byte of every compilation in corpora/plug/b05.json: eleven runs, four of them
+# refusals on purpose, the assembly of the ones that produced any, the -fdump-passes listing
+# with the plugin's own pass in it, and one gxplug event stream. It also cuts ten spans of
+# plugin.cc, plugin.def, tree-pass.h and passes.cc into corpora/source/b05.json.
+#
+# Needs a gcc-16 with its plugin headers, which is the one thing Compiler Explorer cannot
+# stand in for: a plugin is built against the compiler's private headers by the compiler that
+# will load it. Set GXPLUG_GCC to use something other than gcc-16.
+#
+# `just corpus-b05 --check` re-asserts every fact the lesson states against what is already
+# committed, without compiling anything, which is what the test suite calls.
+corpus-b05 *args:
+    {{py}} lessons/b05-the-plugin/record.py {{args}}
+
 # Every Tier 0 experiment, run out of the corpus and then out of the cached Compiler Explorer
 # responses, and checked against each other. No network either way. See tools/tier0 for what
 # the three kinds of experiment are and why a recorded one is compared byte for byte while a

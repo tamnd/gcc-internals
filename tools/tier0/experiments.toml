@@ -385,3 +385,20 @@ three of them fail to compile on purpose. So the check that keeps them honest is
 recorder's own, which asserts every behavioural fact the notebook states, and it runs against \
 the recording in the test suite of this repository without a network.\
 """
+
+[[experiment]]
+id = "b05-plugin"
+kind = "offline"
+question = "What can you do from inside the compiler without patching it, and what stops you?"
+lessons = ["b05-the-plugin"]
+why = """
+Offline because the subject cannot be built anywhere this checker can reach. A plugin is C++ \
+compiled against GCC's private headers and loaded into the same compiler that built it, and \
+Compiler Explorer will not build one, and a Colab kernel has neither the headers nor a \
+matching compiler. So corpora/plug/b05.json is eleven real compilations by a real GCC 16.2.0, \
+with the five plugin sources they loaded committed under gxplug/examples where a reader can \
+read every line of them. What keeps it honest is that the same five plugins are built and \
+loaded on four different compilers by the plugin workflow on every push that touches them, \
+and lessons/b05-the-plugin/record.py re-asserts every fact the notebook states against the \
+recording without compiling anything.\
+"""

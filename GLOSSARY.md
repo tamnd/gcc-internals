@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [phi node](#phi-node) | [poly_int](#poly_int) | [port](#port) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [torture options](#torture-options) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [TODO flags](#todo-flags) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [pass positioning](#pass-positioning) | [phi node](#phi-node) | [plugin](#plugin) | [plugin ABI](#plugin-abi) | [plugin event](#plugin-event) | [poly_int](#poly_int) | [port](#port) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [pseudo-event](#pseudo-event) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [torture options](#torture-options) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -713,3 +713,55 @@ Also written `dg-require-effective-target`, `target-supports.exp`, `dg-skip-if`.
 A line is a state and a name, `PASS: gcc.dg/pr1234.c (test for excess errors)`, and one test file produces several of them. Five of the thirteen states make a run red and the other eight are information, and `XFAIL` in particular means a known failure that failed as expected. The right way to read one is against a previous one: a `PASS` that became a `FAIL` is a regression, and a name that is in the old file and not the new one is a test that stopped being run, which the summary block at the bottom cannot show you and which is the more dangerous of the two.
 
 Also written `.sum`, `.log`, `XFAIL`. Taught in B04. See also [excess errors](#excess-errors), [effective target](#effective-target).
+
+## Extending the compiler
+
+Words you need to load code of your own into GCC, put a pass where you want it, and understand why the thing you are writing against is not an API. B05 is the lesson.
+
+### plugin
+
+**A shared object loaded into `cc1` at startup, which registers functions to be called at named points during a compilation.**
+
+`-fplugin=./thing.so` and the compiler proper `dlopen`s it with `RTLD_NOW`, looks for a symbol called `plugin_is_GPL_compatible` by name, and calls `plugin_init`. Everything a plugin can do follows from being inside the same process: it sees the real IR, calls the real functions, and crashes the real compiler. There are three ways it can be refused, all of them before it runs a line of its own code, and all three stop the compilation rather than warning and carrying on. It is the only supported way to observe or change what GCC does without patching GCC.
+
+Also written `-fplugin=`, `plugin_init`, `-fplugin-arg-`. Taught in B05. See also [plugin event](#plugin-event), [plugin ABI](#plugin-abi). In the source: [`gcc/plugin.cc:699@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/plugin.cc#L699).
+
+### plugin event
+
+**A named point in a compilation where GCC calls whatever a plugin registered for it.**
+
+`gcc/plugin.def` is a file of twenty six one-line macro calls, and the order of that file is the ABI, because the enumerator's value is the index into the callback table. Twenty three of them are fired, from twenty nine places, and what arrives with each one is a `void *` whose real type is written in the call site and nowhere else. Firing an event is a walk down a linked list of callbacks in registration order, with no return value read, so a plugin cannot refuse an event or stop another plugin from seeing it.
+
+Also written `DEFEVENT`, `register_callback`, `invoke_plugin_callbacks`. Taught in B05. See also [plugin](#plugin), [pseudo-event](#pseudo-event). In the source: [`gcc/plugin.def:20@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/plugin.def#L20).
+
+### pseudo-event
+
+**One of the three names in the event list that is never fired, and is instead acted on at the moment you register for it.**
+
+`PLUGIN_PASS_MANAGER_SETUP`, `PLUGIN_INFO` and `PLUGIN_REGISTER_GGC_ROOTS` are handled inside `register_callback` itself: it asserts the callback is null and uses the user data argument straight away. So registering a pass is spelled the same way as registering a callback and does something else entirely, which is the single most confusing thing about the mechanism, and the reason a plugin that passes a function pointer alongside a `register_pass_info` gets an assertion failure rather than a diagnostic.
+
+Also written `PLUGIN_PASS_MANAGER_SETUP`, `register_callback`. Taught in B05. See also [plugin event](#plugin-event), [pass positioning](#pass-positioning). In the source: [`gcc/plugin.cc:458@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/plugin.cc#L458).
+
+### pass positioning
+
+**The four fields that say where in the pipeline a plugin's pass goes: which pass to hang it on, which run of that pass, and before, after or instead of.**
+
+`struct register_pass_info` holds the new pass, a `reference_pass_name`, a `ref_pass_instance_number` where zero means every instance and one means the first, and a `pos_op` of `PASS_POS_INSERT_AFTER`, `PASS_POS_INSERT_BEFORE` or `PASS_POS_REPLACE`. The name to give is the pass name and not the dump name: `-fdump-tree-cddce1` is the pass called `cddce` on its first instance, and a reference to `cddce1` matches nothing. A reference that matches nothing is a fatal error at registration, which is the one mistake in this area that tells you about itself.
+
+Also written `register_pass_info`, `PASS_POS_INSERT_AFTER`, `position_pass`. Taught in B05. See also [pass](#pass), [pseudo-event](#pseudo-event). In the source: [`gcc/tree-pass.h:328@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/tree-pass.h#L328).
+
+### plugin ABI
+
+**The unwritten contract between a plugin and the compiler that loads it, which is every private header GCC has and every option it was configured with.**
+
+`plugin_default_version_check` compares five fields, not one: the base version, the datestamp, the development phase, the revision and the whole configuration argument string. Two compilers of the same version built with different `--enable` flags have incompatible plugin ABIs, because those flags change struct layouts. That is why a plugin has to be built by the compiler that will load it, why the check is the plugin's own job rather than the compiler's, and why there is no such thing as shipping a binary plugin.
+
+Also written `plugin_default_version_check`, `plugin-version.h`, `gcc_version`. Taught in B05. See also [plugin](#plugin), [build config](#build-config). In the source: [`gcc/plugin.cc:1013@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/plugin.cc#L1013).
+
+### TODO flags
+
+**What a pass tells the pass manager to do after it has run, returned as a bit mask from `execute`.**
+
+`TODO_cleanup_cfg`, `TODO_update_ssa`, `TODO_verify_all` and their neighbours. A pass that changed nothing returns zero. A pass that modified the IR and returned zero has left the compiler believing things that are no longer true, and the failure shows up several passes later in code that did nothing wrong, which is the most expensive mistake a first plugin can make. There is a second set, `todo_flags_start`, that runs before the pass instead, and `TODO_mark_first_instance` in it is how the pass manager knows which run of a repeated pass is the first.
+
+Also written `todo_flags_finish`, `TODO_update_ssa`, `pass_data`. Taught in B05. See also [pass](#pass), [pass positioning](#pass-positioning). In the source: [`gcc/tree-pass.h:238@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/tree-pass.h#L238).
