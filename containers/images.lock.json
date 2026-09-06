@@ -3,15 +3,15 @@
   "images": {
     "ghcr.io/tamnd/gcc-internals/boot:amd64": "sha256:b6e45448ce7af59ad0226f113f6f013fee1764ef905167a9a96eef2feaab9098",
     "ghcr.io/tamnd/gcc-internals/boot:arm64": "sha256:4deea0597f2afddcd4b57e6fc64d6c7d90d8036d73b3e5b22e5909e19b3711bd",
-    "ghcr.io/tamnd/gcc-internals/chk:amd64": "sha256:9b56ac5052ca299809a8da51b9fad6ad6011c56ac982a5f894464f06e54943a8",
-    "ghcr.io/tamnd/gcc-internals/chk:arm64": "sha256:ff9ae6416e1f99a2b53e357cd48964f4ff9ffea4893dee0634b09f357ea1d429",
-    "ghcr.io/tamnd/gcc-internals/cross:amd64": "sha256:3825a33c15ac175a0904e3e354233065ab1eeb8534548620c046cf2ca5bc8981",
-    "ghcr.io/tamnd/gcc-internals/cross:arm64": "sha256:cd706348a7bb4c3a13d67fe006b587813d1deefaabf610677442e9d15f615662",
-    "ghcr.io/tamnd/gcc-internals/dbg:amd64": "sha256:fb5e8d8f25db96334b607e617cca88badf7fa11e3c465f6862fd2c6fdd93935b",
-    "ghcr.io/tamnd/gcc-internals/dbg:arm64": "sha256:cf47464c918340ed6df0cbe8fa361c98eb29e60aa1f9611465b3095db21f0e81",
-    "ghcr.io/tamnd/gcc-internals/plug:amd64": "sha256:51b37f3eea8a9747569fb5d9d4d244e431a41a41fdba4fe857e5744401015801",
-    "ghcr.io/tamnd/gcc-internals/plug:arm64": "sha256:d2a380da3eed0f2818ed974f6e803895997a09b88dbf845951f85bb7b95f9e0b",
-    "ghcr.io/tamnd/gcc-internals/rel:amd64": "sha256:e9507e2f253e0839ecd987609304f70659defa59b24d7a34bb6e92dcace439cd",
-    "ghcr.io/tamnd/gcc-internals/rel:arm64": "sha256:8e008f53d0c849500424a3b160a101daf894a75cfedc2808d514d1d69b599070"
+    "ghcr.io/tamnd/gcc-internals/chk:amd64": "sha256:4a12f38f06ae6b207fbbc95e6c68f9e7b8fa076cfe7c44d5ab30cfb4a62fbb7f",
+    "ghcr.io/tamnd/gcc-internals/chk:arm64": "sha256:51f7beb39884bc399b69b888cd54baa68026d043f9d39e373b0a0bf193122e85",
+    "ghcr.io/tamnd/gcc-internals/cross:amd64": "sha256:0d98816e99188bd91514b98be17f1da538c93f8c7d2f60bdee3081bc548cc470",
+    "ghcr.io/tamnd/gcc-internals/cross:arm64": "sha256:a001d9ee0ebe1200c4928722b2844141d3ca877bec86254b9a774fe4ece056b2",
+    "ghcr.io/tamnd/gcc-internals/dbg:amd64": "sha256:8d7e1e6f81db4946bb150c5a60796b7dac8a3fe9f618fdeea7716f6524063018",
+    "ghcr.io/tamnd/gcc-internals/dbg:arm64": "sha256:1381cf52069d4e7b40202a107470e36275a7cee50616fd191f32b2a976bc34b7",
+    "ghcr.io/tamnd/gcc-internals/plug:amd64": "sha256:a6ba381ed4ab535006b3584c4d31f02cb632b28e011256182e3304039aa83b82",
+    "ghcr.io/tamnd/gcc-internals/plug:arm64": "sha256:c6eb798cd774b8b8477ce75bf1ee54ee8f635ff755b18047ae86dbd36f7566aa",
+    "ghcr.io/tamnd/gcc-internals/rel:amd64": "sha256:9194d3ff8056ec65008fe4a4997508f0beb083ed7787c211ee4afeae620bb515",
+    "ghcr.io/tamnd/gcc-internals/rel:arm64": "sha256:952acd9deaecf0a654109e1243a13b40d736e4ea0ecef8aadedc0b4c65977ff0"
   }
 }
