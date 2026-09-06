@@ -181,9 +181,13 @@ def test_the_store_holds_nothing_nobody_asks_for():
     F01 adds one, the same way. Its recorder makes two requests, a `-dumpspecs` on the x86-64
     build and the `cg162` probe behind it, and the probe is one somebody else had already paid
     for.
+
+    F02 adds seven. Its recorder sends eight keys, the x86-64 macro table, the five expansion
+    demonstrations, one `-H` trace of `#include <stdio.h>`, and the same `cg162` probe, which
+    somebody else had already paid for again.
     """
     assert orphans(REGISTRY) == []
-    assert len(set().union(*(keys(x) for x in REGISTRY))) == 43
+    assert len(set().union(*(keys(x) for x in REGISTRY))) == 50
 
 
 def _ce_recording_recipes():

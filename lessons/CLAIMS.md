@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-150 claims across 18 lessons, 4 of them not observable from a notebook.
+165 claims across 19 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -249,3 +249,23 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | deleting the !S guard from invoke_as makes gcc -S run the assembler | [`f01-58`](f01-the-spec-language/f01.ipynb) |
 | a specs file whose name has no star adds a row to the compiler table, teaching gcc a new suffix | [`f01-60`](f01-the-spec-language/f01.ipynb) |
 | every percent form in both recorded spec tables is one this reader can name | [`f01-66`](f01-the-spec-language/f01.ipynb) |
+
+## The preprocessor is not a text editor
+
+| Claim | Proved by |
+| --- | --- |
+| a C compiler defines hundreds of macros before it reads a line of your program | [`f02-04`](f02-tokens-not-text/f02.ipynb) |
+| two builds of one GCC release define different numbers of macros, and neither is wrong | [`f02-08`](f02-tokens-not-text/f02.ipynb) |
+| the same C type is a different width on two builds of one compiler release | [`f02-12`](f02-tokens-not-text/f02.ipynb) |
+| asking for -std=c23 does not change __STDC_VERSION__, because it was already C23 | [`f02-16`](f02-tokens-not-text/f02.ipynb) |
+| almost every macro libcpp builds in is missing from a dump of every macro | [`f02-22`](f02-tokens-not-text/f02.ipynb) |
+| preprocessed output can contain a space that is in none of the input files | [`f02-28`](f02-tokens-not-text/f02.ipynb) |
+| what gcc printed differs from text substitution by exactly one space character | [`f02-30`](f02-tokens-not-text/f02.ipynb) |
+| the pairs that get a space are the pairs that would otherwise lex as one token | [`f02-38`](f02-tokens-not-text/f02.ipynb) |
+| every pair the table names came back separated, and nine control pairs came back glued | [`f02-40`](f02-tokens-not-text/f02.ipynb) |
+| the paste operator joins tokens before they are rescanned, so its arguments are not expanded | [`f02-44`](f02-tokens-not-text/f02.ipynb) |
+| preprocessed output carries the line and file of every piece of text in it | [`f02-56`](f02-tokens-not-text/f02.ipynb) |
+| one include of stdio.h opens dozens of files, several levels deep | [`f02-62`](f02-tokens-not-text/f02.ipynb) |
+| an include guard is recognised only if the guard is the whole file, in tokens | [`f02-68`](f02-tokens-not-text/f02.ipynb) |
+| GCC suggests an include guard only for a file it read exactly once | [`f02-72`](f02-tokens-not-text/f02.ipynb) |
+| two targets that share almost no macros expand every one of these files identically | [`f02-76`](f02-tokens-not-text/f02.ipynb) |

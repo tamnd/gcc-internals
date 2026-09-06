@@ -227,6 +227,58 @@
    "hash": "4de52375ef4441f9",
    "text": "c_common_parse_file (void)"
   },
+  "gcc/c-family/c-ppoutput.cc:218@releases/gcc-16.2.0": {
+   "hash": "e9bcffdff0d519cd",
+   "text": "token_streamer::stream (cpp_reader *pfile, const cpp_token *token,"
+  },
+  "gcc/c-family/c-ppoutput.cc:244@releases/gcc-16.2.0": {
+   "hash": "8b3f49b93f333835",
+   "text": "  /* Subtle logic to output a space if and only if necessary.  */"
+  },
+  "gcc/c-family/c-ppoutput.cc:400@releases/gcc-16.2.0": {
+   "hash": "23a76fdcf71d63bd",
+   "text": "scan_translation_unit (cpp_reader *pfile)"
+  },
+  "gcc/c-family/c-ppoutput.cc:541@releases/gcc-16.2.0": {
+   "hash": "8c0c5521dbf7ffb0",
+   "text": "maybe_print_line_1 (location_t src_loc, FILE *stream)"
+  },
+  "gcc/c-family/c-ppoutput.cc:555@releases/gcc-16.2.0": {
+   "hash": "4b56dfc58934998a",
+   "text": "  if (!flag_no_line_commands"
+  },
+  "gcc/c-family/c-ppoutput.cc:557@releases/gcc-16.2.0": {
+   "hash": "deab684cebb7ce7d",
+   "text": "      && src_line < print.src_line + 8"
+  },
+  "gcc/c-family/c-ppoutput.cc:592@releases/gcc-16.2.0": {
+   "hash": "6b59beae7a61c20d",
+   "text": "print_line_1 (location_t src_loc, const char *special_flags, FILE *stream)"
+  },
+  "gcc/c-family/c-ppoutput.cc:601@releases/gcc-16.2.0": {
+   "hash": "967915ff887e3243",
+   "text": "  if (src_loc != UNKNOWN_LOCATION && !flag_no_line_commands)"
+  },
+  "gcc/c-family/c-ppoutput.cc:618@releases/gcc-16.2.0": {
+   "hash": "905cf0c8f5965f5b",
+   "text": "      fprintf (stream, \"# %u \\\"%s\\\"%s\","
+  },
+  "gcc/c-family/c-ppoutput.cc:621@releases/gcc-16.2.0": {
+   "hash": "32b1e8507b805315",
+   "text": "      int sysp = in_system_header_at (src_loc);"
+  },
+  "gcc/c-family/c-ppoutput.cc:704@releases/gcc-16.2.0": {
+   "hash": "abbe9c2491ce67ce",
+   "text": "cb_define (cpp_reader *pfile, location_t line, cpp_hashnode *node)"
+  },
+  "gcc/c-family/c-ppoutput.cc:89@releases/gcc-16.2.0": {
+   "hash": "3b4dfb51e8c5c3ee",
+   "text": "preprocess_file (cpp_reader *pfile)"
+  },
+  "gcc/c-family/c-ppoutput.cc:903@releases/gcc-16.2.0": {
+   "hash": "d544ab13c02a08b3",
+   "text": "/* Dump out the hash table.  */"
+  },
   "gcc/c-family/c-pragma.cc:1885@releases/gcc-16.2.0": {
    "hash": "c3e35ae22c26daf3",
    "text": "  invoke_plugin_callbacks (PLUGIN_PRAGMAS, NULL);"
@@ -487,6 +539,10 @@
    "hash": "07597b53c560bf31",
    "text": "  echo \"source ${srcdir}/gdbasan.in\" >> .gdbinit"
   },
+  "gcc/cp/parser.cc:1677@releases/gcc-16.2.0": {
+   "hash": "00865c4dcbf0395e",
+   "text": "    TTYPE_TABLE"
+  },
   "gcc/dbgcnt.cc:111@releases/gcc-16.2.0": {
    "hash": "921715c7fd606a3c",
    "text": "static int"
@@ -510,6 +566,10 @@
   "gcc/dbgcnt.cc:63@releases/gcc-16.2.0": {
    "hash": "8ce555db7f83b3ff",
    "text": "bool"
+  },
+  "gcc/doc/cpp.texi:4072@releases/gcc-16.2.0": {
+   "hash": "8809ba12a075b4cd",
+   "text": "After the file name comes zero or more flags, which are @samp{1},"
   },
   "gcc/doc/install.texi:570@releases/gcc-16.2.0": {
    "hash": "3a40495cb53da586",
@@ -2030,6 +2090,362 @@
   "gcc/wide-int.h:23@releases/gcc-16.2.0": {
    "hash": "511812f39f5d18c9",
    "text": "/* wide-int.[cc|h] implements a class that efficiently performs"
+  },
+  "libcpp/directives.cc:151@releases/gcc-16.2.0": {
+   "hash": "cdda0412df1be7d7",
+   "text": "#define DIRECTIVE_TABLE\t\t\t\t\t\t\t\\"
+  },
+  "libcpp/directives.cc:2670@releases/gcc-16.2.0": {
+   "hash": "1386bb6198b1f929",
+   "text": "      ifs->mi_cmacro = 0;"
+  },
+  "libcpp/directives.cc:2771@releases/gcc-16.2.0": {
+   "hash": "1bf2bde0512eab18",
+   "text": "      ifs->mi_cmacro = 0;"
+  },
+  "libcpp/directives.cc:2807@releases/gcc-16.2.0": {
+   "hash": "87e83acefe5aaabf",
+   "text": "\t  pfile->mi_valid = true;"
+  },
+  "libcpp/directives.cc:2843@releases/gcc-16.2.0": {
+   "hash": "103d7f4f263c6be9",
+   "text": "  if (pfile->mi_valid && pfile->mi_cmacro == 0)"
+  },
+  "libcpp/directives.cc:454@releases/gcc-16.2.0": {
+   "hash": "2f40fc0e15831fb2",
+   "text": "_cpp_handle_directive (cpp_reader *pfile, bool indented)"
+  },
+  "libcpp/directives.cc:504@releases/gcc-16.2.0": {
+   "hash": "51e807bffd21a93e",
+   "text": "      if (! (dir->flags & IF_COND))"
+  },
+  "libcpp/directives.cc:507@releases/gcc-16.2.0": {
+   "hash": "9795c3dc0729f828",
+   "text": "      /* Kluge alert.  In order to be sure that code like this"
+  },
+  "libcpp/directives.cc:700@releases/gcc-16.2.0": {
+   "hash": "fca78489ac9eb9de",
+   "text": "      if (pfile->mi_valid"
+  },
+  "libcpp/directives.cc:715@releases/gcc-16.2.0": {
+   "hash": "8331da024d9de2a0",
+   "text": "\t      ifs->mi_def_cmacro = node;"
+  },
+  "libcpp/directives.cc:720@releases/gcc-16.2.0": {
+   "hash": "46804e420bf8752b",
+   "text": "  pfile->mi_valid = false;"
+  },
+  "libcpp/directives.cc:947@releases/gcc-16.2.0": {
+   "hash": "3a52d6c9e15283a5",
+   "text": "  if (pfile->line_table->depth >= CPP_OPTION (pfile, max_include_depth))"
+  },
+  "libcpp/expr.cc:1243@releases/gcc-16.2.0": {
+   "hash": "0b64682751de623f",
+   "text": "      pfile->mi_ind_cmacro = node;"
+  },
+  "libcpp/files.cc:2203@releases/gcc-16.2.0": {
+   "hash": "61aeed2b11ba295e",
+   "text": "report_missing_guard (void **slot, void *d)"
+  },
+  "libcpp/files.cc:2214@releases/gcc-16.2.0": {
+   "hash": "36c8fda1d3da7639",
+   "text": "      /* We don't want MI guard advice for the main file.  */"
+  },
+  "libcpp/files.cc:2217@releases/gcc-16.2.0": {
+   "hash": "f51caa197577f5d7",
+   "text": "\t  && file->stack_count == 1"
+  },
+  "libcpp/files.cc:2326@releases/gcc-16.2.0": {
+   "hash": "0ff1962cf5415800",
+   "text": "  if (pfile->mi_valid && file->cmacro == NULL)"
+  },
+  "libcpp/files.cc:2337@releases/gcc-16.2.0": {
+   "hash": "62ac37d41d037a91",
+   "text": "\t      && cpp_warning_with_line (pfile, CPP_W_HEADER_GUARD,"
+  },
+  "libcpp/files.cc:54@releases/gcc-16.2.0": {
+   "hash": "10cc4ce103ce0c72",
+   "text": "struct _cpp_file"
+  },
+  "libcpp/files.cc:80@releases/gcc-16.2.0": {
+   "hash": "3531c24f6167cf3c",
+   "text": "  const cpp_hashnode *cmacro;"
+  },
+  "libcpp/files.cc:840@releases/gcc-16.2.0": {
+   "hash": "31e98082beda5d73",
+   "text": "is_known_idempotent_file (cpp_reader *pfile, _cpp_file *file, bool import)"
+  },
+  "libcpp/files.cc:858@releases/gcc-16.2.0": {
+   "hash": "78b2ced29fa0dacb",
+   "text": "  /* Skip if the file had a header guard and the macro is defined."
+  },
+  "libcpp/files.cc:880@releases/gcc-16.2.0": {
+   "hash": "7e7f3a4aa9aebcce",
+   "text": "has_unique_contents (cpp_reader *pfile, _cpp_file *file, bool import,"
+  },
+  "libcpp/include/cpplib.h:1004@releases/gcc-16.2.0": {
+   "hash": "05bd72cb27ca683b",
+   "text": "#define NODE_OPERATOR\t(1 << 0)\t/* C++ named operator.  */"
+  },
+  "libcpp/include/cpplib.h:1008@releases/gcc-16.2.0": {
+   "hash": "ac9e1848cf513bdd",
+   "text": "#define NODE_DISABLED\t(1 << 4)\t/* A disabled macro.  */"
+  },
+  "libcpp/include/cpplib.h:1015@releases/gcc-16.2.0": {
+   "hash": "1e32ca766d9fcc29",
+   "text": "enum node_type"
+  },
+  "libcpp/include/cpplib.h:1026@releases/gcc-16.2.0": {
+   "hash": "6bcaa72dbbb9ff0b",
+   "text": "enum cpp_builtin_type"
+  },
+  "libcpp/include/cpplib.h:1069@releases/gcc-16.2.0": {
+   "hash": "bb780c152b57af0f",
+   "text": "struct GTY(()) cpp_hashnode {"
+  },
+  "libcpp/include/cpplib.h:152@releases/gcc-16.2.0": {
+   "hash": "94fc6f7a4300fbc8",
+   "text": "  TK(COMMENT,\t\tLITERAL) /* Only if output comments.  */\t\\"
+  },
+  "libcpp/include/cpplib.h:157@releases/gcc-16.2.0": {
+   "hash": "60de07dc0e38f404",
+   "text": "  TK(PADDING,\t\tNONE)\t /* Whitespace for -E.\t*/"
+  },
+  "libcpp/include/cpplib.h:161@releases/gcc-16.2.0": {
+   "hash": "65bbb1f718c2b2cb",
+   "text": "enum cpp_ttype"
+  },
+  "libcpp/include/cpplib.h:199@releases/gcc-16.2.0": {
+   "hash": "7856ece3f85e306d",
+   "text": "#define PREV_WHITE\t(1 << 0) /* If whitespace before this token.  */"
+  },
+  "libcpp/include/cpplib.h:261@releases/gcc-16.2.0": {
+   "hash": "34e4ebd0700ebc9c",
+   "text": "/* A preprocessing token.  This occupies 32 bytes on a 64-bit host.  On a"
+  },
+  "libcpp/include/cpplib.h:265@releases/gcc-16.2.0": {
+   "hash": "50b7b84fd2696a2b",
+   "text": "struct GTY(()) cpp_token {"
+  },
+  "libcpp/include/cpplib.h:297@releases/gcc-16.2.0": {
+   "hash": "4ef35841ed9326ff",
+   "text": "extern enum cpp_token_fld_kind cpp_token_val_index (const cpp_token *tok);"
+  },
+  "libcpp/include/cpplib.h:359@releases/gcc-16.2.0": {
+   "hash": "845bd9578dbd2c76",
+   "text": "struct cpp_options"
+  },
+  "libcpp/include/cpplib.h:43@releases/gcc-16.2.0": {
+   "hash": "57b9c8b5da9e0761",
+   "text": "/* The first three groups, apart from '=', can appear in preprocessor"
+  },
+  "libcpp/include/cpplib.h:54@releases/gcc-16.2.0": {
+   "hash": "fa85a0e3a2e30ad8",
+   "text": "#define TTYPE_TABLE\t\t\t\t\t\t\t\\"
+  },
+  "libcpp/include/cpplib.h:783@releases/gcc-16.2.0": {
+   "hash": "60bebbdfb3e23b8b",
+   "text": "struct cpp_callbacks"
+  },
+  "libcpp/include/cpplib.h:930@releases/gcc-16.2.0": {
+   "hash": "fd113b9d7b63acea",
+   "text": "struct GTY(()) cpp_macro {"
+  },
+  "libcpp/init.cc:235@releases/gcc-16.2.0": {
+   "hash": "0ce93728bb8bc698",
+   "text": "  CPP_OPTION (pfile, max_include_depth) = 200;"
+  },
+  "libcpp/init.cc:448@releases/gcc-16.2.0": {
+   "hash": "30e45a3fa3045d90",
+   "text": "#define B(n, t, f)    { DSC(n), t, f }"
+  },
+  "libcpp/init.cc:449@releases/gcc-16.2.0": {
+   "hash": "5811e6b1b965c618",
+   "text": "static const struct builtin_macro builtin_array[] ="
+  },
+  "libcpp/init.cc:539@releases/gcc-16.2.0": {
+   "hash": "f9a9e13f50f0a67f",
+   "text": "cpp_init_special_builtins (cpp_reader *pfile)"
+  },
+  "libcpp/init.cc:589@releases/gcc-16.2.0": {
+   "hash": "338b01bda44d67fa",
+   "text": "cpp_init_builtins (cpp_reader *pfile, int hosted)"
+  },
+  "libcpp/init.cc:596@releases/gcc-16.2.0": {
+   "hash": "b856805a75b28f4a",
+   "text": "    _cpp_define_builtin (pfile, \"__STDC__ 1\");"
+  },
+  "libcpp/init.cc:606@releases/gcc-16.2.0": {
+   "hash": "d7579a2b276e8fa9",
+   "text": "\t_cpp_define_builtin (pfile, \"__cplusplus 202400L\");"
+  },
+  "libcpp/init.cc:639@releases/gcc-16.2.0": {
+   "hash": "fef1bf3f0cabbf4a",
+   "text": "    _cpp_define_builtin (pfile, \"__STDC_VERSION__ 202311L\");"
+  },
+  "libcpp/lex.cc:1082@releases/gcc-16.2.0": {
+   "hash": "ca91ed2fb10b274d",
+   "text": "_cpp_process_line_notes (cpp_reader *pfile, int in_comment)"
+  },
+  "libcpp/lex.cc:27@releases/gcc-16.2.0": {
+   "hash": "745d6078803da697",
+   "text": "enum spell_type"
+  },
+  "libcpp/lex.cc:3460@releases/gcc-16.2.0": {
+   "hash": "1f953eb0eb598c96",
+   "text": "_cpp_temp_token (cpp_reader *pfile)"
+  },
+  "libcpp/lex.cc:3725@releases/gcc-16.2.0": {
+   "hash": "f62a042e34f0cf4c",
+   "text": "_cpp_lex_token (cpp_reader *pfile)"
+  },
+  "libcpp/lex.cc:3796@releases/gcc-16.2.0": {
+   "hash": "0dd00b3ea813f688",
+   "text": "      pfile->mi_valid = false;"
+  },
+  "libcpp/lex.cc:3888@releases/gcc-16.2.0": {
+   "hash": "354847ebd1fed06d",
+   "text": "_cpp_lex_direct (cpp_reader *pfile)"
+  },
+  "libcpp/lex.cc:4637@releases/gcc-16.2.0": {
+   "hash": "7d2e8d22ce907006",
+   "text": "cpp_output_token (const cpp_token *token, FILE *fp)"
+  },
+  "libcpp/lex.cc:46@releases/gcc-16.2.0": {
+   "hash": "3fdb2495f40bec30",
+   "text": "static const struct token_spelling token_spellings[N_TTYPES] = { TTYPE_TABLE };"
+  },
+  "libcpp/lex.cc:4723@releases/gcc-16.2.0": {
+   "hash": "dfadb85438951fc1",
+   "text": "/* Returns nonzero if a space should be inserted to avoid an"
+  },
+  "libcpp/lex.cc:4728@releases/gcc-16.2.0": {
+   "hash": "c14373dc0502dc25",
+   "text": "cpp_avoid_paste (cpp_reader *pfile, const cpp_token *token1,"
+  },
+  "libcpp/lex.cc:877@releases/gcc-16.2.0": {
+   "hash": "4b0433c06643d156",
+   "text": "_cpp_clean_line (cpp_reader *pfile)"
+  },
+  "libcpp/line-map.cc:1589@releases/gcc-16.2.0": {
+   "hash": "152aaaa8e178e8ac",
+   "text": "/* Print an include trace, for e.g. the -H option of the preprocessor.  */"
+  },
+  "libcpp/line-map.cc:1592@releases/gcc-16.2.0": {
+   "hash": "ea270a1e478c11dd",
+   "text": "trace_include (const class line_maps *set, const line_map_ordinary *map)"
+  },
+  "libcpp/line-map.cc:570@releases/gcc-16.2.0": {
+   "hash": "a882749186e5f1a7",
+   "text": "linemap_add (line_maps *set, enum lc_reason reason,"
+  },
+  "libcpp/macro.cc:1029@releases/gcc-16.2.0": {
+   "hash": "df841b32afdd7ce7",
+   "text": "paste_tokens (cpp_reader *pfile, location_t location,"
+  },
+  "libcpp/macro.cc:1076@releases/gcc-16.2.0": {
+   "hash": "ded61157d6a2d157",
+   "text": "\tcpp_error_with_line (pfile, CPP_DL_ERROR, location, 0,"
+  },
+  "libcpp/macro.cc:1098@releases/gcc-16.2.0": {
+   "hash": "7d90ac287cfa557c",
+   "text": "paste_all_tokens (cpp_reader *pfile, const cpp_token *lhs)"
+  },
+  "libcpp/macro.cc:1219@releases/gcc-16.2.0": {
+   "hash": "d057c4d8ce26b259",
+   "text": "      cpp_error (pfile, CPP_DL_ERROR,"
+  },
+  "libcpp/macro.cc:1224@releases/gcc-16.2.0": {
+   "hash": "f69e5574cae61975",
+   "text": "    cpp_error (pfile, CPP_DL_ERROR,"
+  },
+  "libcpp/macro.cc:1249@releases/gcc-16.2.0": {
+   "hash": "9f8e4471e24cf502",
+   "text": "collect_args (cpp_reader *pfile, const cpp_hashnode *node,"
+  },
+  "libcpp/macro.cc:1423@releases/gcc-16.2.0": {
+   "hash": "98db09a468b45ad0",
+   "text": "\t\t \"unterminated argument list invoking macro %qs\","
+  },
+  "libcpp/macro.cc:1431@releases/gcc-16.2.0": {
+   "hash": "3c59dde6bfc51660",
+   "text": "      if (_cpp_arguments_ok (pfile, macro, node, argc))"
+  },
+  "libcpp/macro.cc:1463@releases/gcc-16.2.0": {
+   "hash": "9b93669187d3a8be",
+   "text": "funlike_invocation_p (cpp_reader *pfile, cpp_hashnode *node,"
+  },
+  "libcpp/macro.cc:1527@releases/gcc-16.2.0": {
+   "hash": "9b18a98e6d7cfe5b",
+   "text": "enter_macro_context (cpp_reader *pfile, cpp_hashnode *node,"
+  },
+  "libcpp/macro.cc:1589@releases/gcc-16.2.0": {
+   "hash": "22cc37aeea9a5c7c",
+   "text": "      /* Disable the macro within its expansion.  */"
+  },
+  "libcpp/macro.cc:1590@releases/gcc-16.2.0": {
+   "hash": "5cc921e3766f70d5",
+   "text": "      node->flags |= NODE_DISABLED;"
+  },
+  "libcpp/macro.cc:1987@releases/gcc-16.2.0": {
+   "hash": "53db1201e92e4b24",
+   "text": "replace_args (cpp_reader *pfile, cpp_hashnode *node, cpp_macro *macro,"
+  },
+  "libcpp/macro.cc:2454@releases/gcc-16.2.0": {
+   "hash": "19e5729e224b65c3",
+   "text": "padding_token (cpp_reader *pfile, const cpp_token *source)"
+  },
+  "libcpp/macro.cc:2768@releases/gcc-16.2.0": {
+   "hash": "57dba03a4f8d3381",
+   "text": "expand_arg (cpp_reader *pfile, macro_arg *arg)"
+  },
+  "libcpp/macro.cc:2856@releases/gcc-16.2.0": {
+   "hash": "0a935be90b31f8f7",
+   "text": "_cpp_pop_context (cpp_reader *pfile)"
+  },
+  "libcpp/macro.cc:3006@releases/gcc-16.2.0": {
+   "hash": "78efa0bed9a5c54f",
+   "text": "cpp_get_token_1 (cpp_reader *pfile, location_t *location)"
+  },
+  "libcpp/macro.cc:3066@releases/gcc-16.2.0": {
+   "hash": "c4de7895a1ecc060",
+   "text": "\t  && !cpp_get_deferred_macro (pfile, node, result->src_loc))"
+  },
+  "libcpp/macro.cc:3097@releases/gcc-16.2.0": {
+   "hash": "76cb03ad6f2a5c16",
+   "text": "\t\t  node = pfile->cb.macro_to_expand (pfile, result);"
+  },
+  "libcpp/macro.cc:3129@releases/gcc-16.2.0": {
+   "hash": "1b173ac75479f51a",
+   "text": "\t  cpp_token *t = _cpp_temp_token (pfile);"
+  },
+  "libcpp/macro.cc:3131@releases/gcc-16.2.0": {
+   "hash": "e06939185536e029",
+   "text": "\t  t->flags = result->flags | NO_EXPAND;"
+  },
+  "libcpp/macro.cc:3265@releases/gcc-16.2.0": {
+   "hash": "deef02b3bde0c60f",
+   "text": "cpp_get_token (cpp_reader *pfile)"
+  },
+  "libcpp/macro.cc:3379@releases/gcc-16.2.0": {
+   "hash": "673cd418aaf4f94d",
+   "text": "_cpp_backup_tokens (cpp_reader *pfile, unsigned int count)"
+  },
+  "libcpp/macro.cc:3696@releases/gcc-16.2.0": {
+   "hash": "74a46b0224cfb765",
+   "text": "    N_(\"%<##%> cannot appear at either end of a macro expansion\");"
+  },
+  "libcpp/macro.cc:3812@releases/gcc-16.2.0": {
+   "hash": "8eedb842025232cc",
+   "text": "\t\t\t \"%<#%> is not followed by a macro parameter\");"
+  },
+  "libcpp/macro.cc:931@releases/gcc-16.2.0": {
+   "hash": "73b0c9f1b8b9d88e",
+   "text": "stringify_arg (cpp_reader *pfile, const cpp_token **first, unsigned int count)"
+  },
+  "libcpp/macro.cc:94@releases/gcc-16.2.0": {
+   "hash": "69de4ccdd00e75b9",
+   "text": "  N_(\"'##' cannot appear at either end of __VA_OPT__\");"
   }
  }
 }

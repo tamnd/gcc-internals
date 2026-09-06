@@ -13,6 +13,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-BOOTSTRAP](blueprints/BP-BOOTSTRAP.md) | building the compiler with itself | partial | 2 of 9 | no |
 | [BP-BUILD](blueprints/BP-BUILD.md) | configuring and building the compiler | partial | 2 of 9 | yes |
 | [BP-CFG](blueprints/BP-CFG.md) | blocks and edges | stub | none | no |
+| [BP-CPP](blueprints/BP-CPP.md) | the preprocessor | partial | none | yes |
 | [BP-DEBUGGING](blueprints/BP-DEBUGGING.md) | stopping the compiler and looking at it | complete | 2 of 9 | no |
 | [BP-DRIVER](blueprints/BP-DRIVER.md) | the program that runs the other programs | partial | none | yes |
 | [BP-EXPAND](blueprints/BP-EXPAND.md) | GIMPLE becomes RTL | stub | none | yes |
@@ -25,7 +26,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-SSA](blueprints/BP-SSA.md) | one definition per name | stub | none | no |
 | [BP-TESTSUITE](blueprints/BP-TESTSUITE.md) | running GCC's own tests | partial | 2 of 9 | yes |
 
-14 of 58 written: 2 complete, 6 partial, 6 stub.
+15 of 58 written: 2 complete, 7 partial, 6 stub.
 
 ## What each one is for
 
@@ -40,6 +41,10 @@ This document specifies what happens between a source tree and a working `cc1`. 
 ### [BP-CFG](blueprints/BP-CFG.md), blocks and edges
 
 This is a stub. It holds the data structures, the two fixed blocks, how a GIMPLE sequence becomes a graph, and what dominance is computed by and when it is valid. The pass level detail is not here: loop discovery, profile propagation, hot and cold partitioning, and the RTL side of the hooks are named and not specified. Section 2.3 could be generated from `gcc/cfg-flags.def`, which is a `.def` file with exactly the shape `bpc` reads, and that is the obvious first thing to do when this stub is promoted.
+
+### [BP-CPP](blueprints/BP-CPP.md), the preprocessor
+
+This document specifies libcpp, the library that turns a source file into a stream of preprocessing tokens, and the client in `gcc/c-family/c-ppoutput.cc` that prints that stream when you ask for `-E`. The token, the token type table, the hash node and the macro are specified field by field. Lexing, macro expansion, argument prescan, stringification, pasting, the disabling rule, the multiple include optimization and the spacing rule the printer applies are specified as algorithms. Traditional mode, modules and header units, precompiled headers, `#embed`, character set conversion and the `#if` expression evaluator are named and not specified, and each place that stops short says so. Nothing here is generated, because libcpp keeps its tables in C macros rather than in `.def` files a script could read without a C parser. What exists instead is `gxray.cpp`, a reader for recorded preprocessor output, with tests that compare its table of paste-avoiding pairs against the case labels of `cpp_avoid_paste` in the pinned tree, so a GCC that grows a pair fails the build rather than making a paragraph quietly false.
 
 ### [BP-DEBUGGING](blueprints/BP-DEBUGGING.md), stopping the compiler and looking at it
 

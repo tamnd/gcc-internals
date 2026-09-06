@@ -421,3 +421,20 @@ check, which re-reads both tables with gxray.specs, insists neither has a form t
 cannot name, and asserts what each specs file did to the chain, against the committed \
 recording and without a compiler.\
 """
+
+[[experiment]]
+id = "f02-cpp"
+kind = "offline"
+question = "Does the preprocessor work in text, and what does its output leave out?"
+lessons = ["f02-tokens-not-text"]
+cache = "corpora/cpp/f02.json"
+why = """
+Offline because the recording is not one compilation with dumps to compare. It is five \
+macro tables, six expansions, thirty eight probed token pairs and four include traces, and \
+its subject is the difference between two machines, so half of it has to come from a local \
+compiler that Compiler Explorer is not. The travelling half is the cache listed above, sent \
+again by lessons/f02-tokens-not-text/record.py: the x86-64 Linux macro table, the five \
+expansion demonstrations, and the -H trace of one #include <stdio.h>. What keeps the rest \
+honest is that recorder's own check, forty odd assertions that encode what the lesson says \
+about the committed recording, run before any prose exists and re-run on every push.\
+"""
