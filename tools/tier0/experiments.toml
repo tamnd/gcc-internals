@@ -402,3 +402,22 @@ loaded on four different compilers by the plugin workflow on every push that tou
 and lessons/b05-the-plugin/record.py re-asserts every fact the notebook states against the \
 recording without compiling anything.\
 """
+
+[[experiment]]
+id = "f01-specs"
+kind = "offline"
+question = "What language is the driver's decision about which programs to run written in?"
+lessons = ["f01-the-spec-language"]
+cache = "corpora/specs/f01.json"
+why = """
+Offline because the interesting half cannot happen on a site that compiles one file for you. \
+Two of the four experiments here are a pair of -### runs that differ by a -specs= file, and \
+Compiler Explorer takes no such file and adds -S to everything it runs, so the chain it \
+prints stops at cc1 and never reaches the assembler the overrides move. The half that does \
+travel is in the recording: gcc -dumpspecs through the API, cached and listed above, which \
+is where the x86-64 Linux spec table in this lesson comes from and is sent again by \
+lessons/f01-the-spec-language/record.py. What keeps the rest honest is that recorder's own \
+check, which re-reads both tables with gxray.specs, insists neither has a form the reader \
+cannot name, and asserts what each specs file did to the chain, against the committed \
+recording and without a compiler.\
+"""

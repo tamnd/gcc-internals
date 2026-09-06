@@ -257,6 +257,20 @@ corpus-b04 *args:
 corpus-b05 *args:
     {{py}} lessons/b05-the-plugin/record.py {{args}}
 
+# F01 records two spec tables, one from the local gcc-16 and one from the same GCC release
+# for x86-64 Linux through Compiler Explorer, plus four pairs of -### runs that differ by a
+# single -specs= file, into corpora/specs/f01.json. It also counts the driver's two static
+# arrays and its compiler table in the pinned tree, and cuts twelve spans of gcc.cc into
+# corpora/source/f01.json, so it needs the submodule and a gcc-16.
+#
+# Nothing is executed by the four experiments: -### prints the chain and stops, which is why
+# one of them can name an assembler that does not exist. Set GXRAY_GCC for another compiler.
+#
+# `just corpus-f01 --check` re-asserts every fact the lesson states against what is already
+# committed, without running a compiler, which is what the test suite calls.
+corpus-f01 *args:
+    {{py}} lessons/f01-the-spec-language/record.py {{args}}
+
 # Every Tier 0 experiment, run out of the corpus and then out of the cached Compiler Explorer
 # responses, and checked against each other. No network either way. See tools/tier0 for what
 # the three kinds of experiment are and why a recorded one is compared byte for byte while a

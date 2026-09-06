@@ -1,12 +1,12 @@
 # BP-DRIVER, the program that runs the other programs
 
-**Status:** stub
+**Status:** partial
 **Applies to:** GCC 16.2.0 (tag `releases/gcc-16.2.0`)
 **Target-dependent:** yes
 **Generated sections:** none
-**Last verified:** 2026-09-02 against `releases/gcc-16.2.0`
+**Last verified:** 2026-09-06 against `releases/gcc-16.2.0`
 
-This is a stub. It holds what T01 needed and no more, which is the shape of the driver's main loop, the spec language as a grammar, how a file suffix chooses a program, and what a reader of `-###` output is actually looking at. Everything about multilibs, sysroots, offloading, LTO and `collect2` is named and not specified. Section 2 could be generated from `gcc/gcc.cc` in principle, since the spec table is a static array, but the specs a given build actually uses come from the target's `config.gcc` and its headers rather than from the array, so a generator would have to run the driver rather than read the source, and that is a different kind of tool. The header says no generated sections rather than pretending otherwise.
+This document specifies the program that decides which other programs a compilation runs. The spec language is specified in full: every `%` form, how a brace construct is read, where an argument ends, and how a specs file overrides a built in string. The driver's main loop, the compiler table, the program search and the observable output are specified. Multilibs, sysroots, offloading, LTO and `collect2` are named and not specified, and each place that stops short says so. Section 2 could be generated from `gcc/gcc.cc` in principle, since the spec table is a static array, but the specs a given build actually uses come from the target's `config.gcc` and its headers rather than from the array, so a generator would have to run the driver rather than read the source, and that is a different kind of tool. What exists instead is `gxray.specs`, a reader for `-dumpspecs` output, with a test that compares its table of forms against the case labels of `do_spec_1` so a GCC that grows a form fails the build rather than printing it as text.
 
 ## 1. Purpose and scope
 
@@ -48,7 +48,9 @@ A spec is a string and the default value of that string is kept alongside it, wh
 
 ### 2.3 The spec functions
 
-`static_spec_functions` at `gcc/gcc.cc:1806@releases/gcc-16.2.0` is the escape hatch: **21** named C functions the spec language can call as `%:name(args)`, plus whatever the target adds through `EXTRA_SPEC_FUNCTIONS`. `if-exists`, `getenv`, `version-compare`, `find-file`, `sanitize` and `dumps` are the ones a reader meets first.
+`static_spec_functions` at `gcc/gcc.cc:1806@releases/gcc-16.2.0` is the escape hatch: **21** named C functions the spec language can call as `%:name(args)`. `if-exists`, `getenv`, `version-compare`, `find-file`, `sanitize` and `dumps` are the ones a reader meets first.
+
+21 is a floor and not a total. The array ends with an `EXTRA_SPEC_FUNCTIONS` splice at `gcc/gcc.cc:1829@releases/gcc-16.2.0`, and a port defines that macro in its target header to add functions of its own. `gcc/config/aarch64/aarch64.h:1537@releases/gcc-16.2.0` is one such definition. Both of the configurations recorded for F01 call at least one function that is not in the built in array: the aarch64 Darwin build calls `rewrite_march` and `rewrite_mcpu`, and the x86-64 Linux build calls `local_cpu_detect`. A tool that checks a spec table against the 21 will report a spec table it cannot read.
 
 Their existence is the honest admission that the spec language is not a programming language and some decisions cannot be expressed in it.
 
@@ -64,6 +66,18 @@ Their existence is the honest admission that the spec language is not a programm
 ```
 
 `%{!S:...}` is the whole reason `-S` stops the chain at `cc1`. There is no code anywhere that says "if the user asked for assembly, do not run the assembler". There is a negated brace construct in a string.
+
+That claim is checkable rather than rhetorical. Take the live `invoke_as` out of `gcc -dumpspecs`, remove the `%{!S:` wrapper and keep its body, write the result to a file, and pass `-specs=` that file. `gcc -S` then runs the assembler. F01 records that pair.
+
+### 2.5 A specs file
+
+`read_specs` at `gcc/gcc.cc:2634@releases/gcc-16.2.0` reads the format `-dumpspecs` prints, and a name in it is one of two things.
+
+A name beginning with `*` sets a spec. `set_spec` overwrites, so the definition in the file replaces the built in one, and `+` at the start of the value appends to it instead. The single exception is `*link_command`, which `read_specs` special cases into a variable of its own rather than into the spec list.
+
+A name that does not begin with `*` is a suffix, and the entry is appended to the compiler table as a new row. That is how a specs file teaches the driver a new file extension, and it works because `lookup_compiler` searches backwards, so an appended row beats a built in one.
+
+The consequence worth stating plainly is that both halves of the driver's data are replaceable at run time by a text file, with no compiler and no rebuild.
 
 ## 3. Algorithms
 
@@ -131,17 +145,96 @@ do_spec_1(spec, inswitch, soft_matched_part):
             otherwise:    append c to the current argument
 ```
 
-The dispatch on `%` is the spec language, and it is documented in the comment block that begins at `gcc/gcc.cc:625@releases/gcc-16.2.0`. The forms fall into five groups.
+The dispatch on `%` is the spec language, and the only description of it anywhere is the comment block that begins at `gcc/gcc.cc:473@releases/gcc-16.2.0`. There are **45** single character forms plus **3** compound ones, and they fall into five families.
 
-**Substitutions that produce text.** `%i` the input file, `%b` its basename, `%o` every output file, `%O` the object suffix, `%g` a temporary file, `%u` a unique temporary, `%*` the variable part of a matched switch.
+Where a form ends matters as much as what it means, so each table says how far past the letter the form reaches. `none` is the letter alone. `suffix` swallows `[.0-9A-Za-z]*` and then an optional literal `%O`, which is why `%|.s` is one form and not a form followed by the text `.s`. `switch` runs to the next space or tab, `line` to the next newline, and `brace` means a balanced `{...}` follows.
 
-**Substitutions that run another spec.** `%(name)` runs the named spec from the spec list. `%a`, `%l`, `%L`, `%S`, `%E`, `%C`, `%G`, `%1`, `%2` each run one specific built-in spec. These are the ones that make a spec string effectively a call graph.
+### 3.3.1 Forms that substitute text
 
-**Marks that change how an argument is treated.** `%d` marks an argument as a temporary to delete on success. `%w` marks it as this compilation's output file, which is what fills `%o` later. `%V` says this compilation produces no output file.
+25 of them, and between them they are every filename, path and suffix the driver knows.
 
-**Conditionals.** `%{...}`, handled by `handle_braces` at `gcc/gcc.cc:7293@releases/gcc-16.2.0`. The forms are `%{S}` substitute the switch if given, `%{S:X}` substitute X if given, `%{!S:X}` if not given, `%{S*}` every switch starting with S, `%{S|T:X}` disjunction, `%{.S:X}` conditional on the input suffix, `%{,S:X}` conditional on the spec being used, and `%{S:X;T:Y;:D}` an n-way choice with a default. Escaping with a backslash is how `%{std=iso9899\:1999:X}` matches a switch that contains a colon.
+| form | reaches | what it substitutes |
+|---|---|---|
+| `%%` | none | a literal percent sign |
+| `%"` | none | an empty argument, and the end of the one before it |
+| `%i` | none | the input file |
+| `%b` | none | the input file's base name, without the suffix |
+| `%B` | none | the input file's base name, suffix included |
+| `%o` | none | every output file so far, which is what the linker is given |
+| `%O` | none | the object file suffix for this target |
+| `%I` | none | the include options the driver worked out for itself |
+| `%s` | none | search for the argument as a library or startup file |
+| `%T` | none | search for the argument as a linker script |
+| `%D` | none | a `-L` for every directory in `startfile_prefixes` |
+| `%P` | none | a runpath option for every directory in `startfile_prefixes` |
+| `%M` | none | the multilib os directory |
+| `%R` | none | the sysroot, with its suffix |
+| `%X` | none | the linker options that `%x` collected |
+| `%Y` | none | the assembler options from the command line |
+| `%Z` | none | the preprocessor options from the command line |
+| `%*` | none | the variable part of the switch this brace matched |
+| `%g` | suffix | a temporary file, one per compilation |
+| `%u` | suffix | a temporary file, a new one every time |
+| `%U` | suffix | the file the last `%u` made, or a new one |
+| `%j` | suffix | the bit bucket, or a temporary if there is not one |
+| `%\|` | suffix | a temporary file, or a bare `-` when `-pipe` is in effect |
+| `%m` | suffix | a temporary file, or nothing at all when `-pipe` is in effect |
+| `%.` | suffix | the suffix the next `%*` should use instead of its own |
 
-**Function calls.** `%:name(args)`, evaluated by `eval_spec_function` at `gcc/gcc.cc:7046@releases/gcc-16.2.0`. The arguments are themselves processed as a spec first, then split into an argv.
+### 3.3.2 Forms that run another spec
+
+10 of them, and each is a shorthand for one `%(name)`. Both spellings are the same edge in the call graph, and a tool that reads a spec table has to fold them together or it will report `lib` as uncalled on a target whose link spec says `%L`.
+
+| form | runs | form | runs |
+|---|---|---|---|
+| `%a` | `asm` | `%L` | `lib` |
+| `%A` | `asm_final` | `%S` | `startfile` |
+| `%C` | `cpp` | `%E` | `endfile` |
+| `%G` | `libgcc` | `%1` | `cc1` |
+| `%l` | `link` | `%2` | `cc1plus` |
+
+`%(name)` itself is a compound form: the name runs to the closing parenthesis and is looked up in the spec list at run time, so a specs file can add a name and a built in spec can call it.
+
+### 3.3.3 Forms that mark an argument
+
+6 of them. These substitute nothing. They change what the driver does with the argument they are attached to, which is why a reader who is only tracking text comes away thinking they do nothing at all.
+
+| form | reaches | what it does |
+|---|---|---|
+| `%d` | none | delete the file this argument names, if the compilation works |
+| `%w` | none | this argument is the output file, and is what `%o` will find |
+| `%V` | none | this compilation produces no output file |
+| `%W` | brace | like `%{...}`, but delete the file it names if the run fails |
+| `%@` | brace | like `%{...}`, but put the result in a file and pass `@that` |
+| `%x` | brace | collect a linker option for `%X` to substitute later |
+
+### 3.3.4 Forms that remove a switch, and forms that stop
+
+`%<S` drops a switch from here on and from what gets passed on. `%>S` drops it from what gets passed on and keeps it here. Both run to the next space or tab, so the switch name is part of the form.
+
+`%eTEXT` prints the rest of the line as an error and abandons this input file. `%nTEXT` prints it as a notice. Both run to the next newline. A reader who has ever seen `GNU C no longer supports -traditional without -E` has read the output of a `%e` in the `@c` spec, which is a diagnostic written in a string in a table rather than in the compiler.
+
+### 3.3.5 Conditionals
+
+`%{...}`, handled by `handle_braces` at `gcc/gcc.cc:7293@releases/gcc-16.2.0`, whose contract is in the comment above it at `gcc/gcc.cc:7288@releases/gcc-16.2.0`. This is the most common form in a real table by a long way, and a table is mostly branches rather than mostly text.
+
+| written | means |
+|---|---|
+| `%{S}` | pass the switch on, if it was given |
+| `%{S*}` | pass on every switch beginning with `S` |
+| `%{S:X}` | substitute `X` if `-S` was given |
+| `%{!S:X}` | substitute `X` unless `-S` was given |
+| `%{S\|T:X}` | substitute `X` if either was given |
+| `%{.S:X}` | substitute `X` if the input file's suffix is `.S` |
+| `%{,S:X}` | substitute `X` if the spec being used is `S` |
+| `%{%:f(a):X}` | substitute `X` if the spec function returns anything |
+| `%{S:X;T:Y;:D}` | an n-way choice, last clause the default |
+
+Three things a reader parsing one of these has to get right. The colon that splits the predicate from the body is not the first colon, because the predicate may be a spec function call with a colon of its own. A backslash escapes the next character, which is how `%{std=iso9899\:1999:X}` matches a switch whose name contains a colon. And a semicolon inside a nested brace or inside a function call's parentheses does not start a new clause.
+
+### 3.3.6 Function calls
+
+`%:name(args)`, evaluated by `eval_spec_function` at `gcc/gcc.cc:7046@releases/gcc-16.2.0`. The arguments are processed as a spec first, then split into an argv.
 
 Two details a reader of a real spec will hit. `-O`, `-f`, `-g`, `-m` and `-W` are handled specially inside brace constructs: a later switch of the same kind cancels an earlier one, which is why `-O0 -O2` behaves and `%{O*}` still passes everything. And a `|` at the start of the predicate text means "pipe into the next command, but only if `-pipe` was given", which is the only place in the language where a construct is about process plumbing rather than text.
 
@@ -174,6 +267,12 @@ Established by: `outfiles` being filled in as each input is compiled and read on
 **I5.** The driver holds no intermediate representation at any point.
 Established by: the design. Checked by: nothing. May be broken by: nobody. Worth stating because a reader who has heard "GCC" and "the driver" used interchangeably will otherwise look for the optimizer in `gcc.cc`.
 
+**I6.** Every `%(name)` in a spec resolves, because the 45 names of `static_specs` are always defined, empty if the target does not need them.
+Established by: `init_spec` at `gcc/gcc.cc:1899@releases/gcc-16.2.0` filling every entry from its default. Checked by: `tests/test_specs.py`, against two recorded targets. May be broken by: a target that removes a name, which is not something the mechanism allows, and a specs file, which can only add. About a third of any real table is empty for this reason, and an empty spec is a hook the target did not need rather than a missing one.
+
+**I7.** A name may be defined more than once in a spec table, and the last definition is the one that resolves.
+Established by: `set_spec` overwriting, and a specs file being read after the built in table. Checked by: `tests/test_specs.py`. May be broken by: nobody, and this is the same mechanism as I2 applied to the other half of the data. A reader of `-dumpspecs` output sees both definitions, because the dump walks the list.
+
 *To be written: the invariants about temporary file lifetime, and about what `COLLECT_GCC_OPTIONS` is required to round trip.*
 
 ## 5. Observable behaviour
@@ -194,13 +293,41 @@ Three facts a reader can take from that table and check. The optimization level 
 
 Corpus entry `t01-driver-ce` holds the same source on a differently configured GCC 16.2.0 through Compiler Explorer. The chain is different, which is the point: the chain is a property of how a compiler was configured and what it targets, not of the version number.
 
+### 5.1 What `-dumpspecs` shows
+
+Corpus entry `f01-specs` holds two whole spec tables of the same release, and four pairs of `-###` runs that differ by one text file.
+
+| | Homebrew aarch64-apple-darwin24 | the Compiler Explorer x86-64 Linux build |
+|---|---|---|
+| named blocks | 56 | 47 |
+| characters | 8783 | 9336 |
+| of the 45 built in, missing | none | none |
+| added on top | 11 | 2 |
+
+Neither table is a subset of the other and both contain all 45 of `static_specs`, which is the observable form of the claim in section 2.2: the built in list is what a `%(name)` can always resolve to, and everything past it came from the target.
+
+Both tables contain `link_command`, which neither target added. It is the one name `-dumpspecs` prints from a variable rather than from the spec list, at `gcc/gcc.cc:4242@releases/gcc-16.2.0`, so a reader comparing two unrelated targets finds it in both and can conclude it belongs to the driver.
+
+### 5.2 What a specs file changes
+
+Four files, each one pair of `-###` runs that are identical except for `-specs=`.
+
+| file | contents | before | after |
+|---|---|---|---|
+| `argument` | `*cc1:` then `+ -fverbose-asm` | `cc1` | `cc1`, with `-fverbose-asm` added |
+| `assembler` | `*invoke_as:` with `as` renamed | `cc1`, `as` | `cc1`, `my-own-assembler` |
+| `guard` | `*invoke_as:` with the `%{!S:` wrapper removed | `cc1` | `cc1`, `as` |
+| `suffix` | `.frob:` then `@c` | nothing, and a warning | `cc1`, `as` |
+
+The `argument` file is the `+` form of section 2.5, appending rather than replacing. The `assembler` and `guard` files replace a spec. The `suffix` file adds a compiler table row, and before it the same input is a file the driver has no compiler for and hands to the linker, which is what the "linker input file unused" warning in section 6 is.
+
 *To be written: `-print-search-dirs`, `-print-multi-lib`, and the `COLLECT_*` environment variables as observable output.*
 
 ## 6. Edge cases and error paths
 
 *To be written.* The ones already known to matter:
 
-- A file whose suffix matches nothing goes to the linker. This is how `.o` files work, and it is also how a typo in a filename becomes a linker error rather than a driver error.
+- A file whose suffix matches nothing goes to the linker. This is how `.o` files work, and it is also how a typo in a filename becomes a linker error rather than a driver error. With `-c`, where there is no linker to run, the driver says "linker input file unused because linking not done" and runs nothing at all, which is the `suffix` row of section 5.2 before its specs file is applied.
 - A file named exactly `.c`, where the suffix test `strlen (cp->suffix) < length` is false, has no compiler.
 - `-` as an input file requires `-E` or `-x`, and the `"-"` entry in the compiler table exists to produce that message.
 - A `#Language` entry produces "compiler not installed on this system", which is a driver diagnostic about a front end that was never built, not about anything on the system.
@@ -220,6 +347,8 @@ Programs started: `cc1` and its siblings, `as`, `collect2`, `lto-wrapper`, and w
 
 *To be written.* `gcc.dg/spec-options.c` and the `gcc.misc-tests/help.exp` family exercise the option handling. There is no test suite for the spec language as a language, which is worth saying out loud: the specs are tested by the fact that the compiler builds and runs, and a change to `handle_braces` that broke an unused construct would not be caught.
 
+This project's own substitute is `tests/test_specs.py`, which is not a conformance suite for GCC and should not be read as one. It checks that the reader in `gxray.specs` agrees with the source: that its table of forms is exactly the case labels of `do_spec_1` minus the whitespace and compound ones, that every letter shorthand names a spec the driver has, and that tokenizing and rejoining every spec of two recorded targets returns the original string.
+
 ## 9. Port notes
 
 The driver is target dependent in the only way that matters: the C is shared and the strings are not. A port supplies `ASM_SPEC`, `LINK_SPEC`, `LIB_SPEC`, `STARTFILE_SPEC`, `ENDFILE_SPEC`, `CC1_SPEC` and usually several more through its `config.gcc` fragment and its target header, and those strings are what makes the same `gcc.cc` produce a different chain.
@@ -232,9 +361,14 @@ What differs across the two configurations recorded in section 5, both GCC 16.2.
 | assembler | the system `as` | the binutils `as` in the install tree |
 | `-S` chain | `cc1` | `cc1` |
 | specs source | compiled in | compiled in |
+| named blocks | 56 | 47 |
+| names past `static_specs` | 11 | 2 |
+| spec functions called | 13, two of them the port's own | 12, one of them the port's own |
+
+The last three rows are the ones that say what porting actually costs here. A port does not write a driver. It writes strings, and the count of strings it has to write is the size of the gap between the built in 45 and what its chain needs. A port that also has to make a decision the language cannot express writes a spec function and splices it in with `EXTRA_SPEC_FUNCTIONS`, which both of the recorded targets did.
 
 **What is forced and what is not.** The split between a driver and a compiler is forced by nothing at all. Clang puts the same logic in a library and calls it in process, and pays for that with a compiler that cannot be replaced without replacing the driver. GCC's choice buys the ability to point `-B` at a different `cc1` and have everything else keep working, which is the single most useful thing about the arrangement when you are developing GCC itself.
 
 The spec language is the clearest case of a historical choice in the whole compiler. Nothing requires the decision procedure to be a string substitution language, and a reimplementation could write it in the host language and lose only the ability to override it with a text file at install time. That ability turns out to matter to distributions and to nobody else, which is worth knowing before deciding to copy the design.
 
-A reimplementation does have to decide one thing GCC decided implicitly: whether the driver knows which switches take arguments. GCC does, and the comment at `gcc/gcc.cc:625@releases/gcc-16.2.0` explains that it has to, because it cannot tell which arguments are input files without knowing which switches consumed the argument after them. That constraint is real and applies to any driver.
+A reimplementation does have to decide one thing GCC decided implicitly: whether the driver knows which switches take arguments. GCC does, and the comment at `gcc/gcc.cc:692@releases/gcc-16.2.0` explains that it has to, because it cannot tell which arguments are input files without knowing which switches consumed the argument after them. That constraint is real and applies to any driver.

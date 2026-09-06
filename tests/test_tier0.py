@@ -177,9 +177,13 @@ def test_the_store_holds_nothing_nobody_asks_for():
     program, and it accounts for them through the `cache` list its recorder writes. Thirteen
     keys went through that recorder and one of them is the `cg162` probe some other lesson had
     already paid for, which is why the total goes up by twelve and not thirteen.
+
+    F01 adds one, the same way. Its recorder makes two requests, a `-dumpspecs` on the x86-64
+    build and the `cg162` probe behind it, and the probe is one somebody else had already paid
+    for.
     """
     assert orphans(REGISTRY) == []
-    assert len(set().union(*(keys(x) for x in REGISTRY))) == 42
+    assert len(set().union(*(keys(x) for x in REGISTRY))) == 43
 
 
 def _ce_recording_recipes():

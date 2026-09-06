@@ -35,6 +35,7 @@ from gxray import (
     replay,
     rtl,
     source,
+    specs,
     toolchain,
 )
 from gxray import corpus as corpus_store
@@ -86,5 +87,6 @@ __all__ = [
     "replay",
     "rtl",
     "source",
+    "specs",
     "toolchain",
 ]

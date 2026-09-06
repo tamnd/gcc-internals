@@ -193,7 +193,7 @@ FINDING = Group(
 
 DRIVING = Group(
     "Driving the compiler",
-    "What actually runs when you type `gcc`, and how to make it show you its work. T01 and T04 are the lessons that cover this ground.",
+    "What actually runs when you type `gcc`, and how to make it show you its work. T01, T04 and F01 are the lessons that cover this ground.",
     (
         Term(
             name="driver",
@@ -214,9 +214,38 @@ DRIVING = Group(
         Term(
             name="spec",
             short="A small string language the driver uses to build the command lines it runs.",
-            long="A spec is a template full of conditionals like `%{save-temps:...}` that expands into arguments. They are almost unreadable and you will not need to write one, but recognising the syntax stops `gcc -dumpspecs` from looking like line noise, and knowing they exist explains why an option you passed shows up in a completely different form in the `cc1` command line.",
-            see=("driver", "cc1"),
-            met="T01",
+            long="A spec is a template full of conditionals like `%{save-temps:...}` that expands into arguments. `gcc -dumpspecs` prints all of them, which is the driver printing its own program: the decision about which programs to run is written in this language and not in C, and the C in `gcc/gcc.cc` is an interpreter for it. Recognising the syntax stops that output looking like line noise, and it explains why an option you passed shows up in a completely different form in the `cc1` command line.",
+            cite="gcc/gcc.cc:473@releases/gcc-16.2.0",
+            also=("spec string", "`-dumpspecs`"),
+            see=("driver", "cc1", "spec function", "specs file", "compiler table"),
+            met="F01",
+        ),
+        Term(
+            name="spec function",
+            short="A named C function a spec may call when substitution alone cannot answer the question.",
+            long="Written `%:name(arguments)` inside a spec. There are twenty-one of them in GCC 16 and they are the language's escape hatch: `if-exists` cannot be expressed as a substitution because it has to look at the filesystem, and `version-compare` has to compare numbers. Each one is a row in `static_spec_functions` pairing a name with a C function, so the list is the exact boundary between what the little language can do and what it has to ask C for.",
+            cite="gcc/gcc.cc:1814@releases/gcc-16.2.0",
+            also=("`%:`",),
+            see=("spec", "driver"),
+            met="F01",
+        ),
+        Term(
+            name="compiler table",
+            short="The driver's list of file suffixes, and which spec compiles each one.",
+            long="Not the spec list. This is a separate array, `default_compilers`, where each row is a suffix like `.c` and the spec to run for it, and it is what turns a file name into a language. Most rows point at a second row named `@c` or `@c-header`, so the suffix decides the language and the language decides the commands. It is searched backwards, which is what lets a `-specs=` file add a row that wins over the built-in one, and adding a row is how a specs file teaches the driver a file extension it has never heard of.",
+            cite="gcc/gcc.cc:1458@releases/gcc-16.2.0",
+            also=("`default_compilers`",),
+            see=("spec", "driver", "specs file"),
+            met="F01",
+        ),
+        Term(
+            name="specs file",
+            short="A text file of spec definitions the driver reads with -specs=, overwriting its own.",
+            long="The format is the one `-dumpspecs` prints: a name between a star and a colon, then the spec on the lines below it. A name that is already defined is replaced, a `+` at the start of the value appends to what is there instead, and a name that does not begin with a star adds a row to the compiler table. This is the supported way to change what the driver runs without patching or rebuilding it, and it is how GCC's own `-static-libgcc` handling and several distributions' hardening defaults are shipped.",
+            cite="gcc/gcc.cc:2634@releases/gcc-16.2.0",
+            also=("`-specs=`", "`read_specs`"),
+            see=("spec", "driver", "compiler table"),
+            met="F01",
         ),
         Term(
             name="collect2",

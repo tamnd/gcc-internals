@@ -431,6 +431,10 @@
    "hash": "6fd8f5a85c9bdb32",
    "text": "\techo \"*** Configuration ${target}${target_min} not supported\" 1>&2"
   },
+  "gcc/config/aarch64/aarch64.h:1537@releases/gcc-16.2.0": {
+   "hash": "a30bea1f3473c972",
+   "text": "# define EXTRA_SPEC_FUNCTIONS                                           \\"
+  },
   "gcc/config/aarch64/aarch64.md:2965@releases/gcc-16.2.0": {
    "hash": "a27939b4ee11cf96",
    "text": "(define_insn \"add<mode>3_compare0\""
@@ -623,6 +627,10 @@
    "hash": "8b89b8c5655d703d",
    "text": "static const char *invoke_as ="
   },
+  "gcc/gcc.cc:1419@releases/gcc-16.2.0": {
+   "hash": "a387b5fff7bbaf6b",
+   "text": ""
+  },
   "gcc/gcc.cc:1420@releases/gcc-16.2.0": {
    "hash": "8a82f66205c80b75",
    "text": "struct compiler"
@@ -635,9 +643,21 @@
    "hash": "e60a6f968bc569b2",
    "text": "static const struct compiler default_compilers[] ="
   },
+  "gcc/gcc.cc:1458@releases/gcc-16.2.0": {
+   "hash": "be6cae7c1989e5bb",
+   "text": "     linking is not done\".  */"
+  },
+  "gcc/gcc.cc:1479@releases/gcc-16.2.0": {
+   "hash": "96a8d311a1f362da",
+   "text": "  /* Next come the entries for C.  */"
+  },
   "gcc/gcc.cc:1480@releases/gcc-16.2.0": {
    "hash": "ac82d6aa75fba5f9",
    "text": "  {\".c\", \"@c\", 0, 0, 1},"
+  },
+  "gcc/gcc.cc:1482@releases/gcc-16.2.0": {
+   "hash": "37ab2d325428e425",
+   "text": "   /* cc1 has an integrated ISO C preprocessor.  We should invoke the"
   },
   "gcc/gcc.cc:1493@releases/gcc-16.2.0": {
    "hash": "113cfbd96886181d",
@@ -659,6 +679,22 @@
    "hash": "cad3d20326709b80",
    "text": "static const struct spec_function static_spec_functions[] ="
   },
+  "gcc/gcc.cc:1814@releases/gcc-16.2.0": {
+   "hash": "5d83482c6c8f7c05",
+   "text": "  { \"remove-outfile\",\t\tremove_outfile_spec_function },"
+  },
+  "gcc/gcc.cc:1829@releases/gcc-16.2.0": {
+   "hash": "b958b5213a211452",
+   "text": "#ifdef EXTRA_SPEC_FUNCTIONS"
+  },
+  "gcc/gcc.cc:1899@releases/gcc-16.2.0": {
+   "hash": "9051dc50f9678609",
+   "text": "init_spec (void)"
+  },
+  "gcc/gcc.cc:2634@releases/gcc-16.2.0": {
+   "hash": "0cabac3b56324beb",
+   "text": "      if (suffix[0] == '*')"
+  },
   "gcc/gcc.cc:3059@releases/gcc-16.2.0": {
    "hash": "89cb526bab34543e",
    "text": "find_a_file (const struct path_prefix *pprefix, const char *name, int mode,"
@@ -675,6 +711,18 @@
    "hash": "017c67d9f62f5988",
    "text": "  if (wrapper_string)"
   },
+  "gcc/gcc.cc:4236@releases/gcc-16.2.0": {
+   "hash": "9fed0258edd34f27",
+   "text": "    case OPT_dumpspecs:"
+  },
+  "gcc/gcc.cc:4242@releases/gcc-16.2.0": {
+   "hash": "f461465eebb90396",
+   "text": "\tif (link_command_spec)"
+  },
+  "gcc/gcc.cc:473@releases/gcc-16.2.0": {
+   "hash": "83a6875e63362933",
+   "text": "/* The Specs Language"
+  },
   "gcc/gcc.cc:5854@releases/gcc-16.2.0": {
    "hash": "13a14bba332c15da",
    "text": "do_spec (const char *spec)"
@@ -683,13 +731,25 @@
    "hash": "8aa3ef4fb2d76595",
    "text": "do_spec_1 (const char *spec, int inswitch, const char *soft_matched_part)"
   },
-  "gcc/gcc.cc:625@releases/gcc-16.2.0": {
-   "hash": "cf0c4d3441d99c10",
-   "text": " %{S}   substitutes the -S switch, if that switch was given to GCC."
+  "gcc/gcc.cc:6174@releases/gcc-16.2.0": {
+   "hash": "cd62c6bac1346076",
+   "text": "  while ((c = *p++))"
+  },
+  "gcc/gcc.cc:6223@releases/gcc-16.2.0": {
+   "hash": "defe71110c56416f",
+   "text": "      case '\\t':"
+  },
+  "gcc/gcc.cc:692@releases/gcc-16.2.0": {
+   "hash": "0de7ce19cb74dd5e",
+   "text": "Note that it is built into GCC which switches take arguments and which"
   },
   "gcc/gcc.cc:7046@releases/gcc-16.2.0": {
    "hash": "26002503b1824c7c",
    "text": "eval_spec_function (const char *func, const char *args,"
+  },
+  "gcc/gcc.cc:7288@releases/gcc-16.2.0": {
+   "hash": "063a61288fda7fcc",
+   "text": "/* Handle a %{ ... } construct.  P points just inside the leading {."
   },
   "gcc/gcc.cc:7293@releases/gcc-16.2.0": {
    "hash": "2effc14662256a40",

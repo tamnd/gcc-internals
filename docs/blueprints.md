@@ -14,7 +14,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-BUILD](blueprints/BP-BUILD.md) | configuring and building the compiler | partial | 2 of 9 | yes |
 | [BP-CFG](blueprints/BP-CFG.md) | blocks and edges | stub | none | no |
 | [BP-DEBUGGING](blueprints/BP-DEBUGGING.md) | stopping the compiler and looking at it | complete | 2 of 9 | no |
-| [BP-DRIVER](blueprints/BP-DRIVER.md) | the program that runs the other programs | stub | none | yes |
+| [BP-DRIVER](blueprints/BP-DRIVER.md) | the program that runs the other programs | partial | none | yes |
 | [BP-EXPAND](blueprints/BP-EXPAND.md) | GIMPLE becomes RTL | stub | none | yes |
 | [BP-FINAL](blueprints/BP-FINAL.md) | turning insns into text | stub | none | yes |
 | [BP-GIMPLE](blueprints/BP-GIMPLE.md) | the GIMPLE statement representation | partial | 2 of 9 | no |
@@ -25,7 +25,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-SSA](blueprints/BP-SSA.md) | one definition per name | stub | none | no |
 | [BP-TESTSUITE](blueprints/BP-TESTSUITE.md) | running GCC's own tests | partial | 2 of 9 | yes |
 
-14 of 58 written: 2 complete, 5 partial, 7 stub.
+14 of 58 written: 2 complete, 6 partial, 6 stub.
 
 ## What each one is for
 
@@ -47,7 +47,7 @@ This document specifies the interfaces GCC provides for inspecting a compiler wh
 
 ### [BP-DRIVER](blueprints/BP-DRIVER.md), the program that runs the other programs
 
-This is a stub. It holds what T01 needed and no more, which is the shape of the driver's main loop, the spec language as a grammar, how a file suffix chooses a program, and what a reader of `-###` output is actually looking at. Everything about multilibs, sysroots, offloading, LTO and `collect2` is named and not specified. Section 2 could be generated from `gcc/gcc.cc` in principle, since the spec table is a static array, but the specs a given build actually uses come from the target's `config.gcc` and its headers rather than from the array, so a generator would have to run the driver rather than read the source, and that is a different kind of tool. The header says no generated sections rather than pretending otherwise.
+This document specifies the program that decides which other programs a compilation runs. The spec language is specified in full: every `%` form, how a brace construct is read, where an argument ends, and how a specs file overrides a built in string. The driver's main loop, the compiler table, the program search and the observable output are specified. Multilibs, sysroots, offloading, LTO and `collect2` are named and not specified, and each place that stops short says so. Section 2 could be generated from `gcc/gcc.cc` in principle, since the spec table is a static array, but the specs a given build actually uses come from the target's `config.gcc` and its headers rather than from the array, so a generator would have to run the driver rather than read the source, and that is a different kind of tool. What exists instead is `gxray.specs`, a reader for `-dumpspecs` output, with a test that compares its table of forms against the case labels of `do_spec_1` so a GCC that grows a form fails the build rather than printing it as text.
 
 ### [BP-EXPAND](blueprints/BP-EXPAND.md), GIMPLE becomes RTL
 
