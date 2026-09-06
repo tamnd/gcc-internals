@@ -1,0 +1,60 @@
+{
+ "asm": [
+  {
+   "labels": [],
+   "source": null,
+   "text": "<No output file>"
+  }
+ ],
+ "code": 0,
+ "compilationOptions": [
+  "-g",
+  "-o",
+  "/app/output.s",
+  "-masm=intel",
+  "-fno-verbose-asm",
+  "-S",
+  "-fdiagnostics-color=always",
+  "-fsyntax-only",
+  "-fdiagnostics-color=never",
+  "-Wall",
+  "-Wshadow",
+  "/app/example.c"
+ ],
+ "downloads": [],
+ "execTime": 34,
+ "filteredCount": 0,
+ "inputFilename": "example.c",
+ "instructionSet": "amd64",
+ "labelDefinitions": {},
+ "okToCache": true,
+ "optOutput": [],
+ "parsingTime": 0,
+ "popularArguments": {},
+ "processExecutionResultTime": 0.06459800153970718,
+ "stderr": [
+  {
+   "text": "<source>: In function 'f':"
+  },
+  {
+   "tag": {
+    "column": 18,
+    "file": "example.c",
+    "line": 3,
+    "severity": 2,
+    "text": "warning: statement with no effect [-Wunused-value]"
+   },
+   "text": "<source>:3:18: warning: statement with no effect [-Wunused-value]"
+  },
+  {
+   "text": "    3 | void f(void) { A * b; }"
+  },
+  {
+   "text": "      |                ~~^~~"
+  }
+ ],
+ "stdout": [],
+ "timedOut": false,
+ "tools": [],
+ "truncated": false
+}

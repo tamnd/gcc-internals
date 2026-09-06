@@ -13,6 +13,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-BOOTSTRAP](blueprints/BP-BOOTSTRAP.md) | building the compiler with itself | partial | 2 of 9 | no |
 | [BP-BUILD](blueprints/BP-BUILD.md) | configuring and building the compiler | partial | 2 of 9 | yes |
 | [BP-CFG](blueprints/BP-CFG.md) | blocks and edges | stub | none | no |
+| [BP-CPARSE](blueprints/BP-CPARSE.md) | the C parser | partial | none | no |
 | [BP-CPP](blueprints/BP-CPP.md) | the preprocessor | partial | none | yes |
 | [BP-DEBUGGING](blueprints/BP-DEBUGGING.md) | stopping the compiler and looking at it | complete | 2 of 9 | no |
 | [BP-DRIVER](blueprints/BP-DRIVER.md) | the program that runs the other programs | partial | none | yes |
@@ -26,7 +27,7 @@ The pseudocode every algorithm is written in is [NOTATION](blueprints/NOTATION.m
 | [BP-SSA](blueprints/BP-SSA.md) | one definition per name | stub | none | no |
 | [BP-TESTSUITE](blueprints/BP-TESTSUITE.md) | running GCC's own tests | partial | 2 of 9 | yes |
 
-15 of 58 written: 2 complete, 7 partial, 6 stub.
+16 of 58 written: 2 complete, 8 partial, 6 stub.
 
 ## What each one is for
 
@@ -41,6 +42,10 @@ This document specifies what happens between a source tree and a working `cc1`. 
 ### [BP-CFG](blueprints/BP-CFG.md), blocks and edges
 
 This is a stub. It holds the data structures, the two fixed blocks, how a GIMPLE sequence becomes a graph, and what dominance is computed by and when it is valid. The pass level detail is not here: loop discovery, profile propagation, hot and cold partitioning, and the RTL side of the hooks are named and not specified. Section 2.3 could be generated from `gcc/cfg-flags.def`, which is a `.def` file with exactly the shape `bpc` reads, and that is the obvious first thing to do when this stub is promoted.
+
+### [BP-CPARSE](blueprints/BP-CPARSE.md), the C parser
+
+This document specifies the C front end's parser: the code in `gcc/c/c-parser.cc` and `gcc/c/c-parser.h` that turns the token stream libcpp produced into calls on the tree building interface in `gcc/c/c-decl.cc` and `gcc/c/c-typeck.cc`. The token, the parser state, the four slot lookahead buffer and the identifier classification are specified field by field. Lexing one token, peeking, consuming, the three disambiguations C cannot make without a symbol table, error reporting, fix-it insertion, caret placement and the four recovery routines are specified as algorithms. Semantic analysis, the tree building interface, attributes, OpenMP, OpenACC, Objective-C, transactional memory and the `__RTL` and `__GIMPLE` function body parsers are named and not specified, and each place that stops short says so. Nothing here is generated, because the parser keeps no tables in `.def` files: its grammar is control flow and its keyword set is a C enum. What exists instead is `gxray.cparse`, a reader for recorded diagnostics, with tests that compare its transcription of `get_missing_token_insertion_kind` and of the thirteen `c_parse_error` branches against the pinned tree, so a GCC that grows a case fails the build rather than making a paragraph quietly false.
 
 ### [BP-CPP](blueprints/BP-CPP.md), the preprocessor
 

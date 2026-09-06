@@ -8,7 +8,7 @@ This file is generated from `gxray/glossary.py`. Edit that and run `just build-g
 
 ## Index
 
-[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [TODO flags](#todo-flags) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [blue paint](#blue-paint) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [compiler table](#compiler-table) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [include guard](#include-guard) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [line marker](#line-marker) | [live range](#live-range) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [pass](#pass) | [pass manager](#pass-manager) | [pass positioning](#pass-positioning) | [phi node](#phi-node) | [plugin](#plugin) | [plugin ABI](#plugin-abi) | [plugin event](#plugin-event) | [poly_int](#poly_int) | [port](#port) | [preprocessor](#preprocessor) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [pseudo-event](#pseudo-event) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spec function](#spec-function) | [specs file](#specs-file) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [token](#token) | [token pasting](#token-pasting) | [torture options](#torture-options) | [translation unit](#translation-unit) | [tree](#tree) | [use](#use) | [wide_int](#wide_int)
+[DejaGnu](#dejagnu) | [GENERIC](#generic) | [GIMPLE](#gimple) | [IRA](#ira) | [LRA](#lra) | [RTL](#rtl) | [RTX](#rtx) | [SSA](#ssa) | [SSA name](#ssa-name) | [TODO flags](#todo-flags) | [allocno](#allocno) | [alternative](#alternative) | [assembler directive](#assembler-directive) | [back end](#back-end) | [basic block](#basic-block) | [blue paint](#blue-paint) | [bootstrap](#bootstrap) | [bubbling](#bubbling) | [build config](#build-config) | [cc1](#cc1) | [checking build](#checking-build) | [collect2](#collect2) | [compiler table](#compiler-table) | [constraint](#constraint) | [control flow graph](#control-flow-graph) | [cross compiler](#cross-compiler) | [current function](#current-function) | [debug counter](#debug-counter) | [default definition](#default-definition) | [define_insn](#define_insn) | [definition](#definition) | [diagnostic](#diagnostic) | [directive](#directive) | [dominance](#dominance) | [driver](#driver) | [dump file](#dump-file) | [edge](#edge) | [effective target](#effective-target) | [error recovery](#error-recovery) | [excess errors](#excess-errors) | [expand](#expand) | [final](#final) | [fix-it hint](#fix-it-hint) | [front end](#front-end) | [garbage collector](#garbage-collector) | [gate](#gate) | [generated file](#generated-file) | [gengtype](#gengtype) | [gimplification](#gimplification) | [hard register](#hard-register) | [immediate dominator](#immediate-dominator) | [include guard](#include-guard) | [inferior call](#inferior-call) | [insn](#insn) | [interference](#interference) | [line marker](#line-marker) | [live range](#live-range) | [lookahead](#lookahead) | [loop](#loop) | [machine description](#machine-description) | [machine mode](#machine-mode) | [middle end](#middle-end) | [mode iterator](#mode-iterator) | [optimization level](#optimization-level) | [out of SSA](#out-of-ssa) | [out of tree build](#out-of-tree-build) | [output template](#output-template) | [param](#param) | [parser](#parser) | [pass](#pass) | [pass manager](#pass-manager) | [pass positioning](#pass-positioning) | [phi node](#phi-node) | [plugin](#plugin) | [plugin ABI](#plugin-abi) | [plugin event](#plugin-event) | [poly_int](#poly_int) | [port](#port) | [preprocessor](#preprocessor) | [pretty printer](#pretty-printer) | [pseudo register](#pseudo-register) | [pseudo-event](#pseudo-event) | [register allocation](#register-allocation) | [register class](#register-class) | [register pressure](#register-pressure) | [section](#section) | [spec](#spec) | [spec function](#spec-function) | [specs file](#specs-file) | [spill](#spill) | [stage comparison](#stage-comparison) | [stamp file](#stamp-file) | [sum file](#sum-file) | [target hook](#target-hook) | [target triple](#target-triple) | [temporary](#temporary) | [three address form](#three-address-form) | [token](#token) | [token pasting](#token-pasting) | [torture options](#torture-options) | [translation unit](#translation-unit) | [tree](#tree) | [typedef name](#typedef-name) | [use](#use) | [wide_int](#wide_int)
 
 ## Reading the source
 
@@ -281,6 +281,58 @@ Also written `##`, `cpp_avoid_paste`. Taught in F02. See also [token](#token), [
 While a macro is being expanded, its name is disabled; any occurrence of it in the result is flagged `NO_EXPAND` and stays that way forever, even if it is later passed somewhere the macro is not being expanded. The standard's rule and libcpp's implementation are the reason `#define A B` and `#define B A` produce `A` rather than a hang. The name is from a 1980s comp.std.c thread about painting the identifier blue so it cannot be expanded again, and the source uses it.
 
 Also written `NO_EXPAND`, painted blue, self-reference. Taught in F02. See also [preprocessor](#preprocessor), [token](#token). In the source: [`libcpp/macro.cc:1590@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/libcpp/macro.cc#L1590).
+
+## In the parser
+
+The program that reads C, and the four token slots everything surprising about it comes out of. F03 is the lesson.
+
+### parser
+
+**The recursive descent code that turns a token stream into trees. It can see four tokens.**
+
+GCC's C parser is written by hand rather than generated, and all of its memory of your program is a `c_parser` struct: four token slots, a few flags, and the symbol table it shares with the rest of the front end. There is no dump flag for it, because it has no output of its own to print. What it produces is GENERIC, and what you can watch it do is complain. Nearly everything surprising about a C error message follows from the size of that buffer and from the fact that the symbol table has to answer a question before the parse can continue.
+
+Also written `c_parser`, recursive descent, `cc1`. Taught in F03. See also [lookahead](#lookahead), [typedef name](#typedef-name), [GENERIC](#generic). In the source: [`gcc/c/c-parser.cc:191@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/c/c-parser.cc#L191).
+
+### lookahead
+
+**How far ahead the parser can look before deciding what it is reading. In C, four tokens.**
+
+`c_parser_peek_token` gives the next one, `c_parser_peek_2nd_token` the one after it, and `c_parser_peek_nth_token` reaches as far as the fourth. The buffer behind all three is `c_token tokens_buf[4]` and nothing widens it. Most of the peeking in the C parser is one token deep, and the deepest constant peek in the whole file is there to recognise a version control conflict marker, which is not a C construct at all. When a grammar needs to see further than four, the parser does not get more; it commits, and then recovers.
+
+Also written peek, `tokens_buf`, LL(k). Taught in F03. See also [parser](#parser), [token](#token), [error recovery](#error-recovery). In the source: [`gcc/c/c-parser.cc:572@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/c/c-parser.cc#L572).
+
+### typedef name
+
+**An identifier that names a type, and the reason C cannot be parsed without a symbol table.**
+
+`A * b;` declares `b` as a pointer if `A` is a typedef name and multiplies two variables if it is not, and no amount of looking at tokens will tell you which. The parser asks the symbol table instead, and the answer is written into the token as `CPP_KEYWORD` or `CPP_NAME` the first time that token is looked at. That moment can come too early: a token peeked while one scope was open and used after it closed is carrying a stale answer, which is what `c_parser_maybe_reclassify_token` exists to undo.
+
+Also written lexer hack, `CPP_KEYWORD`, `c_parser_maybe_reclassify_token`. Taught in F03. See also [parser](#parser), [token](#token), [lookahead](#lookahead). In the source: [`gcc/c/c-parser.cc:2326@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/c/c-parser.cc#L2326).
+
+### diagnostic
+
+**One complaint, with a message, a severity, a place, and often a suggested repair.**
+
+A diagnostic is not a line of text. It is a structure with a primary location, any number of secondary ones, and any number of fix-it hints, and the text on your terminal is one rendering of it. `-fdiagnostics-format=sarif-stderr` is another, and it is the one to reach for when you want to read the structure rather than the prose. For the parser the message is finished by `c_parse_error`, which chooses one of thirteen endings from the type of the token the parser is looking at, which is why one missing semicolon can produce eight different sentences depending on what comes after it.
+
+Also written `-fdiagnostics-format`, SARIF, `c_parse_error`. Taught in F03. See also [fix-it hint](#fix-it-hint), [parser](#parser), [pretty printer](#pretty-printer). In the source: [`gcc/c-family/c-common.cc:7004@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/c-family/c-common.cc#L7004).
+
+### fix-it hint
+
+**A machine applicable edit hung off a diagnostic, saying insert or delete or replace this text here.**
+
+GCC does not suggest a repair for every mistake. For a missing token it suggests one only for the seven token types `get_missing_token_insertion_kind` knows, and the hint is what decides where the caret goes: two of the seven are inserted before the token that upset the parser and five after the token before it, and in the second case the caret moves back to the end of that previous token. That is why an error about a semicolon points at the line above the one you were reading. `-fdiagnostics-parseable-fixits` prints the hints in a form an editor can apply.
+
+Also written `fixit_hint`, `rich_location`, `-fdiagnostics-parseable-fixits`. Taught in F03. See also [diagnostic](#diagnostic), [parser](#parser). In the source: [`libcpp/include/rich-location.h:620@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/libcpp/include/rich-location.h#L620).
+
+### error recovery
+
+**What the parser does after an error so that it can carry on and find the next one.**
+
+A parser that stopped at the first mistake would make you compile a file once per typo, so after complaining it throws tokens away until it reaches one it can start again from, usually a semicolon or a closing brace at the right nesting depth. This is why three missing semicolons can come out as two errors rather than three, and why an error near the end of a file is sometimes a consequence of one near the top rather than a mistake of its own. The habit to build is to fix the first error and compile again.
+
+Also written resynchronise, `c_parser_skip_until_found`. Taught in F03. See also [parser](#parser), [diagnostic](#diagnostic), [lookahead](#lookahead). In the source: [`gcc/c/c-parser.cc:1353@releases/gcc-16.2.0`](https://github.com/gcc-mirror/gcc/blob/releases/gcc-16.2.0/gcc/c/c-parser.cc#L1353).
 
 ## The four shapes a function takes
 

@@ -8,7 +8,7 @@ A few true things cannot be shown from a notebook at all: what a pass does to me
 
 Claims about GCC's source rather than its behaviour do not live here. Those carry a `path:line@tag` citation and are checked by `refcheck` against the pinned tree.
 
-165 claims across 19 lessons, 4 of them not observable from a notebook.
+172 claims across 20 lessons, 4 of them not observable from a notebook.
 
 ## C++ for people who will only ever read it
 
@@ -269,3 +269,15 @@ Claims about GCC's source rather than its behaviour do not live here. Those carr
 | an include guard is recognised only if the guard is the whole file, in tokens | [`f02-68`](f02-tokens-not-text/f02.ipynb) |
 | GCC suggests an include guard only for a file it read exactly once | [`f02-72`](f02-tokens-not-text/f02.ipynb) |
 | two targets that share almost no macros expand every one of these files identically | [`f02-76`](f02-tokens-not-text/f02.ipynb) |
+
+## The C parser can see four tokens
+
+| Claim | Proved by |
+| --- | --- |
+| the same line of C means two different things depending on a declaration above it | [`f03-04`](f03-four-tokens/f03.ipynb) |
+| swapping which of two declarations is the typedef changes whether a later line compiles | [`f03-20`](f03-four-tokens/f03.ipynb) |
+| one missing semicolon produces eight different messages depending on what follows it | [`f03-26`](f03-four-tokens/f03.ipynb) |
+| every parser error message ends in one of thirteen phrases chosen by token type | [`f03-34`](f03-four-tokens/f03.ipynb) |
+| GCC moves the caret from the token it choked on to the place the fix-it hint goes | [`f03-44`](f03-four-tokens/f03.ipynb) |
+| one diagnostic can point at three places on two lines | [`f03-58`](f03-four-tokens/f03.ipynb) |
+| the same program produces character for character the same diagnostics on two targets | [`f03-70`](f03-four-tokens/f03.ipynb) |

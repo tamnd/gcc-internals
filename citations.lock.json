@@ -223,6 +223,34 @@
    "hash": "ffc15cd485455b35",
    "text": "#define EDGE_COMPLEX \\"
   },
+  "gcc/c-family/c-common.cc:10012@releases/gcc-16.2.0": {
+   "hash": "f208a870e7fc41ef",
+   "text": "   of the diagnostic than that of the following token, so we swap"
+  },
+  "gcc/c-family/c-common.cc:10049@releases/gcc-16.2.0": {
+   "hash": "2306baafc03ad630",
+   "text": "maybe_suggest_missing_token_insertion (rich_location *richloc,"
+  },
+  "gcc/c-family/c-common.cc:7000@releases/gcc-16.2.0": {
+   "hash": "95264dfd15df5d5b",
+   "text": "/* Issue the error given by GMSGID at RICHLOC, indicating that it occurred"
+  },
+  "gcc/c-family/c-common.cc:7004@releases/gcc-16.2.0": {
+   "hash": "5e83df36043f0f4a",
+   "text": "c_parse_error (const char *gmsgid, enum cpp_ttype token_type,"
+  },
+  "gcc/c-family/c-common.cc:9973@releases/gcc-16.2.0": {
+   "hash": "5981bdafce48626d",
+   "text": "static enum missing_token_insertion_kind"
+  },
+  "gcc/c-family/c-common.cc:9974@releases/gcc-16.2.0": {
+   "hash": "44bfca4a488da10a",
+   "text": "get_missing_token_insertion_kind (enum cpp_ttype type)"
+  },
+  "gcc/c-family/c-common.cc:9999@releases/gcc-16.2.0": {
+   "hash": "176afbb8416f084c",
+   "text": "/* Given RICHLOC, a location for a diagnostic describing a missing token"
+  },
   "gcc/c-family/c-opts.cc:1419@releases/gcc-16.2.0": {
    "hash": "4de52375ef4441f9",
    "text": "c_common_parse_file (void)"
@@ -287,9 +315,185 @@
    "hash": "7c20d8a7b3e8dcc2",
    "text": "cc1$(exeext): $(C_OBJS) cc1-checksum.o $(BACKEND) $(LIBDEPS)"
   },
+  "gcc/c/c-parser.cc:1006@releases/gcc-16.2.0": {
+   "hash": "c7f898a1ddae03e5",
+   "text": "/* Update the global input_location from TOKEN.  */"
+  },
+  "gcc/c/c-parser.cc:1009@releases/gcc-16.2.0": {
+   "hash": "3872780dafdd4cda",
+   "text": "{"
+  },
+  "gcc/c/c-parser.cc:1016@releases/gcc-16.2.0": {
+   "hash": "bb9fa74ab690e7a6",
+   "text": "/* Helper function for c_parser_error."
+  },
+  "gcc/c/c-parser.cc:1028@releases/gcc-16.2.0": {
+   "hash": "57174bb777ddc489",
+   "text": "c_parser_peek_conflict_marker (c_parser *parser, enum cpp_ttype tok1_kind,"
+  },
+  "gcc/c/c-parser.cc:1072@releases/gcc-16.2.0": {
+   "hash": "8a7019d1df6a382e",
+   "text": "static bool"
+  },
+  "gcc/c/c-parser.cc:1073@releases/gcc-16.2.0": {
+   "hash": "649e19e26ce9a16f",
+   "text": "c_parser_error_richloc (c_parser *parser, const char *gmsgid,"
+  },
+  "gcc/c/c-parser.cc:1122@releases/gcc-16.2.0": {
+   "hash": "e79de6dbd86c7486",
+   "text": "\t\t /* ??? The C parser does not save the cpp flags of a"
+  },
+  "gcc/c/c-parser.cc:1130@releases/gcc-16.2.0": {
+   "hash": "d0cef0903d1dcfeb",
+   "text": "/* As c_parser_error_richloc, but issue the message at the"
+  },
+  "gcc/c/c-parser.cc:1135@releases/gcc-16.2.0": {
+   "hash": "105ef13dc342f00a",
+   "text": "c_parser_error (c_parser *parser, const char *gmsgid)"
+  },
+  "gcc/c/c-parser.cc:1278@releases/gcc-16.2.0": {
+   "hash": "08949a8b3bced6c4",
+   "text": "bool"
+  },
+  "gcc/c/c-parser.cc:1279@releases/gcc-16.2.0": {
+   "hash": "8de3d8cfe9457e28",
+   "text": "c_parser_require (c_parser *parser,"
+  },
+  "gcc/c/c-parser.cc:1353@releases/gcc-16.2.0": {
+   "hash": "390b536b7e8ed625",
+   "text": "c_parser_skip_until_found (c_parser *parser,"
+  },
+  "gcc/c/c-parser.cc:1426@releases/gcc-16.2.0": {
+   "hash": "c3143c6b99e2181c",
+   "text": "c_parser_skip_to_end_of_parameter (c_parser *parser)"
+  },
+  "gcc/c/c-parser.cc:1507@releases/gcc-16.2.0": {
+   "hash": "34b90798af0934e2",
+   "text": "c_parser_skip_to_pragma_eol (c_parser *parser, bool error_if_not_eol = true)"
+  },
+  "gcc/c/c-parser.cc:1594@releases/gcc-16.2.0": {
+   "hash": "0bd58e4454e69b5d",
+   "text": "c_parser_skip_to_end_of_block_or_statement (c_parser *parser,"
+  },
+  "gcc/c/c-parser.cc:188@releases/gcc-16.2.0": {
+   "hash": "9f79021941720d97",
+   "text": "/* A parser structure recording information about the state and"
+  },
+  "gcc/c/c-parser.cc:191@releases/gcc-16.2.0": {
+   "hash": "463cd632449d62c3",
+   "text": "struct GTY(()) c_parser {"
+  },
+  "gcc/c/c-parser.cc:2065@releases/gcc-16.2.0": {
+   "hash": "b8ece7b5e725b924",
+   "text": "/* Parse a translation unit (C90 6.7, C99 6.9, C11 6.9)."
+  },
+  "gcc/c/c-parser.cc:2081@releases/gcc-16.2.0": {
+   "hash": "7e4c1547c7397703",
+   "text": "c_parser_translation_unit (c_parser *parser)"
+  },
+  "gcc/c/c-parser.cc:2085@releases/gcc-16.2.0": {
+   "hash": "1fa718b246183ee5",
+   "text": "      pedwarn (c_parser_peek_token (parser)->location, OPT_Wpedantic,"
+  },
+  "gcc/c/c-parser.cc:2321@releases/gcc-16.2.0": {
+   "hash": "e66ecdba240d3864",
+   "text": "/* We might need to reclassify any previously-lexed identifier, e.g."
+  },
+  "gcc/c/c-parser.cc:2326@releases/gcc-16.2.0": {
+   "hash": "70df294a168aa298",
+   "text": "c_parser_maybe_reclassify_token (c_parser *parser)"
+  },
+  "gcc/c/c-parser.cc:2555@releases/gcc-16.2.0": {
+   "hash": "4191d582b7ebe4b3",
+   "text": "      c_parser_peek_token (parser)->keyword = RID_VOID;"
+  },
   "gcc/c/c-parser.cc:31269@releases/gcc-16.2.0": {
    "hash": "7c397c5b5864c371",
    "text": "c_parse_file (void)"
+  },
+  "gcc/c/c-parser.cc:31308@releases/gcc-16.2.0": {
+   "hash": "c13571568c037c31",
+   "text": "/* Parse the body of a function declaration marked with \"__RTL\"."
+  },
+  "gcc/c/c-parser.cc:332@releases/gcc-16.2.0": {
+   "hash": "6976a3871192bc94",
+   "text": "/* Read in and lex a single token, storing it in *TOKEN.  If RAW,"
+  },
+  "gcc/c/c-parser.cc:336@releases/gcc-16.2.0": {
+   "hash": "fce39af86a7fea56",
+   "text": "c_lex_one_token (c_parser *parser, c_token *token, bool raw = false)"
+  },
+  "gcc/c/c-parser.cc:392@releases/gcc-16.2.0": {
+   "hash": "0295a26e7cd64a49",
+   "text": "\t\ttargetm.addr_space.diagnose_usage (as, token->location);"
+  },
+  "gcc/c/c-parser.cc:397@releases/gcc-16.2.0": {
+   "hash": "bea14c5370f2ce81",
+   "text": "\t    else if (c_dialect_objc () && OBJC_IS_PQ_KEYWORD (rid_code))"
+  },
+  "gcc/c/c-parser.cc:467@releases/gcc-16.2.0": {
+   "hash": "a0cd5ee4fd18837d",
+   "text": "\tdecl = lookup_name (token->value);"
+  },
+  "gcc/c/c-parser.cc:560@releases/gcc-16.2.0": {
+   "hash": "c9c42da458ce83f7",
+   "text": "  gcc_assert (parser->tokens_avail == 1);"
+  },
+  "gcc/c/c-parser.cc:572@releases/gcc-16.2.0": {
+   "hash": "f17eb553b149f233",
+   "text": "c_parser_peek_nth_token (c_parser *parser, unsigned int n)"
+  },
+  "gcc/c/c-parser.cc:696@releases/gcc-16.2.0": {
+   "hash": "01458ee8e46155b2",
+   "text": "c_parser_next_tokens_start_typename (c_parser *parser, enum c_lookahead_kind la,"
+  },
+  "gcc/c/c-parser.cc:8907@releases/gcc-16.2.0": {
+   "hash": "983a720982acd2df",
+   "text": "  c_parser_maybe_reclassify_token (parser);"
+  },
+  "gcc/c/c-parser.cc:916@releases/gcc-16.2.0": {
+   "hash": "8497fcbe318ed33b",
+   "text": "c_parser_next_tokens_start_declaration (c_parser *parser, unsigned int n)"
+  },
+  "gcc/c/c-parser.cc:958@releases/gcc-16.2.0": {
+   "hash": "8c2ee53f5ecc60f9",
+   "text": "c_parser_consume_token (c_parser *parser)"
+  },
+  "gcc/c/c-parser.cc:969@releases/gcc-16.2.0": {
+   "hash": "6476c4952e2fdf99",
+   "text": "  if (parser->tokens != &parser->tokens_buf[0])"
+  },
+  "gcc/c/c-parser.cc:989@releases/gcc-16.2.0": {
+   "hash": "625ae4af6974b072",
+   "text": "c_parser_consume_pragma (c_parser *parser)"
+  },
+  "gcc/c/c-parser.h:118@releases/gcc-16.2.0": {
+   "hash": "cade0a885acb4ab4",
+   "text": "enum c_parser_prec {"
+  },
+  "gcc/c/c-parser.h:133@releases/gcc-16.2.0": {
+   "hash": "5114ba3835cff388",
+   "text": "enum c_lookahead_kind {"
+  },
+  "gcc/c/c-parser.h:26@releases/gcc-16.2.0": {
+   "hash": "9afab8fbdf0fc5c7",
+   "text": "/* The C lexer intermediates between the lexer in cpplib and c-lex.cc"
+  },
+  "gcc/c/c-parser.h:33@releases/gcc-16.2.0": {
+   "hash": "0e2e0e35a66726af",
+   "text": "   ??? It might be a good idea to lex the whole file up front (as for"
+  },
+  "gcc/c/c-parser.h:38@releases/gcc-16.2.0": {
+   "hash": "84e9c103902800bf",
+   "text": "enum c_id_kind {"
+  },
+  "gcc/c/c-parser.h:4@releases/gcc-16.2.0": {
+   "hash": "bd461c820a7dbf39",
+   "text": "   Parser actions based on the old Bison parser; structure somewhat"
+  },
+  "gcc/c/c-parser.h:53@releases/gcc-16.2.0": {
+   "hash": "336965a723c96c23",
+   "text": "struct GTY (()) c_token {"
   },
   "gcc/cfg.cc:169@releases/gcc-16.2.0": {
    "hash": "2be7cc40efdca37e",
@@ -2250,6 +2454,10 @@
   "libcpp/include/cpplib.h:930@releases/gcc-16.2.0": {
    "hash": "fd113b9d7b63acea",
    "text": "struct GTY(()) cpp_macro {"
+  },
+  "libcpp/include/rich-location.h:620@releases/gcc-16.2.0": {
+   "hash": "df359a55f2ced7b9",
+   "text": "class fixit_hint"
   },
   "libcpp/init.cc:235@releases/gcc-16.2.0": {
    "hash": "0ce93728bb8bc698",
