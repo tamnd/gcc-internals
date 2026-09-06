@@ -189,14 +189,36 @@ jobs:
         continue-on-error: true
         run: python -m tools.matrix digests --check
 
+      # A full matrix takes an hour or more, and main moves while it runs. Three of the last
+      # four runs got here with everything built and published and then lost the push to a
+      # pull request that merged in the meantime, reporting the whole matrix as failed over
+      # a one line file.
+      #
+      # So each attempt starts from whatever main is right now and redoes the merge on top
+      # of it. `record digests` reads the downloaded artifacts, which are untracked and
+      # survive the reset, and it merges into the file rather than replacing it, so doing it
+      # again against a newer main is the same operation and not a retry of a stale one. An
+      # empty diff means somebody already recorded these digests and there is nothing to do.
       - name: commit it if it moved
         run: |
-          if git diff --quiet containers/images.lock.json; then
-            echo "no image moved"
-            exit 0
-          fi
+          set -eu
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add containers/images.lock.json
-          git commit -m "Record the images the build matrix just published"
-          git push
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python -m tools.matrix record digests
+            if git diff --quiet containers/images.lock.json; then
+              echo "no image moved"
+              exit 0
+            fi
+            git add containers/images.lock.json
+            git commit -m "Record the images the build matrix just published"
+            if git push; then
+              exit 0
+            fi
+            echo "main moved under us, attempt $attempt"
+            sleep $((attempt * 5))
+          done
+          echo "could not push the lockfile after five attempts"
+          exit 1
