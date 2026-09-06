@@ -341,7 +341,7 @@ def main(argv: list[str] | None = None) -> int:
         print("You can write a plugin, say why one was refused, put a pass of your own in the")
         print("pipeline at a place you chose, switch one of GCC's off, and explain why none of")
         print("it will survive the next release without being rebuilt.")
-        print("That is M2. M3 next: GIMPLE, properly.")
+        print("That is M2. M3 next: the front end, starting before the parser.")
         return 0
     print("\nEverything except the reasoning questions is in the notebook. To reread:")
     print("    from gxray import plug, source")
