@@ -19,7 +19,7 @@
   // digest, and `python -m tools.matrix show chk` prints what each one was configured
   // with.
   "name": "gcc-internals, GCC 16.2 rel",
-  "image": "ghcr.io/tamnd/gcc-internals/rel@sha256:ba8d2af44e872db83ba3f88dfbcea4b557b054bd94eb45c6962c367b032037f9",
+  "image": "ghcr.io/tamnd/gcc-internals/rel@sha256:f0539be46129357b7cf601ca3a2d6ff24ab94857ce68c340c63c5faa0755e9c0",
 
   // The image is Ubuntu with a compiler in /opt/gcc and nothing else. Python comes from a
   // feature rather than from the image because adding it to the image would mean
