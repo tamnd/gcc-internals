@@ -1,17 +1,17 @@
 {
   "comment": "Written by the build matrix workflow. Every image the project uses is pulled by the digest in here, so that a job cannot silently be testing a compiler nobody published. Run: python -m tools.matrix digests --check",
   "images": {
-    "ghcr.io/tamnd/gcc-internals/boot:amd64": "sha256:53303ed8f1ef5b3e24672ebcebb504b03cc60e596dc0b919d78cb0638000c13b",
-    "ghcr.io/tamnd/gcc-internals/boot:arm64": "sha256:46414087cadc2dc5f86562b1acf0b6b040921e92902bbb72bc6ade6846149d02",
-    "ghcr.io/tamnd/gcc-internals/chk:amd64": "sha256:af8e384544070b15ad901dbfbd1420d4e2ce98dff6fa3e2439ee4f1d6fa498a6",
-    "ghcr.io/tamnd/gcc-internals/chk:arm64": "sha256:2e32c277a11acd90656b0aaf0e5de56610b8856143966b4a668d5737e5ad09da",
-    "ghcr.io/tamnd/gcc-internals/cross:amd64": "sha256:5ddd75cb92b8b7a02030fdefc9781efc14e4c71e7ad18f4b378249526c6ccadc",
-    "ghcr.io/tamnd/gcc-internals/cross:arm64": "sha256:b314f84c9265bb014d3610553dd386f905973532dfefaa0b6d71b889cf783bba",
-    "ghcr.io/tamnd/gcc-internals/dbg:amd64": "sha256:9183babc5469398b91bc0cd991b7ef44389867ba996f4714f84ff272aa21f9f2",
-    "ghcr.io/tamnd/gcc-internals/dbg:arm64": "sha256:616faa62617bf2dd9a804a02b1e01e10de40e784155e073d88a547849a2a9126",
-    "ghcr.io/tamnd/gcc-internals/plug:amd64": "sha256:528d7ac20e1d251d4ce554658eea5de5d7f46208dd8781be05686e6465f7aa79",
-    "ghcr.io/tamnd/gcc-internals/plug:arm64": "sha256:cab65ce4ca5455db61c85d81c5efef4a8b7c5f3f747ba2717a2c2a7c11e8d9f9",
-    "ghcr.io/tamnd/gcc-internals/rel:amd64": "sha256:84496cc4b85069ed82edc746daef636d1d4dc3da4e293f0252860d82bf6896dd",
-    "ghcr.io/tamnd/gcc-internals/rel:arm64": "sha256:355786be7db67b2c9f294a9d44aa86ddb06e6e55989a21bc46238f3db127eeee"
+    "ghcr.io/tamnd/gcc-internals/boot:amd64": "sha256:5cadd18164f95a77948a21df4847b1efdc2fa2f30652697a1f258ee294884cad",
+    "ghcr.io/tamnd/gcc-internals/boot:arm64": "sha256:96c0afdab3e248cf5cebf5128054c9cd3237f294a82b2087c1741e270381df2e",
+    "ghcr.io/tamnd/gcc-internals/chk:amd64": "sha256:93ec2731cddfdc013477f0c4be3745fbbbfad54d740702f6ac8946bf51a76e01",
+    "ghcr.io/tamnd/gcc-internals/chk:arm64": "sha256:5178947db4857aeb1269ed72b16ed5eb5b3be1111b8344498bb1bfb1c6e67dfe",
+    "ghcr.io/tamnd/gcc-internals/cross:amd64": "sha256:508928221daede6b44a5c0428ae320d87bc97f2dd830ab8ba585c652893730c5",
+    "ghcr.io/tamnd/gcc-internals/cross:arm64": "sha256:a11b8cf3854769afdc02d3b48980cf6d1a19a3c23ef683b6a9159cfa37d3a8dd",
+    "ghcr.io/tamnd/gcc-internals/dbg:amd64": "sha256:a136c4617bf06b350030a62ccb50be523f8ed3a23272f896f22b3a959edbd592",
+    "ghcr.io/tamnd/gcc-internals/dbg:arm64": "sha256:35bbbdd9f0a7eb9acf5ccb9f2722437370fbd8d334624599563190457e301f64",
+    "ghcr.io/tamnd/gcc-internals/plug:amd64": "sha256:aaca348bace179cb97520819c29101dbc67bde583c9421d5975c6da9bef1e6d0",
+    "ghcr.io/tamnd/gcc-internals/plug:arm64": "sha256:13587bffe149cb39d9ec9507c4f4eb3466202a1fb777ad830174f5b3eea3ed4f",
+    "ghcr.io/tamnd/gcc-internals/rel:amd64": "sha256:7ea1aef1e90c19daca050e673c4fba4a076cfe89a19edf3b3278689107a388fa",
+    "ghcr.io/tamnd/gcc-internals/rel:arm64": "sha256:895fb6e05094959c7a0e5e1f0413b57e4d10c519031501f322d083c53a1497a3"
   }
 }
